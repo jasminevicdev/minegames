@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b071e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Circo da Jas Victor DEV - Jogo 2D Three.js</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Fredoka:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+
+<body>
+    <div id="canvas-container"></div>
+
+    <div id="ui-container">
+        <!-- Header / Logo & Stats & Botão Home -->
+        <header class="game-header">
+            <div class="logo-box">
+                <span class="logo-text-top">O INCRÍVEL</span>
+                <h1 class="logo-title">CIRCO DA JAS VICTOR DEV 🎪</h1>
+            </div>
+            <div class="stats-card">
+                <div class="stat-item">
+                    <span class="stat-label">JOGADOR:</span>
+                    <span id="player-name-display" class="player-name-badge">JOGADOR</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">MODO HISTÓRIA:</span>
+                    <span id="level-display" class="level-badge">FASE 1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">SANIDADE / VIDAS:</span>
+                    <div id="lives-display" class="lives-hearts">❤️❤️❤️</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CARTOLAS:</span>
+                    <span id="score-display" class="stat-value">0 / 8</span>
+                </div>
+                <a href="../../index.html" id="btn-home" class="btn-home-hud" style="text-decoration:none;" title="Voltar ao Hub de Jogos">🏠 HUB</a>
+            </div>
+        </header>
+
+        <!-- Boss Health Bar HUD -->
+        <div id="boss-hud" class="boss-hud-box hidden">
+            <div class="boss-title">👹 CHEFÃO FINAL: CAINE (ABSTRAÇÃO) & BOLHA (MINI BOLHAS)</div>
+            <div class="boss-health-bar">
+                <div id="boss-health-fill" class="boss-health-fill" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- Dynamic Dialogue Box -->
+        <div id="dialogue-box" class="dialogue-card">
+            <div class="avatar-box">🎪</div>
+            <div class="dialogue-content">
+                <span class="speaker-name">CAINE — MESTRE DE CERIMÔNIAS</span>
+                <p id="dialogue-text" class="dialogue-text">Bem-vindo ao Circo da Jas Victor DEV! Clique em Personagens para escolher seu avatar ou Entrar para iniciar!</p>
+            </div>
+        </div>
+
+        <!-- Touch Controls -->
+        <div id="touch-controls">
+            <div class="touch-group-left">
+                <button id="btn-left" class="touch-btn">◀</button>
+                <button id="btn-right" class="touch-btn">▶</button>
+            </div>
+            <div class="touch-group-right">
+                <button id="btn-attack" class="touch-btn touch-btn-attack">ATACAR ⚡</button>
+                <button id="btn-jump" class="touch-btn touch-btn-jump">PULAR ⬆</button>
+            </div>
+        </div>
+
+        <!-- 1. Tela Inicial Principal -->
+        <div id="home-overlay" class="overlay-screen">
+            <div class="modal-card select-card">
+                <h2 class="modal-title">CIRCO DA JAS VICTOR DEV 🎪</h2>
+                <p class="modal-subtitle">Bem-vindo ao Circo Digital! Escolha como deseja entrar:</p>
+
+                <div class="button-group-main">
+                    <button id="btn-new-player" class="btn-play btn-primary-enter">➕ NOVO JOGADOR</button>
+                    <button id="btn-select-player" class="btn-play btn-secondary">👤 SELECIONAR JOGADOR</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Modal Criar Novo Jogador -->
+        <div id="new-player-overlay" class="overlay-screen hidden">
+            <div class="modal-card select-card">
+                <h2 class="modal-title">NOVO JOGADOR 👤</h2>
+                <p class="modal-subtitle">Digite seu nome para criar um perfil de jogo:</p>
+
+                <div class="name-input-box">
+                    <label for="player-name-input">NOME DO JOGADOR:</label>
+                    <input id="player-name-input" type="text" placeholder="Digite seu nome..." maxlength="16">
+                </div>
+
+                <div class="button-group-main">
+                    <button id="btn-cancel-new-player" class="btn-play btn-danger">CANCELAR ↩️</button>
+                    <button id="btn-confirm-new-player" class="btn-play btn-continue">CRIAR PERFIL 🚀</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Modal Selecionar Jogador -->
+        <div id="select-player-overlay" class="overlay-screen hidden">
+            <div class="modal-card select-card">
+                <h2 class="modal-title">SELECIONAR JOGADOR 👤</h2>
+                <p class="modal-subtitle">Escolha um perfil existente para jogar:</p>
+
+                <div id="players-list" class="players-list-grid">
+                    <!-- Gerado dinamicamente via JS -->
+                </div>
+
+                <div class="button-group-sub" style="margin-top: 12px;">
+                    <button id="btn-back-home-from-select" class="btn-play btn-secondary">VOLTAR ↩️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Painel do Jogador Selecionado -->
+        <div id="player-panel-overlay" class="overlay-screen hidden">
+            <div class="modal-card select-card">
+                <h2 class="modal-title" id="panel-player-name">JOGADOR 🎪</h2>
+                <p class="modal-subtitle" id="panel-player-info">Fase Salva: 1 | Personagem: POMNI</p>
+
+                <div class="button-group-main" style="flex-direction: column; gap: 10px;">
+                    <button id="btn-panel-continue" class="btn-play btn-continue hidden">CONTINUAR JOGO 💾 (FASE 1)</button>
+                    <button id="btn-panel-choose-char" class="btn-play btn-secondary">ESCOLHER PERSONAGEM 🎭</button>
+                    <button id="btn-panel-restart-fresh" class="btn-play btn-primary-enter">COMEÇAR DO ZERO 🔄</button>
+                    <button id="btn-panel-back" class="btn-play btn-danger">TROCAR JOGADOR 👤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Modal de Seleção de Personagem -->
+        <div id="character-overlay" class="overlay-screen hidden">
+            <div class="modal-card select-card">
+                <h2 class="modal-title">PERSONAGENS DO JOGO 🎭</h2>
+                <p class="modal-subtitle">Selecione o avatar que você quer controlar:</p>
+
+                <div id="character-selector" class="character-grid">
+                    <div class="char-card active" data-char="pomni">
+                        <div class="char-icon">🎪</div>
+                        <div class="char-name">POMNI</div>
+                        <div class="char-ability">Equilibrada</div>
+                    </div>
+                    <div class="char-card" data-char="jax">
+                        <div class="char-icon">🐰</div>
+                        <div class="char-name">JAX</div>
+                        <div class="char-ability">Super Corrida</div>
+                    </div>
+                    <div class="char-card" data-char="kinger">
+                        <div class="char-icon">♔</div>
+                        <div class="char-name">KINGER</div>
+                        <div class="char-ability">Super Pulo</div>
+                    </div>
+                    <div class="char-card" data-char="gangle">
+                        <div class="char-icon">🎭</div>
+                        <div class="char-name">GANGLE</div>
+                        <div class="char-ability">Flutuação</div>
+                    </div>
+                    <div class="char-card" data-char="zooble">
+                        <div class="char-icon">🧩</div>
+                        <div class="char-name">ZOOBLE</div>
+                        <div class="char-ability">+1 Vida</div>
+                    </div>
+                    <div class="char-card" data-char="caine">
+                        <div class="char-icon">👁️</div>
+                        <div class="char-name">CAINE</div>
+                        <div class="char-ability">Pulo Triplo</div>
+                    </div>
+                    <div class="char-card" data-char="bubble">
+                        <div class="char-icon">🫧</div>
+                        <div class="char-name">BOLHA</div>
+                        <div class="char-ability">Agilidade</div>
+                    </div>
+                </div>
+
+                <div class="button-group-sub">
+                    <button id="btn-confirm-char" class="btn-play btn-continue">CONFIRMAR PERSONAGEM ✔️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Complete Transition Overlay -->
+        <div id="level-overlay" class="overlay-screen hidden">
+            <div class="modal-card level-card">
+                <h2 class="modal-title">FASE CONCLUÍDA! 🎉</h2>
+                <p id="level-overlay-text" class="modal-subtitle">Seu progresso no Circo da Yuk foi salvo!</p>
+                <button id="btn-next-level" class="btn-play">AVANÇAR PARA A PRÓXIMA FASE ➡️</button>
+            </div>
+        </div>
+
+        <!-- Final Victory Modal -->
+        <div id="win-overlay" class="overlay-screen hidden">
+            <div class="modal-card win-card">
+                <h2 class="modal-title">CIRCO DA YUK CONCLUÍDO! 🏆</h2>
+                <p class="modal-subtitle">Parabéns! Você derrotou a Abstração e zerou o MODO HISTÓRIA!</p>
+                <button id="btn-restart" class="btn-play">JOGAR NOVAMENTE 🔄</button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="gameover-overlay" class="overlay-screen hidden">
+            <div class="modal-card gameover-card">
+                <h2 class="modal-title text-danger">ABSTRAÇÃO DIGITAL! 😵</h2>
+                <p class="modal-subtitle">Sua sanidade acabou! Tente novamente do início da fase!</p>
+                <button id="btn-retry" class="btn-play btn-danger">RECOMEÇAR FASE 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
