@@ -573,11 +573,15 @@
                 const save = SaveHub.getGameSave('jasminecraft', activePlayer.name);
                 blocksPlaced = save.blocksPlaced || 0;
                 blocksDestroyed = save.blocksDestroyed || 0;
-                currentSelectedSkinId = save.selectedSkin || 'mitsuri';
+                currentSelectedSkinId = save.selectedSkin || 'shinobu';
                 document.getElementById('placed-display').innerText = blocksPlaced;
                 document.getElementById('destroyed-display').innerText = blocksDestroyed;
             }
             applySelectedSkin(currentSelectedSkinId);
+
+            // ABRIR IMEDIATAMENTE O SELETOR DE SKINS AO ENTRAR
+            renderSkinsGrid();
+            skinsModal.classList.remove('hidden');
         }
 
         // Eventos de Ponteiro & Teclado
@@ -686,6 +690,7 @@
 
         // Lista de Skins Selecionáveis no JasmineCraft
         const JASMINE_SKINS = {
+            'shinobu': { name: 'Shinobu (Demon Slayer) 🦋', icon: '🦋', isShinobu: true },
             'mitsuri': { name: 'Mitsuri (Demon Slayer) 🌸', icon: '🌸', isMitsuri: true },
             'steve':   { name: 'Steve Clássico 🟦', icon: '🟦', skinColor: 0xd2b48c, shirtColor: 0x00f0f0, pantsColor: 0x0000aa },
             'alex':    { name: 'Alex Exploradora 🟧', icon: '🟧', skinColor: 0xffe0bd, shirtColor: 0x55aa55, pantsColor: 0x8b5a2b, hairColor: 0xd2691e },
@@ -694,11 +699,11 @@
             'knight':  { name: 'Cavaleiro Real 👑', icon: '👑', skinColor: 0xaaaaaa, shirtColor: 0x888888, pantsColor: 0x444444 }
         };
 
-        let currentSelectedSkinId = 'mitsuri';
+        let currentSelectedSkinId = 'shinobu';
 
         // Modelo Voxel 3D do Jogador (para visão em 3ª pessoa)
         let playerMeshGroup = null;
-        let isThirdPerson = false;
+        let isThirdPerson = true; // Inicia em 3ª pessoa para o jogador ver sua skin!
 
         const btnToggleCamera = document.getElementById('btn-toggle-camera');
         const btnOpenSkins = document.getElementById('btn-open-skins');
@@ -712,7 +717,7 @@
                 const s = JASMINE_SKINS[skinId];
                 const card = document.createElement('div');
                 card.style.cssText = `
-                    background: ${currentSelectedSkinId === skinId ? 'rgba(255, 105, 180, 0.3)' : 'rgba(255, 255, 255, 0.08)'};
+                    background: ${currentSelectedSkinId === skinId ? 'rgba(186, 85, 211, 0.4)' : 'rgba(255, 255, 255, 0.08)'};
                     border: 3px solid ${currentSelectedSkinId === skinId ? '#ffcc00' : 'rgba(255,255,255,0.2)'};
                     border-radius: 16px; padding: 12px 8px; cursor: pointer; display: flex;
                     flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s;
@@ -733,7 +738,7 @@
         }
 
         function applySelectedSkin(skinId) {
-            const skinConf = JASMINE_SKINS[skinId] || JASMINE_SKINS['mitsuri'];
+            const skinConf = JASMINE_SKINS[skinId] || JASMINE_SKINS['shinobu'];
             createPlayerVoxelModel(skinConf);
             if (activePlayer) {
                 SaveHub.updateGameSave('jasminecraft', { selectedSkin: skinId }, activePlayer.name);
@@ -745,7 +750,157 @@
 
             playerMeshGroup = new THREE.Group();
 
-            if (skinConf.isMitsuri) {
+            if (skinConf.isShinobu) {
+                // MODELAGEM EXTREMAMENTE DETALHADA SHINOBU KOCHO (Demon Slayer - Fiel à Imagem)
+                
+                // Cabeça Voxel Base
+                const headGeo = new THREE.BoxGeometry(0.52, 0.52, 0.52);
+                const headMat = new THREE.MeshStandardMaterial({ color: 0xffe0bd, roughness: 0.5 });
+                const headMesh = new THREE.Mesh(headGeo, headMat);
+                headMesh.position.y = 1.35;
+                playerMeshGroup.add(headMesh);
+
+                // --- 1. OLHOS ROXOS INSETO / ANIME (Shinobu) ---
+                const eyeWhiteGeo = new THREE.BoxGeometry(0.12, 0.14, 0.04);
+                const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                
+                const eyeWhiteLeft = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
+                eyeWhiteLeft.position.set(-0.13, 1.38, -0.27);
+                playerMeshGroup.add(eyeWhiteLeft);
+
+                const eyeWhiteRight = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
+                eyeWhiteRight.position.set(0.13, 1.38, -0.27);
+                playerMeshGroup.add(eyeWhiteRight);
+
+                // Íris Roxa Gradiente (Shinobu)
+                const irisGeo = new THREE.BoxGeometry(0.09, 0.11, 0.05);
+                const irisMat = new THREE.MeshStandardMaterial({ color: 0x9932cc, emissive: 0x4b0082, emissiveIntensity: 0.5 });
+
+                const irisLeft = new THREE.Mesh(irisGeo, irisMat);
+                irisLeft.position.set(-0.13, 1.37, -0.28);
+                playerMeshGroup.add(irisLeft);
+
+                const irisRight = new THREE.Mesh(irisGeo, irisMat);
+                irisRight.position.set(0.13, 1.37, -0.28);
+                playerMeshGroup.add(irisRight);
+
+                // Sobrancelhas Pretas Finas
+                const lashGeo = new THREE.BoxGeometry(0.14, 0.03, 0.05);
+                const lashMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+                
+                const lashLeft = new THREE.Mesh(lashGeo, lashMat);
+                lashLeft.position.set(-0.13, 1.46, -0.28);
+                playerMeshGroup.add(lashLeft);
+
+                const lashRight = new THREE.Mesh(lashGeo, lashMat);
+                lashRight.position.set(0.13, 1.46, -0.28);
+                playerMeshGroup.add(lashRight);
+
+                // --- 2. CABELO PRETO COM PONTAS ROXAS & ENFEITE DE BORBOLETA ---
+                const blackHairMat = new THREE.MeshStandardMaterial({ color: 0x15151e, roughness: 0.4 });
+                const purpleHairMat = new THREE.MeshStandardMaterial({ color: 0x8a2be2, roughness: 0.4 });
+
+                // Capacete Principal do Cabelo Preto
+                const hairTop = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.28, 0.6), blackHairMat);
+                hairTop.position.set(0, 1.58, 0);
+                playerMeshGroup.add(hairTop);
+
+                // Mechas Laterais com Pontas Roxas
+                [-0.26, 0.26].forEach(x => {
+                    const sideBlack = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.35, 0.52), blackHairMat);
+                    sideBlack.position.set(x, 1.35, 0);
+                    playerMeshGroup.add(sideBlack);
+
+                    const sidePurple = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.25, 0.52), purpleHairMat);
+                    sidePurple.position.set(x, 1.08, 0);
+                    playerMeshGroup.add(sidePurple);
+                });
+
+                // PRESILHA GRANDE DE BORBOLETA ROXA E VERDE (Acessório Traseiro Shinobu)
+                const butterflyWingGeo = new THREE.BoxGeometry(0.35, 0.35, 0.05);
+                const butterflyWingMat = new THREE.MeshStandardMaterial({ color: 0xba55d3, emissive: 0x48d1cc, emissiveIntensity: 0.3 });
+
+                const wingLeft = new THREE.Mesh(butterflyWingGeo, butterflyWingMat);
+                wingLeft.position.set(-0.2, 1.6, 0.3);
+                wingLeft.rotation.z = 0.3;
+                playerMeshGroup.add(wingLeft);
+
+                const wingRight = new THREE.Mesh(butterflyWingGeo, butterflyWingMat);
+                wingRight.position.set(0.2, 1.6, 0.3);
+                wingRight.rotation.z = -0.3;
+                playerMeshGroup.add(wingRight);
+
+                const wingCenter = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.18, 0.06), new THREE.MeshBasicMaterial({ color: 0x111111 }));
+                wingCenter.position.set(0, 1.6, 0.31);
+                playerMeshGroup.add(wingCenter);
+
+                // --- 3. HAORI BORBOLETA (Branco com Padrão de Asas Verde/Rosa) ---
+                const haoriMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+                const haoriBody = new THREE.Mesh(new THREE.BoxGeometry(0.74, 0.76, 0.52), haoriMat);
+                haoriBody.position.y = 0.78;
+                playerMeshGroup.add(haoriBody);
+
+                // Bordas de Asa de Borboleta no Haori (Barra Verde/Rosa/Preto)
+                const borderGreenMat = new THREE.MeshBasicMaterial({ color: 0x98fb98 });
+                const borderPinkMat = new THREE.MeshBasicMaterial({ color: 0xffb6c1 });
+                const borderBlackMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+
+                const haoriBorderGreen = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.12, 0.54), borderGreenMat);
+                haoriBorderGreen.position.y = 0.44;
+                playerMeshGroup.add(haoriBorderGreen);
+
+                const haoriBorderPink = new THREE.Mesh(new THREE.BoxGeometry(0.77, 0.06, 0.55), borderPinkMat);
+                haoriBorderPink.position.y = 0.35;
+                playerMeshGroup.add(haoriBorderPink);
+
+                // Mangas Larga Estilo Asas
+                const sleeveLeft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.65, 0.34), haoriMat);
+                sleeveLeft.position.set(-0.43, 0.75, 0);
+                playerMeshGroup.add(sleeveLeft);
+
+                const sleeveRight = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.65, 0.34), haoriMat);
+                sleeveRight.position.set(0.43, 0.75, 0);
+                playerMeshGroup.add(sleeveRight);
+
+                // --- 4. UNIFORME DE CAÇADORA + PERNEIRAS BORBOLETA ---
+                const shirtMat = new THREE.MeshStandardMaterial({ color: 0x191428 });
+                const shirtMesh = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.65, 0.4), shirtMat);
+                shirtMesh.position.y = 0.78;
+                playerMeshGroup.add(shirtMesh);
+
+                // Botões Dourados do Uniforme
+                const goldMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+                [0.9, 0.78, 0.66].forEach(yPos => {
+                    const button = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.42), goldMat);
+                    button.position.set(0, yPos, 0);
+                    playerMeshGroup.add(button);
+                });
+
+                // Cinto Branco
+                const beltMesh = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.09, 0.42), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+                beltMesh.position.y = 0.52;
+                playerMeshGroup.add(beltMesh);
+
+                // Perneiras Brancas com Padrão Borboleta
+                const legLeft = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.45, 0.28), haoriMat);
+                legLeft.position.set(-0.14, 0.22, 0);
+                playerMeshGroup.add(legLeft);
+
+                const legRight = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.45, 0.28), haoriMat);
+                legRight.position.set(0.14, 0.22, 0);
+                playerMeshGroup.add(legRight);
+
+                // Calçados Roxos (Zori com Tira Roxa)
+                const shoeMat = new THREE.MeshBasicMaterial({ color: 0x8a2be2 });
+                const shoeLeft = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.08, 0.32), shoeMat);
+                shoeLeft.position.set(-0.14, 0.04, 0);
+                playerMeshGroup.add(shoeLeft);
+
+                const shoeRight = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.08, 0.32), shoeMat);
+                shoeRight.position.set(0.14, 0.04, 0);
+                playerMeshGroup.add(shoeRight);
+
+            } else if (skinConf.isMitsuri) {
                 // MODELAGEM EXTREMAMENTE DETALHADA MITSURI KANROJI (Demon Slayer Anime Voxel)
                 
                 // Cabeça Voxel Base
