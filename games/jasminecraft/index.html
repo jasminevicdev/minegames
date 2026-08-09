@@ -128,7 +128,8 @@
                     <span class="stat-label">QUEBRADOS:</span>
                     <span id="destroyed-display" class="stat-val">0</span>
                 </div>
-                <button id="btn-toggle-camera" class="btn-hub" style="background: linear-gradient(135deg, #00d2ff, #7000ff); border: 2px solid #ffcc00;" title="Alternar Visão 1ª / 3ª Pessoa (F5)">🎥 1ª PESSOA</button>
+                <button id="btn-toggle-camera" class="btn-hub" style="background: linear-gradient(135deg, #00d2ff, #7000ff); border: 2px solid #ffcc00;" title="Alternar Visão 1ª / 3ª Pessoa (C)">🎥 1ª PESSOA</button>
+                <button id="btn-open-skins" class="btn-hub" style="background: linear-gradient(135deg, #ff69b4, #ff1493); border: 2px solid #ffcc00;" title="Escolher Personagem/Skin">🌸 SKINS</button>
                 <a href="../../index.html" class="btn-hub">🏠 HUB</a>
             </div>
         </div>
@@ -141,6 +142,21 @@
             <div class="hotbar-slot" data-type="brick" data-num="5"><div class="slot-color" style="background:#b22222;"></div><span class="slot-num">5</span></div>
             <div class="hotbar-slot" data-type="glass" data-num="6"><div class="slot-color" style="background:#a0e0ff; opacity:0.8;"></div><span class="slot-num">6</span></div>
             <div class="hotbar-slot" data-type="axe" data-num="7"><div class="slot-color" style="display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🪓</div><span class="slot-num">7</span></div>
+            <div class="hotbar-slot" data-type="sword" data-num="8"><div class="slot-color" style="display:flex;align-items:center;justify-content:center;font-size:1.1rem;">⚔️</div><span class="slot-num">8</span></div>
+        </div>
+    </div>
+
+    <!-- Modal Seleção de Skins / Personagens -->
+    <div id="skins-modal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width: 580px;">
+            <h2 class="modal-title">ESCOLHA SEU PERSONAGEM 🎭</h2>
+            <p class="modal-subtitle">Selecione quem você quer controlar no JasmineCraft!</p>
+
+            <div id="skins-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; max-height: 300px; overflow-y: auto; padding: 4px;">
+                <!-- Cards de Skins gerados via JS -->
+            </div>
+
+            <button id="btn-close-skins" class="btn-play-click" style="background: linear-gradient(135deg, #ff69b4, #ff1493);">PRONTO PARA JOGAR 🚀</button>
         </div>
     </div>
 
@@ -239,6 +255,36 @@
         camera.add(axeGroup);
         scene.add(camera);
 
+        // Modelo 3D da Katana Nichirin Rosa (preso à Câmera)
+        const swordGroup = new THREE.Group();
+
+        // Lâmina Rosa
+        const swordBladeGeo = new THREE.BoxGeometry(0.04, 1.1, 0.08);
+        const swordBladeMat = new THREE.MeshStandardMaterial({ color: 0xff69b4, emissive: 0xff1493, emissiveIntensity: 0.5, metalness: 0.7, roughness: 0.2 });
+        const swordBladeMesh = new THREE.Mesh(swordBladeGeo, swordBladeMat);
+        swordBladeMesh.position.set(0, 0.55, 0);
+        swordGroup.add(swordBladeMesh);
+
+        // Guarda Rosa Floral (Tsuba)
+        const tsubaGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.04, 12);
+        const tsubaMat = new THREE.MeshStandardMaterial({ color: 0xffb6c1, metalness: 0.5 });
+        const tsubaMesh = new THREE.Mesh(tsubaGeo, tsubaMat);
+        tsubaMesh.position.set(0, 0.02, 0);
+        swordGroup.add(tsubaMesh);
+
+        // Cabo da Katana (Tsuka)
+        const handleSwordGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.3, 8);
+        const handleSwordMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.7 });
+        const handleSwordMesh = new THREE.Mesh(handleSwordGeo, handleSwordMat);
+        handleSwordMesh.position.set(0, -0.15, 0);
+        swordGroup.add(handleSwordMesh);
+
+        // Posição da Katana no Canto Inferior Direito da Câmera
+        swordGroup.position.set(0.42, -0.38, -0.65);
+        swordGroup.rotation.set(0.3, -0.3, -0.4);
+        swordGroup.visible = false;
+        camera.add(swordGroup);
+
         let isSwinging = false;
         let swingProgress = 0;
 
@@ -251,20 +297,29 @@
         function updateAxeAnimation(delta) {
             if (selectedBlockType === 'axe') {
                 axeGroup.visible = true;
+                swordGroup.visible = false;
+            } else if (selectedBlockType === 'sword') {
+                axeGroup.visible = false;
+                swordGroup.visible = true;
             } else {
                 axeGroup.visible = false;
+                swordGroup.visible = false;
                 return;
             }
 
             if (isSwinging) {
-                swingProgress += delta * 12;
+                swingProgress += delta * 14;
                 if (swingProgress >= Math.PI) {
                     isSwinging = false;
                     swingProgress = 0;
                     axeGroup.rotation.set(0.2, -0.4, -0.3);
+                    swordGroup.rotation.set(0.3, -0.3, -0.4);
                 } else {
-                    axeGroup.rotation.x = 0.2 - Math.sin(swingProgress) * 0.8;
+                    axeGroup.rotation.x = 0.2 - Math.sin(swingProgress) * 0.9;
                     axeGroup.rotation.z = -0.3 - Math.sin(swingProgress) * 0.4;
+
+                    swordGroup.rotation.x = 0.3 - Math.sin(swingProgress) * 1.1;
+                    swordGroup.rotation.z = -0.4 - Math.sin(swingProgress) * 0.5;
                 }
             }
         }
@@ -510,18 +565,16 @@
 
         function initPlayerSave() {
             activePlayer = SaveHub.getActivePlayer();
-            const avatarSymbol = activePlayer ? (activePlayer.avatar || '🎪') : '🎪';
-            const style = AVATAR_PLAYER_STYLES[avatarSymbol] || AVATAR_PLAYER_STYLES['🎪'];
-            createPlayerVoxelModel(style);
-
             if (activePlayer) {
                 document.getElementById('player-display').innerText = activePlayer.name.toUpperCase();
                 const save = SaveHub.getGameSave('jasminecraft', activePlayer.name);
                 blocksPlaced = save.blocksPlaced || 0;
                 blocksDestroyed = save.blocksDestroyed || 0;
+                currentSelectedSkinId = save.selectedSkin || 'mitsuri';
                 document.getElementById('placed-display').innerText = blocksPlaced;
                 document.getElementById('destroyed-display').innerText = blocksDestroyed;
             }
+            applySelectedSkin(currentSelectedSkinId);
         }
 
         // Eventos de Ponteiro & Teclado
@@ -628,96 +681,219 @@
             slot.addEventListener('click', () => selectSlot(slot));
         });
 
-        // Mapeamento de Cores e Estilos de Avatar do Personagem Voxel no JasmineCraft
-        const AVATAR_PLAYER_STYLES = {
-            '🎪': { skinColor: 0xffcc00, shirtColor: 0xff2a5f, pantsColor: 0x00d2ff, hatSymbol: '🎪' },
-            '🦊': { skinColor: 0xff6600, shirtColor: 0xd2691e, pantsColor: 0x333333, hatSymbol: '🦊' },
-            '🐰': { skinColor: 0xffb6c1, shirtColor: 0xff69b4, pantsColor: 0xffffff, hatSymbol: '🐰' },
-            '🚀': { skinColor: 0x00d2ff, shirtColor: 0x7000ff, pantsColor: 0x111122, hatSymbol: '🚀' },
-            '🌟': { skinColor: 0xffea00, shirtColor: 0xffa000, pantsColor: 0x333333, hatSymbol: '🌟' },
-            '🦄': { skinColor: 0xff80df, shirtColor: 0xb366ff, pantsColor: 0xffffff, hatSymbol: '🦄' },
-            '🐲': { skinColor: 0x00ff88, shirtColor: 0x008000, pantsColor: 0x113311, hatSymbol: '🐲' },
-            '🤖': { skinColor: 0xcccccc, shirtColor: 0x00d2ff, pantsColor: 0x555555, hatSymbol: '🤖' },
-            '👑': { skinColor: 0xffd700, shirtColor: 0x9370db, pantsColor: 0x4b0082, hatSymbol: '👑' },
-            '🎮': { skinColor: 0x00e5ff, shirtColor: 0xff0055, pantsColor: 0x111111, hatSymbol: '🎮' },
-            '🐱': { skinColor: 0xffa500, shirtColor: 0x8b4513, pantsColor: 0x553311, hatSymbol: '🐱' },
-            '🐶': { skinColor: 0xd2b48c, shirtColor: 0x8b5a2b, emissive: 0x442200, hatSymbol: '🐶' },
-            '🐼': { skinColor: 0xffffff, shirtColor: 0x222222, pantsColor: 0x111111, hatSymbol: '🐼' },
-            '🦁': { skinColor: 0xff8c00, shirtColor: 0xb8860b, pantsColor: 0x553300, hatSymbol: '🦁' },
-            '👻': { skinColor: 0xe0ffff, shirtColor: 0x87cefa, pantsColor: 0xffffff, hatSymbol: '👻' },
-            '👾': { skinColor: 0xbf00ff, shirtColor: 0x4b0082, pantsColor: 0x220044, hatSymbol: '👾' }
+        // Lista de Skins Selecionáveis no JasmineCraft
+        const JASMINE_SKINS = {
+            'mitsuri': { name: 'Mitsuri (Demon Slayer) 🌸', icon: '🌸', isMitsuri: true },
+            'steve':   { name: 'Steve Clássico 🟦', icon: '🟦', skinColor: 0xd2b48c, shirtColor: 0x00f0f0, pantsColor: 0x0000aa },
+            'alex':    { name: 'Alex Exploradora 🟧', icon: '🟧', skinColor: 0xffe0bd, shirtColor: 0x55aa55, pantsColor: 0x8b5a2b, hairColor: 0xd2691e },
+            'pomni':   { name: 'Pomni Circo 🎪', icon: '🎪', skinColor: 0xffe0bd, shirtColor: 0xff2a5f, pantsColor: 0x00d2ff },
+            'ninja':   { name: 'Ninja Neon 🥷', icon: '🥷', skinColor: 0x333333, shirtColor: 0x111111, pantsColor: 0x00ff88 },
+            'knight':  { name: 'Cavaleiro Real 👑', icon: '👑', skinColor: 0xaaaaaa, shirtColor: 0x888888, pantsColor: 0x444444 }
         };
+
+        let currentSelectedSkinId = 'mitsuri';
 
         // Modelo Voxel 3D do Jogador (para visão em 3ª pessoa)
         let playerMeshGroup = null;
         let isThirdPerson = false;
-        const btnToggleCamera = document.getElementById('btn-toggle-camera');
 
-        function createPlayerVoxelModel(style) {
+        const btnToggleCamera = document.getElementById('btn-toggle-camera');
+        const btnOpenSkins = document.getElementById('btn-open-skins');
+        const btnCloseSkins = document.getElementById('btn-close-skins');
+        const skinsModal = document.getElementById('skins-modal');
+        const skinsGrid = document.getElementById('skins-grid');
+
+        function renderSkinsGrid() {
+            skinsGrid.innerHTML = '';
+            Object.keys(JASMINE_SKINS).forEach(skinId => {
+                const s = JASMINE_SKINS[skinId];
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background: ${currentSelectedSkinId === skinId ? 'rgba(255, 105, 180, 0.3)' : 'rgba(255, 255, 255, 0.08)'};
+                    border: 3px solid ${currentSelectedSkinId === skinId ? '#ffcc00' : 'rgba(255,255,255,0.2)'};
+                    border-radius: 16px; padding: 12px 8px; cursor: pointer; display: flex;
+                    flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s;
+                `;
+                card.innerHTML = `
+                    <div style="font-size: 2.5rem; margin-bottom: 4px;">${s.icon}</div>
+                    <div style="font-family:'Outfit',sans-serif; font-weight:900; font-size:0.9rem; color:#fff;">${s.name}</div>
+                `;
+
+                card.addEventListener('click', () => {
+                    currentSelectedSkinId = skinId;
+                    renderSkinsGrid();
+                    applySelectedSkin(skinId);
+                });
+
+                skinsGrid.appendChild(card);
+            });
+        }
+
+        function applySelectedSkin(skinId) {
+            const skinConf = JASMINE_SKINS[skinId] || JASMINE_SKINS['mitsuri'];
+            createPlayerVoxelModel(skinConf);
+            if (activePlayer) {
+                SaveHub.updateGameSave('jasminecraft', { selectedSkin: skinId }, activePlayer.name);
+            }
+        }
+
+        function createPlayerVoxelModel(skinConf) {
             if (playerMeshGroup) scene.remove(playerMeshGroup);
 
             playerMeshGroup = new THREE.Group();
 
-            // Cabeça Voxel
-            const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-            const headMat = new THREE.MeshStandardMaterial({ color: style.skinColor, roughness: 0.6 });
-            const headMesh = new THREE.Mesh(headGeo, headMat);
-            headMesh.position.y = 1.35;
-            playerMeshGroup.add(headMesh);
+            if (skinConf.isMitsuri) {
+                // MODELAGEM EXCLUSIVA MITSURI KANROJI (Demon Slayer)
+                
+                // Cabeça Voxel
+                const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+                const headMat = new THREE.MeshStandardMaterial({ color: 0xffe0bd, roughness: 0.6 });
+                const headMesh = new THREE.Mesh(headGeo, headMat);
+                headMesh.position.y = 1.35;
+                playerMeshGroup.add(headMesh);
 
-            // Olhinhos
-            const eyeGeo = new THREE.BoxGeometry(0.08, 0.08, 0.08);
-            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+                // Olhos Verdes Vivos Mitsuri
+                const eyeGeo = new THREE.BoxGeometry(0.08, 0.1, 0.04);
+                const eyeMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });
+                const pupilMat = new THREE.MeshBasicMaterial({ color: 0x004d1a });
 
-            const eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
-            eyeLeft.position.set(-0.12, 1.4, -0.26);
-            playerMeshGroup.add(eyeLeft);
+                const eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
+                eyeLeft.position.set(-0.12, 1.38, -0.26);
+                playerMeshGroup.add(eyeLeft);
 
-            const pupilLeft = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), pupilMat);
-            pupilLeft.position.set(-0.12, 1.4, -0.3);
-            playerMeshGroup.add(pupilLeft);
+                const pupilLeft = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.04), pupilMat);
+                pupilLeft.position.set(-0.12, 1.38, -0.29);
+                playerMeshGroup.add(pupilLeft);
 
-            const eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
-            eyeRight.position.set(0.12, 1.4, -0.26);
-            playerMeshGroup.add(eyeRight);
+                const eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
+                eyeRight.position.set(0.12, 1.38, -0.26);
+                playerMeshGroup.add(eyeRight);
 
-            const pupilRight = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), pupilMat);
-            pupilRight.position.set(0.12, 1.4, -0.3);
-            playerMeshGroup.add(pupilRight);
+                const pupilRight = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.04), pupilMat);
+                pupilRight.position.set(0.12, 1.38, -0.29);
+                playerMeshGroup.add(pupilRight);
 
-            // Camisa (Tronco)
-            const shirtGeo = new THREE.BoxGeometry(0.55, 0.65, 0.35);
-            const shirtMat = new THREE.MeshStandardMaterial({ color: style.shirtColor, roughness: 0.7 });
-            const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
-            shirtMesh.position.y = 0.8;
-            playerMeshGroup.add(shirtMesh);
+                // Cabelo Rosa com Pontas Verde-Limão (Mitsuri)
+                const pinkHairMat = new THREE.MeshStandardMaterial({ color: 0xff69b4, roughness: 0.5 });
+                const greenHairMat = new THREE.MeshStandardMaterial({ color: 0x76ff03, roughness: 0.5 });
 
-            // Calças (Pernas)
-            const pantsGeo = new THREE.BoxGeometry(0.24, 0.55, 0.3);
-            const pantsMat = new THREE.MeshStandardMaterial({ color: style.pantsColor || 0x222244 });
-            const legLeft = new THREE.Mesh(pantsGeo, pantsMat);
-            legLeft.position.set(-0.13, 0.25, 0);
-            playerMeshGroup.add(legLeft);
+                // Topo e Laterais do Cabelo
+                const hairTop = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.22, 0.58), pinkHairMat);
+                hairTop.position.set(0, 1.58, 0);
+                playerMeshGroup.add(hairTop);
 
-            const legRight = new THREE.Mesh(pantsGeo, pantsMat);
-            legRight.position.set(0.13, 0.25, 0);
-            playerMeshGroup.add(legRight);
+                // Tranças Mitsuri (Direita e Esquerda caindo pela frente)
+                [-0.22, 0.22].forEach(xOffset => {
+                    // Parte Rosa da Trança
+                    const braidPink = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.55, 0.16), pinkHairMat);
+                    braidPink.position.set(xOffset, 1.15, -0.22);
+                    playerMeshGroup.add(braidPink);
 
-            // Braços
-            const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.25);
-            const armMat = new THREE.MeshStandardMaterial({ color: style.skinColor });
-            const armLeft = new THREE.Mesh(armGeo, armMat);
-            armLeft.position.set(-0.38, 0.75, 0);
-            playerMeshGroup.add(armLeft);
+                    // Ponta Verde-Limão da Trança
+                    const braidGreen = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.45, 0.16), greenHairMat);
+                    braidGreen.position.set(xOffset, 0.65, -0.22);
+                    playerMeshGroup.add(braidGreen);
+                });
 
-            const armRight = new THREE.Mesh(armGeo, armMat);
-            armRight.position.set(0.38, 0.75, 0);
-            playerMeshGroup.add(armRight);
+                // Haori Branco (Casaco por cima)
+                const haoriGeo = new THREE.BoxGeometry(0.68, 0.7, 0.45);
+                const haoriMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+                const haoriMesh = new THREE.Mesh(haoriGeo, haoriMat);
+                haoriMesh.position.y = 0.8;
+                playerMeshGroup.add(haoriMesh);
+
+                // Uniforme Escuro por baixo
+                const shirtGeo = new THREE.BoxGeometry(0.52, 0.62, 0.36);
+                const shirtMat = new THREE.MeshStandardMaterial({ color: 0x1f192b });
+                const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
+                shirtMesh.position.y = 0.8;
+                playerMeshGroup.add(shirtMesh);
+
+                // Meias Altas Verdes Listradas com Rosa (Mitsuri)
+                const legGeo = new THREE.BoxGeometry(0.24, 0.55, 0.3);
+                const greenSocksMat = new THREE.MeshStandardMaterial({ color: 0x76ff03 });
+                const legLeft = new THREE.Mesh(legGeo, greenSocksMat);
+                legLeft.position.set(-0.13, 0.25, 0);
+                playerMeshGroup.add(legLeft);
+
+                const legRight = new THREE.Mesh(legGeo, greenSocksMat);
+                legRight.position.set(0.13, 0.25, 0);
+                playerMeshGroup.add(legRight);
+
+            } else {
+                // MODELAGEM VOXEL PADRÃO (Steve, Alex, Ninja, etc.)
+                const skinColor = skinConf.skinColor || 0xffe0bd;
+
+                // Cabeça
+                const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+                const headMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.6 });
+                const headMesh = new THREE.Mesh(headGeo, headMat);
+                headMesh.position.y = 1.35;
+                playerMeshGroup.add(headMesh);
+
+                // Olhos
+                const eyeGeo = new THREE.BoxGeometry(0.08, 0.08, 0.08);
+                const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+                const eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
+                eyeLeft.position.set(-0.12, 1.4, -0.26);
+                playerMeshGroup.add(eyeLeft);
+
+                const pupilLeft = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), pupilMat);
+                pupilLeft.position.set(-0.12, 1.4, -0.3);
+                playerMeshGroup.add(pupilLeft);
+
+                const eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
+                eyeRight.position.set(0.12, 1.4, -0.26);
+                playerMeshGroup.add(eyeRight);
+
+                const pupilRight = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), pupilMat);
+                pupilRight.position.set(0.12, 1.4, -0.3);
+                playerMeshGroup.add(pupilRight);
+
+                // Tronco
+                const shirtGeo = new THREE.BoxGeometry(0.55, 0.65, 0.35);
+                const shirtMat = new THREE.MeshStandardMaterial({ color: skinConf.shirtColor || 0xff2a5f, roughness: 0.7 });
+                const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
+                shirtMesh.position.y = 0.8;
+                playerMeshGroup.add(shirtMesh);
+
+                // Pernas
+                const pantsGeo = new THREE.BoxGeometry(0.24, 0.55, 0.3);
+                const pantsMat = new THREE.MeshStandardMaterial({ color: skinConf.pantsColor || 0x222244 });
+                const legLeft = new THREE.Mesh(pantsGeo, pantsMat);
+                legLeft.position.set(-0.13, 0.25, 0);
+                playerMeshGroup.add(legLeft);
+
+                const legRight = new THREE.Mesh(pantsGeo, pantsMat);
+                legRight.position.set(0.13, 0.25, 0);
+                playerMeshGroup.add(legRight);
+
+                // Braços
+                const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.25);
+                const armMat = new THREE.MeshStandardMaterial({ color: skinColor });
+                const armLeft = new THREE.Mesh(armGeo, armMat);
+                armLeft.position.set(-0.38, 0.75, 0);
+                playerMeshGroup.add(armLeft);
+
+                const armRight = new THREE.Mesh(armGeo, armMat);
+                armRight.position.set(0.38, 0.75, 0);
+                playerMeshGroup.add(armRight);
+            }
 
             playerMeshGroup.visible = isThirdPerson;
             scene.add(playerMeshGroup);
         }
+
+        btnOpenSkins.addEventListener('click', () => {
+            renderSkinsGrid();
+            skinsModal.classList.remove('hidden');
+        });
+
+        btnCloseSkins.addEventListener('click', () => {
+            skinsModal.classList.add('hidden');
+        });
 
         function toggleCameraView() {
             isThirdPerson = !isThirdPerson;
