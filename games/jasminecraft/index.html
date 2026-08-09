@@ -147,17 +147,17 @@
     </div>
 
     <!-- Modal Seleção de Skins / Personagens -->
-    <div id="skins-modal" class="modal-overlay hidden">
-        <div class="modal-card" style="max-width: 580px;">
-            <h2 class="modal-title">ESCOLHA SEU PERSONAGEM 🎭</h2>
-            <p class="modal-subtitle">Selecione quem você quer controlar no JasmineCraft!</p>
+    <div id="skins-modal" class="modal-overlay" style="z-index: 200;">
+        <div class="modal-card" style="max-width: 580px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;">
+            <h2 class="modal-title" style="font-size: 1.5rem;">ESCOLHA SEU PERSONAGEM 🎭</h2>
+            <p class="modal-subtitle" style="margin-bottom: 12px; font-size: 0.85rem;">Toque ou clique em um personagem para jogar!</p>
 
-            <div id="skins-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; max-height: 300px; overflow-y: auto; padding: 4px;">
+            <div id="skins-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-bottom: 16px; max-height: 55vh; overflow-y: auto; padding: 4px; pointer-events: auto;">
                 <!-- Cards de Skins gerados via JS -->
             </div>
 
-            <button id="btn-close-skins" class="btn-play-click" style="background: linear-gradient(135deg, #ff69b4, #ff1493); margin-bottom: 8px;">PRONTO PARA JOGAR 🚀</button>
-            <a href="../../index.html" class="btn-play-click" style="display:block; text-decoration:none; background: linear-gradient(135deg, #7000ff, #ff2a5f); border-color: #ffcc00;">🏠 VOLTAR AO HOME (HUB)</a>
+            <button id="btn-close-skins" class="btn-play-click" style="background: linear-gradient(135deg, #ff69b4, #ff1493); margin-bottom: 8px; font-size: 1.1rem; padding: 12px; min-height: 48px; pointer-events: auto;">PRONTO PARA JOGAR 🚀</button>
+            <a href="../../index.html" class="btn-play-click" style="display:block; text-decoration:none; background: linear-gradient(135deg, #7000ff, #ff2a5f); border-color: #ffcc00; font-size: 0.95rem; padding: 10px; min-height: 44px; pointer-events: auto;">🏠 VOLTAR AO HOME (HUB)</a>
         </div>
     </div>
 
@@ -717,21 +717,26 @@
                 const s = JASMINE_SKINS[skinId];
                 const card = document.createElement('div');
                 card.style.cssText = `
-                    background: ${currentSelectedSkinId === skinId ? 'rgba(186, 85, 211, 0.4)' : 'rgba(255, 255, 255, 0.08)'};
+                    background: ${currentSelectedSkinId === skinId ? 'rgba(186, 85, 211, 0.45)' : 'rgba(255, 255, 255, 0.08)'};
                     border: 3px solid ${currentSelectedSkinId === skinId ? '#ffcc00' : 'rgba(255,255,255,0.2)'};
                     border-radius: 16px; padding: 12px 8px; cursor: pointer; display: flex;
                     flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s;
+                    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
                 `;
                 card.innerHTML = `
-                    <div style="font-size: 2.5rem; margin-bottom: 4px;">${s.icon}</div>
-                    <div style="font-family:'Outfit',sans-serif; font-weight:900; font-size:0.9rem; color:#fff;">${s.name}</div>
+                    <div style="font-size: 2.5rem; margin-bottom: 4px; pointer-events: none;">${s.icon}</div>
+                    <div style="font-family:'Outfit',sans-serif; font-weight:900; font-size:0.9rem; color:#fff; pointer-events: none;">${s.name}</div>
                 `;
 
-                card.addEventListener('click', () => {
+                const handleSelect = (e) => {
+                    e.stopPropagation();
                     currentSelectedSkinId = skinId;
                     renderSkinsGrid();
                     applySelectedSkin(skinId);
-                });
+                };
+
+                card.addEventListener('click', handleSelect);
+                card.addEventListener('touchstart', handleSelect, { passive: true });
 
                 skinsGrid.appendChild(card);
             });
@@ -1165,14 +1170,28 @@
             scene.add(playerMeshGroup);
         }
 
-        btnOpenSkins.addEventListener('click', () => {
+        const handleOpenSkins = (e) => {
+            if (e) e.stopPropagation();
             renderSkinsGrid();
             skinsModal.classList.remove('hidden');
-        });
+        };
 
-        btnCloseSkins.addEventListener('click', () => {
+        const handleCloseSkins = (e) => {
+            if (e) e.stopPropagation();
             skinsModal.classList.add('hidden');
-        });
+            // Tenta travar o ponteiro se estiver em computador
+            try {
+                if (container.requestPointerLock) {
+                    container.requestPointerLock();
+                }
+            } catch (err) {}
+        };
+
+        btnOpenSkins.addEventListener('click', handleOpenSkins);
+        btnOpenSkins.addEventListener('touchstart', handleOpenSkins, { passive: true });
+
+        btnCloseSkins.addEventListener('click', handleCloseSkins);
+        btnCloseSkins.addEventListener('touchstart', handleCloseSkins, { passive: true });
 
         function toggleCameraView() {
             isThirdPerson = !isThirdPerson;
