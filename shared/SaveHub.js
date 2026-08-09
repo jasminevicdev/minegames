@@ -54,7 +54,8 @@ export class SaveHub {
                     circus: { level: 1, character: 'pomni' },
                     snake: { highScore: 0 },
                     tetris: { highScore: 0, level: 1 },
-                    flappy: { highScore: 0, bestStreak: 0 }
+                    flappy: { highScore: 0, bestStreak: 0 },
+                    jasminecraft: { blocksPlaced: 0, blocksDestroyed: 0 }
                 }
             };
         }

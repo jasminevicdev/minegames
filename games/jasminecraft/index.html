@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0b071e">
+    <title>JasmineCraft 3D — JasDEV Game Hub ⛏️🟫</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; touch-action: manipulation; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #0b071e; font-family: 'Fredoka', sans-serif; color: #fff; }
+        #canvas-container { width: 100%; height: 100%; position: absolute; top:0; left:0; z-index:1; }
+
+        /* UI Overlay */
+        .ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none; display: flex; flex-direction: column;
+            justify-content: space-between; padding: 16px;
+        }
+
+        .hud-header { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        .logo-box {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            padding: 8px 16px; border-radius: 16px; border: 3px solid #ffcc00;
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.5); color: #fff;
+        }
+        .logo-box h1 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 900; text-shadow: 2px 2px 0 #000; }
+
+        .stats-panel {
+            background: rgba(11, 16, 32, 0.85); backdrop-filter: blur(12px);
+            border: 3px solid #8B4513; border-radius: 16px; padding: 8px 16px;
+            display: flex; gap: 16px; align-items: center; pointer-events: auto;
+        }
+        .stat-item { display: flex; flex-direction: column; align-items: flex-end; }
+        .stat-label { font-size: 0.65rem; color: #ffcc00; font-weight: bold; }
+        .stat-val { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 900; color: #00ff88; }
+
+        .btn-hub {
+            background: linear-gradient(135deg, #ff2a5f, #7000ff); border: 2px solid #ffcc00;
+            color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 10px;
+            font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(255, 42, 95, 0.4); transition: transform 0.2s;
+        }
+        .btn-hub:hover { transform: scale(1.08); }
+
+        /* Crosshair Central (Mirinha) */
+        .crosshair {
+            position: absolute; top: 50%; left: 50%; width: 16px; height: 16px;
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 20;
+        }
+        .crosshair::before, .crosshair::after {
+            content: ''; position: absolute; background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 2px;
+        }
+        .crosshair::before { top: 7px; left: 0; width: 16px; height: 2px; }
+        .crosshair::after { top: 0; left: 7px; width: 2px; height: 16px; }
+
+        /* Hotbar / Inventário na parte inferior */
+        .hotbar-container {
+            margin: 0 auto 12px; pointer-events: auto; display: flex; gap: 6px;
+            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 6px 10px;
+        }
+        .hotbar-slot {
+            width: 48px; height: 48px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: transform 0.15s, border-color 0.15s;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .hotbar-slot:hover { transform: scale(1.1); }
+        .hotbar-slot.active { border-color: #ffcc00; background: rgba(255, 204, 0, 0.25); transform: scale(1.12); }
+        .slot-color { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #000; }
+        .slot-num { font-size: 0.65rem; color: #fff; font-weight: bold; position: absolute; bottom: 2px; right: 4px; }
+
+        /* Modal "Clicar para Jogar" */
+        .modal-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(11, 7, 30, 0.85); backdrop-filter: blur(12px);
+            display: flex; justify-content: center; align-items: center; z-index: 100;
+            pointer-events: auto; cursor: pointer;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-card {
+            background: linear-gradient(145deg, #1d120a, #0e0905); border: 4px solid #8B4513;
+            border-radius: 24px; padding: 28px; max-width: 480px; width: 90%; text-align: center;
+            box-shadow: 0 20px 50px rgba(139, 69, 19, 0.6);
+        }
+        .modal-title { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 900; color: #ffcc00; margin-bottom: 8px; text-shadow: 2px 2px 0 #000; }
+        .modal-sub { font-size: 0.95rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.4; }
+        .instructions-list { text-align: left; background: rgba(255,255,255,0.06); padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6; }
+        .btn-play-click {
+            background: linear-gradient(135deg, #8B4513, #D2691E); color: #fff;
+            font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900;
+            border: 2px solid #ffcc00; border-radius: 50px; padding: 14px 28px; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(210, 105, 30, 0.5); width: 100%;
+        }
+    </style>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "../../shared/three.module.js"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div class="crosshair"></div>
+
+    <div class="ui-layer">
+        <div class="hud-header">
+            <div class="logo-box">
+                <h1>JASMINECRAFT 3D ⛏️🟫</h1>
+            </div>
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <span class="stat-label">JOGADOR:</span>
+                    <span id="player-display" class="stat-val" style="color:#00ff88;">JAS</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">COLOCADOS:</span>
+                    <span id="placed-display" class="stat-val">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">QUEBRADOS:</span>
+                    <span id="destroyed-display" class="stat-val">0</span>
+                </div>
+                <a href="../../index.html" class="btn-hub">🏠 HUB</a>
+            </div>
+        </div>
+
+        <div class="hotbar-container" id="hotbar">
+            <div class="hotbar-slot active" data-type="grass" data-num="1"><div class="slot-color" style="background:#408020;"></div><span class="slot-num">1</span></div>
+            <div class="hotbar-slot" data-type="dirt" data-num="2"><div class="slot-color" style="background:#866043;"></div><span class="slot-num">2</span></div>
+            <div class="hotbar-slot" data-type="stone" data-num="3"><div class="slot-color" style="background:#808080;"></div><span class="slot-num">3</span></div>
+            <div class="hotbar-slot" data-type="wood" data-num="4"><div class="slot-color" style="background:#a0522d;"></div><span class="slot-num">4</span></div>
+            <div class="hotbar-slot" data-type="brick" data-num="5"><div class="slot-color" style="background:#b22222;"></div><span class="slot-num">5</span></div>
+            <div class="hotbar-slot" data-type="glass" data-num="6"><div class="slot-color" style="background:#a0e0ff; opacity:0.8;"></div><span class="slot-num">6</span></div>
+        </div>
+    </div>
+
+    <!-- Modal Clicar para Jogar -->
+    <div id="play-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 class="modal-title">JASMINECRAFT 3D ⛏️</h2>
+            <p class="modal-subtitle">Construa e destrua no seu mundo voxel em 3D!</p>
+            <div class="instructions-list">
+                <div>🎮 <strong>WASD</strong>: Mover jogador</div>
+                <div>⬆️ <strong>ESPAÇO</strong>: Pular</div>
+                <div>⛏️ <strong>Clique Esquerdo</strong>: Quebrar bloco focado</div>
+                <div>🧱 <strong>Clique Direito</strong>: Colocar novo bloco</div>
+                <div>🎒 <strong>Teclas 1 a 6</strong>: Selecionar bloco no inventário</div>
+            </div>
+            <button class="btn-play-click">CLIQUE PARA JOGAR ⛏️</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { SaveHub } from '../../shared/SaveHub.js';
+        import { ThemeManager } from '../../shared/ThemeManager.js';
+
+        let activePlayer = null;
+        let blocksPlaced = 0;
+        let blocksDestroyed = 0;
+
+        // Materiais e Blocos
+        const BLOCK_TYPES = {
+            grass: { name: 'Grama', color: 0x408020, transparent: false, opacity: 1.0 },
+            dirt:  { name: 'Terra', color: 0x866043, transparent: false, opacity: 1.0 },
+            stone: { name: 'Pedra', color: 0x808080, transparent: false, opacity: 1.0 },
+            wood:  { name: 'Madeira', color: 0xa0522d, transparent: false, opacity: 1.0 },
+            brick: { name: 'Tijolo', color: 0xb22222, transparent: false, opacity: 1.0 },
+            glass: { name: 'Vidro', color: 0xa0e0ff, transparent: true, opacity: 0.5 }
+        };
+        let selectedBlockType = 'grass';
+
+        // Three.js setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+
+        const currentTheme = ThemeManager.initAutoDetection((theme) => {
+            updateSceneTheme(theme);
+        });
+
+        function updateSceneTheme(theme) {
+            const isDark = theme === 'dark';
+            const bgColor = isDark ? 0x070b19 : 0x70c0ff;
+            scene.background = new THREE.Color(bgColor);
+            scene.fog = new THREE.FogExp2(bgColor, 0.015);
+        }
+        updateSceneTheme(currentTheme);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Luzes
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xfff5cc, 1.2);
+        sunLight.position.set(20, 40, 20);
+        sunLight.castShadow = true;
+        scene.add(sunLight);
+
+        // Mundo Voxel HashMap (posKey -> Mesh)
+        const worldBlocks = new Map();
+        const blockGeo = new THREE.BoxGeometry(1, 1, 1);
+
+        // Indicator Mesh (Highlight do bloco focado)
+        const outlineGeo = new THREE.BoxGeometry(1.02, 1.02, 1.02);
+        const outlineMat = new THREE.MeshBasicMaterial({ color: 0xffcc00, wireframe: true });
+        const targetHighlightMesh = new THREE.Mesh(outlineGeo, outlineMat);
+        targetHighlightMesh.visible = false;
+        scene.add(targetHighlightMesh);
+
+        function getPosKey(x, y, z) {
+            return `${Math.round(x)},${Math.round(y)},${Math.round(z)}`;
+        }
+
+        function createBlock(x, y, z, type) {
+            const key = getPosKey(x, y, z);
+            if (worldBlocks.has(key)) return;
+
+            const conf = BLOCK_TYPES[type] || BLOCK_TYPES.grass;
+            const mat = new THREE.MeshStandardMaterial({
+                color: conf.color,
+                roughness: 0.8,
+                transparent: conf.transparent,
+                opacity: conf.opacity
+            });
+
+            const mesh = new THREE.Mesh(blockGeo, mat);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = !conf.transparent;
+            mesh.receiveShadow = true;
+            mesh.userData = { key, type, x, y, z };
+
+            scene.add(mesh);
+            worldBlocks.set(key, mesh);
+            return mesh;
+        }
+
+        function removeBlock(mesh) {
+            if (!mesh || !mesh.userData) return;
+            const { key } = mesh.userData;
+            scene.remove(mesh);
+            if (mesh.geometry) mesh.geometry.dispose();
+            if (mesh.material) mesh.material.dispose();
+            worldBlocks.delete(key);
+        }
+
+        // Geração do Terreno Procedural (16x16)
+        function generateTerrain() {
+            const size = 16;
+            for (let x = -size / 2; x < size / 2; x++) {
+                for (let z = -size / 2; z < size / 2; z++) {
+                    // Calculo simples de altura com onda seno/cosseno
+                    const h = Math.floor(Math.sin(x * 0.4) * Math.cos(z * 0.4) * 2) + 2;
+
+                    for (let y = 0; y <= h; y++) {
+                        let type = 'stone';
+                        if (y === h) type = 'grass';
+                        else if (y >= h - 2) type = 'dirt';
+
+                        createBlock(x, y, z, type);
+                    }
+                }
+            }
+        }
+
+        // Jogador & Física Simples
+        const player = {
+            position: new THREE.Vector3(0, 6, 0),
+            velocity: new THREE.Vector3(),
+            height: 1.6,
+            radius: 0.3,
+            onGround: false
+        };
+
+        const keys = { w: false, a: false, s: false, d: false, space: false };
+        let isPointerLocked = false;
+
+        // Controls Raycasting & Crosshair
+        const raycaster = new THREE.Raycaster();
+        let hoveredIntersect = null;
+
+        function initPlayerSave() {
+            activePlayer = SaveHub.getActivePlayer();
+            if (activePlayer) {
+                document.getElementById('player-display').innerText = activePlayer.name.toUpperCase();
+                const save = SaveHub.getGameSave('jasminecraft', activePlayer.name);
+                blocksPlaced = save.blocksPlaced || 0;
+                blocksDestroyed = save.blocksDestroyed || 0;
+                document.getElementById('placed-display').innerText = blocksPlaced;
+                document.getElementById('destroyed-display').innerText = blocksDestroyed;
+            }
+        }
+
+        // Eventos de Ponteiro & Teclado
+        const playModal = document.getElementById('play-modal');
+
+        playModal.addEventListener('click', () => {
+            container.requestPointerLock();
+        });
+
+        document.addEventListener('pointerlockchange', () => {
+            if (document.pointerLockElement === container) {
+                isPointerLocked = true;
+                playModal.classList.add('hidden');
+            } else {
+                isPointerLocked = false;
+                playModal.classList.remove('hidden');
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isPointerLocked) return;
+
+            const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+            euler.setFromQuaternion(camera.quaternion);
+
+            euler.y -= e.movementX * 0.0025;
+            euler.x -= e.movementY * 0.0025;
+
+            euler.x = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, euler.x));
+            camera.quaternion.setFromEuler(euler);
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyW') keys.w = true;
+            if (e.code === 'KeyS') keys.s = true;
+            if (e.code === 'KeyA') keys.a = true;
+            if (e.code === 'KeyD') keys.d = true;
+            if (e.code === 'Space') {
+                if (player.onGround) {
+                    player.velocity.y = 8;
+                    player.onGround = false;
+                }
+            }
+
+            // Seleção de inventário via teclas 1-6
+            if (['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'].includes(e.code)) {
+                const num = e.code.replace('Digit', '');
+                const slot = document.querySelector(`.hotbar-slot[data-num="${num}"]`);
+                if (slot) selectSlot(slot);
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'KeyW') keys.w = false;
+            if (e.code === 'KeyS') keys.s = false;
+            if (e.code === 'KeyA') keys.a = false;
+            if (e.code === 'KeyD') keys.d = false;
+        });
+
+        // Clique para destruir / colocar blocos
+        window.addEventListener('mousedown', (e) => {
+            if (!isPointerLocked || !hoveredIntersect) return;
+
+            if (e.button === 0) {
+                // Clique Esquerdo: Quebrar bloco
+                removeBlock(hoveredIntersect.object);
+                blocksDestroyed++;
+                document.getElementById('destroyed-display').innerText = blocksDestroyed;
+                saveStats();
+            } else if (e.button === 2) {
+                // Clique Direito: Colocar bloco na face
+                const normal = hoveredIntersect.face.normal;
+                const targetPos = hoveredIntersect.object.position.clone().add(normal);
+                createBlock(targetPos.x, targetPos.y, targetPos.z, selectedBlockType);
+                blocksPlaced++;
+                document.getElementById('placed-display').innerText = blocksPlaced;
+                saveStats();
+            }
+        });
+
+        // Prevenir menu de contexto com botão direito
+        window.addEventListener('contextmenu', e => e.preventDefault());
+
+        function saveStats() {
+            if (activePlayer) {
+                SaveHub.updateGameSave('jasminecraft', { blocksPlaced, blocksDestroyed }, activePlayer.name);
+            }
+        }
+
+        // Seleção de Inventário via clique
+        function selectSlot(slotElement) {
+            document.querySelectorAll('.hotbar-slot').forEach(s => s.classList.remove('active'));
+            slotElement.classList.add('active');
+            selectedBlockType = slotElement.dataset.type;
+        }
+
+        document.querySelectorAll('.hotbar-slot').forEach(slot => {
+            slot.addEventListener('click', () => selectSlot(slot));
+        });
+
+        // Loop de Atualização & Física
+        const clock = new THREE.Clock();
+
+        function updatePhysics(delta) {
+            // Movimentação Relativa à Câmera
+            const moveDir = new THREE.Vector3();
+            if (keys.w) moveDir.z -= 1;
+            if (keys.s) moveDir.z += 1;
+            if (keys.a) moveDir.x -= 1;
+            if (keys.d) moveDir.x += 1;
+            moveDir.normalize();
+
+            const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+            forward.y = 0; forward.normalize();
+            const side = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+            side.y = 0; side.normalize();
+
+            const speed = 7;
+            const moveAcc = forward.multiplyScalar(-moveDir.z).add(side.multiplyScalar(moveDir.x)).multiplyScalar(speed);
+
+            player.velocity.x = moveAcc.x;
+            player.velocity.z = moveAcc.z;
+
+            // Gravidade
+            player.velocity.y -= 22 * delta;
+
+            // Atualização de Posição & Colisão com Chão Simples
+            player.position.x += player.velocity.x * delta;
+            player.position.z += player.velocity.z * delta;
+            player.position.y += player.velocity.y * delta;
+
+            // Raycast para o chão
+            const groundKey = getPosKey(player.position.x, player.position.y - player.height, player.position.z);
+            const blockBelow = worldBlocks.get(groundKey);
+
+            if (blockBelow && player.velocity.y <= 0) {
+                player.position.y = blockBelow.position.y + 0.5 + player.height;
+                player.velocity.y = 0;
+                player.onGround = true;
+            } else if (player.position.y < -10) {
+                // Respawn se cair fora do mundo
+                player.position.set(0, 10, 0);
+                player.velocity.set(0, 0, 0);
+            }
+
+            camera.position.copy(player.position);
+        }
+
+        function updateRaycasting() {
+            raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+            const meshes = Array.from(worldBlocks.values());
+            const intersects = raycaster.intersectObjects(meshes);
+
+            if (intersects.length > 0 && intersects[0].distance < 6) {
+                hoveredIntersect = intersects[0];
+                targetHighlightMesh.position.copy(hoveredIntersect.object.position);
+                targetHighlightMesh.visible = true;
+            } else {
+                hoveredIntersect = null;
+                targetHighlightMesh.visible = false;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = Math.min(clock.getDelta(), 0.1);
+
+            if (isPointerLocked) {
+                updatePhysics(delta);
+                updateRaycasting();
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        generateTerrain();
+        initPlayerSave();
+        animate();
+    </script>
+</body>
+</html>

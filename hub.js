@@ -25,6 +25,7 @@ class GameHub {
         this.statSnakeScore = document.getElementById('stat-snake-score');
         this.statTetrisScore = document.getElementById('stat-tetris-score');
         this.statFlappyScore = document.getElementById('stat-flappy-score');
+        this.statJasminecraftBlocks = document.getElementById('stat-jasminecraft-blocks');
 
         this.selectedAvatar = '🎪';
 
@@ -100,11 +101,15 @@ class GameHub {
         const snakeSave = SaveHub.getGameSave('snake', player.name);
         const tetrisSave = SaveHub.getGameSave('tetris', player.name);
         const flappySave = SaveHub.getGameSave('flappy', player.name);
+        const jasminecraftSave = SaveHub.getGameSave('jasminecraft', player.name);
 
         this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
         this.statTetrisScore.innerText = `${tetrisSave.highScore || 0} PTS`;
         this.statFlappyScore.innerText = `${flappySave.highScore || 0} CANOS`;
+        if (this.statJasminecraftBlocks) {
+            this.statJasminecraftBlocks.innerText = `${jasminecraftSave.blocksPlaced || 0} BLOCOS`;
+        }
     }
 
     renderPlayersList() {

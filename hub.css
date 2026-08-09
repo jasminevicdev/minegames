@@ -14,16 +14,22 @@
     --text-secondary: #cbd5e1;
     --border-color: var(--primary-blue);
     --footer-text: #64748b;
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --input-text: #ffffff;
+    --player-card-bg: rgba(255, 255, 255, 0.08);
 }
 
 :root[data-theme="light"] {
     --dark-bg: #f1f5f9;
     --bg-radial: radial-gradient(circle at top center, #e0f2fe, #e2e8f0);
-    --card-bg: rgba(255, 255, 255, 0.92);
+    --card-bg: rgba(255, 255, 255, 0.95);
     --text-primary: #0f172a;
-    --text-secondary: #475569;
+    --text-secondary: #334155;
     --border-color: #0284c7;
-    --footer-text: #475569;
+    --footer-text: #334155;
+    --input-bg: rgba(15, 23, 42, 0.08);
+    --input-text: #0f172a;
+    --player-card-bg: rgba(15, 23, 42, 0.06);
 }
 
 * {
@@ -177,7 +183,7 @@ body, html {
 
 .section-subtitle {
     font-size: 0.95rem;
-    color: #cbd5e1;
+    color: var(--text-secondary);
     margin-bottom: 24px;
 }
 
@@ -193,8 +199,8 @@ body, html {
 }
 
 .player-card-item {
-    background: rgba(255, 255, 255, 0.08);
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    background: var(--player-card-bg);
+    border: 3px solid rgba(0, 210, 255, 0.3);
     border-radius: 18px;
     padding: 14px 8px;
     cursor: pointer;
@@ -225,7 +231,7 @@ body, html {
     font-family: var(--font-heading);
     font-weight: 900;
     font-size: 1rem;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .btn-del-profile {
@@ -296,9 +302,9 @@ body, html {
     max-width: 320px;
     padding: 12px 18px;
     border-radius: 30px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--input-bg);
     border: 3px solid var(--primary-blue);
-    color: #ffffff;
+    color: var(--input-text);
     font-family: var(--font-heading);
     font-size: 1.2rem;
     font-weight: bold;
@@ -381,6 +387,7 @@ body, html {
 .card-snake { border-color: var(--primary-green); }
 .card-tetris { border-color: var(--primary-blue); }
 .card-flappy { border-color: var(--primary-yellow); }
+.card-jasminecraft { border-color: #8B4513; }
 
 .game-card-banner {
     font-size: 4rem;
@@ -407,7 +414,7 @@ body, html {
 
 .game-desc {
     font-size: 0.85rem;
-    color: #cbd5e1;
+    color: var(--text-secondary);
     line-height: 1.3;
     margin-bottom: 16px;
 }
