@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b071e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>HUB DE JOGOS — JasDEV 🎪🎮</title>
+    <link rel="stylesheet" href="hub.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="hub-container">
+        <!-- Header Principal -->
+        <header class="hub-header">
+            <div class="logo-badge">
+                <span class="logo-sub">ESTÚDIO DE JOGOS</span>
+                <h1 class="logo-main">JASDEV HUB 🎪🎮</h1>
+            </div>
+            
+            <div id="active-profile-card" class="profile-badge hidden">
+                <span id="active-avatar" class="profile-avatar">🎪</span>
+                <div class="profile-info">
+                    <span class="profile-label">JOGADOR ATIVO:</span>
+                    <span id="active-name" class="profile-name">JAS</span>
+                </div>
+                <button id="btn-switch-player" class="btn-small-icon" title="Trocar de Jogador">🔄</button>
+            </div>
+        </header>
+
+        <!-- Seção Principal de Conteúdo -->
+        <main class="hub-main">
+
+            <!-- MODAL / PAINEL: NENHUM JOGADOR SELECIONADO / BEM-VINDO -->
+            <section id="view-welcome" class="card-modal">
+                <h2 class="section-title">BEM-VINDO AO HUB DE JOGOS! 🎉</h2>
+                <p class="section-subtitle">Escolha seu perfil ou crie um novo para salvar seus recordes!</p>
+
+                <div id="players-grid" class="players-grid">
+                    <!-- Gerado via JS -->
+                </div>
+
+                <button id="btn-create-player-view" class="btn-big btn-green">➕ CRIAR NOVO JOGADOR</button>
+            </section>
+
+            <!-- MODAL: CRIAR NOVO JOGADOR -->
+            <section id="view-create-player" class="card-modal hidden">
+                <h2 class="section-title">NOVO JOGADOR 👤</h2>
+                <p class="section-subtitle">Digite seu nome e escolha seu avatar preferido!</p>
+
+                <div class="input-group">
+                    <label for="input-player-name">SEU NOME:</label>
+                    <input type="text" id="input-player-name" placeholder="Digite seu nome..." maxlength="12">
+                </div>
+
+                <div class="avatar-selector-box">
+                    <label>ESCOLHA SEU AVATAR:</label>
+                    <div id="avatar-grid" class="avatar-grid">
+                        <span class="avatar-option active" data-avatar="🎪">🎪</span>
+                        <span class="avatar-option" data-avatar="🦊">🦊</span>
+                        <span class="avatar-option" data-avatar="🐰">🐰</span>
+                        <span class="avatar-option" data-avatar="🚀">🚀</span>
+                        <span class="avatar-option" data-avatar="🌟">🌟</span>
+                        <span class="avatar-option" data-avatar="🦄">🦄</span>
+                        <span class="avatar-option" data-avatar="🐲">🐲</span>
+                        <span class="avatar-option" data-avatar="🤖">🤖</span>
+                    </div>
+                </div>
+
+                <div class="btn-group-row">
+                    <button id="btn-cancel-create" class="btn-big btn-red">CANCELAR ↩️</button>
+                    <button id="btn-confirm-create" class="btn-big btn-green">ENTRAR NO HUB 🚀</button>
+                </div>
+            </section>
+
+            <!-- SEÇÃO: CATÁLOGO DE JOGOS (Exibido quando há jogador ativo) -->
+            <section id="view-games-catalog" class="games-section hidden">
+                <div class="section-header-box">
+                    <h2 class="section-title">ESCOLHA SEU JOGO 🎮</h2>
+                    <p class="section-subtitle">Divirta-se e conquiste os maiores recordes!</p>
+                </div>
+
+                <div class="games-grid">
+                    <!-- Jogo 1: Circo da JasDEV -->
+                    <div class="game-card card-circus" data-game="circus">
+                        <div class="game-card-banner">🎪</div>
+                        <div class="game-card-body">
+                            <h3 class="game-title">CIRCO DA JASDEV</h3>
+                            <p class="game-desc">Aventura 2D de plataforma com Pomni, Jax, Chefão Caine e Bolha!</p>
+                            <div class="game-stat-badge">
+                                <span>FASE ALCANÇADA:</span>
+                                <strong id="stat-circus-level">FASE 1</strong>
+                            </div>
+                            <a href="games/circus/index.html" class="btn-play-game">JOGAR AGORA 🚀</a>
+                        </div>
+                    </div>
+
+                    <!-- Jogo 2: Snake (Cobrinha) -->
+                    <div class="game-card card-snake" data-game="snake">
+                        <div class="game-card-banner">🐍</div>
+                        <div class="game-card-body">
+                            <h3 class="game-title">SNAKE 3D</h3>
+                            <p class="game-desc">Jogo clássico da cobrinha neon! Coma as maçãs e cresça sem bater!</p>
+                            <div class="game-stat-badge">
+                                <span>RECORDE (HI-SCORE):</span>
+                                <strong id="stat-snake-score">0 PTS</strong>
+                            </div>
+                            <a href="games/snake/index.html" class="btn-play-game">JOGAR AGORA 🐍</a>
+                        </div>
+                    </div>
+
+                    <!-- Jogo 3: Tetris -->
+                    <div class="game-card card-tetris" data-game="tetris">
+                        <div class="game-card-banner">🟦</div>
+                        <div class="game-card-body">
+                            <h3 class="game-title">TETRIS NEON</h3>
+                            <p class="game-desc">Encaixe os blocos coloridos e destrua linhas para pontuar!</p>
+                            <div class="game-stat-badge">
+                                <span>RECORDE (HI-SCORE):</span>
+                                <strong id="stat-tetris-score">0 PTS</strong>
+                            </div>
+                            <a href="games/tetris/index.html" class="btn-play-game">JOGAR AGORA 🟦</a>
+                        </div>
+                    </div>
+
+                    <!-- Jogo 4: Flappy Bird -->
+                    <div class="game-card card-flappy" data-game="flappy">
+                        <div class="game-card-banner">🐦</div>
+                        <div class="game-card-body">
+                            <h3 class="game-title">FLAPPY BIRD 3D</h3>
+                            <p class="game-desc">Bata asas, desvie dos canos e conquiste a maior pontuação!</p>
+                            <div class="game-stat-badge">
+                                <span>RECORDE (CANOS):</span>
+                                <strong id="stat-flappy-score">0 CANOS</strong>
+                            </div>
+                            <a href="games/flappy/index.html" class="btn-play-game">JOGAR AGORA 🐦</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="hub-footer">
+            <p>JASDEV GAME HUB © 2026 — Jogos Educativos e Divertidos para Crianças 🌟</p>
+        </footer>
+    </div>
+
+    <script type="module" src="hub.js"></script>
+</body>
+</html>

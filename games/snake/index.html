@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0b071e">
+    <title>Snake 3D — JasDEV Game Hub 🐍</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; touch-action: manipulation; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #050a14; font-family: 'Fredoka', sans-serif; color: #fff; }
+        #canvas-container { width: 100%; height: 100%; absolute; top:0; left:0; z-index:1; }
+        
+        /* UI Overlay */
+        .ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none; display: flex; flex-direction: column;
+            justify-content: space-between; padding: 16px;
+        }
+
+        .hud-header { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        .logo-box {
+            background: linear-gradient(135deg, #00ff88, #00b359);
+            padding: 8px 16px; border-radius: 16px; border: 3px solid #ffcc00;
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4); color: #000;
+        }
+        .logo-box h1 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 900; }
+        
+        .stats-panel {
+            background: rgba(11, 16, 32, 0.85); backdrop-filter: blur(12px);
+            border: 3px solid #00d2ff; border-radius: 16px; padding: 8px 16px;
+            display: flex; gap: 16px; align-items: center; pointer-events: auto;
+        }
+        .stat-item { display: flex; flex-direction: column; align-items: flex-end; }
+        .stat-label { font-size: 0.65rem; color: #00d2ff; font-weight: bold; }
+        .stat-val { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; color: #ffcc00; }
+        
+        .btn-hub {
+            background: linear-gradient(135deg, #ff2a5f, #7000ff); border: 2px solid #ffcc00;
+            color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 10px;
+            font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(255, 42, 95, 0.4); transition: transform 0.2s;
+        }
+        .btn-hub:hover { transform: scale(1.08); }
+
+        /* Controles D-Pad Mobile */
+        .controls-layer {
+            display: flex; justify-content: center; width: 100%; pointer-events: auto;
+            margin-top: auto; padding-bottom: 12px;
+        }
+        .dpad-container { display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(3, 56px); gap: 6px; }
+        .dpad-btn {
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px);
+            border: 3px solid #00ff88; border-radius: 16px; color: #fff;
+            font-size: 1.4rem; font-weight: bold; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .dpad-btn:active { background: #00ff88; color: #000; transform: scale(0.92); }
+        .dpad-up { grid-column: 2; grid-row: 1; }
+        .dpad-left { grid-column: 1; grid-row: 2; }
+        .dpad-right { grid-column: 3; grid-row: 2; }
+        .dpad-down { grid-column: 2; grid-row: 3; }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(5, 10, 20, 0.88); backdrop-filter: blur(12px);
+            display: flex; justify-content: center; align-items: center; z-index: 100;
+            pointer-events: auto;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-card {
+            background: linear-gradient(145deg, #121e36, #091020); border: 4px solid #00ff88;
+            border-radius: 24px; padding: 24px; max-width: 420px; width: 90%; text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 255, 136, 0.4);
+        }
+        .modal-title { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 900; color: #ffcc00; margin-bottom: 8px; }
+        .modal-sub { font-size: 0.95rem; color: #cbd5e1; margin-bottom: 20px; }
+        .btn-restart {
+            background: linear-gradient(135deg, #00ff88, #00b359); color: #000;
+            font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 900;
+            border: none; border-radius: 50px; padding: 12px 28px; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5); width: 100%; margin-bottom: 10px;
+        }
+    </style>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <div class="hud-header">
+            <div class="logo-box">
+                <h1>SNAKE 3D 🐍</h1>
+            </div>
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <span class="stat-label">JOGADOR:</span>
+                    <span id="player-display" class="stat-val" style="color:#00ff88;">JAS</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">PONTOS:</span>
+                    <span id="score-display" class="stat-val">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">RECORDE:</span>
+                    <span id="high-score-display" class="stat-val">0</span>
+                </div>
+                <a href="../../index.html" class="btn-hub">🏠 HUB</a>
+            </div>
+        </div>
+
+        <div class="controls-layer">
+            <div class="dpad-container">
+                <button id="btn-up" class="dpad-btn dpad-up">▲</button>
+                <button id="btn-left" class="dpad-btn dpad-left">◀</button>
+                <button id="btn-right" class="dpad-btn dpad-right">▶</button>
+                <button id="btn-down" class="dpad-btn dpad-down">▼</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Game Over -->
+    <div id="gameover-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2 class="modal-title">GAME OVER! 🐍</h2>
+            <p id="gameover-text" class="modal-sub">Você colidiu! Pontuação final: 0</p>
+            <button id="btn-restart" class="btn-restart">JOGAR NOVAMENTE 🔄</button>
+            <a href="../../index.html" class="btn-hub" style="display:block; text-align:center;">VOLTAR AO HUB 🏠</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const GRID_SIZE = 16;
+        let score = 0;
+        let highScore = 0;
+        let activePlayer = null;
+
+        let snake = [];
+        let snakeDirection = { x: 1, y: 0 };
+        let nextDirection = { x: 1, y: 0 };
+        let applePos = { x: 0, y: 0 };
+        let gameInterval = null;
+        let isGameOver = false;
+
+        // Three.js setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050a14);
+        scene.fog = new THREE.FogExp2(0x050a14, 0.02);
+
+        const aspect = window.innerWidth / window.innerHeight;
+        const camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+        camera.position.set(GRID_SIZE / 2, -4, 22);
+        camera.lookAt(GRID_SIZE / 2, GRID_SIZE / 2, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Luzes
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0x00ff88, 1.2);
+        dirLight.position.set(10, 10, 20);
+        scene.add(dirLight);
+
+        // Tabuleiro Grid
+        const gridGeo = new THREE.PlaneGeometry(GRID_SIZE, GRID_SIZE);
+        const gridMat = new THREE.MeshBasicMaterial({ color: 0x0a1428, wireframe: true });
+        const gridMesh = new THREE.Mesh(gridGeo, gridMat);
+        gridMesh.position.set(GRID_SIZE / 2 - 0.5, GRID_SIZE / 2 - 0.5, -0.5);
+        scene.add(gridMesh);
+
+        // Meshes da Cobra e Maçã
+        let snakeMeshes = [];
+        const appleGeo = new THREE.SphereGeometry(0.45, 16, 16);
+        const appleMat = new THREE.MeshStandardMaterial({ color: 0xff2a5f, emissive: 0xff2a5f, emissiveIntensity: 0.6 });
+        const appleMesh = new THREE.Mesh(appleGeo, appleMat);
+        scene.add(appleMesh);
+
+        function initPlayer() {
+            activePlayer = SaveHub.getActivePlayer();
+            if (activePlayer) {
+                document.getElementById('player-display').innerText = activePlayer.name.toUpperCase();
+                const save = SaveHub.getGameSave('snake', activePlayer.name);
+                highScore = save.highScore || 0;
+                document.getElementById('high-score-display').innerText = highScore;
+            }
+        }
+
+        function resetGame() {
+            snake = [
+                { x: 5, y: 8 },
+                { x: 4, y: 8 },
+                { x: 3, y: 8 }
+            ];
+            snakeDirection = { x: 1, y: 0 };
+            nextDirection = { x: 1, y: 0 };
+            score = 0;
+            isGameOver = false;
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('gameover-modal').classList.add('hidden');
+
+            spawnApple();
+            updateSnakeMeshes();
+
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(gameLoop, 140);
+        }
+
+        function spawnApple() {
+            let valid = false;
+            while (!valid) {
+                applePos.x = Math.floor(Math.random() * GRID_SIZE);
+                applePos.y = Math.floor(Math.random() * GRID_SIZE);
+                valid = !snake.some(seg => seg.x === applePos.x && seg.y === applePos.y);
+            }
+            appleMesh.position.set(applePos.x, applePos.y, 0);
+        }
+
+        function updateSnakeMeshes() {
+            snakeMeshes.forEach(m => scene.remove(m));
+            snakeMeshes = [];
+
+            snake.forEach((seg, idx) => {
+                const isHead = idx === 0;
+                const geo = isHead ? new THREE.BoxGeometry(0.9, 0.9, 0.9) : new THREE.BoxGeometry(0.8, 0.8, 0.8);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: isHead ? 0xffcc00 : 0x00ff88,
+                    emissive: isHead ? 0xffcc00 : 0x00b359,
+                    emissiveIntensity: isHead ? 0.5 : 0.2
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(seg.x, seg.y, 0);
+                scene.add(mesh);
+                snakeMeshes.push(mesh);
+            });
+        }
+
+        function gameLoop() {
+            if (isGameOver) return;
+
+            snakeDirection = { ...nextDirection };
+            const head = { x: snake[0].x + snakeDirection.x, y: snake[0].y + snakeDirection.y };
+
+            // Colisão com Bordas
+            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                triggerGameOver();
+                return;
+            }
+
+            // Colisão com Corpo
+            if (snake.some(seg => seg.x === head.x && seg.y === head.y)) {
+                triggerGameOver();
+                return;
+            }
+
+            snake.unshift(head);
+
+            // Comer Maçã
+            if (head.x === applePos.x && head.y === applePos.y) {
+                score += 10;
+                document.getElementById('score-display').innerText = score;
+                spawnApple();
+            } else {
+                snake.pop();
+            }
+
+            updateSnakeMeshes();
+        }
+
+        function triggerGameOver() {
+            isGameOver = true;
+            clearInterval(gameInterval);
+            document.getElementById('gameover-text').innerText = `Você colidiu! Pontuação final: ${score}`;
+            document.getElementById('gameover-modal').classList.remove('hidden');
+
+            if (activePlayer && score > highScore) {
+                highScore = score;
+                document.getElementById('high-score-display').innerText = highScore;
+                SaveHub.updateGameSave('snake', { highScore }, activePlayer.name);
+            }
+        }
+
+        // Controles Teclado
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' && snakeDirection.y !== -1) nextDirection = { x: 0, y: 1 };
+            if (e.key === 'ArrowDown' && snakeDirection.y !== 1) nextDirection = { x: 0, y: -1 };
+            if (e.key === 'ArrowLeft' && snakeDirection.x !== 1) nextDirection = { x: -1, y: 0 };
+            if (e.key === 'ArrowRight' && snakeDirection.x !== -1) nextDirection = { x: 1, y: 0 };
+        });
+
+        // Controles Touch D-Pad
+        document.getElementById('btn-up').addEventListener('click', () => { if (snakeDirection.y !== -1) nextDirection = { x: 0, y: 1 }; });
+        document.getElementById('btn-down').addEventListener('click', () => { if (snakeDirection.y !== 1) nextDirection = { x: 0, y: -1 }; });
+        document.getElementById('btn-left').addEventListener('click', () => { if (snakeDirection.x !== 1) nextDirection = { x: -1, y: 0 }; });
+        document.getElementById('btn-right').addEventListener('click', () => { if (snakeDirection.x !== -1) nextDirection = { x: 1, y: 0 }; });
+        document.getElementById('btn-restart').addEventListener('click', resetGame);
+
+        // Loop de Animação Three.js
+        function animate() {
+            requestAnimationFrame(animate);
+            appleMesh.rotation.y += 0.03;
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        initPlayer();
+        resetGame();
+        animate();
+    </script>
+</body>
+</html>
