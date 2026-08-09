@@ -244,20 +244,77 @@
             appleMesh.position.set(applePos.x, applePos.y, 0);
         }
 
+        // Mapeamento de Cores e Estilos de Cobra por Avatar de Perfil
+        const AVATAR_SNAKE_STYLES = {
+            '🎪': { headColor: 0xffcc00, bodyColor: 0xff2a5f, emissive: 0xff2a5f },
+            '🦊': { headColor: 0xff6600, bodyColor: 0xd2691e, emissive: 0xd2691e },
+            '🐰': { headColor: 0xffb6c1, bodyColor: 0xff69b4, emissive: 0xff69b4 },
+            '🚀': { headColor: 0x00d2ff, bodyColor: 0x7000ff, emissive: 0x7000ff },
+            '🌟': { headColor: 0xffea00, bodyColor: 0xffa000, emissive: 0xffa000 },
+            '🦄': { headColor: 0xff80df, bodyColor: 0xb366ff, emissive: 0xb366ff },
+            '🐲': { headColor: 0x00ff88, bodyColor: 0x008000, emissive: 0x008000 },
+            '🤖': { headColor: 0xcccccc, bodyColor: 0x00d2ff, emissive: 0x00d2ff },
+            '👑': { headColor: 0xffd700, bodyColor: 0x9370db, emissive: 0x9370db },
+            '🎮': { headColor: 0x00e5ff, bodyColor: 0xff0055, emissive: 0xff0055 },
+            '🐱': { headColor: 0xffa500, bodyColor: 0x8b4513, emissive: 0x8b4513 },
+            '🐶': { headColor: 0xd2b48c, bodyColor: 0x8b5a2b, emissive: 0x8b5a2b },
+            '🐼': { headColor: 0xffffff, bodyColor: 0x222222, emissive: 0x222222 },
+            '🦁': { headColor: 0xff8c00, bodyColor: 0xb8860b, emissive: 0xb8860b },
+            '👻': { headColor: 0xe0ffff, bodyColor: 0x87cefa, emissive: 0x87cefa },
+            '👾': { headColor: 0xbf00ff, bodyColor: 0x4b0082, emissive: 0x4b0082 }
+        };
+
+        function getSnakeStyle() {
+            const avatar = activePlayer ? (activePlayer.avatar || '🎪') : '🎪';
+            return AVATAR_SNAKE_STYLES[avatar] || AVATAR_SNAKE_STYLES['🎪'];
+        }
+
         function updateSnakeMeshes() {
             snakeMeshes.forEach(m => scene.remove(m));
             snakeMeshes = [];
 
+            const style = getSnakeStyle();
+
             snake.forEach((seg, idx) => {
                 const isHead = idx === 0;
-                const geo = isHead ? new THREE.BoxGeometry(0.9, 0.9, 0.9) : new THREE.BoxGeometry(0.8, 0.8, 0.8);
+
+                // Cobra Circular: Uso de Esferas (SphereGeometry) com raio maior na cabeça
+                const radius = isHead ? 0.48 : 0.42;
+                const geo = new THREE.SphereGeometry(radius, 20, 20);
+
                 const mat = new THREE.MeshStandardMaterial({
-                    color: isHead ? 0xffcc00 : 0x00ff88,
-                    emissive: isHead ? 0xffcc00 : 0x00b359,
-                    emissiveIntensity: isHead ? 0.5 : 0.2
+                    color: isHead ? style.headColor : style.bodyColor,
+                    emissive: isHead ? style.headColor : style.emissive,
+                    emissiveIntensity: isHead ? 0.6 : 0.25,
+                    roughness: 0.3
                 });
+
                 const mesh = new THREE.Mesh(geo, mat);
                 mesh.position.set(seg.x, seg.y, 0);
+
+                // Se for a cabeça, adiciona olhinhos estilo 3D fofos
+                if (isHead) {
+                    const eyeGeo = new THREE.SphereGeometry(0.1, 10, 10);
+                    const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+                    const eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
+                    eyeLeft.position.set(-0.16, 0.18, 0.32);
+                    mesh.add(eyeLeft);
+
+                    const pupilLeft = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), pupilMat);
+                    pupilLeft.position.set(-0.16, 0.18, 0.4);
+                    mesh.add(pupilLeft);
+
+                    const eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
+                    eyeRight.position.set(0.16, 0.18, 0.32);
+                    mesh.add(eyeRight);
+
+                    const pupilRight = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), pupilMat);
+                    pupilRight.position.set(0.16, 0.18, 0.4);
+                    mesh.add(pupilRight);
+                }
+
                 scene.add(mesh);
                 snakeMeshes.push(mesh);
             });
