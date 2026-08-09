@@ -128,6 +128,7 @@
                     <span class="stat-label">QUEBRADOS:</span>
                     <span id="destroyed-display" class="stat-val">0</span>
                 </div>
+                <button id="btn-toggle-camera" class="btn-hub" style="background: linear-gradient(135deg, #00d2ff, #7000ff); border: 2px solid #ffcc00;" title="Alternar Visão 1ª / 3ª Pessoa (F5)">🎥 1ª PESSOA</button>
                 <a href="../../index.html" class="btn-hub">🏠 HUB</a>
             </div>
         </div>
@@ -509,6 +510,10 @@
 
         function initPlayerSave() {
             activePlayer = SaveHub.getActivePlayer();
+            const avatarSymbol = activePlayer ? (activePlayer.avatar || '🎪') : '🎪';
+            const style = AVATAR_PLAYER_STYLES[avatarSymbol] || AVATAR_PLAYER_STYLES['🎪'];
+            createPlayerVoxelModel(style);
+
             if (activePlayer) {
                 document.getElementById('player-display').innerText = activePlayer.name.toUpperCase();
                 const save = SaveHub.getGameSave('jasminecraft', activePlayer.name);
@@ -623,6 +628,112 @@
             slot.addEventListener('click', () => selectSlot(slot));
         });
 
+        // Mapeamento de Cores e Estilos de Avatar do Personagem Voxel no JasmineCraft
+        const AVATAR_PLAYER_STYLES = {
+            '🎪': { skinColor: 0xffcc00, shirtColor: 0xff2a5f, pantsColor: 0x00d2ff, hatSymbol: '🎪' },
+            '🦊': { skinColor: 0xff6600, shirtColor: 0xd2691e, pantsColor: 0x333333, hatSymbol: '🦊' },
+            '🐰': { skinColor: 0xffb6c1, shirtColor: 0xff69b4, pantsColor: 0xffffff, hatSymbol: '🐰' },
+            '🚀': { skinColor: 0x00d2ff, shirtColor: 0x7000ff, pantsColor: 0x111122, hatSymbol: '🚀' },
+            '🌟': { skinColor: 0xffea00, shirtColor: 0xffa000, pantsColor: 0x333333, hatSymbol: '🌟' },
+            '🦄': { skinColor: 0xff80df, shirtColor: 0xb366ff, pantsColor: 0xffffff, hatSymbol: '🦄' },
+            '🐲': { skinColor: 0x00ff88, shirtColor: 0x008000, pantsColor: 0x113311, hatSymbol: '🐲' },
+            '🤖': { skinColor: 0xcccccc, shirtColor: 0x00d2ff, pantsColor: 0x555555, hatSymbol: '🤖' },
+            '👑': { skinColor: 0xffd700, shirtColor: 0x9370db, pantsColor: 0x4b0082, hatSymbol: '👑' },
+            '🎮': { skinColor: 0x00e5ff, shirtColor: 0xff0055, pantsColor: 0x111111, hatSymbol: '🎮' },
+            '🐱': { skinColor: 0xffa500, shirtColor: 0x8b4513, pantsColor: 0x553311, hatSymbol: '🐱' },
+            '🐶': { skinColor: 0xd2b48c, shirtColor: 0x8b5a2b, emissive: 0x442200, hatSymbol: '🐶' },
+            '🐼': { skinColor: 0xffffff, shirtColor: 0x222222, pantsColor: 0x111111, hatSymbol: '🐼' },
+            '🦁': { skinColor: 0xff8c00, shirtColor: 0xb8860b, pantsColor: 0x553300, hatSymbol: '🦁' },
+            '👻': { skinColor: 0xe0ffff, shirtColor: 0x87cefa, pantsColor: 0xffffff, hatSymbol: '👻' },
+            '👾': { skinColor: 0xbf00ff, shirtColor: 0x4b0082, pantsColor: 0x220044, hatSymbol: '👾' }
+        };
+
+        // Modelo Voxel 3D do Jogador (para visão em 3ª pessoa)
+        let playerMeshGroup = null;
+        let isThirdPerson = false;
+        const btnToggleCamera = document.getElementById('btn-toggle-camera');
+
+        function createPlayerVoxelModel(style) {
+            if (playerMeshGroup) scene.remove(playerMeshGroup);
+
+            playerMeshGroup = new THREE.Group();
+
+            // Cabeça Voxel
+            const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+            const headMat = new THREE.MeshStandardMaterial({ color: style.skinColor, roughness: 0.6 });
+            const headMesh = new THREE.Mesh(headGeo, headMat);
+            headMesh.position.y = 1.35;
+            playerMeshGroup.add(headMesh);
+
+            // Olhinhos
+            const eyeGeo = new THREE.BoxGeometry(0.08, 0.08, 0.08);
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+            const eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
+            eyeLeft.position.set(-0.12, 1.4, -0.26);
+            playerMeshGroup.add(eyeLeft);
+
+            const pupilLeft = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), pupilMat);
+            pupilLeft.position.set(-0.12, 1.4, -0.3);
+            playerMeshGroup.add(pupilLeft);
+
+            const eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
+            eyeRight.position.set(0.12, 1.4, -0.26);
+            playerMeshGroup.add(eyeRight);
+
+            const pupilRight = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.04), pupilMat);
+            pupilRight.position.set(0.12, 1.4, -0.3);
+            playerMeshGroup.add(pupilRight);
+
+            // Camisa (Tronco)
+            const shirtGeo = new THREE.BoxGeometry(0.55, 0.65, 0.35);
+            const shirtMat = new THREE.MeshStandardMaterial({ color: style.shirtColor, roughness: 0.7 });
+            const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
+            shirtMesh.position.y = 0.8;
+            playerMeshGroup.add(shirtMesh);
+
+            // Calças (Pernas)
+            const pantsGeo = new THREE.BoxGeometry(0.24, 0.55, 0.3);
+            const pantsMat = new THREE.MeshStandardMaterial({ color: style.pantsColor || 0x222244 });
+            const legLeft = new THREE.Mesh(pantsGeo, pantsMat);
+            legLeft.position.set(-0.13, 0.25, 0);
+            playerMeshGroup.add(legLeft);
+
+            const legRight = new THREE.Mesh(pantsGeo, pantsMat);
+            legRight.position.set(0.13, 0.25, 0);
+            playerMeshGroup.add(legRight);
+
+            // Braços
+            const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.25);
+            const armMat = new THREE.MeshStandardMaterial({ color: style.skinColor });
+            const armLeft = new THREE.Mesh(armGeo, armMat);
+            armLeft.position.set(-0.38, 0.75, 0);
+            playerMeshGroup.add(armLeft);
+
+            const armRight = new THREE.Mesh(armGeo, armMat);
+            armRight.position.set(0.38, 0.75, 0);
+            playerMeshGroup.add(armRight);
+
+            playerMeshGroup.visible = isThirdPerson;
+            scene.add(playerMeshGroup);
+        }
+
+        function toggleCameraView() {
+            isThirdPerson = !isThirdPerson;
+            if (playerMeshGroup) playerMeshGroup.visible = isThirdPerson;
+            btnToggleCamera.innerText = isThirdPerson ? '🎥 3ª PESSOA' : '🎥 1ª PESSOA';
+        }
+
+        btnToggleCamera.addEventListener('click', toggleCameraView);
+
+        // Tecla F5 ou C para alternar câmera
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyC') {
+                toggleCameraView();
+            }
+        });
+
         // Loop de Atualização & Física
         const clock = new THREE.Clock();
 
@@ -663,7 +774,18 @@
                 player.velocity.set(0, 0, 0);
             }
 
-            camera.position.copy(player.position);
+            // Atualização de Câmera (1ª vs 3ª Pessoa)
+            if (isThirdPerson) {
+                const cameraOffset = new THREE.Vector3(0, 1.2, 3.5).applyQuaternion(camera.quaternion);
+                camera.position.copy(player.position).add(cameraOffset);
+
+                if (playerMeshGroup) {
+                    playerMeshGroup.position.copy(player.position).sub(new THREE.Vector3(0, player.height - 0.2, 0));
+                    playerMeshGroup.rotation.y = Math.atan2(forward.x, forward.z) + Math.PI;
+                }
+            } else {
+                camera.position.copy(player.position);
+            }
         }
 
         function updateRaycasting() {
