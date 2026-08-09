@@ -125,6 +125,18 @@
     <script type="module">
         import * as THREE from 'three';
         import { SaveHub } from '../../shared/SaveHub.js';
+        import { ThemeManager } from '../../shared/ThemeManager.js';
+
+        const currentTheme = ThemeManager.initAutoDetection((theme) => {
+            updateSceneTheme(theme);
+        });
+
+        function updateSceneTheme(theme) {
+            const isDark = theme === 'dark';
+            const bgColor = isDark ? 0x18002e : 0xbae6fd;
+            scene.background = new THREE.Color(bgColor);
+            scene.fog = new THREE.FogExp2(bgColor, 0.02);
+        }
 
         let score = 0;
         let highScore = 0;
@@ -144,8 +156,7 @@
         // Three.js Setup
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x18002e);
-        scene.fog = new THREE.FogExp2(0x18002e, 0.02);
+        updateSceneTheme(currentTheme);
 
         const aspect = window.innerWidth / window.innerHeight;
         const camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);

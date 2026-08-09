@@ -1,7 +1,9 @@
 import { SaveHub } from './shared/SaveHub.js';
+import { ThemeManager } from './shared/ThemeManager.js';
 
 class GameHub {
     constructor() {
+        this.btnThemeToggle = document.getElementById('btn-theme-toggle');
         this.activeProfileCard = document.getElementById('active-profile-card');
         this.activeAvatar = document.getElementById('active-avatar');
         this.activeName = document.getElementById('active-name');
@@ -26,7 +28,19 @@ class GameHub {
 
         this.selectedAvatar = '🎪';
 
+        this.initTheme();
         this.init();
+    }
+
+    initTheme() {
+        const theme = ThemeManager.initAutoDetection((newTheme) => {
+            this.updateThemeButtonIcon(newTheme);
+        });
+        this.updateThemeButtonIcon(theme);
+    }
+
+    updateThemeButtonIcon(theme) {
+        this.btnThemeToggle.innerText = theme === 'dark' ? '🌙' : '☀️';
     }
 
     init() {
@@ -130,6 +144,11 @@ class GameHub {
     }
 
     initEvents() {
+        this.btnThemeToggle.addEventListener('click', () => {
+            const nextTheme = ThemeManager.toggleTheme();
+            this.updateThemeButtonIcon(nextTheme);
+        });
+
         this.btnSwitchPlayer.addEventListener('click', () => {
             this.showWelcomeView();
         });
