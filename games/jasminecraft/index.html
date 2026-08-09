@@ -156,7 +156,8 @@
                 <!-- Cards de Skins gerados via JS -->
             </div>
 
-            <button id="btn-close-skins" class="btn-play-click" style="background: linear-gradient(135deg, #ff69b4, #ff1493);">PRONTO PARA JOGAR 🚀</button>
+            <button id="btn-close-skins" class="btn-play-click" style="background: linear-gradient(135deg, #ff69b4, #ff1493); margin-bottom: 8px;">PRONTO PARA JOGAR 🚀</button>
+            <a href="../../index.html" class="btn-play-click" style="display:block; text-decoration:none; background: linear-gradient(135deg, #7000ff, #ff2a5f); border-color: #ffcc00;">🏠 VOLTAR AO HOME (HUB)</a>
         </div>
     </div>
 
@@ -168,11 +169,13 @@
             <div class="instructions-list">
                 <div>🎮 <strong>WASD</strong>: Mover jogador</div>
                 <div>⬆️ <strong>ESPAÇO</strong>: Pular</div>
+                <div>🎥 <strong>Tecla C</strong>: Alternar 1ª e 3ª Pessoa</div>
                 <div>⛏️ <strong>Clique Esquerdo</strong>: Quebrar bloco focado</div>
                 <div>🧱 <strong>Clique Direito</strong>: Colocar novo bloco</div>
-                <div>🎒 <strong>Teclas 1 a 6</strong>: Selecionar bloco no inventário</div>
+                <div>🎒 <strong>Teclas 1 a 8</strong>: Selecionar blocos e ferramentas</div>
             </div>
-            <button class="btn-play-click">CLIQUE PARA JOGAR ⛏️</button>
+            <button class="btn-play-click" style="margin-bottom: 8px;">CLIQUE PARA JOGAR ⛏️</button>
+            <a href="../../index.html" class="btn-play-click" style="display:block; text-decoration:none; background: linear-gradient(135deg, #7000ff, #ff2a5f); border-color: #ffcc00;">🏠 VOLTAR AO HOME (HUB)</a>
         </div>
     </div>
 
@@ -743,7 +746,7 @@
             playerMeshGroup = new THREE.Group();
 
             if (skinConf.isMitsuri) {
-                // MODELAGEM EXCLUSIVA MITSURI KANROJI (Demon Slayer)
+                // MODELAGEM EXCLUSIVA MITSURI KANROJI (Demon Slayer - Fiel à Imagem)
                 
                 // Cabeça Voxel
                 const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
@@ -773,43 +776,67 @@
                 pupilRight.position.set(0.12, 1.38, -0.29);
                 playerMeshGroup.add(pupilRight);
 
+                // Pintas/Marcas sob os olhos (Mitsuri)
+                const markGeo = new THREE.BoxGeometry(0.03, 0.03, 0.02);
+                const markMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
+                const markLeft = new THREE.Mesh(markGeo, markMat);
+                markLeft.position.set(-0.12, 1.28, -0.26);
+                playerMeshGroup.add(markLeft);
+
+                const markRight = new THREE.Mesh(markGeo, markMat);
+                markRight.position.set(0.12, 1.28, -0.26);
+                playerMeshGroup.add(markRight);
+
                 // Cabelo Rosa com Pontas Verde-Limão (Mitsuri)
                 const pinkHairMat = new THREE.MeshStandardMaterial({ color: 0xff69b4, roughness: 0.5 });
                 const greenHairMat = new THREE.MeshStandardMaterial({ color: 0x76ff03, roughness: 0.5 });
 
-                // Topo e Laterais do Cabelo
-                const hairTop = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.22, 0.58), pinkHairMat);
+                // Topo e Volume do Cabelo Rosa
+                const hairTop = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.24, 0.58), pinkHairMat);
                 hairTop.position.set(0, 1.58, 0);
                 playerMeshGroup.add(hairTop);
 
-                // Tranças Mitsuri (Direita e Esquerda caindo pela frente)
+                // 2 Tranças Frontais Mitsuri (Caídas pela frente)
                 [-0.22, 0.22].forEach(xOffset => {
-                    // Parte Rosa da Trança
                     const braidPink = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.55, 0.16), pinkHairMat);
                     braidPink.position.set(xOffset, 1.15, -0.22);
                     playerMeshGroup.add(braidPink);
 
-                    // Ponta Verde-Limão da Trança
                     const braidGreen = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.45, 0.16), greenHairMat);
                     braidGreen.position.set(xOffset, 0.65, -0.22);
                     playerMeshGroup.add(braidGreen);
                 });
 
-                // Haori Branco (Casaco por cima)
-                const haoriGeo = new THREE.BoxGeometry(0.68, 0.7, 0.45);
-                const haoriMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+                // 1 Trança Traseira Mitsuri (Caída pelas costas)
+                const backBraidPink = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.55, 0.16), pinkHairMat);
+                backBraidPink.position.set(0, 1.15, 0.22);
+                playerMeshGroup.add(backBraidPink);
+
+                const backBraidGreen = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.45, 0.16), greenHairMat);
+                backBraidGreen.position.set(0, 0.65, 0.22);
+                playerMeshGroup.add(backBraidGreen);
+
+                // Haori Branco Aberto (Casaco solto por cima)
+                const haoriGeo = new THREE.BoxGeometry(0.7, 0.72, 0.48);
+                const haoriMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
                 const haoriMesh = new THREE.Mesh(haoriGeo, haoriMat);
                 haoriMesh.position.y = 0.8;
                 playerMeshGroup.add(haoriMesh);
 
-                // Uniforme Escuro por baixo
-                const shirtGeo = new THREE.BoxGeometry(0.52, 0.62, 0.36);
+                // Uniforme Escuro por baixo + Cinto Branco
+                const shirtGeo = new THREE.BoxGeometry(0.52, 0.64, 0.38);
                 const shirtMat = new THREE.MeshStandardMaterial({ color: 0x1f192b });
                 const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
                 shirtMesh.position.y = 0.8;
                 playerMeshGroup.add(shirtMesh);
 
-                // Meias Altas Verdes Listradas com Rosa (Mitsuri)
+                const beltGeo = new THREE.BoxGeometry(0.55, 0.1, 0.4);
+                const beltMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                const beltMesh = new THREE.Mesh(beltGeo, beltMat);
+                beltMesh.position.y = 0.52;
+                playerMeshGroup.add(beltMesh);
+
+                // Meias Altas Verdes Listradas (Mitsuri)
                 const legGeo = new THREE.BoxGeometry(0.24, 0.55, 0.3);
                 const greenSocksMat = new THREE.MeshStandardMaterial({ color: 0x76ff03 });
                 const legLeft = new THREE.Mesh(legGeo, greenSocksMat);
