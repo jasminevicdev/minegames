@@ -206,12 +206,22 @@
             </div>
         </div>
 
-        <!-- Final Victory Modal -->
+        <!-- Final Victory Modal (Tela de Vitória & Agradecimento) -->
         <div id="win-overlay" class="overlay-screen hidden">
-            <div class="modal-card win-card">
-                <h2 class="modal-title">CIRCO DA YUK CONCLUÍDO! 🏆</h2>
-                <p class="modal-subtitle">Parabéns! Você derrotou a Abstração e zerou o MODO HISTÓRIA!</p>
-                <button id="btn-restart" class="btn-play">JOGAR NOVAMENTE 🔄</button>
+            <div class="modal-card win-card" style="text-align: center; max-width: 520px;">
+                <h2 class="modal-title" style="color: #00ff88; font-size: 1.8rem; margin-bottom: 8px;">🎉 VOCÊ VENCEU! 🏆</h2>
+                <h3 style="color: #ffcc00; font-family: 'Outfit', sans-serif; font-size: 1.2rem; margin-bottom: 12px;">CIRCO DA JAS VICTOR DEV ZERADO!</h3>
+                <p class="modal-subtitle" style="font-size: 1rem; line-height: 1.5; margin-bottom: 16px;">
+                    Parabéns! Você superou todas as 20 fases desafiadoras, derrotou Caine & a Abstração e salvou o Circo Digital! 🎪
+                </p>
+                <div style="background: rgba(255, 255, 255, 0.08); border: 2px dashed #ffcc00; border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+                    <p style="color: #fff; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px;">💖 OBRIGADO POR JOGAR! 💖</p>
+                    <p style="color: #ddd; font-size: 0.9rem; margin: 0;">Sua presença e dedicação tornam esse projeto super especial. Esperamos que tenha se divertido muito!</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button id="btn-restart" class="btn-play btn-continue">JOGAR NOVAMENTE 🔄</button>
+                    <a href="../../index.html" class="btn-play btn-secondary" style="text-decoration: none; display: block;">🏠 VOLTAR AO HUB (HOME)</a>
+                </div>
             </div>
         </div>
 
