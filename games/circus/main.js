@@ -444,7 +444,7 @@ class Game2D {
 
             if (canExit) {
                 const exitBox = this.sceneManager.exitDoor.userData.bounds;
-                if (pPos.x >= exitBox.minX && pPos.x <= exitBox.maxX && pPos.y >= exitBox.minY && pPos.y <= exitBox.maxY) {
+                if (pPos.x >= exitBox.minX - 1.0 && pPos.x <= exitBox.maxX + 1.0 && pPos.y >= exitBox.minY - 1.0 && pPos.y <= exitBox.maxY + 2.0) {
                     this.completeLevel();
                 }
             }
