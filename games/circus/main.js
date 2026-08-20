@@ -61,6 +61,7 @@ class Game2D {
         this.btnRight = document.getElementById('btn-right');
         this.btnJump = document.getElementById('btn-jump');
         this.btnAttack = document.getElementById('btn-attack');
+        this.btnEnterDoor = document.getElementById('btn-enter-door');
 
         this.playerName = 'Jogador';
         this.score = 0;
@@ -338,6 +339,16 @@ class Game2D {
         bindTouch(this.btnAttack, () => {
             this.player.shootPower();
         }, () => {});
+
+        if (this.btnEnterDoor) {
+            bindTouch(this.btnEnterDoor, () => {
+                const canExit = (this.currentLevel < 20 && this.score >= this.totalCollectibles) ||
+                                (this.currentLevel === 20 && this.bossManager.health <= 0);
+                if (canExit) {
+                    this.completeLevel();
+                }
+            }, () => {});
+        }
     }
 
     startLevel(levelNumber) {
@@ -444,8 +455,15 @@ class Game2D {
 
             if (canExit) {
                 const exitBox = this.sceneManager.exitDoor.userData.bounds;
-                if (pPos.x >= exitBox.minX - 1.0 && pPos.x <= exitBox.maxX + 1.0 && pPos.y >= exitBox.minY - 1.0 && pPos.y <= exitBox.maxY + 2.0) {
+                const isNearDoor = pPos.x >= exitBox.minX - 2.5 && pPos.x <= exitBox.maxX + 2.5 &&
+                                   pPos.y >= exitBox.minY - 2.0 && pPos.y <= exitBox.maxY + 3.0;
+
+                if (isNearDoor) {
+                    if (this.btnEnterDoor) this.btnEnterDoor.classList.remove('hidden');
+                    // Entra na porta se encostar perto OU se pressionar ação
                     this.completeLevel();
+                } else {
+                    if (this.btnEnterDoor) this.btnEnterDoor.classList.add('hidden');
                 }
             }
         }
