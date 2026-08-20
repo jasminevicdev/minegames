@@ -347,7 +347,7 @@ class Game2D {
         this.currentLevel = levelNumber;
         this.sceneManager.loadLevel(levelNumber);
 
-        if (levelNumber === 5) {
+        if (levelNumber === 20) {
             this.bossHud.classList.remove('hidden');
             this.bossManager.initBossArena();
             this.totalCollectibles = 0;
@@ -375,7 +375,7 @@ class Game2D {
 
         const pPos = this.player.position;
 
-        if (this.currentLevel < 5) {
+        if (this.currentLevel < 20) {
             this.sceneManager.collectibles.forEach(item => {
                 if (item.userData.active) {
                     const dist = pPos.distanceTo(item.position);
@@ -439,8 +439,8 @@ class Game2D {
         });
 
         if (this.sceneManager.exitDoor) {
-            const canExit = (this.currentLevel < 5 && this.score >= this.totalCollectibles) ||
-                            (this.currentLevel === 5 && this.bossManager.health <= 0);
+            const canExit = (this.currentLevel < 20 && this.score >= this.totalCollectibles) ||
+                            (this.currentLevel === 20 && this.bossManager.health <= 0);
 
             if (canExit) {
                 const exitBox = this.sceneManager.exitDoor.userData.bounds;
@@ -453,19 +453,23 @@ class Game2D {
 
     updateUI() {
         this.playerNameDisplay.innerText = this.playerName;
-        this.levelDisplay.innerText = `FASE ${this.currentLevel}`;
+        this.levelDisplay.innerText = `FASE ${this.currentLevel} / 20`;
         const charName = this.selectedCharacter.toUpperCase();
 
         const hearts = '❤️'.repeat(Math.max(0, this.player.health));
         this.livesDisplay.innerText = hearts || '💀';
 
-        if (this.currentLevel < 5) {
+        if (this.currentLevel < 20) {
             this.scoreDisplay.innerText = `${this.score} / ${this.totalCollectibles}`;
+            const isHard = this.currentLevel > 10;
 
             if (this.score === 0) {
-                this.dialogueText.innerText = `Bem-vindo ao Circo da Yuk, ${this.playerName}! (${charName}) Colete todas as ${this.totalCollectibles} Cartolas Mágicas!`;
+                this.dialogueText.innerText = isHard
+                    ? `⚠️ FASE DIFICULTADA ${this.currentLevel}! ${this.playerName}, monstros mais rápidos e espinhos glitch a frente!`
+                    : `Bem-vindo ao Circo, ${this.playerName}! (${charName}) Colete todas as ${this.totalCollectibles} Cartolas Mágicas!`;
+                this.dialogueText.style.color = isHard ? "#ff2a5f" : "#ffffff";
             } else if (this.score === Math.floor(this.totalCollectibles / 2)) {
-                this.dialogueText.innerText = `Metade coletada, ${this.playerName}! Cuidado com os blocos glitch!`;
+                this.dialogueText.innerText = `Metade coletada na Fase ${this.currentLevel}, ${this.playerName}! Continue avançando!`;
             } else if (this.score === this.totalCollectibles) {
                 this.dialogueText.innerText = `INCRÍVEL ${this.playerName.toUpperCase()}! A PORTA DE SAÍDA ESTÁ ABERTA!`;
                 this.dialogueText.style.color = "#00ff88";
@@ -476,10 +480,10 @@ class Game2D {
             this.bossHealthFill.style.width = `${pct}%`;
 
             if (this.bossManager.health > 0) {
-                this.dialogueText.innerText = `⚠️ BATALHA FINAL! ${this.playerName}, use a tecla F / ATACAR ⚡ para destruir a Abstração e as Mini Bolhas!`;
+                this.dialogueText.innerText = `⚠️ BATALHA FINAL DO VIGÉSIMO NÍVEL! ${this.playerName}, destrua Caine e a Abstração!`;
                 this.dialogueText.style.color = "#ffcc00";
             } else {
-                this.dialogueText.innerText = `🏆 O CHEFÃO FOI DERROTADO! CORRA PARA A PORTA DOURADA DE SAÍDA FINAL!`;
+                this.dialogueText.innerText = `🏆 O CHEFÃO FINAL FOI DERROTADO! CORRA PARA A PORTA DOURADA DE SAÍDA FINAL!`;
                 this.dialogueText.style.color = "#00ff88";
             }
         }
@@ -489,7 +493,7 @@ class Game2D {
         this.isGameActive = false;
         this.soundManager.playWin();
 
-        if (this.currentLevel < 5) {
+        if (this.currentLevel < 20) {
             const nextLvl = this.currentLevel + 1;
             SaveManager.saveProgress(this.playerName, nextLvl, this.selectedCharacter);
             this.levelOverlayText.innerText = `Fase ${this.currentLevel} Concluída! Progresso salvo para a Fase ${nextLvl}!`;
@@ -516,7 +520,7 @@ class Game2D {
             this.player.update(delta, this.sceneManager.platforms, this.sceneManager.trampolines, this.sceneManager.hazards);
             this.sceneManager.update(delta, time);
 
-            if (this.currentLevel === 5) {
+            if (this.currentLevel === 20) {
                 this.bossManager.update(delta, time, this.player);
                 if (this.bossManager.health <= 0) {
                     this.updateUI();

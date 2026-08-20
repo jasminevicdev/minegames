@@ -66,24 +66,104 @@ export class SceneManager2D {
         this.currentLevel = levelIndex;
         this.clearScene();
 
-        switch (levelIndex) {
-            case 2:
-                this.buildLevel2();
-                break;
-            case 3:
-                this.buildLevel3();
-                break;
-            case 4:
-                this.buildLevel4();
-                break;
-            case 5:
-                this.buildLevel5();
-                break;
-            case 1:
-            default:
-                this.buildLevel1();
-                break;
+        if (levelIndex === 20) {
+            this.buildLevelBoss();
+        } else {
+            this.buildProceduralLevel(levelIndex);
         }
+    }
+
+    // Gerador Procedural Otimizado de 19 Fases + Boss Final
+    buildProceduralLevel(level) {
+        const isHard = level > 10;
+        const difficultyFactor = isHard ? (level - 10) : 0;
+
+        // Esquema de cores por tema de fase
+        const themes = [
+            0x0a061e, 0x050014, 0x18000a, 0x200028, 0x051a2e, 0x1c0f00, 0x0d2b1d
+        ];
+        const themeColor = themes[(level - 1) % themes.length];
+        this.scene.background = new THREE.Color(themeColor);
+
+        // Fundo em malha procedural
+        const canvas = document.createElement('canvas');
+        canvas.width = 512; canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#' + new THREE.Color(themeColor).getHexString();
+        ctx.fillRect(0, 0, 512, 512);
+        ctx.strokeStyle = isHard ? '#ff0055' : '#00d2ff';
+        ctx.lineWidth = isHard ? 3 : 1.5;
+        for (let i = 0; i < 512; i += 32) {
+            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+        }
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(10, 2);
+
+        this.bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(350, 80), new THREE.MeshBasicMaterial({ map: tex }));
+        this.bgMesh.position.set(100, 20, -15);
+        this.scene.add(this.bgMesh);
+
+        this.createFloatingShapes(20 + level * 2);
+
+        // Tamanho da fase expande com o nível
+        const levelLength = 100 + level * 10;
+        const numPlatforms = 10 + Math.floor(level * 1.2);
+        
+        let currentX = -4;
+        let currentY = 0;
+
+        // Plataforma Inicial Segura
+        this.createPlatform(currentX, currentY, 14, 2, 0x00d2ff);
+
+        // Gerar plataformas e desafios
+        for (let i = 0; i < numPlatforms; i++) {
+            const gap = 6 + Math.random() * (isHard ? 7 : 4);
+            const pWidth = Math.max(4, 10 - (level * 0.25));
+            const pHeight = 1.5;
+            currentX += gap + pWidth / 2;
+            currentY += (Math.random() - 0.45) * (isHard ? 6 : 4);
+            currentY = Math.max(1, Math.min(16, currentY));
+
+            const isMoving = (i % 2 === 0 && level >= 3) || isHard;
+            const moveRange = isMoving ? (3 + Math.random() * (isHard ? 5 : 3)) : 0;
+            const colors = [0xff2a5f, 0xffcc00, 0x00d2ff, 0x7000ff, 0x00ff88];
+            const pColor = colors[i % colors.length];
+
+            this.createPlatform(currentX, currentY, pWidth, pHeight, pColor, isMoving, moveRange);
+
+            // Trampolim estratégico
+            if (i % 3 === 0) {
+                this.createTrampoline(currentX - pWidth / 4, currentY + pHeight / 2 + 0.1);
+            }
+
+            // Cartola Coletável
+            this.createCollectible(currentX, currentY + 3.0, i + 1);
+
+            // Perigos de Espinho / Glitch (Dificuldade aumentada após a fase 10)
+            if (i > 1 && (Math.random() < (isHard ? 0.65 : 0.35))) {
+                const hX = currentX + (Math.random() - 0.5) * pWidth;
+                const hY = currentY - (isHard ? (2.0 + Math.random() * 2) : 2.5);
+                this.createHazard(hX, hY, isHard ? 2.2 : 1.6, isHard ? 2.2 : 1.6);
+            }
+
+            // Monstros Patrulhando (Fase > 10 tem mais monstros e mais rápidos)
+            if (i > 0 && (Math.random() < (isHard ? 0.7 : 0.3))) {
+                const mX = currentX;
+                const mY = currentY + 1.2;
+                const monster = this.createMonster(mX, mY, isHard ? 4.5 : 3.0);
+                if (isHard) {
+                    monster.userData.speed += difficultyFactor * 0.35; // Monstro mais rápido
+                    monster.userData.hp += Math.floor(difficultyFactor * 0.3); // Mais vida
+                }
+            }
+        }
+
+        // Plataforma Final e Porta de Saída
+        currentX += 10;
+        this.createPlatform(currentX, 4, 18, 2, 0x00ff88);
+        this.createExitDoor(currentX + 2, 5.0);
     }
 
     // --- FASE 1: Tenda Principal do Circo ---
@@ -276,8 +356,8 @@ export class SceneManager2D {
         this.createExitDoor(142, 5.0);
     }
 
-    // --- FASE 5: A Arena de Batalha de Chefão (Caine & Bolha) ---
-    buildLevel5() {
+    // --- FASE 20: A Arena Final de Batalha do Chefão (Caine & Bolha) ---
+    buildLevelBoss() {
         this.scene.background = new THREE.Color(0x200028);
 
         // Fundo Arena do Chefão
