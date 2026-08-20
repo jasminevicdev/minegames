@@ -330,10 +330,7 @@ class Game2D {
 
     startLevel(levelNumber) {
         this.soundManager.init();
-        this.startOverlay.classList.add('hidden');
-        this.levelOverlay.classList.add('hidden');
-        this.gameOverOverlay.classList.add('hidden');
-        this.winOverlay.classList.add('hidden');
+        this.hideAllOverlays();
 
         this.currentLevel = levelNumber;
         this.sceneManager.loadLevel(levelNumber);
