@@ -382,7 +382,7 @@ export class Player2D {
         }
 
         if (this.position.x < -10) this.position.x = -10;
-        if (this.position.x > 150) this.position.x = 150;
+        if (this.position.x > 400) this.position.x = 400;
 
         if (this.position.y < -10) {
             this.takeDamage();
