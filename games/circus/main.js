@@ -4,6 +4,7 @@ import { Player2D } from './src/Player2D.js';
 import { SoundManager } from './src/SoundManager.js';
 import { BossManager } from './src/BossManager.js';
 import { SaveManager } from './src/SaveManager.js';
+import { SaveHub } from '../../shared/SaveHub.js';
 
 class Game2D {
     constructor() {
@@ -177,23 +178,26 @@ class Game2D {
             const save = allSaves[name];
             const card = document.createElement('div');
             card.className = 'player-card';
+            card.style.cssText = 'touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer;';
             card.innerHTML = `
-                <div>
+                <div style="pointer-events: none;">
                     <div class="player-card-name">${save.playerName}</div>
                     <div class="player-card-info">Fase ${save.savedLevel} • ${save.selectedCharacter.toUpperCase()}</div>
                 </div>
                 <div>
-                    <button class="player-card-delete" title="Excluir Jogador">🗑️</button>
+                    <button class="player-card-delete" title="Excluir Jogador" style="pointer-events: auto;">🗑️</button>
                 </div>
             `;
 
-            card.addEventListener('click', (e) => {
+            const handleSelectPlayer = (e) => {
                 if (e.target.classList.contains('player-card-delete')) {
                     e.stopPropagation();
                     SaveManager.deletePlayer(name);
                     this.renderPlayersList();
                 } else {
+                    e.stopPropagation();
                     this.playerName = name;
+                    SaveHub.setActivePlayer(name);
                     const save = SaveManager.getPlayerSave(name);
                     if (save) {
                         this.currentLevel = save.savedLevel || 1;
@@ -204,7 +208,10 @@ class Game2D {
                     }
                     this.startLevel(this.currentLevel);
                 }
-            });
+            };
+
+            card.addEventListener('click', handleSelectPlayer);
+            card.addEventListener('touchstart', handleSelectPlayer, { passive: true });
 
             this.playersList.appendChild(card);
         });

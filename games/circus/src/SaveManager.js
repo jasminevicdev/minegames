@@ -18,7 +18,38 @@ export class SaveManager {
         return data && data.savedLevel && data.savedLevel >= 1;
     }
 
+    static getAllSaves() {
+        const data = SaveHub.getHubData();
+        const saves = {};
+        if (data && data.players) {
+            Object.keys(data.players).forEach(name => {
+                const player = data.players[name];
+                const circusSave = (player.games && player.games.circus) || {};
+                saves[name] = {
+                    playerName: name,
+                    savedLevel: circusSave.level || 1,
+                    selectedCharacter: circusSave.character || 'pomni'
+                };
+            });
+        }
+        return saves;
+    }
+
+    static getPlayerSave(playerName) {
+        const activeData = SaveHub.getActivePlayer();
+        const target = playerName || (activeData ? activeData.name : null);
+        if (!target) return null;
+        const circusSave = SaveHub.getGameSave('circus', target);
+        return {
+            playerName: target,
+            savedLevel: circusSave.level || 1,
+            selectedCharacter: circusSave.character || 'pomni'
+        };
+    }
+
     static saveProgress(playerName, levelNumber, characterType) {
+        SaveHub.createPlayer(playerName);
+        SaveHub.setActivePlayer(playerName);
         return SaveHub.updateGameSave('circus', {
             level: levelNumber || 1,
             character: characterType || 'pomni'
