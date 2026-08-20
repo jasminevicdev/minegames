@@ -83,7 +83,9 @@ class Game2D {
 
     initThree() {
         const aspect = window.innerWidth / window.innerHeight;
-        this.camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
+        // FOV adaptativo: em telas verticais (aspect < 1), aumenta o FOV para enquadrar a fase inteira sem cortes
+        const fov = aspect < 1 ? Math.min(75, 50 / aspect) : 50;
+        this.camera = new THREE.PerspectiveCamera(fov, aspect, 0.1, 1000);
         this.camera.position.set(0, 5, 20);
         this.camera.lookAt(0, 5, 0);
 
@@ -210,7 +212,9 @@ class Game2D {
 
     initEvents() {
         const handleResize = () => {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
+            const aspect = window.innerWidth / window.innerHeight;
+            this.camera.aspect = aspect;
+            this.camera.fov = aspect < 1 ? Math.min(75, 50 / aspect) : 50;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         };
@@ -450,21 +454,16 @@ class Game2D {
         });
 
         if (this.sceneManager.exitDoor) {
-            const canExit = (this.currentLevel < 20 && this.score >= this.totalCollectibles) ||
-                            (this.currentLevel === 20 && this.bossManager.health <= 0);
+            const exitBox = this.sceneManager.exitDoor.userData.bounds;
+            const isNearDoor = pPos.x >= exitBox.minX - 3.0 && pPos.x <= exitBox.maxX + 3.0 &&
+                               pPos.y >= exitBox.minY - 3.0 && pPos.y <= exitBox.maxY + 4.0;
 
-            if (canExit) {
-                const exitBox = this.sceneManager.exitDoor.userData.bounds;
-                const isNearDoor = pPos.x >= exitBox.minX - 2.5 && pPos.x <= exitBox.maxX + 2.5 &&
-                                   pPos.y >= exitBox.minY - 2.0 && pPos.y <= exitBox.maxY + 3.0;
-
-                if (isNearDoor) {
-                    if (this.btnEnterDoor) this.btnEnterDoor.classList.remove('hidden');
-                    // Entra na porta se encostar perto OU se pressionar ação
-                    this.completeLevel();
-                } else {
-                    if (this.btnEnterDoor) this.btnEnterDoor.classList.add('hidden');
-                }
+            if (isNearDoor) {
+                if (this.btnEnterDoor) this.btnEnterDoor.classList.remove('hidden');
+                // Se o jogador estiver na porta final da fase, avança imediatamente!
+                this.completeLevel();
+            } else {
+                if (this.btnEnterDoor) this.btnEnterDoor.classList.add('hidden');
             }
         }
     }

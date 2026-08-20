@@ -101,8 +101,8 @@ export class SceneManager2D {
         tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
         tex.repeat.set(10, 2);
 
-        this.bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(350, 80), new THREE.MeshBasicMaterial({ map: tex }));
-        this.bgMesh.position.set(100, 20, -15);
+        this.bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(800, 250), new THREE.MeshBasicMaterial({ map: tex }));
+        this.bgMesh.position.set(150, 15, -25);
         this.scene.add(this.bgMesh);
 
         this.createFloatingShapes(20 + level * 2);
