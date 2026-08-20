@@ -160,11 +160,11 @@ export class SceneManager2D {
             }
         }
 
-        // Plataforma Final Firme e Porta de Saída Bem Visível
-        currentX += 10;
-        const finalPlatformY = Math.max(2, Math.min(10, currentY));
-        this.createPlatform(currentX, finalPlatformY, 18, 2, 0x00ff88);
-        this.createExitDoor(currentX, finalPlatformY + 1.0);
+        // Plataforma Final Verde Firme e Porta Dourada de Saída Bem Destacada
+        currentX += 8;
+        const finalPlatformY = Math.max(2, Math.min(8, currentY));
+        this.createPlatform(currentX, finalPlatformY, 20, 2.5, 0x00ff88);
+        this.createExitDoor(currentX, finalPlatformY + 1.25);
     }
 
     // --- FASE 1: Tenda Principal do Circo ---

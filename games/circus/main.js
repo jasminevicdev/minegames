@@ -529,7 +529,7 @@ class Game2D {
 
             this.checkCollisions();
 
-            const targetX = Math.max(0, Math.min(135, this.player.position.x + 3.0));
+            const targetX = Math.max(0, this.player.position.x + 3.0);
             const targetY = Math.max(5, this.player.position.y + 2.0);
 
             this.camera.position.x += (targetX - this.camera.position.x) * 0.08;
