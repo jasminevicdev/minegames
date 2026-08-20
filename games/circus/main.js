@@ -195,23 +195,13 @@ class Game2D {
                     SaveManager.deletePlayer(name);
                     this.renderPlayersList();
                 } else {
-                    e.stopPropagation();
-                    this.playerName = name;
-                    SaveHub.setActivePlayer(name);
-                    const save = SaveManager.getPlayerSave(name);
-                    if (save) {
-                        this.currentLevel = save.savedLevel || 1;
-                        this.selectedCharacter = save.selectedCharacter || 'pomni';
-                    } else {
-                        this.currentLevel = 1;
-                        this.selectedCharacter = 'pomni';
-                    }
-                    this.startLevel(this.currentLevel);
+                    if (e) { e.preventDefault(); e.stopPropagation(); }
+                    this.openPlayerPanel(name);
                 }
             };
 
             card.addEventListener('click', handleSelectPlayer);
-            card.addEventListener('touchstart', handleSelectPlayer, { passive: true });
+            card.addEventListener('touchstart', handleSelectPlayer);
 
             this.playersList.appendChild(card);
         });
@@ -232,17 +222,25 @@ class Game2D {
         });
 
         // 1. Tela Home - Botões principais
-        this.btnNewPlayer.addEventListener('click', () => {
+        const handleOpenNewPlayer = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             this.hideAllOverlays();
             this.playerNameInput.value = '';
             this.newPlayerOverlay.classList.remove('hidden');
-        });
+        };
 
-        this.btnSelectPlayer.addEventListener('click', () => {
+        const handleOpenSelectPlayer = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             this.renderPlayersList();
             this.hideAllOverlays();
             this.selectPlayerOverlay.classList.remove('hidden');
-        });
+        };
+
+        this.btnNewPlayer.addEventListener('click', handleOpenNewPlayer);
+        this.btnNewPlayer.addEventListener('touchstart', handleOpenNewPlayer);
+
+        this.btnSelectPlayer.addEventListener('click', handleOpenSelectPlayer);
+        this.btnSelectPlayer.addEventListener('touchstart', handleOpenSelectPlayer);
 
         // 2. Novo Jogador
         this.btnCancelNewPlayer.addEventListener('click', () => {
@@ -268,47 +266,69 @@ class Game2D {
         });
 
         // 4. Painel do Jogador
-        this.btnPanelContinue.addEventListener('click', () => {
+        const handlePanelContinue = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             const save = SaveManager.getPlayerSave(this.playerName);
             if (save) {
                 this.currentLevel = save.savedLevel || 1;
                 this.selectedCharacter = save.selectedCharacter || 'pomni';
             }
             this.startLevel(this.currentLevel);
-        });
+        };
 
-        this.btnPanelChooseChar.addEventListener('click', () => {
+        const handlePanelChooseChar = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             this.updateCharacterCardsUI();
             this.hideAllOverlays();
             this.characterOverlay.classList.remove('hidden');
-        });
+        };
 
-        this.btnPanelRestartFresh.addEventListener('click', () => {
+        const handlePanelRestartFresh = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             this.currentLevel = 1;
             SaveManager.saveProgress(this.playerName, 1, this.selectedCharacter);
             this.startLevel(1);
-        });
+        };
 
-        this.btnPanelBack.addEventListener('click', () => {
+        const handlePanelBack = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             this.renderPlayersList();
             this.hideAllOverlays();
             this.selectPlayerOverlay.classList.remove('hidden');
-        });
+        };
+
+        this.btnPanelContinue.addEventListener('click', handlePanelContinue);
+        this.btnPanelContinue.addEventListener('touchstart', handlePanelContinue);
+
+        this.btnPanelChooseChar.addEventListener('click', handlePanelChooseChar);
+        this.btnPanelChooseChar.addEventListener('touchstart', handlePanelChooseChar);
+
+        this.btnPanelRestartFresh.addEventListener('click', handlePanelRestartFresh);
+        this.btnPanelRestartFresh.addEventListener('touchstart', handlePanelRestartFresh);
+
+        this.btnPanelBack.addEventListener('click', handlePanelBack);
+        this.btnPanelBack.addEventListener('touchstart', handlePanelBack);
 
         // 5. Seleção de Personagem
         const charCards = document.querySelectorAll('.char-card');
         charCards.forEach(card => {
-            card.addEventListener('click', () => {
+            const handleSelectChar = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 charCards.forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
                 this.selectedCharacter = card.dataset.char;
-            });
+            };
+            card.addEventListener('click', handleSelectChar);
+            card.addEventListener('touchstart', handleSelectChar);
         });
 
-        this.btnConfirmChar.addEventListener('click', () => {
+        const handleConfirmChar = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
             SaveManager.saveProgress(this.playerName, this.currentLevel, this.selectedCharacter);
             this.openPlayerPanel(this.playerName);
-        });
+        };
+        this.btnConfirmChar.addEventListener('click', handleConfirmChar);
+        this.btnConfirmChar.addEventListener('touchstart', handleConfirmChar);
 
         // Modais de Fim de Fase / Win / Gameover
         this.btnNextLevel.addEventListener('click', () => {
