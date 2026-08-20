@@ -190,7 +190,16 @@ class Game2D {
                     SaveManager.deletePlayer(name);
                     this.renderPlayersList();
                 } else {
-                    this.openPlayerPanel(name);
+                    this.playerName = name;
+                    const save = SaveManager.getPlayerSave(name);
+                    if (save) {
+                        this.currentLevel = save.savedLevel || 1;
+                        this.selectedCharacter = save.selectedCharacter || 'pomni';
+                    } else {
+                        this.currentLevel = 1;
+                        this.selectedCharacter = 'pomni';
+                    }
+                    this.startLevel(this.currentLevel);
                 }
             });
 
@@ -234,8 +243,11 @@ class Game2D {
                 alert('Por favor, digite seu nome!');
                 return;
             }
+            this.playerName = name;
+            this.selectedCharacter = 'pomni';
+            this.currentLevel = 1;
             SaveManager.saveProgress(name, 1, 'pomni');
-            this.openPlayerPanel(name);
+            this.startLevel(1);
         });
 
         // 3. Voltar da seleção de jogadores
