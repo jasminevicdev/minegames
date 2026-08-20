@@ -535,7 +535,7 @@ class Game2D {
 
         if (this.isGameActive) {
             this.player.update(delta, this.sceneManager.platforms, this.sceneManager.trampolines, this.sceneManager.hazards);
-            this.sceneManager.update(delta, time);
+            this.sceneManager.update(delta, time, this.camera.position);
 
             if (this.currentLevel === 20) {
                 this.bossManager.update(delta, time, this.player);

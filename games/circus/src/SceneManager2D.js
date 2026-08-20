@@ -101,8 +101,8 @@ export class SceneManager2D {
         tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
         tex.repeat.set(10, 2);
 
-        this.bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(800, 250), new THREE.MeshBasicMaterial({ map: tex }));
-        this.bgMesh.position.set(150, 15, -25);
+        this.bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(1500, 800), new THREE.MeshBasicMaterial({ map: tex }));
+        this.bgMesh.position.set(300, 20, -40);
         this.scene.add(this.bgMesh);
 
         this.createFloatingShapes(20 + level * 2);
@@ -558,7 +558,12 @@ export class SceneManager2D {
         return group;
     }
 
-    update(delta, time) {
+    update(delta, time, cameraPos) {
+        if (this.bgMesh && cameraPos) {
+            this.bgMesh.position.x = cameraPos.x;
+            this.bgMesh.position.y = cameraPos.y;
+        }
+
         this.decorations.forEach(d => {
             d.rotation.x += d.userData.rotSpeedX * delta;
             d.rotation.y += d.userData.rotSpeedY * delta;
