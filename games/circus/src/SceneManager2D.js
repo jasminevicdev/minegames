@@ -117,17 +117,23 @@ export class SceneManager2D {
         // Plataforma Inicial Segura
         this.createPlatform(currentX, currentY, 14, 2, 0x00d2ff);
 
-        // Gerar plataformas e desafios
+        // Gerar plataformas e desafios sem sobreposição de movimento
         for (let i = 0; i < numPlatforms; i++) {
-            const gap = 6 + Math.random() * (isHard ? 7 : 4);
-            const pWidth = Math.max(4, 10 - (level * 0.25));
+            const pWidth = Math.max(4, 10 - (level * 0.2));
             const pHeight = 1.5;
-            currentX += gap + pWidth / 2;
-            currentY += (Math.random() - 0.45) * (isHard ? 6 : 4);
-            currentY = Math.max(1, Math.min(16, currentY));
 
             const isMoving = (i % 2 === 0 && level >= 3) || isHard;
-            const moveRange = isMoving ? (3 + Math.random() * (isHard ? 5 : 3)) : 0;
+            // Limitar moveRange para evitar colisão entre plataformas vizinhas
+            const moveRange = isMoving ? Math.min(3.5, 2.0 + Math.random() * (isHard ? 2.5 : 1.5)) : 0;
+
+            // Gap dinâmico garantindo espaço para o moveRange da plataforma anterior e atual
+            const minRequiredGap = pWidth + (moveRange * 2.2) + 3.0;
+            const gap = minRequiredGap + Math.random() * (isHard ? 4 : 2);
+            currentX += gap;
+            
+            currentY += (Math.random() - 0.45) * (isHard ? 5 : 3.5);
+            currentY = Math.max(1.5, Math.min(15, currentY));
+
             const colors = [0xff2a5f, 0xffcc00, 0x00d2ff, 0x7000ff, 0x00ff88];
             const pColor = colors[i % colors.length];
 
@@ -570,9 +576,34 @@ export class SceneManager2D {
             d.position.y = d.userData.startY + Math.sin(time * d.userData.floatSpeed) * 0.8;
         });
 
-        this.platforms.forEach(p => {
+        this.platforms.forEach((p, idx) => {
             if (p.userData.isMoving) {
-                p.position.x = p.userData.startX + Math.sin(time * 1.5) * p.userData.moveRange;
+                // Sentido de oscilação individual
+                if (p.userData.direction === undefined) p.userData.direction = 1;
+                p.position.x += p.userData.direction * 3.0 * delta;
+
+                if (Math.abs(p.position.x - p.userData.startX) > p.userData.moveRange) {
+                    p.userData.direction *= -1;
+                }
+
+                // Colisão de blocos entre plataformas vizinhas (rebatimento)
+                for (let j = idx + 1; j < this.platforms.length; j++) {
+                    const other = this.platforms[j];
+                    const distHorizontal = Math.abs(p.position.x - other.position.x);
+                    const distVertical = Math.abs(p.position.y - other.position.y);
+                    const minDistX = (p.userData.width + other.userData.width) / 2 + 0.5;
+                    const minDistY = (p.userData.height + other.userData.height) / 2 + 0.2;
+
+                    if (distHorizontal < minDistX && distVertical < minDistY) {
+                        // Se houver contato/colisão, inverte o movimento dos blocos imediatamente!
+                        p.userData.direction *= -1;
+                        if (other.userData.isMoving) {
+                            if (other.userData.direction === undefined) other.userData.direction = -1;
+                            other.userData.direction *= -1;
+                        }
+                    }
+                }
+
                 p.userData.bounds.minX = p.position.x - p.userData.width / 2;
                 p.userData.bounds.maxX = p.position.x + p.userData.width / 2;
             }
