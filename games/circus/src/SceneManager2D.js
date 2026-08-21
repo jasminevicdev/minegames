@@ -147,15 +147,16 @@ export class SceneManager2D {
             // Cartola Coletável
             this.createCollectible(currentX, currentY + 3.0, i + 1);
 
-            // Perigos de Espinho / Glitch (Dificuldade aumentada após a fase 10)
-            if (i > 1 && (Math.random() < (isHard ? 0.65 : 0.35))) {
+            // Perigos de Espinho / Glitch (Somente a partir da Fase 6!)
+            const hasGlitches = level >= 6;
+            if (hasGlitches && i > 1 && (Math.random() < (isHard ? 0.65 : 0.35))) {
                 const hX = currentX + (Math.random() - 0.5) * pWidth;
                 const hY = currentY - (isHard ? (2.0 + Math.random() * 2) : 2.5);
                 this.createHazard(hX, hY, isHard ? 2.2 : 1.6, isHard ? 2.2 : 1.6);
             }
 
-            // Monstros Patrulhando (Fase > 10 tem mais monstros e mais rápidos)
-            if (i > 0 && (Math.random() < (isHard ? 0.7 : 0.3))) {
+            // Monstros Patrulhando (Fases 1 a 5 sem monstros agressivos; Monstros Glitch surgem a partir da Fase 6)
+            if (hasGlitches && i > 0 && (Math.random() < (isHard ? 0.7 : 0.35))) {
                 const mX = currentX;
                 const mY = currentY + 1.2;
                 const monster = this.createMonster(mX, mY, isHard ? 4.5 : 3.0);

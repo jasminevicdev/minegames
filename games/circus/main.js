@@ -506,12 +506,18 @@ class Game2D {
         if (this.currentLevel < 20) {
             this.scoreDisplay.innerText = `${this.score} / ${this.totalCollectibles}`;
             const isHard = this.currentLevel > 10;
+            const hasGlitches = this.currentLevel >= 6;
 
             if (this.score === 0) {
-                this.dialogueText.innerText = isHard
-                    ? `⚠️ FASE DIFICULTADA ${this.currentLevel}! ${this.playerName}, monstros mais rápidos e espinhos glitch a frente!`
-                    : `Bem-vindo ao Circo, ${this.playerName}! (${charName}) Colete todas as ${this.totalCollectibles} Cartolas Mágicas!`;
-                this.dialogueText.style.color = isHard ? "#ff2a5f" : "#ffffff";
+                if (hasGlitches) {
+                    this.dialogueText.innerText = isHard
+                        ? `⚠️ FASE DIFICULTADA ${this.currentLevel}! ${this.playerName}, monstros mais rápidos e espinhos glitch a frente!`
+                        : `⚠️ ATENÇÃO ${this.playerName}! A partir da FASE 6 surgem os perigos GLITCH e monstros patrulhando! Cuidado!`;
+                    this.dialogueText.style.color = isHard ? "#ff2a5f" : "#ffcc00";
+                } else {
+                    this.dialogueText.innerText = `🎪 FASE ${this.currentLevel} FÁCIL! Bem-vindo ${this.playerName} (${charName})! Colete todas as ${this.totalCollectibles} Cartolas e avance tranquilo!`;
+                    this.dialogueText.style.color = "#00d2ff";
+                }
             } else if (this.score === Math.floor(this.totalCollectibles / 2)) {
                 this.dialogueText.innerText = `Metade coletada na Fase ${this.currentLevel}, ${this.playerName}! Continue avançando!`;
             } else if (this.score === this.totalCollectibles) {
