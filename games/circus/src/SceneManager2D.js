@@ -119,20 +119,23 @@ export class SceneManager2D {
 
         // Gerar plataformas e desafios sem sobreposição de movimento
         for (let i = 0; i < numPlatforms; i++) {
-            const pWidth = Math.max(5.5, 10 - (level * 0.15));
+            // A largura diminui levemente a cada nível (ficando mais desafiador)
+            const pWidth = Math.max(4.5, 9.5 - (level * 0.25));
             const pHeight = 1.5;
 
             const isMoving = (i % 2 === 0 && level >= 3) || isHard;
             // Limitar moveRange para movimento suave e sem colisão
-            const moveRange = isMoving ? Math.min(2.5, 1.2 + Math.random() * (isHard ? 1.5 : 1.0)) : 0;
+            const moveRange = isMoving ? Math.min(2.8, 1.2 + Math.random() * (isHard ? 1.8 : 1.0)) : 0;
 
-            // Gap ajustado para manter os blocos bem próximos e agradáveis de saltar
-            const minRequiredGap = pWidth * 0.6 + (moveRange * 1.2) + (isHard ? 2.5 : 1.5);
-            const gap = minRequiredGap + Math.random() * (isHard ? 2.0 : 1.0);
+            // Progresso gradual de distância: a "intimidade" diminui (distância aumenta) a cada nível
+            // Na Fase 1 o espaço base é ~4.5 unidades (confortável, não grudado). A cada fase aumenta gradativamente.
+            const levelDistanceIncrease = (level - 1) * 0.4;
+            const minRequiredGap = pWidth + 3.5 + levelDistanceIncrease + (moveRange * 1.3);
+            const gap = minRequiredGap + Math.random() * (isHard ? 2.5 : 1.2);
             currentX += gap;
             
-            currentY += (Math.random() - 0.45) * (isHard ? 3.5 : 2.0);
-            currentY = Math.max(1.5, Math.min(13, currentY));
+            currentY += (Math.random() - 0.45) * (isHard ? 4.0 : 2.5);
+            currentY = Math.max(1.5, Math.min(14, currentY));
 
             const colors = [0xff2a5f, 0xffcc00, 0x00d2ff, 0x7000ff, 0x00ff88];
             const pColor = colors[i % colors.length];
