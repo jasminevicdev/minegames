@@ -243,18 +243,115 @@ export class Player2D {
 
     shootPower() {
         if (this.shootCooldown > 0) return;
-        this.shootCooldown = 0.25; // 250ms entre rajadas de estrelas
+        this.shootCooldown = 0.22; // Cooldown ágil de disparo
 
-        const starGeo = new THREE.OctahedronGeometry(0.5);
-        const starMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });
-        const star = new THREE.Mesh(starGeo, starMat);
-        star.position.set(this.position.x + (this.facingRight ? 1.0 : -1.0), this.position.y, 0);
-
+        let projMesh;
         const dir = this.facingRight ? 1 : -1;
-        star.userData = { vx: dir * 22.0, vy: 1.5 };
+        const startX = this.position.x + (this.facingRight ? 1.2 : -1.2);
+        const startY = this.position.y;
 
-        this.scene.add(star);
-        this.projectiles.push(star);
+        const charType = (this.characterType || 'pomni').toLowerCase();
+
+        if (charType === 'caine') {
+            // CAINE: BARRA DE CENSURA CÂNONICA DE PREENCHIMENTO E TEXTO CENSOR [CENSOR]
+            const group = new THREE.Group();
+            const censorBar = new THREE.Mesh(
+                new THREE.BoxGeometry(1.6, 0.6, 0.4),
+                new THREE.MeshBasicMaterial({ color: 0x000000 })
+            );
+            const borderBar = new THREE.Mesh(
+                new THREE.BoxGeometry(1.7, 0.7, 0.35),
+                new THREE.MeshBasicMaterial({ color: 0xff0044 })
+            );
+            group.add(borderBar);
+            group.add(censorBar);
+
+            // Adicionar sinalizador neon na barra de censura
+            const textSign = new THREE.Mesh(
+                new THREE.BoxGeometry(1.2, 0.25, 0.45),
+                new THREE.MeshBasicMaterial({ color: 0xffcc00 })
+            );
+            group.add(textSign);
+
+            group.userData = { vx: dir * 25.0, vy: 0, rotSpeed: 0, isCensor: true };
+            projMesh = group;
+
+        } else if (charType === 'jax') {
+            // JAX: CENOURA DE ELETRICIDADE 🥕⚡
+            const group = new THREE.Group();
+            const carrotGeo = new THREE.ConeGeometry(0.35, 1.2, 8);
+            const carrotMat = new THREE.MeshStandardMaterial({ color: 0xff6600, emissive: 0xff3300, emissiveIntensity: 0.5 });
+            const carrot = new THREE.Mesh(carrotGeo, carrotMat);
+            carrot.rotation.z = -Math.PI / 2 * dir;
+
+            const leafGeo = new THREE.BoxGeometry(0.2, 0.4, 0.2);
+            const leafMat = new THREE.MeshBasicMaterial({ color: 0x00ff44 });
+            const leaf = new THREE.Mesh(leafGeo, leafMat);
+            leaf.position.set(-0.6 * dir, 0, 0);
+
+            group.add(carrot);
+            group.add(leaf);
+            group.userData = { vx: dir * 24.0, vy: 1.0, rotSpeed: 12.0 };
+            projMesh = group;
+
+        } else if (charType === 'kinger') {
+            // KINGER: PEÇA DE XADREZ REI MÁGICO ♔✨
+            const group = new THREE.Group();
+            const kingBase = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.4, 0.5, 1.1, 12),
+                new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffcc00, emissiveIntensity: 0.6 })
+            );
+            const cross = new THREE.Mesh(
+                new THREE.BoxGeometry(0.3, 0.3, 0.3),
+                new THREE.MeshBasicMaterial({ color: 0xffcc00 })
+            );
+            cross.position.y = 0.7;
+            group.add(kingBase);
+            group.add(cross);
+
+            group.userData = { vx: dir * 22.0, vy: 2.0, rotSpeed: 8.0 };
+            projMesh = group;
+
+        } else if (charType === 'gangle') {
+            // GANGLE: FITA ESPIRAL DE SEDA 🎀
+            const ribbonGeo = new THREE.TorusGeometry(0.5, 0.15, 8, 24);
+            const ribbonMat = new THREE.MeshStandardMaterial({ color: 0xff2a5f, emissive: 0xff2a5f, emissiveIntensity: 0.8 });
+            projMesh = new THREE.Mesh(ribbonGeo, ribbonMat);
+            projMesh.userData = { vx: dir * 21.0, vy: 1.2, rotSpeed: 15.0 };
+
+        } else if (charType === 'zooble') {
+            // ZOOBLE: PEÇA GLITCH GEOMÉTRICA 🧩⚡
+            const pieceGeo = new THREE.DodecahedronGeometry(0.55);
+            const pieceMat = new THREE.MeshStandardMaterial({ color: 0x7000ff, emissive: 0x00d2ff, emissiveIntensity: 0.9, wireframe: true });
+            projMesh = new THREE.Mesh(pieceGeo, pieceMat);
+            projMesh.userData = { vx: dir * 23.0, vy: 0.8, rotSpeed: 14.0 };
+
+        } else if (charType === 'bubble') {
+            // BOLHA: BOLHA ÁCIDA DE SABÃO 🫧🧪
+            const bubbleGeo = new THREE.SphereGeometry(0.6, 16, 16);
+            const bubbleMat = new THREE.MeshStandardMaterial({
+                color: 0x00ff88,
+                emissive: 0x00ff88,
+                emissiveIntensity: 0.7,
+                transparent: true,
+                opacity: 0.8
+            });
+            projMesh = new THREE.Mesh(bubbleGeo, bubbleMat);
+            projMesh.userData = { vx: dir * 20.0, vy: 1.8, rotSpeed: 5.0 };
+
+        } else {
+            // POMNI (OU JAZ / JOGADOR PADRÃO): DADO DA SORTE COLORIDO 🎲
+            const diceGeo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+            const diceMat = new THREE.MeshStandardMaterial({ color: 0xffcc00, emissive: 0xff2a5f, emissiveIntensity: 0.6 });
+            projMesh = new THREE.Mesh(diceGeo, diceMat);
+            projMesh.userData = { vx: dir * 22.0, vy: 1.5, rotSpeed: 10.0 };
+        }
+
+        projMesh.position.set(startX, startY, 0);
+        projMesh.userData.active = true;
+
+        this.scene.add(projMesh);
+        this.projectiles.push(projMesh);
 
         if (this.soundManager) this.soundManager.playCollect();
     }
@@ -330,7 +427,9 @@ export class Player2D {
             const p = this.projectiles[i];
             p.position.x += p.userData.vx * delta;
             p.position.y += p.userData.vy * delta;
-            p.rotation.z += delta * 10.0;
+
+            const rotSpeed = p.userData.rotSpeed !== undefined ? p.userData.rotSpeed : 10.0;
+            p.rotation.z += delta * rotSpeed;
 
             if (Math.abs(p.position.x - this.position.x) > 35) {
                 this.scene.remove(p);
