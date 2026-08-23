@@ -358,6 +358,7 @@ export class Player2D {
 
         projMesh.position.set(startX, startY, 0);
         projMesh.userData.active = true;
+        projMesh.userData.lifeTimer = 5.0; // Desaparece obrigatoriamente após 5 segundos
 
         this.scene.add(projMesh);
         this.projectiles.push(projMesh);
@@ -431,7 +432,7 @@ export class Player2D {
         this.position.x += this.velocity.x * delta;
         this.position.y += this.velocity.y * delta;
 
-        // Projéteis de Poder do Jogador
+        // Projéteis de Poder do Jogador (auto-destruição em no máximo 5 segundos)
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const p = this.projectiles[i];
             p.position.x += p.userData.vx * delta;
@@ -440,7 +441,12 @@ export class Player2D {
             const rotSpeed = p.userData.rotSpeed !== undefined ? p.userData.rotSpeed : 10.0;
             p.rotation.z += delta * rotSpeed;
 
-            if (Math.abs(p.position.x - this.position.x) > 35) {
+            if (p.userData.lifeTimer !== undefined) {
+                p.userData.lifeTimer -= delta;
+            }
+
+            // Elimina o projétil se o tempo de 5s expirar OU se sair da distância do jogador
+            if ((p.userData.lifeTimer !== undefined && p.userData.lifeTimer <= 0) || Math.abs(p.position.x - this.position.x) > 35) {
                 this.scene.remove(p);
                 this.projectiles.splice(i, 1);
             }
