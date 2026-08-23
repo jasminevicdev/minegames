@@ -253,28 +253,37 @@ export class Player2D {
         const charType = (this.characterType || 'pomni').toLowerCase();
 
         if (charType === 'caine') {
-            // CAINE: BARRA DE CENSURA CÂNONICA DE PREENCHIMENTO E TEXTO CENSOR [CENSOR]
-            const group = new THREE.Group();
-            const censorBar = new THREE.Mesh(
-                new THREE.BoxGeometry(1.6, 0.6, 0.4),
-                new THREE.MeshBasicMaterial({ color: 0x000000 })
-            );
-            const borderBar = new THREE.Mesh(
-                new THREE.BoxGeometry(1.7, 0.7, 0.35),
-                new THREE.MeshBasicMaterial({ color: 0xff0044 })
-            );
-            group.add(borderBar);
-            group.add(censorBar);
+            // CAINE: BARRA DE CENSURA CÂNONICA INCLINADA COM PADRÃO DE HASHTAGS (#)
+            const censorCanvas = document.createElement('canvas');
+            censorCanvas.width = 256; censorCanvas.height = 128;
+            const ctx = censorCanvas.getContext('2d');
 
-            // Adicionar sinalizador neon na barra de censura
-            const textSign = new THREE.Mesh(
-                new THREE.BoxGeometry(1.2, 0.25, 0.45),
-                new THREE.MeshBasicMaterial({ color: 0xffcc00 })
-            );
-            group.add(textSign);
+            // Fundo preto com borda rosa/vermelha neon
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 256, 128);
+            ctx.strokeStyle = '#ff0055';
+            ctx.lineWidth = 10;
+            ctx.strokeRect(5, 5, 246, 118);
 
-            group.userData = { vx: dir * 25.0, vy: 0, rotSpeed: 0, isCensor: true };
-            projMesh = group;
+            // Desenhar tramas de hashtags (# # #) estilizadas em vermelho e branco
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 38px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('### CENSOR ###', 128, 64);
+
+            const censorTex = new THREE.CanvasTexture(censorCanvas);
+
+            const censorMesh = new THREE.Mesh(
+                new THREE.BoxGeometry(2.0, 0.85, 0.4),
+                new THREE.MeshBasicMaterial({ map: censorTex })
+            );
+
+            // Inclinação característica "meio torta" (-12 graus)
+            censorMesh.rotation.z = -0.2 * dir;
+
+            censorMesh.userData = { vx: dir * 25.0, vy: 0, rotSpeed: 0, isCensor: true };
+            projMesh = censorMesh;
 
         } else if (charType === 'jax') {
             // JAX: CENOURA DE ELETRICIDADE 🥕⚡
