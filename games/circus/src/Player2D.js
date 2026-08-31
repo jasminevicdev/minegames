@@ -253,21 +253,21 @@ export class Player2D {
         const charType = (this.characterType || 'pomni').toLowerCase();
 
         if (charType === 'caine') {
-            // CAINE: BARRA DE CENSURA CÂNONICA INCLINADA COM PADRÃO DE HASHTAGS (#)
+            // CAINE: BARRA DE CENSURA CÂNONICA INCLINADA COM TEXTURA ### CENSOR ### E BRILHO NEON
+            const group = new THREE.Group();
             const censorCanvas = document.createElement('canvas');
             censorCanvas.width = 256; censorCanvas.height = 128;
             const ctx = censorCanvas.getContext('2d');
 
-            // Fundo preto com borda rosa/vermelha neon
-            ctx.fillStyle = '#000000';
+            ctx.fillStyle = '#05000a';
             ctx.fillRect(0, 0, 256, 128);
             ctx.strokeStyle = '#ff0055';
-            ctx.lineWidth = 10;
-            ctx.strokeRect(5, 5, 246, 118);
+            ctx.lineWidth = 12;
+            ctx.strokeRect(6, 6, 244, 116);
 
-            // Desenhar tramas de hashtags (# # #) estilizadas em vermelho e branco
+            // Título CENSOR em destaque
             ctx.fillStyle = '#ffffff';
-            ctx.font = '900 38px monospace';
+            ctx.font = '900 36px monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('### CENSOR ###', 128, 64);
@@ -275,85 +275,157 @@ export class Player2D {
             const censorTex = new THREE.CanvasTexture(censorCanvas);
 
             const censorMesh = new THREE.Mesh(
-                new THREE.BoxGeometry(2.0, 0.85, 0.4),
-                new THREE.MeshBasicMaterial({ map: censorTex })
+                new THREE.BoxGeometry(2.2, 0.95, 0.4),
+                new THREE.MeshStandardMaterial({ map: censorTex, emissive: 0xff0044, emissiveIntensity: 0.5, roughness: 0.2 })
             );
 
-            // Inclinação característica "meio torta" (-12 graus)
-            censorMesh.rotation.z = -0.2 * dir;
+            // Halo/brilho de censura glitch atrás da barra
+            const auraGlow = new THREE.Mesh(
+                new THREE.BoxGeometry(2.4, 1.1, 0.2),
+                new THREE.MeshBasicMaterial({ color: 0xff0055, transparent: true, opacity: 0.4 })
+            );
+            group.add(auraGlow);
+            group.add(censorMesh);
 
-            censorMesh.userData = { vx: dir * 25.0, vy: 0, rotSpeed: 0, isCensor: true };
-            projMesh = censorMesh;
+            group.rotation.z = -0.22 * dir;
+            group.userData = { vx: dir * 26.0, vy: 0, rotSpeed: 0, char: 'caine' };
+            projMesh = group;
 
         } else if (charType === 'jax') {
-            // JAX: CENOURA DE ELETRICIDADE 🥕⚡
+            // JAX: CENOURA ELÉTRICA 3D ULTRA DETALHADA COM FAÍSCAS 🥕⚡
             const group = new THREE.Group();
-            const carrotGeo = new THREE.ConeGeometry(0.35, 1.2, 8);
-            const carrotMat = new THREE.MeshStandardMaterial({ color: 0xff6600, emissive: 0xff3300, emissiveIntensity: 0.5 });
+            
+            // Corpo da Cenoura
+            const carrotGeo = new THREE.ConeGeometry(0.4, 1.4, 12);
+            const carrotMat = new THREE.MeshStandardMaterial({ color: 0xff5500, emissive: 0xff2200, emissiveIntensity: 0.6, roughness: 0.3 });
             const carrot = new THREE.Mesh(carrotGeo, carrotMat);
             carrot.rotation.z = -Math.PI / 2 * dir;
 
-            const leafGeo = new THREE.BoxGeometry(0.2, 0.4, 0.2);
-            const leafMat = new THREE.MeshBasicMaterial({ color: 0x00ff44 });
+            // Anéis de eletricidade da cenoura
+            const ringGeo = new THREE.TorusGeometry(0.3, 0.06, 8, 16);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.y = Math.PI / 2;
+            group.add(ring);
+
+            // Rama Verde no topo
+            const leafGeo = new THREE.ConeGeometry(0.25, 0.6, 6);
+            const leafMat = new THREE.MeshStandardMaterial({ color: 0x00ff44, emissive: 0x00aa22, emissiveIntensity: 0.8 });
             const leaf = new THREE.Mesh(leafGeo, leafMat);
-            leaf.position.set(-0.6 * dir, 0, 0);
+            leaf.position.set(-0.75 * dir, 0.1, 0);
+            leaf.rotation.z = Math.PI / 3 * dir;
 
             group.add(carrot);
             group.add(leaf);
-            group.userData = { vx: dir * 24.0, vy: 1.0, rotSpeed: 12.0 };
+            group.userData = { vx: dir * 25.0, vy: 0.8, rotSpeed: 14.0, char: 'jax' };
             projMesh = group;
 
         } else if (charType === 'kinger') {
-            // KINGER: PEÇA DE XADREZ REI MÁGICO ♔✨
+            // KINGER: REI DE XADREZ MÁGICO 3D COM COROA DOURADA E AURA ♔✨
             const group = new THREE.Group();
-            const kingBase = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.4, 0.5, 1.1, 12),
-                new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffcc00, emissiveIntensity: 0.6 })
-            );
-            const cross = new THREE.Mesh(
-                new THREE.BoxGeometry(0.3, 0.3, 0.3),
-                new THREE.MeshBasicMaterial({ color: 0xffcc00 })
-            );
-            cross.position.y = 0.7;
-            group.add(kingBase);
-            group.add(cross);
+            
+            // Base e corpo da peça
+            const bodyGeo = new THREE.CylinderGeometry(0.3, 0.55, 1.2, 16);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffcc00, emissiveIntensity: 0.6, roughness: 0.1 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            group.add(body);
 
-            group.userData = { vx: dir * 22.0, vy: 2.0, rotSpeed: 8.0 };
+            // Coroa com Cruz Sagrada
+            const crossVertical = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.45, 0.12), new THREE.MeshBasicMaterial({ color: 0xffd700 }));
+            crossVertical.position.y = 0.8;
+            const crossHorizontal = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.12, 0.12), new THREE.MeshBasicMaterial({ color: 0xffd700 }));
+            crossHorizontal.position.y = 0.8;
+            group.add(crossVertical);
+            group.add(crossHorizontal);
+
+            // Anel Mágico Orbonico em volta do Rei
+            const orbRing = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.05, 8, 20), new THREE.MeshBasicMaterial({ color: 0xffcc00 }));
+            orbRing.rotation.x = Math.PI / 3;
+            group.add(orbRing);
+
+            group.userData = { vx: dir * 23.0, vy: 1.5, rotSpeed: 8.0, char: 'kinger' };
             projMesh = group;
 
         } else if (charType === 'gangle') {
-            // GANGLE: FITA ESPIRAL DE SEDA 🎀
-            const ribbonGeo = new THREE.TorusGeometry(0.5, 0.15, 8, 24);
-            const ribbonMat = new THREE.MeshStandardMaterial({ color: 0xff2a5f, emissive: 0xff2a5f, emissiveIntensity: 0.8 });
-            projMesh = new THREE.Mesh(ribbonGeo, ribbonMat);
-            projMesh.userData = { vx: dir * 21.0, vy: 1.2, rotSpeed: 15.0 };
+            // GANGLE: LAÇO DUPLO DE SEDA ESPIRAL GLAMOUR 🎀
+            const group = new THREE.Group();
+            
+            const ribbonGeo1 = new THREE.TorusGeometry(0.55, 0.12, 10, 32);
+            const ribbonMat1 = new THREE.MeshStandardMaterial({ color: 0xff2a5f, emissive: 0xff0055, emissiveIntensity: 0.9, roughness: 0.2 });
+            const ribbon1 = new THREE.Mesh(ribbonGeo1, ribbonMat1);
+
+            const ribbonGeo2 = new THREE.TorusGeometry(0.35, 0.08, 10, 32);
+            const ribbonMat2 = new THREE.MeshStandardMaterial({ color: 0xffcc00, emissive: 0xffaa00, emissiveIntensity: 0.8 });
+            const ribbon2 = new THREE.Mesh(ribbonGeo2, ribbonMat2);
+            ribbon2.rotation.x = Math.PI / 2;
+
+            group.add(ribbon1);
+            group.add(ribbon2);
+            group.userData = { vx: dir * 22.0, vy: 1.0, rotSpeed: 18.0, char: 'gangle' };
+            projMesh = group;
 
         } else if (charType === 'zooble') {
-            // ZOOBLE: PEÇA GLITCH GEOMÉTRICA 🧩⚡
-            const pieceGeo = new THREE.DodecahedronGeometry(0.55);
-            const pieceMat = new THREE.MeshStandardMaterial({ color: 0x7000ff, emissive: 0x00d2ff, emissiveIntensity: 0.9, wireframe: true });
-            projMesh = new THREE.Mesh(pieceGeo, pieceMat);
-            projMesh.userData = { vx: dir * 23.0, vy: 0.8, rotSpeed: 14.0 };
+            // ZOOBLE: CRISTAL GLITCH DODECAEDRO MATRIX 🧩⚡
+            const group = new THREE.Group();
+            
+            const outerGeo = new THREE.DodecahedronGeometry(0.6);
+            const outerMat = new THREE.MeshStandardMaterial({ color: 0x7000ff, emissive: 0x00d2ff, emissiveIntensity: 0.9, wireframe: true });
+            const outer = new THREE.Mesh(outerGeo, outerMat);
+
+            const innerGeo = new THREE.OctahedronGeometry(0.35);
+            const innerMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });
+            const inner = new THREE.Mesh(innerGeo, innerMat);
+
+            group.add(outer);
+            group.add(inner);
+            group.userData = { vx: dir * 24.0, vy: 0.8, rotSpeed: 16.0, char: 'zooble' };
+            projMesh = group;
 
         } else if (charType === 'bubble') {
-            // BOLHA: BOLHA ÁCIDA DE SABÃO 🫧🧪
-            const bubbleGeo = new THREE.SphereGeometry(0.6, 16, 16);
-            const bubbleMat = new THREE.MeshStandardMaterial({
+            // BOLHA: ESFERA DE SABÃO IRIDESCENTE ÁCIDA COM BOLHAS INTERNAS 🫧🧪
+            const group = new THREE.Group();
+            
+            const mainBubbleGeo = new THREE.SphereGeometry(0.65, 24, 24);
+            const mainBubbleMat = new THREE.MeshStandardMaterial({
                 color: 0x00ff88,
-                emissive: 0x00ff88,
-                emissiveIntensity: 0.7,
+                emissive: 0x00ffaa,
+                emissiveIntensity: 0.6,
                 transparent: true,
-                opacity: 0.8
+                opacity: 0.75,
+                roughness: 0.1
             });
-            projMesh = new THREE.Mesh(bubbleGeo, bubbleMat);
-            projMesh.userData = { vx: dir * 20.0, vy: 1.8, rotSpeed: 5.0 };
+            const mainBubble = new THREE.Mesh(mainBubbleGeo, mainBubbleMat);
+
+            // Mini bolhas orbitantes
+            for (let b = 0; b < 3; b++) {
+                const subGeo = new THREE.SphereGeometry(0.18, 12, 12);
+                const subMat = new THREE.MeshBasicMaterial({ color: 0xaaff00, transparent: true, opacity: 0.9 });
+                const sub = new THREE.Mesh(subGeo, subMat);
+                const angle = (b / 3) * Math.PI * 2;
+                sub.position.set(Math.cos(angle) * 0.45, Math.sin(angle) * 0.45, 0);
+                group.add(sub);
+            }
+
+            group.add(mainBubble);
+            group.userData = { vx: dir * 21.0, vy: 1.6, rotSpeed: 6.0, char: 'bubble' };
+            projMesh = group;
 
         } else {
-            // POMNI (OU JAZ / JOGADOR PADRÃO): DADO DA SORTE COLORIDO 🎲
-            const diceGeo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
-            const diceMat = new THREE.MeshStandardMaterial({ color: 0xffcc00, emissive: 0xff2a5f, emissiveIntensity: 0.6 });
-            projMesh = new THREE.Mesh(diceGeo, diceMat);
-            projMesh.userData = { vx: dir * 22.0, vy: 1.5, rotSpeed: 10.0 };
+            // POMNI (OU JAZ): DADO DA SORTE MAGICO 3D COM PONTOS NEON 🎲
+            const group = new THREE.Group();
+            const diceGeo = new THREE.BoxGeometry(0.75, 0.75, 0.75);
+            const diceMat = new THREE.MeshStandardMaterial({ color: 0xffcc00, emissive: 0xff2a5f, emissiveIntensity: 0.7, roughness: 0.2 });
+            const dice = new THREE.Mesh(diceGeo, diceMat);
+
+            // Moldura brilhante do dado
+            const frameGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+            const frameMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff, wireframe: true });
+            const frame = new THREE.Mesh(frameGeo, frameMat);
+
+            group.add(dice);
+            group.add(frame);
+            group.userData = { vx: dir * 23.0, vy: 1.2, rotSpeed: 12.0, char: 'pomni' };
+            projMesh = group;
         }
 
         projMesh.position.set(startX, startY, 0);
