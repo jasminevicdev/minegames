@@ -199,9 +199,22 @@
 
         // Meshes da Cobra e Maçã
         let snakeMeshes = [];
+        
+        const appleGroup = new THREE.Group();
         const appleGeo = new THREE.SphereGeometry(0.45, 16, 16);
         const appleMat = new THREE.MeshStandardMaterial({ color: 0xff2a5f, emissive: 0xff2a5f, emissiveIntensity: 0.6 });
-        const appleMesh = new THREE.Mesh(appleGeo, appleMat);
+        const appleCore = new THREE.Mesh(appleGeo, appleMat);
+        appleGroup.add(appleCore);
+
+        // Folhinha da maçã
+        const leafGeo = new THREE.ConeGeometry(0.15, 0.3, 4);
+        const leafMat = new THREE.MeshStandardMaterial({ color: 0x00ff88, emissive: 0x00aa55, emissiveIntensity: 0.8 });
+        const leaf = new THREE.Mesh(leafGeo, leafMat);
+        leaf.position.set(0.1, 0.45, 0);
+        leaf.rotation.z = -0.5;
+        appleGroup.add(leaf);
+
+        const appleMesh = appleGroup;
         scene.add(appleMesh);
 
         function initPlayer() {
@@ -278,41 +291,67 @@
             snake.forEach((seg, idx) => {
                 const isHead = idx === 0;
 
-                // Cobra Circular: Uso de Esferas (SphereGeometry) com raio maior na cabeça
-                const radius = isHead ? 0.48 : 0.42;
-                const geo = new THREE.SphereGeometry(radius, 20, 20);
+                // Tapering: body size decreases towards the tail
+                const progress = idx / Math.max(1, snake.length - 1);
+                let radius = isHead ? 0.48 : 0.42 * (1 - 0.4 * progress); // gradually goes down to 0.25 at the tail
+                
+                // Adding a slightly jagged / scale-like geometry by using Icosahedron
+                const geo = isHead ? new THREE.SphereGeometry(radius, 24, 24) : new THREE.IcosahedronGeometry(radius, 1);
 
                 const mat = new THREE.MeshStandardMaterial({
                     color: isHead ? style.headColor : style.bodyColor,
                     emissive: isHead ? style.headColor : style.emissive,
-                    emissiveIntensity: isHead ? 0.6 : 0.25,
-                    roughness: 0.3
+                    emissiveIntensity: isHead ? 0.7 : 0.3,
+                    roughness: isHead ? 0.3 : 0.6,
+                    metalness: 0.1
                 });
 
                 const mesh = new THREE.Mesh(geo, mat);
                 mesh.position.set(seg.x, seg.y, 0);
 
-                // Se for a cabeça, adiciona olhinhos estilo 3D fofos
                 if (isHead) {
-                    const eyeGeo = new THREE.SphereGeometry(0.1, 10, 10);
+                    // Rotação da cabeça baseada na direção atual
+                    const angle = Math.atan2(snakeDirection.y, snakeDirection.x);
+                    mesh.rotation.z = angle;
+
+                    // Olhos (agora apontando para +X, local space)
+                    const eyeGeo = new THREE.SphereGeometry(0.12, 12, 12);
                     const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
                     const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
+                    // Olho Esquerdo (Y positivo no local space)
                     const eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
-                    eyeLeft.position.set(-0.16, 0.18, 0.32);
-                    mesh.add(eyeLeft);
+                    eyeLeft.position.set(0.25, 0.22, 0.25);
+                    const pupilLeft = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), pupilMat);
+                    pupilLeft.position.set(0.33, 0.25, 0.32);
+                    mesh.add(eyeLeft); mesh.add(pupilLeft);
 
-                    const pupilLeft = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), pupilMat);
-                    pupilLeft.position.set(-0.16, 0.18, 0.4);
-                    mesh.add(pupilLeft);
-
+                    // Olho Direito (Y negativo no local space)
                     const eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
-                    eyeRight.position.set(0.16, 0.18, 0.32);
-                    mesh.add(eyeRight);
+                    eyeRight.position.set(0.25, -0.22, 0.25);
+                    const pupilRight = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), pupilMat);
+                    pupilRight.position.set(0.33, -0.25, 0.32);
+                    mesh.add(eyeRight); mesh.add(pupilRight);
 
-                    const pupilRight = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), pupilMat);
-                    pupilRight.position.set(0.16, 0.18, 0.4);
-                    mesh.add(pupilRight);
+                    // Língua bifurcada de cobra (Saindo pela frente em X)
+                    const tongueGeo = new THREE.BoxGeometry(0.3, 0.04, 0.02);
+                    const tongueMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
+                    const tongue = new THREE.Mesh(tongueGeo, tongueMat);
+                    tongue.position.set(0.55, 0, 0);
+                    
+                    const forkGeo = new THREE.BoxGeometry(0.1, 0.02, 0.02);
+                    const fork1 = new THREE.Mesh(forkGeo, tongueMat);
+                    fork1.position.set(0.15, 0.04, 0);
+                    fork1.rotation.z = 0.5;
+                    const fork2 = new THREE.Mesh(forkGeo, tongueMat);
+                    fork2.position.set(0.15, -0.04, 0);
+                    fork2.rotation.z = -0.5;
+
+                    tongue.add(fork1); tongue.add(fork2);
+                    mesh.add(tongue);
+                } else {
+                    // Rotação suave do corpo para parecer mais natural (alternando)
+                    mesh.rotation.z = (idx % 2 === 0 ? 0.3 : -0.3);
                 }
 
                 scene.add(mesh);
