@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 
 export class Player2D {
-    constructor(scene, soundManager, characterType = 'pomni') {
+    constructor(scene, soundManager, characterType = 'pomni', powerType = 'normal') {
         this.scene = scene;
         this.soundManager = soundManager;
         this.characterType = characterType;
+        this.powerType = powerType;
 
         this.position = new THREE.Vector3(0, 4, 0);
         this.velocity = new THREE.Vector2(0, 0);
@@ -82,6 +83,17 @@ export class Player2D {
         }
         this.health = this.maxHealth;
         this.jumpsLeft = this.maxJumps;
+
+        // Aplica os modificadores do Poder Especial
+        if (this.powerType === 'speed') {
+            this.speed *= 1.5;
+        } else if (this.powerType === 'jump') {
+            this.jumpForce *= 1.25;
+            this.gravity *= 0.85;
+        } else if (this.powerType === 'shield') {
+            this.maxHealth += 3;
+            this.health = this.maxHealth;
+        }
     }
 
     createCharacterTexture() {
@@ -243,7 +255,7 @@ export class Player2D {
 
     shootPower() {
         if (this.shootCooldown > 0) return;
-        this.shootCooldown = 0.22; // Cooldown ágil de disparo
+        this.shootCooldown = this.powerType === 'rapidfire' ? 0.08 : 0.22; // Cooldown ágil ou muito rápido
 
         let projMesh;
         const dir = this.facingRight ? 1 : -1;

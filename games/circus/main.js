@@ -24,6 +24,7 @@ class Game2D {
         this.selectPlayerOverlay = document.getElementById('select-player-overlay');
         this.playerPanelOverlay = document.getElementById('player-panel-overlay');
         this.characterOverlay = document.getElementById('character-overlay');
+        this.powerOverlay = document.getElementById('power-overlay');
 
         this.levelOverlay = document.getElementById('level-overlay');
         this.winOverlay = document.getElementById('win-overlay');
@@ -47,9 +48,11 @@ class Game2D {
         this.panelPlayerInfo = document.getElementById('panel-player-info');
         this.btnPanelContinue = document.getElementById('btn-panel-continue');
         this.btnPanelChooseChar = document.getElementById('btn-panel-choose-char');
+        this.btnPanelChoosePower = document.getElementById('btn-panel-choose-power');
         this.btnPanelRestartFresh = document.getElementById('btn-panel-restart-fresh');
         this.btnPanelBack = document.getElementById('btn-panel-back');
         this.btnConfirmChar = document.getElementById('btn-confirm-char');
+        this.btnConfirmPower = document.getElementById('btn-confirm-power');
 
         // Outros Botões
         this.btnHome = document.getElementById('btn-home');
@@ -69,6 +72,7 @@ class Game2D {
         this.totalCollectibles = 8;
         this.currentLevel = 1;
         this.selectedCharacter = 'pomni';
+        this.selectedPower = 'normal';
         this.isGameActive = false;
         this.clock = new THREE.Clock();
 
@@ -103,7 +107,7 @@ class Game2D {
         this.sceneManager = new SceneManager2D();
         this.bossManager = new BossManager(this.sceneManager.scene, this.soundManager);
         this.sceneManager.loadLevel(1);
-        this.player = new Player2D(this.sceneManager.scene, this.soundManager, this.selectedCharacter);
+        this.player = new Player2D(this.sceneManager.scene, this.soundManager, this.selectedCharacter, this.selectedPower);
     }
 
     hideAllOverlays() {
@@ -112,6 +116,7 @@ class Game2D {
         this.selectPlayerOverlay.classList.add('hidden');
         this.playerPanelOverlay.classList.add('hidden');
         this.characterOverlay.classList.add('hidden');
+        this.powerOverlay.classList.add('hidden');
         this.levelOverlay.classList.add('hidden');
         this.winOverlay.classList.add('hidden');
         this.gameOverOverlay.classList.add('hidden');
@@ -133,7 +138,8 @@ class Game2D {
         if (saveData) {
             this.currentLevel = saveData.savedLevel || 1;
             this.selectedCharacter = saveData.selectedCharacter || 'pomni';
-            this.panelPlayerInfo.innerText = `Fase Salva: ${this.currentLevel} | Personagem: ${this.selectedCharacter.toUpperCase()}`;
+            this.selectedPower = saveData.selectedPower || 'normal';
+            this.panelPlayerInfo.innerText = `Fase Salva: ${this.currentLevel} | Personagem: ${this.selectedCharacter.toUpperCase()} | Poder: ${this.selectedPower.toUpperCase()}`;
 
             if (this.currentLevel > 1) {
                 this.btnPanelContinue.classList.remove('hidden');
@@ -144,11 +150,13 @@ class Game2D {
         } else {
             this.currentLevel = 1;
             this.selectedCharacter = 'pomni';
-            this.panelPlayerInfo.innerText = `Fase Inicial | Personagem: POMNI`;
+            this.selectedPower = 'normal';
+            this.panelPlayerInfo.innerText = `Fase Inicial | Personagem: POMNI | Poder: NORMAL`;
             this.btnPanelContinue.classList.add('hidden');
         }
 
         this.updateCharacterCardsUI();
+        this.updatePowerCardsUI();
         this.hideAllOverlays();
         this.playerPanelOverlay.classList.remove('hidden');
     }
@@ -157,6 +165,17 @@ class Game2D {
         const charCards = document.querySelectorAll('.char-card');
         charCards.forEach(c => {
             if (c.dataset.char === this.selectedCharacter) {
+                c.classList.add('active');
+            } else {
+                c.classList.remove('active');
+            }
+        });
+    }
+
+    updatePowerCardsUI() {
+        const powerCards = document.querySelectorAll('#power-selector .char-card');
+        powerCards.forEach(c => {
+            if (c.dataset.power === this.selectedPower) {
                 c.classList.add('active');
             } else {
                 c.classList.remove('active');
@@ -256,7 +275,7 @@ class Game2D {
             this.playerName = name;
             this.selectedCharacter = 'pomni';
             this.currentLevel = 1;
-            SaveManager.saveProgress(name, 1, 'pomni');
+            SaveManager.saveProgress(this.playerName, 1, 'pomni', 'normal');
             this.startLevel(1);
         });
 
@@ -286,7 +305,7 @@ class Game2D {
         const handlePanelRestartFresh = (e) => {
             if (e) { e.preventDefault(); e.stopPropagation(); }
             this.currentLevel = 1;
-            SaveManager.saveProgress(this.playerName, 1, this.selectedCharacter);
+            SaveManager.saveProgress(this.playerName, 1, this.selectedCharacter, this.selectedPower);
             this.startLevel(1);
         };
 
@@ -303,6 +322,15 @@ class Game2D {
         this.btnPanelChooseChar.addEventListener('click', handlePanelChooseChar);
         this.btnPanelChooseChar.addEventListener('touchstart', handlePanelChooseChar);
 
+        const handlePanelChoosePower = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            this.updatePowerCardsUI();
+            this.hideAllOverlays();
+            this.powerOverlay.classList.remove('hidden');
+        };
+        this.btnPanelChoosePower.addEventListener('click', handlePanelChoosePower);
+        this.btnPanelChoosePower.addEventListener('touchstart', handlePanelChoosePower);
+
         this.btnPanelRestartFresh.addEventListener('click', handlePanelRestartFresh);
         this.btnPanelRestartFresh.addEventListener('touchstart', handlePanelRestartFresh);
 
@@ -310,7 +338,7 @@ class Game2D {
         this.btnPanelBack.addEventListener('touchstart', handlePanelBack);
 
         // 5. Seleção de Personagem
-        const charCards = document.querySelectorAll('.char-card');
+        const charCards = document.querySelectorAll('#character-selector .char-card');
         charCards.forEach(card => {
             const handleSelectChar = (e) => {
                 if (e) { e.preventDefault(); e.stopPropagation(); }
@@ -324,22 +352,43 @@ class Game2D {
 
         const handleConfirmChar = (e) => {
             if (e) { e.preventDefault(); e.stopPropagation(); }
-            SaveManager.saveProgress(this.playerName, this.currentLevel, this.selectedCharacter);
+            SaveManager.saveProgress(this.playerName, this.currentLevel, this.selectedCharacter, this.selectedPower);
             this.openPlayerPanel(this.playerName);
         };
         this.btnConfirmChar.addEventListener('click', handleConfirmChar);
         this.btnConfirmChar.addEventListener('touchstart', handleConfirmChar);
 
+        // 6. Seleção de Poder
+        const powerCards = document.querySelectorAll('#power-selector .char-card');
+        powerCards.forEach(card => {
+            const handleSelectPower = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                powerCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                this.selectedPower = card.dataset.power;
+            };
+            card.addEventListener('click', handleSelectPower);
+            card.addEventListener('touchstart', handleSelectPower);
+        });
+
+        const handleConfirmPower = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            SaveManager.saveProgress(this.playerName, this.currentLevel, this.selectedCharacter, this.selectedPower);
+            this.openPlayerPanel(this.playerName);
+        };
+        this.btnConfirmPower.addEventListener('click', handleConfirmPower);
+        this.btnConfirmPower.addEventListener('touchstart', handleConfirmPower);
+
         // Modais de Fim de Fase / Win / Gameover
         this.btnNextLevel.addEventListener('click', () => {
             this.currentLevel++;
-            SaveManager.saveProgress(this.playerName, this.currentLevel, this.selectedCharacter);
+            SaveManager.saveProgress(this.playerName, this.currentLevel, this.selectedCharacter, this.selectedPower);
             this.startLevel(this.currentLevel);
         });
 
         this.btnRestart.addEventListener('click', () => {
             this.currentLevel = 1;
-            SaveManager.saveProgress(this.playerName, 1, this.selectedCharacter);
+            SaveManager.saveProgress(this.playerName, 1, this.selectedCharacter, this.selectedPower);
             this.startLevel(1);
         });
 
@@ -545,7 +594,7 @@ class Game2D {
 
         if (this.currentLevel < 20) {
             const nextLvl = this.currentLevel + 1;
-            SaveManager.saveProgress(this.playerName, nextLvl, this.selectedCharacter);
+            SaveManager.saveProgress(this.playerName, nextLvl, this.selectedCharacter, this.selectedPower);
             this.levelOverlayText.innerText = `Fase ${this.currentLevel} Concluída! Progresso salvo para a Fase ${nextLvl}!`;
             this.levelOverlay.classList.remove('hidden');
         } else {

@@ -9,7 +9,8 @@ export class SaveManager {
         return {
             playerName: active.name,
             savedLevel: gameSave.level || 1,
-            selectedCharacter: gameSave.character || 'pomni'
+            selectedCharacter: gameSave.character || 'pomni',
+            selectedPower: gameSave.power || 'normal'
         };
     }
 
@@ -28,7 +29,8 @@ export class SaveManager {
                 saves[name] = {
                     playerName: name,
                     savedLevel: circusSave.level || 1,
-                    selectedCharacter: circusSave.character || 'pomni'
+                    selectedCharacter: circusSave.character || 'pomni',
+                    selectedPower: circusSave.power || 'normal'
                 };
             });
         }
@@ -43,16 +45,18 @@ export class SaveManager {
         return {
             playerName: target,
             savedLevel: circusSave.level || 1,
-            selectedCharacter: circusSave.character || 'pomni'
+            selectedCharacter: circusSave.character || 'pomni',
+            selectedPower: circusSave.power || 'normal'
         };
     }
 
-    static saveProgress(playerName, levelNumber, characterType) {
+    static saveProgress(playerName, levelNumber, characterType, powerType = 'normal') {
         SaveHub.createPlayer(playerName);
         SaveHub.setActivePlayer(playerName);
         return SaveHub.updateGameSave('circus', {
             level: levelNumber || 1,
-            character: characterType || 'pomni'
+            character: characterType || 'pomni',
+            power: powerType
         }, playerName);
     }
 
