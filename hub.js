@@ -360,7 +360,7 @@ class GameHub {
         const btnMobileInfo = document.getElementById('btn-mobile-info');
         if (btnMobileInfo) {
             btnMobileInfo.addEventListener('click', () => {
-                alert("📱 COMO JOGAR NO CELULAR:\n\n1. Conecte seu celular na mesma rede Wi-Fi deste computador.\n2. Abra o navegador do celular (Chrome ou Safari).\n3. Digite o endereço na barra do navegador:\n\nhttp://192.168.1.13:3000\n\nTodos os jogos possuem controles virtuais na tela para celular!");
+                alert("🌍 COMO JOGAR EM QUALQUER CELULAR (QUALQUER WI-FI OU 4G/5G):\n\nAcesse o link oficial online de qualquer lugar do mundo:\n👉 https://jasminevicdev.github.io/minegames/\n\n🏠 Ou na rede local de casa:\nhttp://192.168.1.13:3000\n\nTodos os jogos possuem controles virtuais na tela para celular!");
             });
         }
 

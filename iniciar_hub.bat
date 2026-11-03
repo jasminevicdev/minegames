@@ -12,14 +12,14 @@ echo.
 echo [2/3] Servidor online e disponivel para computadores e celulares!
 echo.
 echo --------------------------------------------------------
-echo   COMO JOGAR NO CELULAR (no mesmo Wi-Fi):
-echo   Abra o navegador do seu celular (Chrome/Safari) e digite:
+echo   ACESSO GLOBAL (QUALQUER WI-FI, 4G OU 5G NO MUNDO):
+echo   https://jasminevicdev.github.io/minegames/
 echo.
+echo   ACESSO LOCAL (NO MESMO WI-FI DE CASA):
 echo   http://192.168.1.13:3000
-echo.
 echo --------------------------------------------------------
-echo   ATENCAO: Mantenha esta janelinha aberta enquanto joga!
-echo   Para fechar o servidor, basta fechar esta janela.
+echo   ATENCAO: No link global acima, o site funciona 24h
+echo   mesmo com o computador desligado!
 echo --------------------------------------------------------
 echo.
 c:\python311\python.exe -m http.server 3000 --bind 0.0.0.0
