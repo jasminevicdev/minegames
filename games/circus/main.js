@@ -337,9 +337,21 @@ class Game2D {
         this.btnPanelBack.addEventListener('click', handlePanelBack);
         this.btnPanelBack.addEventListener('touchstart', handlePanelBack);
 
-        // 5. Seleção de Personagem
+        // 5. Seleção de Personagem (com Retratos Ilustrados HD)
         const charCards = document.querySelectorAll('#character-selector .char-card');
         charCards.forEach(card => {
+            const charKey = card.dataset.char;
+            const iconBox = card.querySelector('.char-icon');
+            if (iconBox && charKey && typeof Player2D.drawCharacterOnCanvas === 'function') {
+                const portraitCanvas = document.createElement('canvas');
+                portraitCanvas.width = 160;
+                portraitCanvas.height = 160;
+                portraitCanvas.className = 'char-portrait-canvas';
+                Player2D.drawCharacterOnCanvas(portraitCanvas, charKey);
+                iconBox.innerHTML = '';
+                iconBox.appendChild(portraitCanvas);
+            }
+
             const handleSelectChar = (e) => {
                 if (e) { e.preventDefault(); e.stopPropagation(); }
                 charCards.forEach(c => c.classList.remove('active'));

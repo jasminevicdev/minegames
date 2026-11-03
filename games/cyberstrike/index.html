@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#060814">
+    <title>Cyber Strike 16:9 — Jogo de Ação Espacial Mobile & Desktop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #060814;
+            --panel-bg: rgba(15, 23, 42, 0.85);
+            --primary-cyan: #00d2ff;
+            --primary-pink: #ff2a5f;
+            --primary-yellow: #ffcc00;
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Fredoka', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            overflow-x: hidden;
+        }
+
+        /* Container do Jogo Estrito 16:9 */
+        #game-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            background: #090d1f;
+            border: 3px solid rgba(0, 210, 255, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 210, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        #game-wrapper:fullscreen {
+            max-width: 100vw;
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            border: none;
+            justify-content: center;
+        }
+
+        /* Área de Canvas 16:9 */
+        .viewport-16-9 {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            touch-action: none;
+        }
+
+        /* HUD Superior Sobreposto */
+        .in-game-hud {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            right: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .hud-badge {
+            background: rgba(6, 8, 20, 0.75);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hud-value {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--primary-cyan);
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        .hud-lives {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        /* ================= CONTROLES VIRTUAIS TOUCH (MOBILE) ================= */
+        .touch-controls-layer {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            display: none;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        /* Exibe controles touch em celulares ou telas com toque */
+        @media (max-width: 900px), (pointer: coarse) {
+            .touch-controls-layer {
+                display: flex;
+            }
+        }
+
+        .touch-dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 48px);
+            grid-template-rows: repeat(3, 48px);
+            gap: 4px;
+            pointer-events: auto;
+        }
+
+        .touch-btn {
+            background: rgba(15, 23, 42, 0.75);
+            border: 2px solid rgba(0, 210, 255, 0.5);
+            color: #00d2ff;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            touch-action: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.1s, background 0.1s;
+        }
+
+        .touch-btn:active, .touch-btn.pressed {
+            background: rgba(0, 210, 255, 0.45);
+            color: #ffffff;
+            transform: scale(0.92);
+        }
+
+        .dpad-up    { grid-column: 2; grid-row: 1; }
+        .dpad-left  { grid-column: 1; grid-row: 2; }
+        .dpad-down  { grid-column: 2; grid-row: 3; }
+        .dpad-right { grid-column: 3; grid-row: 2; }
+
+        .touch-fire-btn {
+            pointer-events: auto;
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 42, 95, 0.85), rgba(225, 29, 72, 0.85));
+            border: 3px solid #ff2a5f;
+            color: #ffffff;
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(255, 42, 95, 0.6);
+            touch-action: none;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .touch-fire-btn:active, .touch-fire-btn.pressed {
+            transform: scale(0.9);
+            background: linear-gradient(135deg, #ff2a5f, #f43f5e);
+        }
+
+        /* Telas de Overlay (Menu e Game Over) */
+        .overlay-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(6, 8, 20, 0.88);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 20;
+            transition: opacity 0.25s ease;
+        }
+
+        .overlay-screen.hidden {
+            display: none !important;
+        }
+
+        .tag-pill {
+            background: rgba(0, 210, 255, 0.15);
+            border: 1.5px solid var(--primary-cyan);
+            color: var(--primary-cyan);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .screen-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 25px rgba(0, 210, 255, 0.6);
+        }
+
+        .screen-desc {
+            font-size: clamp(0.85rem, 2vw, 1.05rem);
+            color: #cbd5e1;
+            max-width: 480px;
+            margin-bottom: 20px;
+            line-height: 1.35;
+        }
+
+        .btn-action-main {
+            background: linear-gradient(135deg, var(--primary-cyan), #4f46e5);
+            color: #ffffff;
+            font-family: var(--font-heading);
+            font-size: 1.15rem;
+            font-weight: 900;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-action-main:hover {
+            transform: scale(1.06);
+            box-shadow: 0 14px 40px rgba(0, 210, 255, 0.6);
+        }
+
+        .btn-action-main:active {
+            transform: scale(0.98);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--primary-pink), #e11d48);
+            box-shadow: 0 10px 30px rgba(255, 42, 95, 0.4);
+        }
+
+        .controls-hint-box {
+            margin-top: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 16px;
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        kbd {
+            background: #1e293b;
+            color: var(--primary-yellow);
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-family: monospace;
+        }
+
+        /* Barra de Controle Inferior (Proporção 16:9 Player Control Bar) */
+        .player-bar {
+            background: rgba(9, 13, 31, 0.95);
+            border-top: 2px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-game-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pulse-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-cyan);
+            box-shadow: 0 0 10px var(--primary-cyan);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        .game-title-text {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        .player-tag {
+            font-size: 0.72rem;
+            background: rgba(0, 210, 255, 0.12);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            color: var(--primary-cyan);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .player-controls-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-ctrl {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 7px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-ctrl:hover {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        .btn-ctrl.btn-fav.active {
+            background: rgba(255, 42, 95, 0.2);
+            border-color: var(--primary-pink);
+            color: #ff6b8b;
+        }
+
+        .btn-ctrl-primary {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #6366f1;
+        }
+
+        .mobile-tip {
+            font-size: 0.72rem;
+            color: var(--primary-yellow);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 6px; }
+            .hide-mobile { display: none; }
+            .hud-badge { padding: 4px 8px; }
+            .hud-label { display: none; }
+            .hud-value { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container Principal do Jogo com Proporção Fixa 16:9 -->
+    <div id="game-wrapper">
+        
+        <!-- Viewport do Canvas em 16:9 -->
+        <div class="viewport-16-9" id="viewport">
+            
+            <canvas id="game-canvas" width="1280" height="720"></canvas>
+
+            <!-- HUD em Jogo -->
+            <div id="hud-in-game" class="in-game-hud" style="display: none;">
+                <div class="hud-badge">
+                    <span class="hud-label">PONTOS:</span>
+                    <span id="hud-score" class="hud-value">0</span>
+                </div>
+                <div class="hud-badge">
+                    <span class="hud-label">JOGADOR:</span>
+                    <span id="hud-player" class="hud-value" style="color: #ffcc00;">JAS</span>
+                </div>
+                <div class="hud-badge">
+                    <span class="hud-label">VIDAS:</span>
+                    <span id="hud-lives" class="hud-lives">❤️❤️❤️</span>
+                </div>
+            </div>
+
+            <!-- Camada de Controles Touch Virtuais para Celular/Tablet -->
+            <div class="touch-controls-layer" id="touch-controls">
+                <div class="touch-dpad">
+                    <button id="touch-up" class="touch-btn dpad-up" aria-label="Subir">▲</button>
+                    <button id="touch-left" class="touch-btn dpad-left" aria-label="Esquerda">◀</button>
+                    <button id="touch-down" class="touch-btn dpad-down" aria-label="Descer">▼</button>
+                    <button id="touch-right" class="touch-btn dpad-right" aria-label="Direita">▶</button>
+                </div>
+
+                <button id="touch-fire" class="touch-fire-btn" aria-label="Disparar Laser">
+                    <span>⚡</span>
+                    <span style="font-size: 0.65rem; letter-spacing: 1px;">ATIRAR</span>
+                </button>
+            </div>
+
+            <!-- Overlay: Menu Inicial -->
+            <div id="screen-menu" class="overlay-screen">
+                <span class="tag-pill">AÇÃO ESPACIAL • MOBILE & DESKTOP</span>
+                <h1 class="screen-title">CYBER STRIKE 16:9</h1>
+                <p class="screen-desc">
+                    Pilote o caça estelar cibernético, destrua as frotas inimigas com tiros de laser neon e conquiste o maior recorde!
+                </p>
+                <button id="btn-start-game" class="btn-action-main">JOGAR AGORA ▶</button>
+                
+                <div class="controls-hint-box">
+                    <span>📱 <strong>No Celular:</strong> Use o D-pad virtual, botão ⚡ ou arraste o dedo na tela!</span>
+                    <span class="hide-mobile">💻 <strong>No PC:</strong> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Mover • <kbd>Espaço</kbd> Atirar</span>
+                </div>
+            </div>
+
+            <!-- Overlay: Game Over -->
+            <div id="screen-gameover" class="overlay-screen hidden">
+                <span class="tag-pill" style="border-color: var(--primary-pink); color: var(--primary-pink);">FIM DE COMBATE</span>
+                <h2 class="screen-title" style="color: var(--primary-pink);">SISTEMA ABSTRATO!</h2>
+                <p class="screen-desc">Sua nave foi destruída no espaço digital.</p>
+                
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div class="hud-badge" style="flex-direction: column;">
+                        <span class="hud-label" style="display:block;">PONTOS</span>
+                        <span id="go-score" class="hud-value">0</span>
+                    </div>
+                    <div class="hud-badge" style="flex-direction: column; border-color: var(--primary-yellow);">
+                        <span class="hud-label" style="display:block;">RECORDE</span>
+                        <span id="go-best" class="hud-value" style="color: var(--primary-yellow);">0</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                    <button id="btn-restart-game" class="btn-action-main btn-danger">JOGAR NOVAMENTE 🔄</button>
+                    <a href="../../index.html" class="btn-ctrl" style="padding: 12px 20px; font-size: 0.95rem;">🏠 VOLTAR AO HUB</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Barra de Ações Inferior (Controles Integrados) -->
+        <div class="player-bar">
+            <div class="player-game-info">
+                <div class="pulse-indicator"></div>
+                <span class="game-title-text">CYBER STRIKE</span>
+                <span class="player-tag">16:9 HD</span>
+            </div>
+
+            <div class="player-controls-group">
+                <!-- Botão Voltar ao Hub -->
+                <a href="../../index.html" class="btn-ctrl" title="Voltar ao Hub">
+                    🏠 <span class="hide-mobile">Hub</span>
+                </a>
+
+                <!-- Botão Reiniciar -->
+                <button id="btn-ctrl-restart" class="btn-ctrl" title="Reiniciar Partida">
+                    🔄 <span class="hide-mobile">Reiniciar</span>
+                </button>
+
+                <!-- Botão Favoritar -->
+                <button id="btn-ctrl-favorite" class="btn-ctrl btn-fav" title="Favoritar">
+                    <span id="fav-icon">🤍</span> <span id="fav-text">Favoritar</span>
+                </button>
+
+                <!-- Botão Tela Cheia -->
+                <button id="btn-ctrl-fullscreen" class="btn-ctrl btn-ctrl-primary" title="Tela Cheia">
+                    ⛶ <span>Tela Cheia</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <p class="mobile-tip">📱 Dica no Celular: Gire o aparelho na horizontal para uma visão panorâmica perfeita!</p>
+
+    <!-- Módulo de Lógica do Jogo e Integração com SaveHub -->
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        // 1. Áudio Web API Sintetizado
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+            laser() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            }
+            explosion() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.25);
+            }
+        }
+        const sfx = new SoundFX();
+
+        // 2. Elementos DOM
+        const gameWrapper = document.getElementById('game-wrapper');
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const hudInGame = document.getElementById('hud-in-game');
+        const hudScore = document.getElementById('hud-score');
+        const hudPlayer = document.getElementById('hud-player');
+        const hudLives = document.getElementById('hud-lives');
+
+        const screenMenu = document.getElementById('screen-menu');
+        const screenGameover = document.getElementById('screen-gameover');
+        const goScore = document.getElementById('go-score');
+        const goBest = document.getElementById('go-best');
+
+        const btnStart = document.getElementById('btn-start-game');
+        const btnRestart = document.getElementById('btn-restart-game');
+        const btnCtrlRestart = document.getElementById('btn-ctrl-restart');
+        const btnCtrlFav = document.getElementById('btn-ctrl-favorite');
+        const btnCtrlFS = document.getElementById('btn-ctrl-fullscreen');
+        const favIcon = document.getElementById('fav-icon');
+        const favText = document.getElementById('fav-text');
+
+        // 3. Informações do Jogador no SaveHub
+        const activePlayer = SaveHub.getActivePlayer() || { name: 'JOGADOR' };
+        hudPlayer.innerText = activePlayer.name.toUpperCase();
+
+        const currentSave = SaveHub.getGameSave('cyberstrike', activePlayer.name);
+        let highScore = currentSave.highScore || 0;
+
+        // 4. Sistema de Favoritos
+        const FAV_KEY = `fav_cyberstrike_${activePlayer.name}`;
+        let isFavorite = localStorage.getItem(FAV_KEY) === 'true';
+
+        function updateFavUI() {
+            if (isFavorite) {
+                btnCtrlFav.classList.add('active');
+                favIcon.innerText = '❤️';
+                favText.innerText = 'Favoritado';
+            } else {
+                btnCtrlFav.classList.remove('active');
+                favIcon.innerText = '🤍';
+                favText.innerText = 'Favoritar';
+            }
+        }
+        updateFavUI();
+
+        btnCtrlFav.addEventListener('click', () => {
+            isFavorite = !isFavorite;
+            localStorage.setItem(FAV_KEY, isFavorite);
+            updateFavUI();
+        });
+
+        // 5. Alternar Tela Cheia
+        btnCtrlFS.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                gameWrapper.requestFullscreen().catch(e => console.error(e));
+            } else {
+                document.exitFullscreen().catch(e => console.error(e));
+            }
+        });
+
+        // 6. Estado e Loop do Jogo
+        const V_WIDTH = 1280;
+        const V_HEIGHT = 720;
+        let gameState = 'menu';
+        let score = 0;
+        let lives = 3;
+        let lastShotTime = 0;
+        let spawnCount = 0;
+
+        const player = {
+            x: 140,
+            y: V_HEIGHT / 2,
+            width: 44,
+            height: 28,
+            speed: 7.5
+        };
+
+        const keys = {
+            KeyW: false, KeyS: false, KeyA: false, KeyD: false,
+            ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false,
+            Space: false
+        };
+
+        let bullets = [];
+        let enemies = [];
+        let particles = [];
+        let stars = [];
+
+        for (let i = 0; i < 90; i++) {
+            stars.push({
+                x: Math.random() * V_WIDTH,
+                y: Math.random() * V_HEIGHT,
+                size: Math.random() * 2 + 1,
+                speed: Math.random() * 2.5 + 0.8
+            });
+        }
+
+        function startGame() {
+            sfx.init();
+            score = 0;
+            lives = 3;
+            player.x = 140;
+            player.y = V_HEIGHT / 2;
+            bullets = [];
+            enemies = [];
+            particles = [];
+            spawnCount = 0;
+
+            hudScore.innerText = '0';
+            hudLives.innerText = '❤️❤️❤️';
+
+            screenMenu.classList.add('hidden');
+            screenGameover.classList.add('hidden');
+            hudInGame.style.display = 'flex';
+            gameState = 'playing';
+        }
+
+        function gameOver() {
+            gameState = 'gameover';
+            hudInGame.style.display = 'none';
+
+            if (score > highScore) {
+                highScore = score;
+                SaveHub.updateGameSave('cyberstrike', { highScore }, activePlayer.name);
+            }
+
+            goScore.innerText = score;
+            goBest.innerText = highScore;
+            screenGameover.classList.remove('hidden');
+        }
+
+        btnStart.addEventListener('click', startGame);
+        btnRestart.addEventListener('click', startGame);
+        btnCtrlRestart.addEventListener('click', startGame);
+
+        // ================= CONTROLES: TECLADO =================
+        window.addEventListener('keydown', (e) => {
+            if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                e.preventDefault();
+            }
+            if (keys.hasOwnProperty(e.code)) keys[e.code] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.code)) keys[e.code] = false;
+        });
+
+        // ================= CONTROLES TOUCH: BOTÕES VIRTUAIS =================
+        const bindTouchBtn = (el, keyMap) => {
+            if (!el) return;
+            const startPress = (e) => {
+                e.preventDefault();
+                el.classList.add('pressed');
+                keys[keyMap] = true;
+                sfx.init();
+            };
+            const endPress = (e) => {
+                e.preventDefault();
+                el.classList.remove('pressed');
+                keys[keyMap] = false;
+            };
+
+            el.addEventListener('touchstart', startPress, { passive: false });
+            el.addEventListener('touchend', endPress, { passive: false });
+            el.addEventListener('touchcancel', endPress, { passive: false });
+            el.addEventListener('mousedown', startPress);
+            el.addEventListener('mouseup', endPress);
+            el.addEventListener('mouseleave', endPress);
+        };
+
+        bindTouchBtn(document.getElementById('touch-up'), 'ArrowUp');
+        bindTouchBtn(document.getElementById('touch-down'), 'ArrowDown');
+        bindTouchBtn(document.getElementById('touch-left'), 'ArrowLeft');
+        bindTouchBtn(document.getElementById('touch-right'), 'ArrowRight');
+        bindTouchBtn(document.getElementById('touch-fire'), 'Space');
+
+        // ================= CONTROLES TOUCH: ARRASTAR DEDO NA TELA =================
+        let isTouchingCanvas = false;
+
+        function handleCanvasTouch(touch) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = V_WIDTH / rect.width;
+            const scaleY = V_HEIGHT / rect.height;
+            const targetX = (touch.clientX - rect.left) * scaleX;
+            const targetY = (touch.clientY - rect.top) * scaleY;
+
+            player.x = Math.max(40, Math.min(V_WIDTH - 80, targetX - 30));
+            player.y = Math.max(30, Math.min(V_HEIGHT - 40, targetY));
+        }
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (gameState === 'playing' && e.touches.length > 0) {
+                isTouchingCanvas = true;
+                keys.Space = true; // Atira enquanto guia
+                sfx.init();
+                handleCanvasTouch(e.touches[0]);
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (isTouchingCanvas && gameState === 'playing' && e.touches.length > 0) {
+                e.preventDefault();
+                handleCanvasTouch(e.touches[0]);
+            }
+        }, { passive: false });
+
+        const endTouch = () => {
+            isTouchingCanvas = false;
+            // Só solta o tiro se o botão virtual de tiro também não estiver pressionado
+            const fireBtn = document.getElementById('touch-fire');
+            if (!fireBtn || !fireBtn.classList.contains('pressed')) {
+                keys.Space = false;
+            }
+        };
+        canvas.addEventListener('touchend', endTouch);
+        canvas.addEventListener('touchcancel', endTouch);
+
+        // Disparo por clique com mouse no Desktop
+        canvas.addEventListener('mousedown', () => { if (gameState === 'playing') keys.Space = true; });
+        canvas.addEventListener('mouseup', () => { keys.Space = false; });
+
+        // Loop de Renderização
+        function gameLoop(timestamp) {
+            ctx.fillStyle = '#060814';
+            ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+
+            ctx.fillStyle = '#64748b';
+            stars.forEach(s => {
+                s.x -= s.speed;
+                if (s.x < 0) s.x = V_WIDTH;
+                ctx.fillRect(s.x, s.y, s.size, s.size);
+            });
+
+            if (gameState === 'playing') {
+                if ((keys.KeyW || keys.ArrowUp) && player.y > 20) player.y -= player.speed;
+                if ((keys.KeyS || keys.ArrowDown) && player.y < V_HEIGHT - 35) player.y += player.speed;
+                if ((keys.KeyA || keys.ArrowLeft) && player.x > 30) player.x -= player.speed;
+                if ((keys.KeyD || keys.ArrowRight) && player.x < V_WIDTH - 60) player.x += player.speed;
+
+                if (keys.Space && timestamp - lastShotTime > 160) {
+                    bullets.push({ x: player.x + 36, y: player.y });
+                    sfx.laser();
+                    lastShotTime = timestamp;
+                }
+
+                spawnCount++;
+                if (spawnCount % 35 === 0) {
+                    const isFast = Math.random() > 0.65;
+                    enemies.push({
+                        x: V_WIDTH + 20,
+                        y: Math.random() * (V_HEIGHT - 120) + 60,
+                        width: isFast ? 32 : 44,
+                        height: isFast ? 22 : 36,
+                        speed: isFast ? 8.5 : 4.5,
+                        hp: isFast ? 1 : 2,
+                        color: isFast ? '#ff2a5f' : '#a855f7'
+                    });
+                }
+
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    const b = bullets[i];
+                    b.x += 18;
+
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = '#00d2ff';
+                    ctx.fillStyle = '#22d3ee';
+                    ctx.fillRect(b.x, b.y - 3, 20, 6);
+                    ctx.shadowBlur = 0;
+
+                    if (b.x > V_WIDTH) bullets.splice(i, 1);
+                }
+
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    const e = enemies[i];
+                    e.x -= e.speed;
+
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = e.color;
+                    ctx.fillStyle = e.color;
+                    ctx.beginPath();
+                    ctx.moveTo(e.x, e.y);
+                    ctx.lineTo(e.x - e.width, e.y - e.height / 2);
+                    ctx.lineTo(e.x - e.width * 0.7, e.y);
+                    ctx.lineTo(e.x - e.width, e.y + e.height / 2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    for (let j = bullets.length - 1; j >= 0; j--) {
+                        const b = bullets[j];
+                        if (
+                            b.x > e.x - e.width &&
+                            b.x < e.x &&
+                            b.y > e.y - e.height / 2 &&
+                            b.y < e.y + e.height / 2
+                        ) {
+                            e.hp--;
+                            bullets.splice(j, 1);
+
+                            for (let p = 0; p < 6; p++) {
+                                particles.push({
+                                    x: b.x, y: b.y,
+                                    vx: (Math.random() - 0.5) * 6,
+                                    vy: (Math.random() - 0.5) * 6,
+                                    life: 18, color: '#22d3ee'
+                                });
+                            }
+
+                            if (e.hp <= 0) {
+                                sfx.explosion();
+                                score += 150;
+                                hudScore.innerText = score;
+
+                                for (let p = 0; p < 18; p++) {
+                                    particles.push({
+                                        x: e.x, y: e.y,
+                                        vx: (Math.random() - 0.5) * 10,
+                                        vy: (Math.random() - 0.5) * 10,
+                                        life: 28, color: e.color
+                                    });
+                                }
+                                enemies.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (e && Math.abs(e.x - player.x) < 32 && Math.abs(e.y - player.y) < 26) {
+                        sfx.explosion();
+                        enemies.splice(i, 1);
+                        lives--;
+                        
+                        hudLives.innerText = '❤️'.repeat(Math.max(0, lives));
+
+                        for (let p = 0; p < 25; p++) {
+                            particles.push({
+                                x: player.x, y: player.y,
+                                vx: (Math.random() - 0.5) * 8,
+                                vy: (Math.random() - 0.5) * 8,
+                                life: 32, color: '#00d2ff'
+                            });
+                        }
+
+                        if (lives <= 0) {
+                            gameOver();
+                        }
+                    }
+
+                    if (e && e.x < -50) enemies.splice(i, 1);
+                }
+
+                ctx.shadowBlur = 14;
+                ctx.shadowColor = '#00d2ff';
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.moveTo(player.x + 30, player.y);
+                ctx.lineTo(player.x - 20, player.y - 14);
+                ctx.lineTo(player.x - 10, player.y);
+                ctx.lineTo(player.x - 20, player.y + 14);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = Math.random() > 0.5 ? '#f97316' : '#ffcc00';
+                ctx.beginPath();
+                ctx.moveTo(player.x - 12, player.y - 6);
+                ctx.lineTo(player.x - 28 - Math.random() * 14, player.y);
+                ctx.lineTo(player.x - 12, player.y + 6);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life--;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, 3, 3);
+                    if (p.life <= 0) particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>

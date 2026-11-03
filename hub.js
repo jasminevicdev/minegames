@@ -21,11 +21,34 @@ class GameHub {
         this.btnCancelCreate = document.getElementById('btn-cancel-create');
         this.btnConfirmCreate = document.getElementById('btn-confirm-create');
 
+        // Busca e Filtros
+        this.inputSearch = document.getElementById('input-hub-search');
+        this.searchFeedback = document.getElementById('search-feedback');
+        this.searchTermDisplay = document.getElementById('search-term-display');
+        this.searchCountDisplay = document.getElementById('search-count-display');
+        this.btnClearSearch = document.getElementById('btn-clear-search');
+
+        // Carrossel
+        this.carouselTrack = document.getElementById('carousel-track');
+        this.btnCarouselPrev = document.getElementById('btn-carousel-prev');
+        this.btnCarouselNext = document.getElementById('btn-carousel-next');
+        this.carouselDots = document.getElementById('carousel-dots');
+        this.currentSlideIndex = 0;
+        this.carouselInterval = null;
+
+        // Categorias e Cards
+        this.catPills = document.querySelectorAll('.cat-pill');
+        this.categoryBlocks = document.querySelectorAll('.category-block');
+        this.gameCards = document.querySelectorAll('.game-card');
+
+        // Estatísticas
         this.statCircusLevel = document.getElementById('stat-circus-level');
         this.statSnakeScore = document.getElementById('stat-snake-score');
         this.statTetrisScore = document.getElementById('stat-tetris-score');
         this.statFlappyScore = document.getElementById('stat-flappy-score');
         this.statJasminecraftBlocks = document.getElementById('stat-jasminecraft-blocks');
+        this.statMiyuEndings = document.getElementById('stat-miyu-endings');
+        this.statCyberstrikeScore = document.getElementById('stat-cyberstrike-score');
 
         this.selectedAvatar = '🎪';
 
@@ -46,7 +69,17 @@ class GameHub {
 
     init() {
         this.initEvents();
+        this.initCarousel();
+        this.initSearch();
+        this.initCategoryFilters();
         this.checkState();
+
+        // Expõe filtro global para o rodapé
+        window.filterGames = (category) => {
+            this.applyCategoryFilter(category);
+            const target = document.getElementById('view-games-catalog');
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        };
     }
 
     checkState() {
@@ -58,7 +91,6 @@ class GameHub {
             const data = SaveHub.getHubData();
             const playerNames = Object.keys(data.players);
             if (playerNames.length > 0) {
-                // Seleciona automaticamente o primeiro jogador se houver
                 SaveHub.setActivePlayer(playerNames[0]);
                 this.showGamesCatalog(data.players[playerNames[0]]);
             } else {
@@ -102,14 +134,15 @@ class GameHub {
         const tetrisSave = SaveHub.getGameSave('tetris', player.name);
         const flappySave = SaveHub.getGameSave('flappy', player.name);
         const jasminecraftSave = SaveHub.getGameSave('jasminecraft', player.name);
+        const cyberstrikeSave = SaveHub.getGameSave('cyberstrike', player.name);
 
-        this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
-        this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
-        this.statTetrisScore.innerText = `${tetrisSave.highScore || 0} PTS`;
-        this.statFlappyScore.innerText = `${flappySave.highScore || 0} CANOS`;
-        if (this.statJasminecraftBlocks) {
-            this.statJasminecraftBlocks.innerText = `${jasminecraftSave.blocksPlaced || 0} BLOCOS`;
-        }
+        if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
+        if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
+        if (this.statTetrisScore) this.statTetrisScore.innerText = `${tetrisSave.highScore || 0} PTS`;
+        if (this.statFlappyScore) this.statFlappyScore.innerText = `${flappySave.highScore || 0} CANOS`;
+        if (this.statJasminecraftBlocks) this.statJasminecraftBlocks.innerText = `${jasminecraftSave.blocksPlaced || 0} BLOCOS`;
+        if (this.statMiyuEndings) this.statMiyuEndings.innerText = `${localStorage.getItem('stat_miyu_endings') || 0}`;
+        if (this.statCyberstrikeScore) this.statCyberstrikeScore.innerText = `${cyberstrikeSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {
@@ -148,11 +181,188 @@ class GameHub {
         });
     }
 
+    /* ================= CARROSSEL DESTAQUES ================= */
+    initCarousel() {
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dots .dot');
+        if (!slides.length) return;
+
+        const showSlide = (idx) => {
+            this.currentSlideIndex = (idx + slides.length) % slides.length;
+            slides.forEach((s, i) => s.classList.toggle('active', i === this.currentSlideIndex));
+            dots.forEach((d, i) => d.classList.toggle('active', i === this.currentSlideIndex));
+        };
+
+        if (this.btnCarouselPrev) {
+            this.btnCarouselPrev.addEventListener('click', () => {
+                showSlide(this.currentSlideIndex - 1);
+                this.resetCarouselTimer();
+            });
+        }
+
+        if (this.btnCarouselNext) {
+            this.btnCarouselNext.addEventListener('click', () => {
+                showSlide(this.currentSlideIndex + 1);
+                this.resetCarouselTimer();
+            });
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSlide(parseInt(dot.dataset.index, 10));
+                this.resetCarouselTimer();
+            });
+        });
+
+        // Iniciar rotação automática (5 segundos)
+        this.startCarouselTimer();
+
+        // Pausar ao passar o mouse
+        const container = document.getElementById('hero-carousel');
+        if (container) {
+            container.addEventListener('mouseenter', () => clearInterval(this.carouselInterval));
+            container.addEventListener('mouseleave', () => this.startCarouselTimer());
+
+            // Suporte a Touch Swipe no Celular
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            container.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                clearInterval(this.carouselInterval);
+            }, { passive: true });
+
+            container.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 45) {
+                    if (diff > 0) {
+                        showSlide(this.currentSlideIndex + 1); // Swipe esquerda -> próximo
+                    } else {
+                        showSlide(this.currentSlideIndex - 1); // Swipe direita -> anterior
+                    }
+                }
+                this.startCarouselTimer();
+            }, { passive: true });
+        }
+    }
+
+    startCarouselTimer() {
+        clearInterval(this.carouselInterval);
+        this.carouselInterval = setInterval(() => {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.carousel-dots .dot');
+            if (!slides.length) return;
+            this.currentSlideIndex = (this.currentSlideIndex + 1) % slides.length;
+            slides.forEach((s, i) => s.classList.toggle('active', i === this.currentSlideIndex));
+            dots.forEach((d, i) => d.classList.toggle('active', i === this.currentSlideIndex));
+        }, 5000);
+    }
+
+    resetCarouselTimer() {
+        this.startCarouselTimer();
+    }
+
+    /* ================= BUSCA EM TEMPO REAL ================= */
+    initSearch() {
+        if (!this.inputSearch) return;
+
+        // Atalho de teclado [/]
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement !== this.inputSearch) {
+                e.preventDefault();
+                this.inputSearch.focus();
+                this.inputSearch.select();
+            }
+            if (e.key === 'Escape' && document.activeElement === this.inputSearch) {
+                this.clearSearch();
+            }
+        });
+
+        this.inputSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            this.performSearch(query);
+        });
+
+        if (this.btnClearSearch) {
+            this.btnClearSearch.addEventListener('click', () => this.clearSearch());
+        }
+    }
+
+    performSearch(query) {
+        if (!query) {
+            this.clearSearch();
+            return;
+        }
+
+        let matchCount = 0;
+        this.gameCards.forEach(card => {
+            const name = card.dataset.name || '';
+            const isMatch = name.toLowerCase().includes(query);
+            card.classList.toggle('hidden', !isMatch);
+            if (isMatch) matchCount++;
+        });
+
+        // Exibir feedback de busca
+        this.searchFeedback.classList.remove('hidden');
+        this.searchTermDisplay.innerText = query;
+        this.searchCountDisplay.innerText = matchCount;
+
+        // Mostrar todas as seções para exibir os cards encontrados
+        this.categoryBlocks.forEach(block => block.classList.remove('hidden'));
+    }
+
+    clearSearch() {
+        if (this.inputSearch) this.inputSearch.value = '';
+        this.searchFeedback.classList.add('hidden');
+        this.gameCards.forEach(card => card.classList.remove('hidden'));
+
+        // Restaura a aba selecionada atual
+        const activeTab = document.querySelector('.cat-pill.active');
+        const filter = activeTab ? activeTab.dataset.filter : 'all';
+        this.applyCategoryFilter(filter);
+    }
+
+    /* ================= FILTROS DE CATEGORIA ================= */
+    initCategoryFilters() {
+        this.catPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                const filter = pill.dataset.filter;
+                this.applyCategoryFilter(filter);
+            });
+        });
+    }
+
+    applyCategoryFilter(filter) {
+        this.catPills.forEach(p => p.classList.toggle('active', p.dataset.filter === filter));
+
+        if (filter === 'all') {
+            this.categoryBlocks.forEach(b => b.classList.remove('hidden'));
+            this.gameCards.forEach(c => c.classList.remove('hidden'));
+        } else {
+            this.categoryBlocks.forEach(b => {
+                const sectionCat = b.dataset.section;
+                b.classList.toggle('hidden', sectionCat !== filter);
+            });
+            this.gameCards.forEach(c => {
+                const cats = c.dataset.category || '';
+                c.classList.toggle('hidden', !cats.includes(filter));
+            });
+        }
+    }
+
     initEvents() {
         this.btnThemeToggle.addEventListener('click', () => {
             const nextTheme = ThemeManager.toggleTheme();
             this.updateThemeButtonIcon(nextTheme);
         });
+
+        const btnMobileInfo = document.getElementById('btn-mobile-info');
+        if (btnMobileInfo) {
+            btnMobileInfo.addEventListener('click', () => {
+                alert("📱 COMO JOGAR NO CELULAR:\n\n1. Conecte seu celular na mesma rede Wi-Fi deste computador.\n2. Abra o navegador do celular (Chrome ou Safari).\n3. Digite o endereço na barra do navegador:\n\nhttp://192.168.1.13:3000\n\nTodos os jogos possuem controles virtuais na tela para celular!");
+            });
+        }
 
         this.btnSwitchPlayer.addEventListener('click', () => {
             this.showWelcomeView();

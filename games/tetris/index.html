@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tetris 3D - Three.js</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +13,7 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            touch-action: manipulation;
         }
 
         body {
@@ -171,6 +172,110 @@
         .btn:active {
             transform: translateY(0);
         }
+
+        /* Controles Touch Mobile para Tetris */
+        .tetris-touch-controls {
+            position: absolute;
+            bottom: 16px;
+            left: 0;
+            right: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+            z-index: 15;
+            padding: 0 14px;
+        }
+
+        .touch-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .t-btn {
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #00f2fe;
+            color: #00f2fe;
+            border-radius: 14px;
+            font-size: 1.35rem;
+            font-weight: 900;
+            padding: 14px 18px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            touch-action: manipulation;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            user-select: none;
+            -webkit-user-select: none;
+            transition: transform 0.1s, background 0.1s;
+        }
+
+        .t-btn:active {
+            background: rgba(0, 242, 254, 0.4);
+            color: #fff;
+            transform: scale(0.92);
+        }
+
+        .t-btn-action {
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            background: rgba(30, 41, 59, 0.9);
+            border-color: #ffcc00;
+            color: #ffcc00;
+        }
+
+        .t-btn-hard {
+            border-color: #ff2a5f;
+            color: #ff2a5f;
+        }
+
+        @media (max-width: 768px), (pointer: coarse) {
+            .ui-layer {
+                padding: 10px;
+                flex-direction: column;
+                justify-content: flex-start;
+                pointer-events: none;
+            }
+            .panel {
+                padding: 8px 12px;
+                min-width: 0;
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 6px;
+            }
+            .title-box {
+                margin-bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .title-box h1 { font-size: 1.15rem; }
+            #player-badge { font-size: 0.75rem !important; margin-top: 0 !important; }
+            .stat-box {
+                align-items: center;
+            }
+            .stat-label { font-size: 0.6rem; letter-spacing: 0.5px; }
+            .stat-value { font-size: 1.1rem; }
+            .controls-hint { display: none; }
+            .btn-hub-back {
+                padding: 6px 10px !important;
+                font-size: 0.75rem !important;
+                margin-top: 0 !important;
+            }
+            .tetris-touch-controls {
+                display: flex;
+            }
+        }
     </style>
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -201,7 +306,7 @@
                     <div class="stat-value" id="level">1</div>
                 </div>
 
-                <a href="../../index.html" style="background: linear-gradient(135deg, #ff2a5f, #7000ff); border: 2px solid #ffcc00; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 12px; font-weight: bold; text-align: center; display: block; margin-top: 10px;">🏠 VOLTAR AO HUB</a>
+                <a href="../../index.html" class="btn-hub-back" style="background: linear-gradient(135deg, #ff2a5f, #7000ff); border: 2px solid #ffcc00; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 12px; font-weight: bold; text-align: center; display: block; margin-top: 10px;">🏠 VOLTAR AO HUB</a>
 
                 <div class="controls-hint" style="margin-top: 10px;">
                     <div><span>← →</span> Mover</div>
@@ -209,6 +314,19 @@
                     <div><span>↓</span> Soft Drop</div>
                     <div><span>Espaço</span> Hard Drop</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Controles Touch para Telas Mobile -->
+        <div class="tetris-touch-controls" id="tetris-touch-controls">
+            <div class="touch-row">
+                <button class="t-btn t-btn-action" id="t-btn-rotate" title="Girar Bloco">🔄 GIRAR</button>
+                <button class="t-btn t-btn-action t-btn-hard" id="t-btn-harddrop" title="Queda Rápida">⚡ DESPEJAR</button>
+            </div>
+            <div class="touch-row">
+                <button class="t-btn" id="t-btn-left" title="Mover Esquerda">◀</button>
+                <button class="t-btn" id="t-btn-down" title="Mover Baixo">▼</button>
+                <button class="t-btn" id="t-btn-right" title="Mover Direita">▶</button>
             </div>
         </div>
 
@@ -536,42 +654,81 @@
             spawnPiece();
         }
 
-        document.addEventListener('keydown', (e) => {
+        function doMoveLeft() {
             if (gameOver || !currentPiece) return;
+            if (!checkCollision(currentPiece.x - 1, currentPiece.y, currentPiece.shape)) {
+                currentPiece.x--;
+                renderCurrentPiece();
+            }
+        }
 
-            if (e.key === 'ArrowLeft') {
-                if (!checkCollision(currentPiece.x - 1, currentPiece.y, currentPiece.shape)) {
-                    currentPiece.x--;
-                    renderCurrentPiece();
-                }
-            } else if (e.key === 'ArrowRight') {
-                if (!checkCollision(currentPiece.x + 1, currentPiece.y, currentPiece.shape)) {
-                    currentPiece.x++;
-                    renderCurrentPiece();
-                }
-            } else if (e.key === 'ArrowDown') {
-                if (!checkCollision(currentPiece.x, currentPiece.y - 1, currentPiece.shape)) {
-                    currentPiece.y--;
-                    score += 1;
-                    updateUI();
-                    renderCurrentPiece();
-                }
-            } else if (e.key === 'ArrowUp') {
-                const rotated = rotateShape(currentPiece.shape);
-                if (!checkCollision(currentPiece.x, currentPiece.y, rotated)) {
-                    currentPiece.shape = rotated;
-                    renderCurrentPiece();
-                }
-            } else if (e.code === 'Space') {
-                while (!checkCollision(currentPiece.x, currentPiece.y - 1, currentPiece.shape)) {
-                    currentPiece.y--;
-                    score += 2;
-                }
+        function doMoveRight() {
+            if (gameOver || !currentPiece) return;
+            if (!checkCollision(currentPiece.x + 1, currentPiece.y, currentPiece.shape)) {
+                currentPiece.x++;
+                renderCurrentPiece();
+            }
+        }
+
+        function doSoftDrop() {
+            if (gameOver || !currentPiece) return;
+            if (!checkCollision(currentPiece.x, currentPiece.y - 1, currentPiece.shape)) {
+                currentPiece.y--;
+                score += 1;
                 updateUI();
                 renderCurrentPiece();
-                lockPiece();
             }
+        }
+
+        function doRotate() {
+            if (gameOver || !currentPiece) return;
+            const rotated = rotateShape(currentPiece.shape);
+            if (!checkCollision(currentPiece.x, currentPiece.y, rotated)) {
+                currentPiece.shape = rotated;
+                renderCurrentPiece();
+            }
+        }
+
+        function doHardDrop() {
+            if (gameOver || !currentPiece) return;
+            while (!checkCollision(currentPiece.x, currentPiece.y - 1, currentPiece.shape)) {
+                currentPiece.y--;
+                score += 2;
+            }
+            updateUI();
+            renderCurrentPiece();
+            lockPiece();
+        }
+
+        // ================= EVENTOS TECLADO =================
+        document.addEventListener('keydown', (e) => {
+            if (['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space'].includes(e.code) || ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowLeft') doMoveLeft();
+            else if (e.key === 'ArrowRight') doMoveRight();
+            else if (e.key === 'ArrowDown') doSoftDrop();
+            else if (e.key === 'ArrowUp') doRotate();
+            else if (e.code === 'Space') doHardDrop();
         });
+
+        // ================= EVENTOS TOUCH MOBILE =================
+        const bindButtonAction = (id, action) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            const trigger = (e) => {
+                e.preventDefault();
+                action();
+            };
+            btn.addEventListener('touchstart', trigger, { passive: false });
+            btn.addEventListener('mousedown', trigger);
+        };
+
+        bindButtonAction('t-btn-left', doMoveLeft);
+        bindButtonAction('t-btn-right', doMoveRight);
+        bindButtonAction('t-btn-down', doSoftDrop);
+        bindButtonAction('t-btn-rotate', doRotate);
+        bindButtonAction('t-btn-harddrop', doHardDrop);
 
         document.getElementById('restart-btn').addEventListener('click', restartGame);
 

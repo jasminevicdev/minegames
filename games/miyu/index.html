@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miyu Keisuke: Ecos Flamejantes</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --background: #090910;
+      --foreground: #e0e0e0;
+      --card: #12121d;
+      --border: #2a2a40;
+      --muted-foreground: #8a8a9f;
+    }
+    body { background-color: var(--background); color: var(--foreground); overflow-x: hidden; margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    
+    /* Vignette Overlays */
+    #vignette-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 50; transition: all 1s ease-in-out; opacity: 0; }
+    .vignette-danger { box-shadow: inset 0 0 150px rgba(150, 0, 0, 0.8); opacity: 1 !important; animation: heartbeat 1.5s infinite; }
+    .vignette-dark { box-shadow: inset 0 0 200px rgba(0, 0, 0, 1); opacity: 1 !important; }
+    @keyframes heartbeat { 0%, 100% { box-shadow: inset 0 0 100px rgba(150, 0, 0, 0.5); } 50% { box-shadow: inset 0 0 180px rgba(180, 0, 0, 0.9); } }
+
+    /* Animações Base */
+    .fade-in { animation: fadeIn 0.8s ease-in-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .stagger-in { opacity: 0; animation: slideUpFade 0.5s ease forwards; }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes breathe { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.02); filter: brightness(1.1); } }
+    .breathe-anim { animation: breathe 6s infinite ease-in-out; }
+    @keyframes shake-hard { 0%, 100% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); } 10%, 30%, 50%, 70%, 90% { transform: translate(-8px, -8px) rotate(-2deg); filter: blur(1px); } 20%, 40%, 60%, 80% { transform: translate(8px, 8px) rotate(2deg); } }
+    .shake-anim { animation: shake-hard 0.4s cubic-bezier(.36,.07,.19,.97); }
+    @keyframes glitch-skew { 0%, 60%, 100% { transform: skew(0deg); filter: none; } 20% { transform: skew(-10deg); filter: hue-rotate(90deg) contrast(2); } 40% { transform: skew(10deg); filter: hue-rotate(-90deg) contrast(0.5); } }
+    .flicker-anim { animation: glitch-skew 0.3s infinite alternate; }
+    @keyframes fire-glow-intense { 0%, 100% { box-shadow: 0 0 20px #ff4500, inset 0 0 20px #ff4500; border-color: #ff4500; filter: contrast(1.1) brightness(1.2); } 50% { box-shadow: 0 0 60px #ff8c00, inset 0 0 40px #ff8c00; border-color: #ff8c00; filter: contrast(1.2) brightness(1.4); } }
+    .fire-anim { animation: fire-glow-intense 1s infinite; border: 2px solid #ff4500; }
+    @keyframes aura-glow-soft { 0%, 100% { box-shadow: 0 0 15px #a200ff, inset 0 0 15px #a200ff; border-color: #a200ff; filter: hue-rotate(0deg); } 50% { box-shadow: 0 0 50px #d896ff, inset 0 0 30px #d896ff; border-color: #d896ff; filter: hue-rotate(20deg); } }
+    .aura-anim { animation: aura-glow-soft 3s infinite ease-in-out; border: 2px solid #a200ff; }
+    .typing-cursor::after { content: ' ▼'; animation: blink 1s infinite; color: #a200ff; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Aparição suave (Fourth Wall Break) */
+    @keyframes appear-smooth-anim {
+      0% { transform: scale(0.95) translateY(10px); filter: blur(10px) brightness(0.2); opacity: 0; }
+      100% { transform: scale(1.05) translateY(0px); filter: blur(0px) brightness(1) drop-shadow(0 0 20px rgba(162,0,255,0.4)); opacity: 1; }
+    }
+    .appear-smooth #scene-img {
+      animation: appear-smooth-anim 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      mix-blend-mode: screen;
+    }
+
+    /* Modal de Seleção de Personagem */
+    .char-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .char-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 30px -10px rgba(168, 85, 247, 0.4);
+    }
+    .char-card.selected {
+      border-color: #a855f7;
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+    }
+  </style>
+</head>
+<body id="main-body" class="antialiased p-4 min-h-screen flex flex-col items-center relative">
+  <div id="vignette-overlay"></div>
+
+  <!-- Top Navigation & Controls -->
+  <div class="w-full max-w-4xl mb-4 z-10 flex flex-wrap justify-between items-center gap-2">
+      <a href="../../index.html" class="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-5 rounded-full transition-colors shadow-lg">
+          ⬅ Voltar ao Hub
+      </a>
+      
+      <!-- Botão para Trocar de Personagem -->
+      <button onclick="openCharSelectModal()" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-800 to-indigo-800 hover:from-purple-700 hover:to-indigo-700 text-purple-200 border border-purple-500/60 font-bold py-2 px-5 rounded-full transition-all shadow-lg hover:shadow-purple-500/30 transform hover:scale-105">
+          <span>👥</span>
+          <span>Trocar Personagem</span>
+      </button>
+  </div>
+
+  <!-- Main Game Container -->
+  <div id="game-container" class="z-10 w-full max-w-4xl bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl p-5 shadow-2xl flex flex-col gap-4 transition-all duration-500 relative overflow-hidden">
+    
+    <!-- Header: Personagem Ativo + Inventário -->
+    <div class="flex flex-wrap justify-between items-center border-b border-[var(--border)] pb-3 gap-3">
+      <!-- Info do Personagem Atual -->
+      <div class="flex items-center gap-3">
+        <img id="hud-char-avatar" src="miyu.jpg" alt="Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-purple-500 shadow-md">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 id="hud-char-name" class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 tracking-wider">Miyu Keisuke</h2>
+            <span id="hud-char-badge" class="bg-purple-900/80 text-purple-200 text-xs px-2 py-0.5 rounded-full border border-purple-400 font-bold">🔥 Medusa Flamejante</span>
+          </div>
+          <p id="hud-char-title" class="text-xs text-purple-300/80">A Artesã das Chamas (18 anos • Nipo-Baiana)</p>
+        </div>
+      </div>
+
+      <!-- Inventário -->
+      <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-purple-900/50">
+        <span class="font-bold text-xs text-purple-300 tracking-wider">INVENTÁRIO:</span>
+        <div id="inventory-list" class="flex flex-wrap gap-1.5 text-xs text-[var(--muted-foreground)]">
+          <span class="italic opacity-50">Vazio</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Visual / Image Frame -->
+    <div id="image-wrapper" class="w-full flex justify-center bg-black rounded-xl overflow-hidden relative min-h-[350px] border-2 border-transparent transition-all duration-500 shadow-[0_0_20px_rgba(0,0,0,0.8)] bg-cover bg-center">
+      <img id="scene-img" src="miyu.jpg" alt="Cena" class="max-h-[450px] w-full object-cover object-top transition-all duration-1000">
+    </div>
+    
+    <!-- Caixa de Texto / História -->
+    <div class="bg-[var(--background)] p-5 rounded-xl border border-[var(--border)] min-h-[130px] shadow-inner relative">
+      <p id="story-text" class="whitespace-pre-wrap text-gray-200 text-lg leading-relaxed tracking-wide font-medium"></p>
+    </div>
+    
+    <!-- Opções / Escolhas -->
+    <div id="choices-container" class="flex flex-col gap-2.5 mt-1"></div>
+  </div>
+
+  <!-- MODAL: SELEÇÃO DE PERSONAGENS -->
+  <div id="char-select-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="bg-[#131224] border-2 border-purple-500/60 rounded-2xl max-w-4xl w-full p-6 shadow-[0_0_50px_rgba(168,85,247,0.3)] max-h-[92vh] overflow-y-auto">
+      
+      <div class="text-center mb-6">
+        <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300 tracking-widest uppercase">
+          ESCOLHA SEU PERSONAGEM 👥
+        </h2>
+        <p class="text-sm text-purple-200/70 mt-1">Cada personagem possui habilidades únicas, itens de partida e reações exclusivas nas ruas perigosas de Tóquio.</p>
+      </div>
+
+      <!-- Grid de Personagens -->
+      <div id="char-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <!-- Botão Fechar se já tiver personagem selecionado -->
+      <div class="mt-6 flex justify-end">
+        <button id="btn-close-modal" onclick="closeCharSelectModal()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold px-6 py-2 rounded-xl transition-colors">
+          Continuar com o atual
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // DEFINIÇÃO DO ROSTER DE PERSONAGENS
+    // ==========================================
+    const characters = [
+      {
+        id: "miyu",
+        name: "Miyu Keisuke",
+        title: "A Artesã das Chamas (18 anos • Nipo-Baiana)",
+        portrait: "miyu.jpg",
+        avatar: "miyu.jpg",
+        themeColor: "from-purple-600 to-pink-500",
+        badge: "🔥 Medusa Flamejante",
+        quote: "\"O fogo, para mim, é cura.\"",
+        quirk: "Cabelos se transformam em cobras de fogo venenoso para inimigos, mas que a regeneram. Ama brigadeiro branco.",
+        starterItems: ["Brigadeiro Branco", "Cinzel de Artesã"],
+        introText: "A noite cai pesada sobre Tóquio. Você caminha de volta do estúdio, exausta após horas cantando e esculpindo com o cinzel.\nO caminho mais rápido para casa é através de um beco escuro e silencioso. Porém, a sua intuição de fogo avisa que algo não está certo..."
+      },
+      {
+        id: "kenji",
+        name: "Kenji Keisuke",
+        title: "O Irmão Delinquente (15 anos • Tokyo Revengers)",
+        portrait: "kenji.jpg",
+        avatar: "kenji.jpg",
+        themeColor: "from-red-600 to-amber-500",
+        badge: "👊 Fúria de Rua & Lealdade",
+        quote: "\"Ninguém mexe com a minha família nas ruas de Tóquio!\"",
+        quirk: "Irmão mais novo protetor. Força física impressionante, reflexos afiados de briga de rua e coragem inabalável.",
+        starterItems: ["Amuleto da Gangue", "Soco Inglês"],
+        introText: "A meia-noite chegou em Shibuya. Você estava patrulhando as redondezas para garantir que sua irmã Miyu chegasse bem em casa.\nAo dobrar a esquina rumo ao beco habitual, você percebe um silêncio assombroso. Os postes piscam. Algo monstruoso está rondando..."
+      },
+      {
+        id: "ren",
+        name: "Ren Takahashi",
+        title: "O Investigador Ocultista (19 anos • Shinjuku)",
+        portrait: "ren.jpg",
+        avatar: "ren.jpg",
+        themeColor: "from-cyan-600 to-blue-500",
+        badge: "🕯️ Sexto Sentido & Luz UV",
+        quote: "\"Nas sombras da cidade, as lendas urbanas ganham vida.\"",
+        quirk: "Especialista em anomalias paranormais. Equipado com lanterna de luz negra e talismãs sagrados que repelem criaturas das trevas.",
+        starterItems: ["Lanterna UV", "Talismã de Selamento"],
+        introText: "Seus medidores espirituais dispararam em direção a um beco isolado de Tóquio. Uma anomalia espectral de classe alta se manifestou.\nCom a lanterna UV em mãos e os talismãs preparados, você se aproxima cautelosamente da entrada escura..."
+      },
+      {
+        id: "miyu_singer",
+        name: "Miyu (Voz dos Ancestrais)",
+        title: "A Cantora Espiritual (Modo Purificação)",
+        portrait: "miyu.jpg",
+        avatar: "miyu.jpg",
+        themeColor: "from-violet-600 to-indigo-500",
+        badge: "🎤 Canto Purificador",
+        quote: "\"A música é minha forma mais sagrada de sobrevivência.\"",
+        quirk: "Canaliza a herança mista (baiana e japonesa) através de sua voz melódica, capaz de pacificar espíritos perdidos sem derramar sangue.",
+        starterItems: ["Aura de Proteção", "Brigadeiro Branco"],
+        introText: "Com uma suave melodia nos lábios e a alma repleta de bênçãos ancestrais, você caminha pela noite de Tóquio.\nO ar subitamente gela. Uma presença espectral agonizante chora nas sombras à frente, implorando por libertação..."
+      }
+    ];
+
+    let currentCharacter = characters[0];
+    let inventory = [];
+    let typingTimeout;
+
+    // ==========================================
+    // SISTEMA DE HISTÓRIA / ROTAS
+    // ==========================================
+    const story = {
+      "start": {
+        "text": "", // Gerado dinamicamente com base no personagem
+        "image": null, // Usará o portrait do personagem
+        "anim": "breathe",
+        "choices": [
+          { text: "Entrar no beco para cortar caminho", next: "enter_alley" },
+          { text: "Ignorar o beco e dar a volta pela avenida", next: "go_around" }
+        ]
+      },
+      "go_around": {
+        "text": "Você decide ir pelo caminho mais longo e iluminado. A rua está estranhamente deserta.\nDe repente, você ouve passos pesados arranhando o asfalto logo atrás de você.",
+        "image": "street.jpg",
+        "anim": "breathe",
+        "choices": [
+          { text: "Parar e olhar para trás por cima do ombro", next: "look_back_street" },
+          { text: "Correr desesperadamente para casa!", next: "run_home" },
+          { text: "Virar-se e enfrentar quem está seguindo", next: "street_encounter" }
+        ]
+      },
+      "enter_alley": {
+        "text": "O beco é úmido. O cheiro de lixo se mistura a um odor metálico.\nVocê escuta um barulho sutil à direita: parece um choro angustiado.",
+        "image": "alley.jpg",
+        "anim": "breathe",
+        "vignette": "dark",
+        "choices": [
+          { text: "Parar e olhar para trás por cima do ombro", next: "look_back_alley" },
+          { text: "Ir investigar o choro de perto", next: "investigate_noise" },
+          { text: "Avançar com cautela segurando seus pertences", next: "alley_cautious" }
+        ]
+      },
+      "look_back_street": {
+        "text": "Você ignora a rua vazia. Lentamente, você vira o rosto por cima do ombro...\ne olha diretamente para a pessoa do outro lado da tela.\nUm olhar curioso e magnético fita a sua alma.\n'Você acha que isso é só um jogo?', sussurra o personagem com um leve sorriso intrigado.",
+        "image": null,
+        "bg": "street.jpg",
+        "anim": "appear-smooth",
+        "choices": [
+          { text: "Voltar a atenção imediatamente para a rua", next: "go_around" }
+        ]
+      },
+      "look_back_alley": {
+        "text": "O beco escuro desaparece em desfoque. Você se vira graciosamente para a câmera.\nVocê inclina a cabeça, observando quem está comandando as escolhas do outro lado do visor.\n'É perigoso andar por aqui, sabia? Fique comigo.'",
+        "image": null,
+        "bg": "alley.jpg",
+        "anim": "appear-smooth",
+        "choices": [
+          { text: "Concordar e continuar a exploração no beco", next: "enter_alley" }
+        ]
+      },
+      "alley_cautious": {
+        "text": "Você avança rente à parede, atento a cada respiração.\nDe repente, uma silhueta alta com olhos incandescentes desce de um cano enferrujado, bloqueando a saída!",
+        "image": "monster.jpg",
+        "anim": "shake",
+        "vignette": "danger",
+        "choices": [
+          { text: "🔥 [Miyu] Liberar as serpentes de fogo da Medusa!", next: "fire_attack", requiresChar: "miyu" },
+          { text: "👊 [Kenji] Acertar uma sequência fulminante com o Soco Inglês!", next: "kenji_punch", requiresChar: "kenji" },
+          { text: "🕯️ [Ren] Acionar a Lanterna UV em potência máxima!", next: "ren_uv_light", requiresChar: "ren" },
+          { text: "🎤 [Voz] Entoar um cântico sagrado de pacificação!", next: "purify_sing", requiresChar: "miyu_singer" },
+          { text: "Tentar desviar e correr desesperadamente!", next: "run_home" }
+        ]
+      },
+      "run_home": {
+        "text": "Você dispara pelo asfalto sem olhar para trás até os pulmões queimarem.\nChegando na sua porta trancada, você desaba no chão. O monstro não conseguiu acompanhar seus passos.\nVocê sobreviveu à noite, mas a sensação de estar sendo vigiado nunca irá sumir.\n\n[ FINAL NEUTRO - Fuga Pelo Asfalto ]",
+        "image": "street.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "street_encounter": {
+        "text": "Você para sob um poste de luz que estala em curto-circuito e se vira.\nUma besta colossal feita de puro piche e fumaça emerge rastejando, salivando escuridão.",
+        "image": "monster.jpg",
+        "anim": "shake",
+        "vignette": "danger",
+        "choices": [
+          { text: "🔥 [Miyu] Acender a Medusa Flamejante com toda força!", next: "fire_attack", requiresChar: "miyu" },
+          { text: "👊 [Kenji] Levantar os punhos e encarar o monstro de frente!", next: "kenji_punch", requiresChar: "kenji" },
+          { text: "🕯️ [Ren] Lançar o Talismã de Selamento na testa da criatura!", next: "ren_talisman", requiresChar: "ren" },
+          { text: "🎤 [Voz] Ergue a voz em oração pacífica!", next: "purify_sing", requiresChar: "miyu_singer" },
+          { text: "Usar o Cinzel de Artesã como arma de emergência", next: "artisan_tool", requires: "Cinzel de Artesã" }
+        ]
+      },
+      "investigate_noise": {
+        "text": "Você se aproxima da caixa de papelão úmida. O choro cessa de repente.\nNão é uma vítima. É uma emboscada! Uma boca cheia de presas de sombra se escancara em sua direção!",
+        "image": "monster.jpg",
+        "anim": "shake",
+        "vignette": "danger",
+        "choices": [
+          { text: "Usar o Amuleto da Gangue para repelir o impacto", next: "kenji_dodge", requires: "Amuleto da Gangue" },
+          { text: "Usar a Lanterna UV para cegar a besta!", next: "ren_uv_light", requires: "Lanterna UV" },
+          { text: "Gritar e deixar o poder sobrenatural explodir descontrolado", next: "panic_fire" }
+        ]
+      },
+      "kenji_punch": {
+        "text": "Com a fúria dos delinquentes de Tóquio, Kenji avança sem recuar um centímetro!\nO Soco Inglês atinge a mandíbula de trevas do monstro com um impacto estrondoso.\nO golpe desestabiliza a entidade, dissipando seu corpo em fumaça negra dispersa pelo vento.\n'Nunca mais pise no meu território!', grita Kenji.\n\n[ FINAL BOM - O Rei das Ruas ]",
+        "image": "kenji.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "kenji_dodge": {
+        "text": "O reflexo de rua de Kenji e a energia do Amuleto criam um escudo instantâneo!\nEle esquiva do bote fatal, gira no ar e desfere uma voadora certeira que desintegra o núcleo do monstro.\nEle ajusta a jaqueta da gangue com um sorriso vitorioso.\n\n[ FINAL BOM - Reflexo de Ferro ]",
+        "image": "kenji.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "ren_uv_light": {
+        "text": "Ren puxa a Lanterna UV de alta intensidade e dispara o feixe luminoso!\nA luz negra ultravioleta queima a epiderme sombria do monstro como ácido celestial.\nA criatura guincha de dor e se desintegra em cinzas purificadas.\nRen anota as leituras no seu caderno de pesquisa: 'Anomalia contida com sucesso.'\n\n[ FINAL BOM - Exorcismo Científico ]",
+        "image": "ren.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "ren_talisman": {
+        "text": "Ren arremessa o Talismã de Selamento com precisão cirúrgica!\nO papel encantado adere ao monstro, gerando correntes de kanjis dourados que o imobilizam e o dissipam no plano astral.\nA noite volta à calmaria sob o brilho dos neons de Tóquio.\n\n[ FINAL BOM - Mestre dos Selos ]",
+        "image": "ren.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "purify_sing": {
+        "text": "A voz ecoa pela ruela como um acalanto das estrelas. As duas culturas se unem em notas de pura compaixão.\nA criatura das sombras para. Seus olhos se enchem de lágrimas de alívio.\nEla se desfaz pacificamente em partículas cintilantes que sobem aos céus.\nVocê curou uma alma perdida sem precisar destruir ninguém.\n\n[ FINAL SECRETO - Mãos e Voz Que Curam ]",
+        "image": "miyu.jpg",
+        "anim": "aura",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "fire_attack": {
+        "text": "Os olhos bicolores (verde e lilás) de Miyu faíscam como brasas vivas!\nSeus cachos se erguem transformados em serpentes de fogo incandescente.\n'O fogo, para mim, é cura!', você declara.\nAs chamas venenosas incineram a besta até o último resquício de poeira.",
+        "image": "miyu.jpg",
+        "anim": "fire",
+        "choices": [
+          { text: "Comer o Brigadeiro Branco para renovar suas forças", next: "victory_brigadeiro", requires: "Brigadeiro Branco" },
+          { text: "Ir embora sentindo a queimação residual nos músculos", next: "victory_tired" }
+        ]
+      },
+      "victory_brigadeiro": {
+        "text": "Você saboreia o doce caseiro enquanto as serpentes de fogo voltam a ser doces cachos.\nA energia baiana e a determinação japonesa garantiram mais uma noite de vitória.\n\n[ FINAL BOM - Sobrevivência Doce ]",
+        "image": "miyu.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "victory_tired": {
+        "text": "O esforço mágico drenou boa parte de suas energias físicas.\nVocê caminha lentamente até seu quarto, vitoriosa porém exausta.\n\n[ FINAL NEUTRO - Exaustão Flamejante ]",
+        "image": "miyu.jpg",
+        "anim": "breathe",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "artisan_tool": {
+        "text": "Você golpeia com determinação, mas o metal comum atravessa o corpo amorfo do monstro sem feri-lo!\nA criatura sorri em trevas e a envolve num abraço gélido...\n\n[ FINAL RUIM - Arte Inacabada ]",
+        "image": "monster.jpg",
+        "anim": "flicker",
+        "choices": [{ text: "Tentar Novamente", next: "restart" }]
+      },
+      "panic_fire": {
+        "text": "O pânico toma conta! Uma explosão de chamas descontroladas consome o beco inteiro.\nA besta é aniquilada, mas a fumaça tóxica asfixia o ambiente e você perde a consciência...\n\n[ FINAL RUIM - Chamas do Pânico ]",
+        "image": "alley.jpg",
+        "anim": "fire",
+        "vignette": "danger",
+        "choices": [{ text: "Jogar Novamente", next: "restart" }]
+      },
+      "restart": {
+        "text": "Rebobinando o tempo de Tóquio...",
+        "image": null,
+        "anim": "flicker",
+        "clear_inventory": true,
+        "choices": [{ text: "Recomeçar a História", next: "start" }]
+      }
+    };
+
+    // ==========================================
+    // CONTROLE DE INTERFACE E MODAL
+    // ==========================================
+    function renderCharCards() {
+      const container = document.getElementById("char-cards-grid");
+      container.innerHTML = "";
+
+      characters.forEach(char => {
+        const isSelected = (char.id === currentCharacter.id);
+        const card = document.createElement("div");
+        card.className = `char-card bg-[#1a1930] border-2 ${isSelected ? 'border-purple-400 bg-purple-950/30' : 'border-[#333252]'} rounded-xl p-4 flex flex-col justify-between cursor-pointer hover:border-purple-400`;
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <img src="${char.avatar}" alt="${char.name}" class="w-16 h-16 rounded-xl object-cover border-2 border-purple-500 shadow-md">
+              <div>
+                <h3 class="font-black text-lg text-white">${char.name}</h3>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-gradient-to-r ${char.themeColor} text-white font-bold">${char.badge}</span>
+                <p class="text-xs text-purple-300/80 mt-1">${char.title}</p>
+              </div>
+            </div>
+            
+            <p class="text-xs italic text-gray-400 mb-2">${char.quote}</p>
+            <p class="text-xs text-gray-300 leading-relaxed mb-3">${char.quirk}</p>
+
+            <div class="mb-3">
+              <span class="text-[10px] uppercase font-bold text-purple-400 tracking-wider">Itens Iniciais:</span>
+              <div class="flex flex-wrap gap-1 mt-1">
+                ${char.starterItems.map(item => `<span class="bg-black/50 text-purple-200 border border-purple-800/80 text-[11px] px-2 py-0.5 rounded-md font-semibold">${item}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <button class="w-full mt-2 py-2 px-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all ${isSelected ? 'bg-purple-600 text-white cursor-default' : 'bg-gray-800 hover:bg-purple-600 text-gray-200 hover:text-white'}">
+            ${isSelected ? '✓ Selecionado' : 'Jogar com este Personagem'}
+          </button>
+        `;
+
+        card.onclick = () => {
+          selectCharacter(char);
+          closeCharSelectModal();
+        };
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectCharacter(char) {
+      currentCharacter = char;
+      localStorage.setItem('selected_miyu_char', char.id);
+      
+      // Atualizar HUD
+      document.getElementById("hud-char-name").innerText = char.name;
+      document.getElementById("hud-char-title").innerText = char.title;
+      document.getElementById("hud-char-badge").innerText = char.badge;
+      document.getElementById("hud-char-avatar").src = char.avatar;
+
+      // Resetar inventário com os itens iniciais do personagem
+      inventory = [...char.starterItems];
+      updateInventory();
+
+      // Recomeçar a história com a introdução do personagem
+      renderNode("start");
+    }
+
+    function openCharSelectModal() {
+      renderCharCards();
+      const modal = document.getElementById("char-select-modal");
+      modal.classList.remove("opacity-0", "pointer-events-none");
+      modal.classList.add("opacity-100");
+    }
+
+    function closeCharSelectModal() {
+      const modal = document.getElementById("char-select-modal");
+      modal.classList.remove("opacity-100");
+      modal.classList.add("opacity-0", "pointer-events-none");
+    }
+
+    function updateInventory() {
+      const invDiv = document.getElementById("inventory-list");
+      if (inventory.length === 0) {
+        invDiv.innerHTML = '<span class="italic opacity-50">Vazio</span>';
+      } else {
+        invDiv.innerHTML = inventory.map(item => `
+          <span class="bg-gradient-to-r from-purple-900 to-indigo-900 text-purple-200 text-xs font-bold px-2.5 py-0.5 rounded-full border border-purple-500/70 shadow-sm">${item}</span>
+        `).join('');
+      }
+    }
+
+    function typeText(text, element, callback) {
+        clearTimeout(typingTimeout);
+        element.innerHTML = '';
+        element.classList.add('typing-cursor');
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                element.innerHTML = text.substring(0, i + 1).replace(/\n/g, '<br>');
+                i++;
+                let speed = 20 + Math.random() * 15; 
+                if (text.charAt(i) === '.' || text.charAt(i) === '!' || text.charAt(i) === '?') speed = 250;
+                typingTimeout = setTimeout(type, speed);
+            } else {
+                element.classList.remove('typing-cursor');
+                if (callback) callback();
+            }
+        }
+        type();
+    }
+
+    function renderNode(nodeId) {
+      const node = story[nodeId];
+      if (!node) return;
+
+      if (node.clear_inventory) {
+        inventory = [...currentCharacter.starterItems];
+      }
+      if (node.give_item && !inventory.includes(node.give_item)) {
+        inventory.push(node.give_item);
+      }
+      updateInventory();
+
+      const textEl = document.getElementById("story-text");
+      const choicesEl = document.getElementById("choices-container");
+      const imgEl = document.getElementById("scene-img");
+      const wrapperEl = document.getElementById("image-wrapper");
+      const bodyEl = document.getElementById("main-body");
+      const vignetteEl = document.getElementById("vignette-overlay");
+
+      // Reset
+      imgEl.className = "max-h-[450px] w-full object-cover object-top transition-all duration-1000";
+      wrapperEl.className = "w-full flex justify-center bg-black rounded-xl overflow-hidden relative min-h-[350px] border-2 border-transparent transition-all duration-500 shadow-[0_0_20px_rgba(0,0,0,0.8)] bg-cover bg-center";
+      bodyEl.className = "antialiased p-4 min-h-screen flex flex-col items-center relative transition-all duration-500";
+      vignetteEl.className = "";
+      choicesEl.innerHTML = ''; 
+
+      // Fundo personalizado se houver
+      if (node.bg) {
+          wrapperEl.style.backgroundImage = `url(${node.bg})`;
+      } else {
+          wrapperEl.style.backgroundImage = "none";
+      }
+
+      // Imagem da cena ou portrait do personagem ativo
+      let targetImage = node.image || currentCharacter.portrait;
+      if (!imgEl.src.includes(targetImage)) {
+          imgEl.src = targetImage;
+          imgEl.classList.add("fade-in");
+      }
+
+      // Animações
+      if (node.anim === "shake") { bodyEl.classList.add("shake-anim"); imgEl.classList.add("scale-105"); }
+      else if (node.anim === "fire") { wrapperEl.classList.add("fire-anim"); imgEl.classList.add("scale-105"); }
+      else if (node.anim === "aura") { wrapperEl.classList.add("aura-anim"); }
+      else if (node.anim === "flicker") { bodyEl.classList.add("flicker-anim"); }
+      else if (node.anim === "breathe") { imgEl.classList.add("breathe-anim"); }
+      else if (node.anim === "appear-smooth") { wrapperEl.classList.add("appear-smooth"); }
+
+      // Vignette
+      if (node.vignette === "danger") vignetteEl.className = "vignette-danger";
+      else if (node.vignette === "dark") vignetteEl.className = "vignette-dark";
+
+      // Texto específico de início para o personagem
+      let displayText = node.text;
+      if (nodeId === "start") {
+        displayText = currentCharacter.introText;
+      }
+
+      // Contagem de finais no Hub
+      if (displayText.includes("FINAL")) {
+        if (displayText.includes("BOM") || displayText.includes("SECRETO")) {
+            const currentStats = localStorage.getItem('stat_miyu_endings') || 0;
+            localStorage.setItem('stat_miyu_endings', parseInt(currentStats) + 1);
+        }
+      }
+
+      typeText(displayText, textEl, () => {
+          node.choices.forEach((choice, index) => {
+            // Filtrar escolhas exclusivas de personagem
+            if (choice.requiresChar && choice.requiresChar !== currentCharacter.id) {
+              return;
+            }
+            // Filtrar escolhas que requerem item
+            if (choice.requires && !inventory.includes(choice.requires)) {
+              return;
+            }
+
+            const btn = document.createElement("button");
+            btn.className = "w-full text-left bg-[var(--card)] hover:bg-[#201f3d] text-[#00ff88] hover:text-[#d896ff] font-semibold py-3 px-6 border-l-4 border-[var(--border)] hover:border-[#d896ff] rounded-r-lg transition-all duration-300 transform hover:translate-x-2 shadow-md stagger-in";
+            btn.style.animationDelay = `${index * 0.1}s`; 
+            
+            let btnLabel = choice.text;
+            if (choice.requires) {
+              btnLabel = `🔒 [Requer: ${choice.requires}] ` + btnLabel;
+            }
+            btn.innerText = btnLabel;
+            
+            btn.onclick = () => {
+              if (choice.next === "restart" && nodeId === "restart") {
+                renderNode("start");
+              } else {
+                renderNode(choice.next);
+              }
+            };
+            choicesEl.appendChild(btn);
+          });
+      });
+    }
+
+    // Inicialização da Página
+    window.onload = () => {
+      const savedCharId = localStorage.getItem('selected_miyu_char');
+      if (savedCharId) {
+        const found = characters.find(c => c.id === savedCharId);
+        if (found) currentCharacter = found;
+      }
+      selectCharacter(currentCharacter);
+    };
+  </script>
+</body>
+</html>

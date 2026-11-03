@@ -412,11 +412,24 @@
             if (e.key === 'ArrowRight' && snakeDirection.x !== -1) nextDirection = { x: 1, y: 0 };
         });
 
-        // Controles Touch D-Pad
-        document.getElementById('btn-up').addEventListener('click', () => { if (snakeDirection.y !== -1) nextDirection = { x: 0, y: 1 }; });
-        document.getElementById('btn-down').addEventListener('click', () => { if (snakeDirection.y !== 1) nextDirection = { x: 0, y: -1 }; });
-        document.getElementById('btn-left').addEventListener('click', () => { if (snakeDirection.x !== 1) nextDirection = { x: -1, y: 0 }; });
-        document.getElementById('btn-right').addEventListener('click', () => { if (snakeDirection.x !== -1) nextDirection = { x: 1, y: 0 }; });
+        // Controles Touch D-Pad (Instantâneos)
+        const bindSnakeTouch = (id, newDir, oppositeAxis, oppositeVal) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            const trigger = (e) => {
+                e.preventDefault();
+                if (snakeDirection[oppositeAxis] !== oppositeVal) {
+                    nextDirection = { ...newDir };
+                }
+            };
+            btn.addEventListener('touchstart', trigger, { passive: false });
+            btn.addEventListener('click', trigger);
+        };
+
+        bindSnakeTouch('btn-up', { x: 0, y: 1 }, 'y', -1);
+        bindSnakeTouch('btn-down', { x: 0, y: -1 }, 'y', 1);
+        bindSnakeTouch('btn-left', { x: -1, y: 0 }, 'x', 1);
+        bindSnakeTouch('btn-right', { x: 1, y: 0 }, 'x', -1);
         document.getElementById('btn-restart').addEventListener('click', resetGame);
 
         // Loop de Animação Three.js

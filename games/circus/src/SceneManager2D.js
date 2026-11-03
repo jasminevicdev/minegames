@@ -534,23 +534,55 @@ export class SceneManager2D {
     createMonster(x, y, patrolRange = 4) {
         const group = new THREE.Group();
 
-        // Corpo do Monstro Abstraído (glitch/negro com esferas neon)
-        const bodyGeo = new THREE.IcosahedronGeometry(1.0, 1);
+        // Massa Interna Escura de Abstração Digital
+        const darkCoreGeo = new THREE.DodecahedronGeometry(0.78, 1);
+        const darkCoreMat = new THREE.MeshStandardMaterial({
+            color: 0x070210,
+            emissive: 0x1a0033,
+            emissiveIntensity: 0.9,
+            roughness: 0.4
+        });
+        const darkCore = new THREE.Mesh(darkCoreGeo, darkCoreMat);
+        group.add(darkCore);
+
+        // Casca Externa Glitch Poligonal
+        const bodyGeo = new THREE.IcosahedronGeometry(1.05, 1);
         const bodyMat = new THREE.MeshStandardMaterial({
             color: 0x11052c,
-            emissive: 0x7000ff,
-            emissiveIntensity: 0.8,
+            emissive: 0xff0055,
+            emissiveIntensity: 0.85,
             roughness: 0.2,
             wireframe: true
         });
         const body = new THREE.Mesh(bodyGeo, bodyMat);
         group.add(body);
 
-        // Núcleo Abstraído (olhos múltiplos neon)
-        const coreGeo = new THREE.SphereGeometry(0.5, 8, 8);
-        const coreMat = new THREE.MeshBasicMaterial({ color: 0xff2a5f });
-        const core = new THREE.Mesh(coreGeo, coreMat);
-        group.add(core);
+        // Múltiplos Olhos Abstraídos Brilhantes Espalhados pela Criatura
+        const eyeColors = [0xff2a5f, 0xffd60a, 0x00f5d4, 0x00e676, 0xff006e, 0x38bdf8];
+        const eyePositions = [
+            [0.45, 0.35, 0.65],
+            [-0.45, 0.4, 0.62],
+            [0.0, -0.35, 0.72],
+            [0.65, -0.15, 0.45],
+            [-0.6, -0.2, 0.48],
+            [0.1, 0.68, 0.42]
+        ];
+
+        eyePositions.forEach((pos, idx) => {
+            const eyeGroup = new THREE.Group();
+            const iris = new THREE.Mesh(
+                new THREE.SphereGeometry(0.2, 10, 10),
+                new THREE.MeshBasicMaterial({ color: eyeColors[idx % eyeColors.length] })
+            );
+            const pupil = new THREE.Mesh(
+                new THREE.SphereGeometry(0.09, 8, 8),
+                new THREE.MeshBasicMaterial({ color: 0x000000 })
+            );
+            pupil.position.z = 0.14;
+            eyeGroup.add(iris, pupil);
+            eyeGroup.position.set(pos[0], pos[1], pos[2]);
+            group.add(eyeGroup);
+        });
 
         group.position.set(x, y + 1.0, 0);
         group.userData = {

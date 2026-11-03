@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Player2D } from './Player2D.js';
 
 export class BossManager {
     constructor(scene, soundManager) {
@@ -26,79 +27,86 @@ export class BossManager {
         this.health = this.maxHealth;
         this.clearProjectiles();
 
-        // 1. Caine Chefão
+        // 1. Caine Chefão (Arte 512x512 HD completa + Anéis 3D e Olhos Flutuantes)
         const caineCanvas = document.createElement('canvas');
-        caineCanvas.width = 512; caineCanvas.height = 512;
-        const ctx = caineCanvas.getContext('2d');
-        ctx.clearRect(0, 0, 512, 512);
-
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath(); ctx.arc(256, 160, 110, Math.PI, 0); ctx.fill();
-        ctx.beginPath(); ctx.arc(256, 260, 110, 0, Math.PI); ctx.fill();
-
-        ctx.fillStyle = '#ffffff';
-        for (let i = 160; i <= 340; i += 40) {
-            ctx.fillRect(i, 155, 24, 35);
-            ctx.fillRect(i, 225, 24, 35);
-        }
-
-        ctx.fillStyle = '#00d2ff';
-        ctx.beginPath(); ctx.arc(256, 210, 42, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#000000';
-        ctx.beginPath(); ctx.arc(256, 210, 16, 0, Math.PI * 2); ctx.fill();
-
-        ctx.fillStyle = '#111827';
-        ctx.fillRect(190, 20, 132, 70);
-        ctx.fillRect(140, 90, 232, 20);
+        caineCanvas.width = 512;
+        caineCanvas.height = 512;
+        Player2D.drawCharacterOnCanvas(caineCanvas, 'caine');
 
         const caineTex = new THREE.CanvasTexture(caineCanvas);
-        this.caineMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(5.2, 5.2),
-            new THREE.MeshStandardMaterial({ map: caineTex, transparent: true, side: THREE.DoubleSide })
+        this.caineMesh = new THREE.Group();
+
+        const caineSprite = new THREE.Mesh(
+            new THREE.PlaneGeometry(5.6, 5.6),
+            new THREE.MeshStandardMaterial({ map: caineTex, transparent: true, alphaTest: 0.05, side: THREE.DoubleSide })
         );
+        this.caineMesh.add(caineSprite);
+
+        // Anel Mágico Dourado 3D do Mestre de Cerimônias
+        const bossHalo = new THREE.Mesh(
+            new THREE.TorusGeometry(2.9, 0.09, 10, 36),
+            new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.65 })
+        );
+        bossHalo.position.z = -0.2;
+        this.caineMesh.add(bossHalo);
+
         this.caineMesh.position.copy(this.cainePos);
         this.scene.add(this.caineMesh);
 
-        // 2. Bolha Ajudante
+        // 2. Bolha Ajudante (Arte 512x512 HD Iridescente com Dentes de Piranha e Língua)
         const bubbleCanvas = document.createElement('canvas');
-        bubbleCanvas.width = 256; bubbleCanvas.height = 256;
-        const bCtx = bubbleCanvas.getContext('2d');
-        bCtx.clearRect(0, 0, 256, 256);
-
-        const grad = bCtx.createRadialGradient(110, 110, 10, 128, 128, 55);
-        grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.4, '#38bdf8');
-        grad.addColorStop(0.8, '#facc15'); grad.addColorStop(1, '#0284c7');
-        bCtx.fillStyle = grad; bCtx.beginPath(); bCtx.arc(128, 128, 55, 0, Math.PI * 2); bCtx.fill();
-
-        bCtx.fillStyle = '#ffffff';
-        for (let i = 98; i <= 148; i += 16) {
-            bCtx.beginPath(); bCtx.moveTo(i, 130); bCtx.lineTo(i + 8, 148); bCtx.lineTo(i + 16, 130); bCtx.fill();
-        }
+        bubbleCanvas.width = 512;
+        bubbleCanvas.height = 512;
+        Player2D.drawCharacterOnCanvas(bubbleCanvas, 'bubble');
 
         const bubbleTex = new THREE.CanvasTexture(bubbleCanvas);
         this.bubbleMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(2.6, 2.6),
-            new THREE.MeshStandardMaterial({ map: bubbleTex, transparent: true, side: THREE.DoubleSide })
+            new THREE.PlaneGeometry(3.0, 3.0),
+            new THREE.MeshStandardMaterial({ map: bubbleTex, transparent: true, alphaTest: 0.05, side: THREE.DoubleSide })
         );
         this.bubbleMesh.position.copy(this.bubblePos);
         this.scene.add(this.bubbleMesh);
     }
 
-    // --- ATAQUE DO CAINE: ABSTRAÇÃO (Esfera Abstrata Glitch com Olhos) ---
+    // --- ATAQUE DO CAINE: ABSTRAÇÃO (Fera Glitch 3D com Múltiplos Olhos Neon) ---
     fireAbstractionAttack() {
         if (!this.active) return;
 
         const absCanvas = document.createElement('canvas');
-        absCanvas.width = 128; absCanvas.height = 128;
+        absCanvas.width = 256;
+        absCanvas.height = 256;
         const ctx = absCanvas.getContext('2d');
-        ctx.fillStyle = '#110022'; ctx.beginPath(); ctx.arc(64, 64, 55, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#ff0044'; ctx.fillRect(20, 20, 88, 88);
-        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(45, 55, 12, 0, Math.PI * 2); ctx.arc(83, 55, 12, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#ff0000'; ctx.beginPath(); ctx.arc(45, 55, 5, 0, Math.PI * 2); ctx.arc(83, 55, 5, 0, Math.PI * 2); ctx.fill();
+
+        // Massa escura glitch irregular
+        ctx.fillStyle = '#090014';
+        ctx.beginPath();
+        ctx.arc(128, 128, 105, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ff0055';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+
+        // Polígonos de falha digital
+        const glitchColors = ['#ff0055', '#00f5d4', '#ffbe0b', '#7209b7'];
+        for (let g = 0; g < 8; g++) {
+            ctx.fillStyle = glitchColors[g % glitchColors.length];
+            ctx.fillRect(45 + (g * 19) % 120, 40 + (g * 29) % 130, 32, 12);
+        }
+
+        // Múltiplos olhos abstraídos brilhantes
+        const eyeCoords = [[85, 95, 22, '#ff0055'], [165, 90, 20, '#ffbe0b'], [128, 145, 26, '#00f5d4'], [90, 165, 15, '#ff2a85'], [165, 160, 16, '#00ff66']];
+        for (const [ex, ey, er, ec] of eyeCoords) {
+            ctx.fillStyle = ec;
+            ctx.beginPath(); ctx.arc(ex, ey, er, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(ex, ey, er * 0.65, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#000000';
+            ctx.beginPath(); ctx.arc(ex, ey, er * 0.28, 0, Math.PI * 2); ctx.fill();
+        }
 
         const absTex = new THREE.CanvasTexture(absCanvas);
         const absMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(1.5, 1.5),
+            new THREE.PlaneGeometry(1.7, 1.7),
             new THREE.MeshBasicMaterial({ map: absTex, transparent: true })
         );
         absMesh.position.copy(this.cainePos);

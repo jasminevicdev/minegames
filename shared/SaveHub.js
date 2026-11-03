@@ -55,7 +55,8 @@ export class SaveHub {
                     snake: { highScore: 0 },
                     tetris: { highScore: 0, level: 1 },
                     flappy: { highScore: 0, bestStreak: 0 },
-                    jasminecraft: { blocksPlaced: 0, blocksDestroyed: 0 }
+                    jasminecraft: { blocksPlaced: 0, blocksDestroyed: 0 },
+                    cyberstrike: { highScore: 0 }
                 }
             };
         }

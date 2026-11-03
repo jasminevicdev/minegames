@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0b071e">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>HUB DE JOGOS — JasDEV 🎪🎮</title>
+    <title>JASDEV HUB — Portal de Jogos Casuais 🎪🎮</title>
     <link rel="stylesheet" href="hub.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,15 +15,23 @@
 </head>
 <body>
     <div id="hub-container">
-        <!-- Header Principal -->
+        <!-- 1. Header Principal com Busca e Perfil/Login -->
         <header class="hub-header">
-            <div class="logo-badge">
-                <span class="logo-sub">ESTÚDIO DE JOGOS</span>
+            <div class="logo-badge" onclick="location.reload()" style="cursor: pointer;">
+                <span class="logo-sub">PORTAL DE JOGOS</span>
                 <h1 class="logo-main">JASDEV HUB 🎪🎮</h1>
             </div>
+
+            <!-- Barra de Busca Instantânea -->
+            <div class="search-bar-box">
+                <span class="search-icon">🔍</span>
+                <input type="search" id="input-hub-search" placeholder="Buscar jogos ou categorias... (Pressione /)" aria-label="Buscar jogos">
+                <kbd class="search-kbd">/</kbd>
+            </div>
             
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <button id="btn-theme-toggle" class="btn-small-icon" title="Alternar Modo Claro/Escuro" style="font-size: 1.2rem; width: 44px; height: 44px;">🌙</button>
+            <div class="header-actions">
+                <button id="btn-mobile-info" class="btn-small-icon" title="Como Jogar no Celular">📱</button>
+                <button id="btn-theme-toggle" class="btn-small-icon" title="Alternar Modo Claro/Escuro">🌙</button>
                 
                 <div id="active-profile-card" class="profile-badge hidden">
                     <span id="active-avatar" class="profile-avatar">🎪</span>
@@ -39,7 +47,7 @@
         <!-- Seção Principal de Conteúdo -->
         <main class="hub-main">
 
-            <!-- MODAL / PAINEL: NENHUM JOGADOR SELECIONADO / BEM-VINDO -->
+            <!-- MODAL: NENHUM JOGADOR SELECIONADO / BEM-VINDO -->
             <section id="view-welcome" class="card-modal">
                 <h2 class="section-title">BEM-VINDO AO HUB DE JOGOS! 🎉</h2>
                 <p class="section-subtitle">Escolha seu perfil ou crie um novo para salvar seus recordes!</p>
@@ -89,92 +97,395 @@
                 </div>
             </section>
 
-            <!-- SEÇÃO: CATÁLOGO DE JOGOS (Exibido quando há jogador ativo) -->
+            <!-- 2. CATÁLOGO COMPLETO DE JOGOS (Com Carrossel e Categorias) -->
             <section id="view-games-catalog" class="games-section hidden">
-                <div class="section-header-box">
-                    <h2 class="section-title">ESCOLHA SEU JOGO 🎮</h2>
-                    <p class="section-subtitle">Divirta-se e conquiste os maiores recordes!</p>
-                </div>
-
-                <div class="games-grid">
-                    <!-- Jogo 1: Circo da JasDEV -->
-                    <div class="game-card card-circus" data-game="circus">
-                        <div class="game-card-banner">🎪</div>
-                        <div class="game-card-body">
-                            <h3 class="game-title">CIRCO DA JASDEV</h3>
-                            <p class="game-desc">Aventura 2D de plataforma com Pomni, Jax, Chefão Caine e Bolha!</p>
-                            <div class="game-stat-badge">
-                                <span>FASE ALCANÇADA:</span>
-                                <strong id="stat-circus-level">FASE 1</strong>
+                
+                <!-- CARROSSEL DE DESTAQUES (Hero Section 16:9 / Panorâmico) -->
+                <div class="hero-carousel-container" id="hero-carousel">
+                    <div class="hero-carousel-track" id="carousel-track">
+                        
+                        <!-- Slide 1: Cyber Strike 16:9 -->
+                        <div class="carousel-slide active" data-index="0" style="background: linear-gradient(135deg, rgba(6, 8, 20, 0.95), rgba(79, 70, 229, 0.4)); border-color: #00d2ff;">
+                            <div class="slide-content">
+                                <div class="slide-badge-row">
+                                    <span class="slide-pill pill-cyan">🔥 NOVIDADE • AÇÃO ESPACIAL</span>
+                                    <span class="slide-rating">★ 4.9</span>
+                                </div>
+                                <h2 class="slide-title">CYBER STRIKE 16:9</h2>
+                                <p class="slide-desc">Ação espacial arcade ultra rápida! Pilote o caça estelar e destrua as frotas inimigas em 16:9 HD com lasers e explosões neon!</p>
+                                <div class="slide-actions">
+                                    <a href="games/cyberstrike/index.html" class="btn-slide-play">JOGAR AGORA ▶</a>
+                                    <span class="slide-tag">Canvas 720p • Áudio Sintetizado</span>
+                                </div>
                             </div>
-                            <a href="games/circus/index.html" class="btn-play-game">JOGAR AGORA 🚀</a>
+                            <div class="slide-graphic">🚀</div>
                         </div>
+
+                        <!-- Slide 2: Circo da JasDEV -->
+                        <div class="carousel-slide" data-index="1" style="background: linear-gradient(135deg, rgba(20, 6, 18, 0.95), rgba(255, 42, 95, 0.4)); border-color: #ff2a5f;">
+                            <div class="slide-content">
+                                <div class="slide-badge-row">
+                                    <span class="slide-pill pill-pink">⭐ MAIS JOGADO • PLATAFORMA</span>
+                                    <span class="slide-rating">★ 5.0</span>
+                                </div>
+                                <h2 class="slide-title">CIRCO DA JASDEV</h2>
+                                <p class="slide-desc">Aventura mágica no Circo Digital! Jogue com Pomni ou Jax, desvie das armadilhas e enfrente o Chefão Caine em uma arena eletrizante!</p>
+                                <div class="slide-actions">
+                                    <a href="games/circus/index.html" class="btn-slide-play">JOGAR AGORA ▶</a>
+                                    <span class="slide-tag">5 Fases • Batalha de Chefão</span>
+                                </div>
+                            </div>
+                            <div class="slide-graphic">🎪</div>
+                        </div>
+
+                        <!-- Slide 3: Tetris Neon 3D -->
+                        <div class="carousel-slide" data-index="2" style="background: linear-gradient(135deg, rgba(6, 15, 30, 0.95), rgba(0, 210, 255, 0.4)); border-color: #ffcc00;">
+                            <div class="slide-content">
+                                <div class="slide-badge-row">
+                                    <span class="slide-pill pill-yellow">🧩 CLÁSSICO • PUZZLE 3D</span>
+                                    <span class="slide-rating">★ 4.8</span>
+                                </div>
+                                <h2 class="slide-title">TETRIS NEON 3D</h2>
+                                <p class="slide-desc">Encaixe os blocos tridimensionais brilhantes, limpe linhas no tabuleiro e conquiste o maior recorde da galáxia!</p>
+                                <div class="slide-actions">
+                                    <a href="games/tetris/index.html" class="btn-slide-play">JOGAR AGORA ▶</a>
+                                    <span class="slide-tag">Three.js • Iluminação Suave</span>
+                                </div>
+                            </div>
+                            <div class="slide-graphic">🟦</div>
+                        </div>
+
                     </div>
 
-                    <!-- Jogo 2: Snake (Cobrinha) -->
-                    <div class="game-card card-snake" data-game="snake">
-                        <div class="game-card-banner">🐍</div>
-                        <div class="game-card-body">
-                            <h3 class="game-title">SNAKE 3D</h3>
-                            <p class="game-desc">Jogo clássico da cobrinha neon! Coma as maçãs e cresça sem bater!</p>
-                            <div class="game-stat-badge">
-                                <span>RECORDE (HI-SCORE):</span>
-                                <strong id="stat-snake-score">0 PTS</strong>
-                            </div>
-                            <a href="games/snake/index.html" class="btn-play-game">JOGAR AGORA 🐍</a>
-                        </div>
-                    </div>
-
-                    <!-- Jogo 3: Tetris -->
-                    <div class="game-card card-tetris" data-game="tetris">
-                        <div class="game-card-banner">🟦</div>
-                        <div class="game-card-body">
-                            <h3 class="game-title">TETRIS NEON</h3>
-                            <p class="game-desc">Encaixe os blocos coloridos e destrua linhas para pontuar!</p>
-                            <div class="game-stat-badge">
-                                <span>RECORDE (HI-SCORE):</span>
-                                <strong id="stat-tetris-score">0 PTS</strong>
-                            </div>
-                            <a href="games/tetris/index.html" class="btn-play-game">JOGAR AGORA 🟦</a>
-                        </div>
-                    </div>
-
-                    <!-- Jogo 4: Flappy Bird -->
-                    <div class="game-card card-flappy" data-game="flappy">
-                        <div class="game-card-banner">🐦</div>
-                        <div class="game-card-body">
-                            <h3 class="game-title">FLAPPY BIRD 3D</h3>
-                            <p class="game-desc">Bata asas, desvie dos canos e conquiste a maior pontuação!</p>
-                            <div class="game-stat-badge">
-                                <span>RECORDE (CANOS):</span>
-                                <strong id="stat-flappy-score">0 CANOS</strong>
-                            </div>
-                            <a href="games/flappy/index.html" class="btn-play-game">JOGAR AGORA 🐦</a>
-                        </div>
-                    </div>
-
-                    <!-- Jogo 5: JasmineCraft 3D -->
-                    <div class="game-card card-jasminecraft" data-game="jasminecraft">
-                        <div class="game-card-banner">⛏️</div>
-                        <div class="game-card-body">
-                            <h3 class="game-title">JASMINECRAFT 3D</h3>
-                            <p class="game-desc">Mundo Voxel 3D! Explore em 1ª pessoa, construa e destrua blocos!</p>
-                            <div class="game-stat-badge">
-                                <span>BLOCOS COLOCADOS:</span>
-                                <strong id="stat-jasminecraft-blocks">0 BLOCOS</strong>
-                            </div>
-                            <a href="games/jasminecraft/index.html" class="btn-play-game">JOGAR AGORA ⛏️</a>
-                        </div>
+                    <!-- Controles do Carrossel -->
+                    <button class="carousel-arrow arrow-left" id="btn-carousel-prev" title="Destaque anterior">◀</button>
+                    <button class="carousel-arrow arrow-right" id="btn-carousel-next" title="Próximo destaque">▶</button>
+                    
+                    <div class="carousel-dots" id="carousel-dots">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
                     </div>
                 </div>
+
+                <!-- Barra de Abas de Navegação / Categorias Rápidas -->
+                <nav class="category-tabs-nav">
+                    <button class="cat-pill active" data-filter="all">🌟 Todos os Jogos (7)</button>
+                    <button class="cat-pill" data-filter="populares">🔥 Mais Jogados</button>
+                    <button class="cat-pill" data-filter="lancamentos">✨ Lançamentos</button>
+                    <button class="cat-pill" data-filter="acao">⚔️ Ação</button>
+                    <button class="cat-pill" data-filter="puzzle">🧩 Puzzle</button>
+                </nav>
+
+                <!-- Área de Resultados de Busca Dinâmica -->
+                <div id="search-feedback" class="search-feedback-bar hidden">
+                    <span>Resultados para: <strong id="search-term-display"></strong> (<span id="search-count-display">0</span> jogos encontrados)</span>
+                    <button id="btn-clear-search" class="btn-clear-search">Limpar busca ✕</button>
+                </div>
+
+                <!-- SEÇÕES CATEGORIZADAS DE JOGOS -->
+                
+                <!-- 1. SEÇÃO: MAIS JOGADOS -->
+                <section class="category-block" data-section="populares">
+                    <div class="section-block-header">
+                        <div class="block-title-group">
+                            <span class="block-icon">🔥</span>
+                            <h3 class="block-title">Mais Jogados</h3>
+                        </div>
+                        <span class="block-counter">Recordes da Comunidade</span>
+                    </div>
+
+                    <div class="games-grid">
+                        <!-- Jogo: Circo da JasDEV -->
+                        <div class="game-card card-circus" data-category="populares acao" data-name="circo da jasdev pomni caine plataforma">
+                            <div class="game-card-banner">🎪</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Ação / Plataforma</span>
+                                    <span class="tag-hot">Top 1</span>
+                                </div>
+                                <h4 class="game-title">CIRCO DA JASDEV</h4>
+                                <p class="game-desc">Aventura 2D de plataforma com Pomni, Jax, Chefão Caine e Bolha!</p>
+                                <div class="game-stat-badge">
+                                    <span>FASE ALCANÇADA:</span>
+                                    <strong id="stat-circus-level">FASE 1</strong>
+                                </div>
+                                <a href="games/circus/index.html" class="btn-play-game">JOGAR AGORA 🚀</a>
+                            </div>
+                        </div>
+
+                        <!-- Jogo: Snake 3D -->
+                        <div class="game-card card-snake" data-category="populares puzzle" data-name="snake 3d cobrinha neon macas">
+                            <div class="game-card-banner">🐍</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Puzzle / Arcade</span>
+                                    <span class="tag-hot">Top 2</span>
+                                </div>
+                                <h4 class="game-title">SNAKE 3D</h4>
+                                <p class="game-desc">Jogo clássico da cobrinha neon! Coma as maçãs e cresça sem bater!</p>
+                                <div class="game-stat-badge">
+                                    <span>RECORDE (HI-SCORE):</span>
+                                    <strong id="stat-snake-score">0 PTS</strong>
+                                </div>
+                                <a href="games/snake/index.html" class="btn-play-game">JOGAR AGORA 🐍</a>
+                            </div>
+                        </div>
+
+                        <!-- Jogo: Tetris Neon 3D -->
+                        <div class="game-card card-tetris" data-category="populares puzzle" data-name="tetris neon 3d blocos raciocinio">
+                            <div class="game-card-banner">🟦</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Puzzle / Raciocínio</span>
+                                    <span class="tag-hot">Top 3</span>
+                                </div>
+                                <h4 class="game-title">TETRIS NEON</h4>
+                                <p class="game-desc">Encaixe os blocos coloridos e destrua linhas para pontuar!</p>
+                                <div class="game-stat-badge">
+                                    <span>RECORDE (HI-SCORE):</span>
+                                    <strong id="stat-tetris-score">0 PTS</strong>
+                                </div>
+                                <a href="games/tetris/index.html" class="btn-play-game">JOGAR AGORA 🟦</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. SEÇÃO: LANÇAMENTOS -->
+                <section class="category-block" data-section="lancamentos">
+                    <div class="section-block-header">
+                        <div class="block-title-group">
+                            <span class="block-icon">✨</span>
+                            <h3 class="block-title">Lançamentos Recentes</h3>
+                        </div>
+                        <span class="block-counter">Adicionados Recentemente</span>
+                    </div>
+
+                    <div class="games-grid">
+                        <!-- Jogo: Cyber Strike 16:9 -->
+                        <div class="game-card card-cyberstrike" data-category="lancamentos acao" data-name="cyber strike 16:9 tiro espacial nave acao">
+                            <div class="game-card-banner">🚀</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Ação Espacial</span>
+                                    <span class="tag-new">Novo</span>
+                                </div>
+                                <h4 class="game-title">CYBER STRIKE 16:9</h4>
+                                <p class="game-desc">Ação espacial arcade! Pilote sua nave e destrua as frotas inimigas em 16:9 HD!</p>
+                                <div class="game-stat-badge">
+                                    <span>RECORDE (HI-SCORE):</span>
+                                    <strong id="stat-cyberstrike-score">0 PTS</strong>
+                                </div>
+                                <a href="games/cyberstrike/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #00d2ff, #4f46e5);">JOGAR AGORA 🚀</a>
+                            </div>
+                        </div>
+
+                        <!-- Jogo: Miyu: Ecos Flamejantes -->
+                        <div class="game-card card-miyu" data-category="lancamentos" data-name="miyu ecos flamejantes visual novel terror historia">
+                            <div class="game-card-banner">🔥</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Visual Novel / Mistério</span>
+                                    <span class="tag-new">Novo</span>
+                                </div>
+                                <h4 class="game-title">MIYU: ECOS FLAMEJANTES</h4>
+                                <p class="game-desc">Visual Novel de Terror! Explore os poderes da Medusa Flamejante.</p>
+                                <div class="game-stat-badge">
+                                    <span>FINAIS BONS:</span>
+                                    <strong id="stat-miyu-endings">0</strong>
+                                </div>
+                                <a href="games/miyu/index.html" class="btn-play-game" style="background-color: #6a1b9a;">JOGAR AGORA 🔥</a>
+                            </div>
+                        </div>
+
+                        <!-- Jogo: Jasminecraft 3D -->
+                        <div class="game-card card-jasminecraft" data-category="lancamentos puzzle" data-name="jasminecraft 3d voxel construcao blocos">
+                            <div class="game-card-banner">⛏️</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Voxel / Sandbox</span>
+                                    <span class="tag-new">Novo</span>
+                                </div>
+                                <h4 class="game-title">JASMINECRAFT 3D</h4>
+                                <p class="game-desc">Mundo Voxel 3D! Explore em 1ª pessoa, construa e destrua blocos!</p>
+                                <div class="game-stat-badge">
+                                    <span>BLOCOS COLOCADOS:</span>
+                                    <strong id="stat-jasminecraft-blocks">0 BLOCOS</strong>
+                                </div>
+                                <a href="games/jasminecraft/index.html" class="btn-play-game">JOGAR AGORA ⛏️</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. SEÇÃO: AÇÃO -->
+                <section class="category-block" data-section="acao">
+                    <div class="section-block-header">
+                        <div class="block-title-group">
+                            <span class="block-icon">⚔️</span>
+                            <h3 class="block-title">Jogos de Ação</h3>
+                        </div>
+                        <span class="block-counter">Adrenalina e Reflexos</span>
+                    </div>
+
+                    <div class="games-grid">
+                        <!-- Cyber Strike -->
+                        <div class="game-card card-cyberstrike" data-category="acao lancamentos" data-name="cyber strike 16:9 tiro espacial nave acao">
+                            <div class="game-card-banner">🚀</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Arcade / Shooter</span>
+                                    <span class="tag-new">16:9 HD</span>
+                                </div>
+                                <h4 class="game-title">CYBER STRIKE 16:9</h4>
+                                <p class="game-desc">Ataque com lasers neon, colete power-ups e enfrente hordas espaciais.</p>
+                                <a href="games/cyberstrike/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #00d2ff, #4f46e5);">JOGAR AGORA 🚀</a>
+                            </div>
+                        </div>
+
+                        <!-- Circo -->
+                        <div class="game-card card-circus" data-category="acao populares" data-name="circo da jasdev pomni caine plataforma acao">
+                            <div class="game-card-banner">🎪</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Plataforma 2D</span>
+                                    <span class="tag-hot">Chefão</span>
+                                </div>
+                                <h4 class="game-title">CIRCO DA JASDEV</h4>
+                                <p class="game-desc">Batalhas de ação acrobática contra o Chefão Caine e a Bolha!</p>
+                                <a href="games/circus/index.html" class="btn-play-game">JOGAR AGORA 🚀</a>
+                            </div>
+                        </div>
+
+                        <!-- Flappy Bird 3D -->
+                        <div class="game-card card-flappy" data-category="acao" data-name="flappy bird 3d passaro canos reflexos">
+                            <div class="game-card-banner">🐦</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Desafio de Reflexo</span>
+                                </div>
+                                <h4 class="game-title">FLAPPY BIRD 3D</h4>
+                                <p class="game-desc">Bata asas, desvie dos canos e conquiste a maior pontuação!</p>
+                                <div class="game-stat-badge">
+                                    <span>RECORDE (CANOS):</span>
+                                    <strong id="stat-flappy-score">0 CANOS</strong>
+                                </div>
+                                <a href="games/flappy/index.html" class="btn-play-game">JOGAR AGORA 🐦</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. SEÇÃO: PUZZLE & RACIOCÍNIO -->
+                <section class="category-block" data-section="puzzle">
+                    <div class="section-block-header">
+                        <div class="block-title-group">
+                            <span class="block-icon">🧩</span>
+                            <h3 class="block-title">Puzzle & Raciocínio</h3>
+                        </div>
+                        <span class="block-counter">Desafie sua Mente</span>
+                    </div>
+
+                    <div class="games-grid">
+                        <!-- Tetris -->
+                        <div class="game-card card-tetris" data-category="puzzle populares" data-name="tetris neon 3d blocos raciocinio puzzle">
+                            <div class="game-card-banner">🟦</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Lógica Clássica</span>
+                                </div>
+                                <h4 class="game-title">TETRIS NEON</h4>
+                                <p class="game-desc">Estratégia pura: encaixe os tetraminós e destrua múltiplas linhas.</p>
+                                <a href="games/tetris/index.html" class="btn-play-game">JOGAR AGORA 🟦</a>
+                            </div>
+                        </div>
+
+                        <!-- Snake -->
+                        <div class="game-card card-snake" data-category="puzzle populares" data-name="snake 3d cobrinha puzzle">
+                            <div class="game-card-banner">🐍</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Raciocínio Espacial</span>
+                                </div>
+                                <h4 class="game-title">SNAKE 3D</h4>
+                                <p class="game-desc">Trace a rota ideal da serpente sem colidir com as próprias caudas.</p>
+                                <a href="games/snake/index.html" class="btn-play-game">JOGAR AGORA 🐍</a>
+                            </div>
+                        </div>
+
+                        <!-- Jasminecraft -->
+                        <div class="game-card card-jasminecraft" data-category="puzzle lancamentos" data-name="jasminecraft 3d voxel construcao criatividade">
+                            <div class="game-card-banner">⛏️</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Criatividade & Voxel</span>
+                                </div>
+                                <h4 class="game-title">JASMINECRAFT 3D</h4>
+                                <p class="game-desc">Construa estruturas incríveis bloco a bloco no mundo 3D aberto.</p>
+                                <a href="games/jasminecraft/index.html" class="btn-play-game">JOGAR AGORA ⛏️</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </section>
         </main>
 
+        <!-- 3. Rodapé Completo com Links Úteis (Hierarquia de 4 Colunas) -->
         <footer class="hub-footer">
-            <p>JASDEV GAME HUB © 2026 — Jogos Educativos e Divertidos para Crianças 🌟</p>
+            <div class="footer-grid">
+                <!-- Coluna 1: Branding -->
+                <div class="footer-col">
+                    <div class="footer-logo">JASDEV HUB 🎪🎮</div>
+                    <p class="footer-text">
+                        Portal de jogos rápidos, casuais e divertidos direto no seu navegador. Zero instalação, leve e acessível em qualquer dispositivo.
+                    </p>
+                    <div class="footer-badge">Versão 2.4 • WebGL & Canvas</div>
+                </div>
+
+                <!-- Coluna 2: Categorias -->
+                <div class="footer-col">
+                    <h5 class="footer-title">Categorias</h5>
+                    <ul class="footer-links">
+                        <li><a href="#view-games-catalog" onclick="filterGames('acao')">⚔️ Jogos de Ação</a></li>
+                        <li><a href="#view-games-catalog" onclick="filterGames('puzzle')">🧩 Puzzle e Raciocínio</a></li>
+                        <li><a href="#view-games-catalog" onclick="filterGames('populares')">🔥 Mais Jogados</a></li>
+                        <li><a href="#view-games-catalog" onclick="filterGames('lancamentos')">✨ Lançamentos Recentes</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Institucional -->
+                <div class="footer-col">
+                    <h5 class="footer-title">Institucional</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Sobre o JasDEV Estúdio</a></li>
+                        <li><a href="#">Para Desenvolvedores</a></li>
+                        <li><a href="#">Código Aberto (GitHub)</a></li>
+                        <li><a href="#">Novidades & Atualizações</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4: Suporte e Legal -->
+                <div class="footer-col">
+                    <h5 class="footer-title">Suporte & Legal</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Central de Ajuda & FAQ</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Configurações de Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom-bar">
+                <span>© 2026 JASDEV GAME HUB — Todos os direitos reservados.</span>
+                <span class="footer-signature">Feito com paixão para jogadores casuais ✨</span>
+            </div>
         </footer>
     </div>
 
+    <!-- Script Principal com Busca, Carrossel e Filtros -->
     <script type="module" src="hub.js"></script>
 </body>
 </html>
