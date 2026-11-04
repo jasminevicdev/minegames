@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Pong Arena 🏓 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at center, #0e0725 0%, #05020e 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 1020px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00f5d4;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 22px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .btn-back:hover { background: #00f5d4; color: #05020e; }
+        .hud-stats {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; font-size: 1rem; }
+        .stage-wrap {
+            position: relative;
+            width: 96vw;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background: #060414;
+            border: 3px solid #00f5d4;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 245, 212, 0.3);
+            overflow: hidden;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(6, 4, 20, 0.86);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+        .overlay.hidden { display: none; }
+        .overlay h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            color: #00f5d4;
+            text-shadow: 0 0 20px rgba(0, 245, 212, 0.7);
+            margin-bottom: 8px;
+        }
+        .overlay p {
+            color: #cbd5e1;
+            max-width: 520px;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            margin-bottom: 18px;
+            line-height: 1.45;
+        }
+        .mode-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+        .btn-mode {
+            background: linear-gradient(135deg, #00f5d4, #00bbf9);
+            color: #040814;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 245, 212, 0.4);
+            transition: transform 0.2s;
+        }
+        .btn-mode.pink {
+            background: linear-gradient(135deg, #ff2a85, #ff7b00);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(255, 42, 133, 0.4);
+        }
+        .btn-mode:hover { transform: scale(1.06); }
+        .mobile-controls {
+            width: 96vw;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 6px 0;
+            gap: 10px;
+        }
+        .ctrl-group { display: flex; gap: 10px; }
+        .btn-touch {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00f5d4;
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            active: scale(0.95);
+        }
+        .btn-smash {
+            background: linear-gradient(135deg, #ffcc00, #ff2a5f);
+            border: 2px solid #fff;
+            color: #090418;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div class="hud-stats">
+            <div class="stat-pill">JOGADOR: <strong id="hud-player">VISITANTE</strong></div>
+            <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
+            <div class="stat-pill">TURBO SMASH: <strong id="hud-energy">100%</strong></div>
+        </div>
+    </div>
+
+    <div class="stage-wrap" id="stage-wrap">
+        <canvas id="game-canvas" width="1280" height="720"></canvas>
+
+        <div class="overlay" id="menu-overlay">
+            <h1>🏓 CYBER PONG ARENA</h1>
+            <p id="overlay-desc">
+                Rebata a esfera de plasma neon, colete orbes de poder no meio da arena e ative o <strong>SUPER SMASH TURBO (Espaço)</strong> para vencer o robô cibernético! Primeiro a marcar <strong>7 gols</strong> vence a partida!
+            </p>
+            <div class="mode-row">
+                <button class="btn-mode" id="btn-start-normal">🤖 VS ROBÔ NEON (NORMAL)</button>
+                <button class="btn-mode pink" id="btn-start-insane">🔥 VS MESTRE CYBER (DIFÍCIL)</button>
+            </div>
+            <span style="font-size: 0.8rem; color: #94a3b8;">PC: Mouse ou W/S / Setas + Espaço (Smash) • Celular: Arraste na tela ou use os botões</span>
+        </div>
+    </div>
+
+    <div class="mobile-controls">
+        <div class="ctrl-group">
+            <button class="btn-touch" id="btn-up">⬆️ SUBIR</button>
+            <button class="btn-touch" id="btn-down">⬇️ DESCER</button>
+        </div>
+        <button class="btn-touch btn-smash" id="btn-smash">⚡ SUPER SMASH</button>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudPlayer = document.getElementById('hud-player');
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const hudEnergy = document.getElementById('hud-energy');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const overlayDesc = document.getElementById('overlay-desc');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        if (activePlayer) hudPlayer.innerText = activePlayer.name.toUpperCase();
+
+        let save = SaveHub.getGameSave('cyberpong', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = bestScore;
+
+        // Web Audio Synthesizer
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function beep(freq = 440, dur = 0.08, type = 'sine', vol = 0.12) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(vol, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                osc.connect(g);
+                g.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        let running = false;
+        let aiDifficulty = 1; // 1 = normal, 1.45 = hard
+        let playerGoals = 0;
+        let aiGoals = 0;
+        let totalScore = 0;
+        let smashEnergy = 100;
+        let smashReady = false;
+
+        const player = { x: 48, y: H / 2 - 65, w: 18, h: 130, vy: 0, shieldTimer: 0 };
+        const ai = { x: W - 66, y: H / 2 - 65, w: 18, h: 130, vy: 0 };
+        const ball = { x: W / 2, y: H / 2, vx: 9, vy: 5, r: 13, trail: [], superShot: false };
+        let powerOrb = null;
+        let particles = [];
+
+        const keys = { up: false, down: false };
+
+        function spawnParticles(x, y, color, count = 18) {
+            for (let i = 0; i < count; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const s = 2 + Math.random() * 7;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(a) * s,
+                    vy: Math.sin(a) * s,
+                    life: 1,
+                    color
+                });
+            }
+        }
+
+        function resetBall(dir = 1) {
+            ball.x = W / 2;
+            ball.y = H / 2;
+            const speed = 9.5;
+            const angle = (Math.random() - 0.5) * 0.7;
+            ball.vx = dir * speed * Math.cos(angle);
+            ball.vy = speed * Math.sin(angle);
+            ball.superShot = false;
+            ball.trail = [];
+        }
+
+        function spawnPowerOrb() {
+            const types = [
+                { type: 'shield', label: '🛡️ ESCUDO', color: '#00f5d4' },
+                { type: 'giant', label: '📏 RAQUETE GIGANTE', color: '#ffcc00' },
+                { type: 'bonus', label: '💎 +250 PTS', color: '#ff2a85' }
+            ];
+            const pick = types[Math.floor(Math.random() * types.length)];
+            powerOrb = {
+                x: W * 0.35 + Math.random() * (W * 0.3),
+                y: 90 + Math.random() * (H - 180),
+                r: 22,
+                ...pick
+            };
+        }
+
+        function startGame(diff) {
+            aiDifficulty = diff;
+            playerGoals = 0;
+            aiGoals = 0;
+            totalScore = 0;
+            smashEnergy = 100;
+            player.h = 130;
+            player.shieldTimer = 0;
+            hudScore.innerText = '0';
+            resetBall(1);
+            spawnPowerOrb();
+            menuOverlay.classList.add('hidden');
+            running = true;
+            beep(520, 0.12, 'triangle');
+        }
+
+        function triggerSmash() {
+            if (smashEnergy >= 100) {
+                smashReady = true;
+                beep(780, 0.15, 'sawtooth', 0.15);
+            }
+        }
+
+        function saveRecord() {
+            if (totalScore > bestScore) {
+                bestScore = totalScore;
+                hudBest.innerText = bestScore;
+                SaveHub.updateGameSave('cyberpong', { highScore: bestScore }, playerName);
+            }
+        }
+
+        function update() {
+            if (!running) return;
+
+            // Player movement
+            const pSpeed = 10;
+            if (keys.up) player.y -= pSpeed;
+            if (keys.down) player.y += pSpeed;
+            player.y = Math.max(20, Math.min(H - player.h - 20, player.y));
+
+            if (player.shieldTimer > 0) player.shieldTimer--;
+            if (smashEnergy < 100) {
+                smashEnergy = Math.min(100, smashEnergy + 0.18);
+            }
+            hudEnergy.innerText = smashReady ? 'PRONTO! 🔥' : `${Math.floor(smashEnergy)}%`;
+
+            // AI tracking
+            const aiCenter = ai.y + ai.h / 2;
+            const targetY = ball.vx > 0 ? ball.y : H / 2;
+            const aiSpeed = 6.8 * aiDifficulty;
+            if (Math.abs(targetY - aiCenter) > 10) {
+                ai.y += Math.sign(targetY - aiCenter) * aiSpeed;
+            }
+            ai.y = Math.max(20, Math.min(H - ai.h - 20, ai.y));
+
+            // Ball movement
+            ball.trail.push({ x: ball.x, y: ball.y });
+            if (ball.trail.length > 14) ball.trail.shift();
+
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            // Top / bottom bounce
+            if (ball.y - ball.r < 16) {
+                ball.y = 16 + ball.r;
+                ball.vy *= -1;
+                beep(320, 0.05, 'sine');
+            } else if (ball.y + ball.r > H - 16) {
+                ball.y = H - 16 - ball.r;
+                ball.vy *= -1;
+                beep(320, 0.05, 'sine');
+            }
+
+            // Shield bounce on left wall
+            if (player.shieldTimer > 0 && ball.x - ball.r < 18 && ball.vx < 0) {
+                ball.vx = Math.abs(ball.vx);
+                spawnParticles(ball.x, ball.y, '#00f5d4', 25);
+                beep(660, 0.1, 'triangle');
+            }
+
+            // Player paddle collision
+            if (
+                ball.vx < 0 &&
+                ball.x - ball.r <= player.x + player.w &&
+                ball.x + ball.r >= player.x &&
+                ball.y >= player.y - 8 &&
+                ball.y <= player.y + player.h + 8
+            ) {
+                const rel = (ball.y - (player.y + player.h / 2)) / (player.h / 2);
+                let speed = Math.min(18, Math.hypot(ball.vx, ball.vy) * 1.05);
+                if (smashReady) {
+                    speed = 21;
+                    ball.superShot = true;
+                    smashReady = false;
+                    smashEnergy = 0;
+                    spawnParticles(ball.x, ball.y, '#ffcc00', 35);
+                    beep(880, 0.18, 'sawtooth', 0.2);
+                } else {
+                    ball.superShot = false;
+                    spawnParticles(ball.x, ball.y, '#00f5d4', 16);
+                    beep(480, 0.07, 'square');
+                }
+                const angle = rel * 0.95;
+                ball.vx = Math.abs(speed * Math.cos(angle));
+                ball.vy = speed * Math.sin(angle);
+                totalScore += 25;
+                hudScore.innerText = totalScore;
+                saveRecord();
+            }
+
+            // AI paddle collision
+            if (
+                ball.vx > 0 &&
+                ball.x + ball.r >= ai.x &&
+                ball.x - ball.r <= ai.x + ai.w &&
+                ball.y >= ai.y - 8 &&
+                ball.y <= ai.y + ai.h + 8
+            ) {
+                const rel = (ball.y - (ai.y + ai.h / 2)) / (ai.h / 2);
+                const speed = Math.min(16.5, Math.hypot(ball.vx, ball.vy) * 1.03);
+                const angle = rel * 0.9;
+                ball.vx = -Math.abs(speed * Math.cos(angle));
+                ball.vy = speed * Math.sin(angle);
+                ball.superShot = false;
+                spawnParticles(ball.x, ball.y, '#ff2a85', 16);
+                beep(390, 0.07, 'square');
+            }
+
+            // Power orb collision
+            if (powerOrb && Math.hypot(ball.x - powerOrb.x, ball.y - powerOrb.y) < ball.r + powerOrb.r) {
+                spawnParticles(powerOrb.x, powerOrb.y, powerOrb.color, 28);
+                beep(720, 0.14, 'triangle');
+                if (powerOrb.type === 'shield') {
+                    player.shieldTimer = 420;
+                } else if (powerOrb.type === 'giant') {
+                    player.h = 190;
+                    setTimeout(() => { player.h = 130; }, 7000);
+                } else if (powerOrb.type === 'bonus') {
+                    totalScore += 250;
+                }
+                hudScore.innerText = totalScore;
+                saveRecord();
+                powerOrb = null;
+                setTimeout(() => { if (running && !powerOrb) spawnPowerOrb(); }, 4500);
+            }
+
+            // Goals
+            if (ball.x > W + 30) {
+                playerGoals++;
+                totalScore += Math.round(200 * aiDifficulty);
+                hudScore.innerText = totalScore;
+                saveRecord();
+                spawnParticles(W - 40, ball.y, '#00f5d4', 40);
+                beep(660, 0.2, 'triangle');
+                if (playerGoals >= 7) {
+                    endMatch(true);
+                } else {
+                    resetBall(-1);
+                }
+            } else if (ball.x < -30) {
+                aiGoals++;
+                spawnParticles(40, ball.y, '#ff2a85', 40);
+                beep(190, 0.25, 'sawtooth');
+                if (aiGoals >= 7) {
+                    endMatch(false);
+                } else {
+                    resetBall(1);
+                }
+            }
+
+            // Update particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.03;
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function endMatch(won) {
+            running = false;
+            if (won) {
+                totalScore += Math.round(500 * aiDifficulty);
+                hudScore.innerText = totalScore;
+            }
+            saveRecord();
+            overlayDesc.innerHTML = won
+                ? `🏆 <strong>VITÓRIA CAMPEÃ! (${playerGoals} x ${aiGoals})</strong><br>Você marcou <strong>${totalScore} PTS</strong> na Cyber Pong Arena!`
+                : `⚡ <strong>FIM DE PARTIDA (${playerGoals} x ${aiGoals})</strong><br>Sua pontuação final foi <strong>${totalScore} PTS</strong>. Tente novamente!`;
+            menuOverlay.classList.remove('hidden');
+        }
+
+        function draw() {
+            ctx.fillStyle = '#060414';
+            ctx.fillRect(0, 0, W, H);
+
+            // Neon court borders & center line
+            ctx.strokeStyle = 'rgba(0, 245, 212, 0.22)';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(16, 16, W - 32, H - 32);
+
+            ctx.setLineDash([16, 16]);
+            ctx.beginPath();
+            ctx.moveTo(W / 2, 20);
+            ctx.lineTo(W / 2, H - 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(W / 2, H / 2, 75, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Big scoreboard on floor
+            ctx.font = '900 110px Outfit';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(0, 245, 212, 0.14)';
+            ctx.fillText(playerGoals, W / 2 - 140, H / 2 + 38);
+            ctx.fillStyle = 'rgba(255, 42, 133, 0.14)';
+            ctx.fillText(aiGoals, W / 2 + 140, H / 2 + 38);
+
+            // Shield laser wall
+            if (player.shieldTimer > 0) {
+                ctx.save();
+                ctx.strokeStyle = '#00f5d4';
+                ctx.lineWidth = 6;
+                ctx.shadowColor = '#00f5d4';
+                ctx.shadowBlur = 18;
+                ctx.beginPath();
+                ctx.moveTo(18, 20);
+                ctx.lineTo(18, H - 20);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Power orb
+            if (powerOrb) {
+                ctx.save();
+                ctx.fillStyle = powerOrb.color;
+                ctx.shadowColor = powerOrb.color;
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.arc(powerOrb.x, powerOrb.y, powerOrb.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.font = '700 14px Outfit';
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'center';
+                ctx.fillText(powerOrb.label, powerOrb.x, powerOrb.y - 30);
+                ctx.restore();
+            }
+
+            // Player paddle
+            ctx.save();
+            const pColor = smashReady ? '#ffcc00' : '#00f5d4';
+            ctx.fillStyle = pColor;
+            ctx.shadowColor = pColor;
+            ctx.shadowBlur = 22;
+            ctx.beginPath();
+            ctx.roundRect(player.x, player.y, player.w, player.h, 9);
+            ctx.fill();
+            ctx.restore();
+
+            // AI paddle
+            ctx.save();
+            ctx.fillStyle = '#ff2a85';
+            ctx.shadowColor = '#ff2a85';
+            ctx.shadowBlur = 22;
+            ctx.beginPath();
+            ctx.roundRect(ai.x, ai.y, ai.w, ai.h, 9);
+            ctx.fill();
+            ctx.restore();
+
+            // Ball trail
+            for (let i = 0; i < ball.trail.length; i++) {
+                const t = ball.trail[i];
+                const alpha = (i + 1) / ball.trail.length;
+                ctx.fillStyle = ball.superShot
+                    ? `rgba(255, 204, 0, ${alpha * 0.45})`
+                    : `rgba(0, 245, 212, ${alpha * 0.35})`;
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, ball.r * (alpha * 0.85), 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Ball
+            ctx.save();
+            ctx.fillStyle = ball.superShot ? '#ffcc00' : '#ffffff';
+            ctx.shadowColor = ball.superShot ? '#ff5500' : '#00f5d4';
+            ctx.shadowBlur = 24;
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Particles
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        // Controls
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = true;
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = true;
+            if (e.code === 'Space') {
+                e.preventDefault();
+                triggerSmash();
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = false;
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = false;
+        });
+
+        function pointerMoveY(clientY) {
+            const rect = canvas.getBoundingClientRect();
+            const relY = ((clientY - rect.top) / rect.height) * H;
+            player.y = Math.max(20, Math.min(H - player.h - 20, relY - player.h / 2));
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (running) pointerMoveY(e.clientY);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            if (running && e.touches[0]) {
+                e.preventDefault();
+                pointerMoveY(e.touches[0].clientY);
+            }
+        }, { passive: false });
+
+        const btnUp = document.getElementById('btn-up');
+        const btnDown = document.getElementById('btn-down');
+        const btnSmash = document.getElementById('btn-smash');
+
+        const bindHold = (el, key) => {
+            el.addEventListener('pointerdown', (e) => { e.preventDefault(); keys[key] = true; });
+            el.addEventListener('pointerup', () => { keys[key] = false; });
+            el.addEventListener('pointerleave', () => { keys[key] = false; });
+        };
+        bindHold(btnUp, 'up');
+        bindHold(btnDown, 'down');
+        btnSmash.addEventListener('click', triggerSmash);
+
+        document.getElementById('btn-start-normal').addEventListener('click', () => startGame(1));
+        document.getElementById('btn-start-insane').addEventListener('click', () => startGame(1.45));
+
+        loop();
+    </script>
+</body>
+</html>

@@ -59,7 +59,10 @@ export class SaveHub {
                     cyberstrike: { highScore: 0 },
                     turboracer: { highScore: 0 },
                     neonbreaker: { highScore: 0 },
-                    memorycircus: { highScore: 0 }
+                    memorycircus: { highScore: 0 },
+                    cyberpong: { highScore: 0 },
+                    towerdefense: { highScore: 0, bestWave: 1 },
+                    astrojump: { highScore: 0 }
                 }
             };
         }

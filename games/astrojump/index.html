@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Astro Jump: Salto Galáctico 👨‍🚀 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #101935 0%, #050711 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .topbar {
+            width: 96vw;
+            max-width: 520px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px;
+            gap: 6px;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #a855f7;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
+        .stage-wrap {
+            position: relative;
+            width: 94vw;
+            max-width: 480px;
+            height: 74vh;
+            max-height: 700px;
+            background: #070b1a;
+            border: 3px solid #a855f7;
+            border-radius: 22px;
+            box-shadow: 0 0 38px rgba(168, 85, 247, 0.35);
+            overflow: hidden;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(7, 11, 26, 0.88);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            text-align: center;
+            z-index: 10;
+        }
+        .overlay.hidden { display: none; }
+        .overlay h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.1rem;
+            color: #c084fc;
+            margin-bottom: 8px;
+        }
+        .overlay p {
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            margin-bottom: 18px;
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #a855f7, #00f5d4);
+            color: #050711;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .touch-bar {
+            width: 94vw;
+            max-width: 480px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 8px;
+        }
+        .btn-move {
+            flex: 1;
+            background: rgba(168, 85, 247, 0.22);
+            border: 2px solid #a855f7;
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            padding: 12px;
+            border-radius: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ HUB</a>
+        <div class="stat-pill">ALTITUDE: <strong id="hud-score">0m</strong></div>
+        <div class="stat-pill">RECORDE: <strong id="hud-best">0m</strong></div>
+    </div>
+
+    <div class="stage-wrap">
+        <canvas id="jump-canvas" width="480" height="720"></canvas>
+        <div class="overlay" id="jump-overlay">
+            <h1>👨‍🚀 ASTRO JUMP</h1>
+            <p id="jump-desc">
+                Salte de plataforma em plataforma rumo às estrelas! Pegue <strong>Molas Neon</strong> e <strong>Foguetes Jetpack 🚀</strong> para voar nas alturas sem cair no espaço profundo!
+            </p>
+            <button class="btn-start" id="btn-start-jump">DECOLAR AGORA 🚀</button>
+        </div>
+    </div>
+
+    <div class="touch-bar">
+        <button class="btn-move" id="btn-left">⬅️ ESQUERDA</button>
+        <button class="btn-move" id="btn-right">DIREITA ➡️</button>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('jump-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const overlay = document.getElementById('jump-overlay');
+        const jumpDesc = document.getElementById('jump-desc');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('astrojump', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore}m`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 440, dur = 0.09, type = 'sine', vol = 0.1) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(vol, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        let running = false;
+        let score = 0;
+        let astro = { x: W / 2, y: H - 120, vx: 0, vy: -12, r: 20, jetpack: 0 };
+        let platforms = [];
+        let stars = Array.from({ length: 55 }, () => ({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            s: 1 + Math.random() * 2.5
+        }));
+        const keys = { left: false, right: false };
+
+        function makePlatform(y, guaranteed = false) {
+            const moving = !guaranteed && Math.random() < 0.25;
+            const hasSpring = !guaranteed && Math.random() < 0.18;
+            const hasJetpack = !guaranteed && !hasSpring && Math.random() < 0.06;
+            return {
+                x: 30 + Math.random() * (W - 150),
+                y,
+                w: 92,
+                h: 16,
+                vx: moving ? (Math.random() < 0.5 ? 2.2 : -2.2) : 0,
+                hasSpring,
+                hasJetpack
+            };
+        }
+
+        function startGame() {
+            score = 0;
+            astro = { x: W / 2, y: H - 120, vx: 0, vy: -13, r: 20, jetpack: 0 };
+            platforms = [];
+            for (let i = 0; i < 9; i++) {
+                const p = makePlatform(H - 60 - i * 80, i === 0);
+                if (i === 0) p.x = W / 2 - p.w / 2;
+                platforms.push(p);
+            }
+            hudScore.innerText = '0m';
+            overlay.classList.add('hidden');
+            running = true;
+            sfx(540, 0.12, 'triangle');
+        }
+
+        function update() {
+            if (!running) return;
+
+            if (keys.left) astro.vx = -6.8;
+            else if (keys.right) astro.vx = 6.8;
+            else astro.vx *= 0.82;
+
+            astro.x += astro.vx;
+            if (astro.x < -astro.r) astro.x = W + astro.r;
+            if (astro.x > W + astro.r) astro.x = -astro.r;
+
+            if (astro.jetpack > 0) {
+                astro.jetpack--;
+                astro.vy = -15;
+            } else {
+                astro.vy += 0.42;
+            }
+            astro.y += astro.vy;
+
+            // Scroll camera up when astro rises above mid-screen
+            if (astro.y < H * 0.42) {
+                const diff = H * 0.42 - astro.y;
+                astro.y = H * 0.42;
+                score += Math.round(diff * 0.35);
+                hudScore.innerText = `${score}m`;
+                if (score > bestScore) {
+                    bestScore = score;
+                    hudBest.innerText = `${bestScore}m`;
+                    SaveHub.updateGameSave('astrojump', { highScore: bestScore }, playerName);
+                }
+
+                for (const s of stars) {
+                    s.y += diff * 0.35;
+                    if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+                }
+
+                for (let i = platforms.length - 1; i >= 0; i--) {
+                    platforms[i].y += diff;
+                    if (platforms[i].y > H + 30) {
+                        platforms.splice(i, 1);
+                        const highestY = Math.min(...platforms.map(p => p.y));
+                        platforms.push(makePlatform(highestY - (72 + Math.random() * 20)));
+                    }
+                }
+            }
+
+            // Platform movement & landing
+            for (const p of platforms) {
+                if (p.vx !== 0) {
+                    p.x += p.vx;
+                    if (p.x < 14 || p.x + p.w > W - 14) p.vx *= -1;
+                }
+
+                if (
+                    astro.vy > 0 &&
+                    astro.x + 14 > p.x &&
+                    astro.x - 14 < p.x + p.w &&
+                    astro.y + astro.r >= p.y &&
+                    astro.y + astro.r <= p.y + p.h + 14
+                ) {
+                    if (p.hasJetpack) {
+                        astro.jetpack = 85;
+                        p.hasJetpack = false;
+                        sfx(820, 0.25, 'sawtooth');
+                    } else if (p.hasSpring) {
+                        astro.vy = -19.5;
+                        sfx(680, 0.15, 'triangle');
+                    } else {
+                        astro.vy = -13.2;
+                        sfx(440, 0.08, 'sine');
+                    }
+                }
+            }
+
+            if (astro.y - astro.r > H + 40) {
+                running = false;
+                jumpDesc.innerHTML = `🌟 <strong>FIM DO VOO ESPACIAL!</strong><br>Você alcançou a altitude de <strong>${score}m</strong>!`;
+                overlay.classList.remove('hidden');
+                sfx(190, 0.22, 'sawtooth');
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#070b1a';
+            ctx.fillRect(0, 0, W, H);
+
+            // Stars
+            ctx.fillStyle = '#e2e8f0';
+            for (const s of stars) {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Platforms
+            for (const p of platforms) {
+                ctx.save();
+                const col = p.vx !== 0 ? '#00bbf9' : '#00f5d4';
+                ctx.fillStyle = col;
+                ctx.shadowColor = col;
+                ctx.shadowBlur = 14;
+                ctx.beginPath();
+                ctx.roundRect(p.x, p.y, p.w, p.h, 8);
+                ctx.fill();
+
+                if (p.hasSpring) {
+                    ctx.fillStyle = '#ffcc00';
+                    ctx.fillRect(p.x + p.w / 2 - 10, p.y - 10, 20, 10);
+                } else if (p.hasJetpack) {
+                    ctx.font = '22px serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🚀', p.x + p.w / 2, p.y - 4);
+                }
+                ctx.restore();
+            }
+
+            // Astronaut
+            ctx.save();
+            if (astro.jetpack > 0) {
+                ctx.fillStyle = '#ff7b00';
+                ctx.beginPath();
+                ctx.arc(astro.x, astro.y + 24, 10 + Math.random() * 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.font = '38px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('👨‍🚀', astro.x, astro.y + 12);
+            ctx.restore();
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+        });
+
+        const bindHold = (id, k) => {
+            const el = document.getElementById(id);
+            el.addEventListener('pointerdown', (e) => { e.preventDefault(); keys[k] = true; });
+            el.addEventListener('pointerup', () => { keys[k] = false; });
+            el.addEventListener('pointerleave', () => { keys[k] = false; });
+        };
+        bindHold('btn-left', 'left');
+        bindHold('btn-right', 'right');
+
+        canvas.addEventListener('pointermove', (e) => {
+            if (!running || e.buttons === 0) return;
+            const rect = canvas.getBoundingClientRect();
+            const tx = ((e.clientX - rect.left) / rect.width) * W;
+            astro.x = tx;
+        });
+
+        document.getElementById('btn-start-jump').addEventListener('click', startGame);
+        loop();
+    </script>
+</body>
+</html>

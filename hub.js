@@ -52,6 +52,9 @@ class GameHub {
         this.statTurboracerScore = document.getElementById('stat-turboracer-score');
         this.statNeonbreakerScore = document.getElementById('stat-neonbreaker-score');
         this.statMemorycircusScore = document.getElementById('stat-memorycircus-score');
+        this.statCyberpongScore = document.getElementById('stat-cyberpong-score');
+        this.statTowerdefenseScore = document.getElementById('stat-towerdefense-score');
+        this.statAstrojumpScore = document.getElementById('stat-astrojump-score');
 
         this.selectedAvatar = '🎪';
 
@@ -141,6 +144,9 @@ class GameHub {
         const turboracerSave = SaveHub.getGameSave('turboracer', player.name);
         const neonbreakerSave = SaveHub.getGameSave('neonbreaker', player.name);
         const memorycircusSave = SaveHub.getGameSave('memorycircus', player.name);
+        const cyberpongSave = SaveHub.getGameSave('cyberpong', player.name);
+        const towerdefenseSave = SaveHub.getGameSave('towerdefense', player.name);
+        const astrojumpSave = SaveHub.getGameSave('astrojump', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -152,6 +158,9 @@ class GameHub {
         if (this.statTurboracerScore) this.statTurboracerScore.innerText = `${turboracerSave.highScore || 0} PTS`;
         if (this.statNeonbreakerScore) this.statNeonbreakerScore.innerText = `${neonbreakerSave.highScore || 0} PTS`;
         if (this.statMemorycircusScore) this.statMemorycircusScore.innerText = `${memorycircusSave.highScore || 0} PTS`;
+        if (this.statCyberpongScore) this.statCyberpongScore.innerText = `${cyberpongSave.highScore || 0} PTS`;
+        if (this.statTowerdefenseScore) this.statTowerdefenseScore.innerText = `${towerdefenseSave.highScore || 0} PTS`;
+        if (this.statAstrojumpScore) this.statAstrojumpScore.innerText = `${astrojumpSave.highScore || 0}m`;
     }
 
     renderPlayersList() {

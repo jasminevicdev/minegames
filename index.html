@@ -171,7 +171,7 @@
 
                 <!-- Barra de Abas de Navegação / Categorias Rápidas -->
                 <nav class="category-tabs-nav">
-                    <button class="cat-pill active" data-filter="all">🌟 Todos os Jogos (10)</button>
+                    <button class="cat-pill active" data-filter="all">🌟 Todos os Jogos (13)</button>
                     <button class="cat-pill" data-filter="populares">🔥 Mais Jogados</button>
                     <button class="cat-pill" data-filter="lancamentos">✨ Lançamentos</button>
                     <button class="cat-pill" data-filter="acao">⚔️ Ação</button>
@@ -261,10 +261,64 @@
                             <span class="block-icon">✨</span>
                             <h3 class="block-title">Lançamentos Recentes</h3>
                         </div>
-                        <span class="block-counter">10 Jogos Disponíveis</span>
+                        <span class="block-counter">13 Jogos Disponíveis</span>
                     </div>
 
                     <div class="games-grid">
+                        <!-- Jogo 11: Cyber Pong Arena -->
+                        <div class="game-card card-cyberpong" data-category="lancamentos acao" data-name="cyber pong arena ping pong tenis mesa neon robo smash acao">
+                            <div class="game-card-banner">🏓</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Esporte / Duelo Neon</span>
+                                    <span class="tag-new">Novo</span>
+                                </div>
+                                <h4 class="game-title">CYBER PONG ARENA</h4>
+                                <p class="game-desc">Duelo neon 16:9! Rebata a esfera de plasma, pegue escudos e use o Super Smash Turbo ⚡!</p>
+                                <div class="game-stat-badge">
+                                    <span>RECORDE (HI-SCORE):</span>
+                                    <strong id="stat-cyberpong-score">0 PTS</strong>
+                                </div>
+                                <a href="games/cyberpong/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #00f5d4, #4f46e5);">JOGAR AGORA 🏓</a>
+                            </div>
+                        </div>
+
+                        <!-- Jogo 12: Guardiões do Circo (Tower Defense) -->
+                        <div class="game-card card-towerdefense" data-category="lancamentos puzzle acao" data-name="guardioes do circo tower defense estrategia torres monstros caine">
+                            <div class="game-card-banner">🏰</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Estratégia / Tower Defense</span>
+                                    <span class="tag-new">Novo</span>
+                                </div>
+                                <h4 class="game-title">GUARDIÕES DO CIRCO</h4>
+                                <p class="game-desc">Construa e evolua Canhões de Confete, Torres de Gelo e Raios de Caine contra hordas!</p>
+                                <div class="game-stat-badge">
+                                    <span>RECORDE (HI-SCORE):</span>
+                                    <strong id="stat-towerdefense-score">0 PTS</strong>
+                                </div>
+                                <a href="games/towerdefense/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #ff2a5f, #ffcc00); color:#090414;">JOGAR AGORA 🏰</a>
+                            </div>
+                        </div>
+
+                        <!-- Jogo 13: Astro Jump: Salto Galáctico -->
+                        <div class="game-card card-astrojump" data-category="lancamentos acao" data-name="astro jump salto galactico astronauta espaco plataforma vertical">
+                            <div class="game-card-banner">👨‍🚀</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Salto Infinito / Espacial</span>
+                                    <span class="tag-new">Novo</span>
+                                </div>
+                                <h4 class="game-title">ASTRO JUMP</h4>
+                                <p class="game-desc">Salte rumo às estrelas com Molas Neon e Foguetes Jetpack 🚀 em gravidade zero!</p>
+                                <div class="game-stat-badge">
+                                    <span>ALTITUDE MÁXIMA:</span>
+                                    <strong id="stat-astrojump-score">0m</strong>
+                                </div>
+                                <a href="games/astrojump/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #a855f7, #00f5d4); color:#050711;">JOGAR AGORA 👨‍🚀</a>
+                            </div>
+                        </div>
+
                         <!-- Jogo 4: Cyber Strike 16:9 -->
                         <div class="game-card card-cyberstrike" data-category="lancamentos acao" data-name="cyber strike 16:9 tiro espacial nave acao">
                             <div class="game-card-banner">🚀</div>
@@ -403,6 +457,34 @@
                             </div>
                         </div>
 
+                        <!-- Cyber Pong Arena (Ação) -->
+                        <div class="game-card card-cyberpong" data-category="acao lancamentos" data-name="cyber pong arena ping pong tenis mesa neon robo smash acao">
+                            <div class="game-card-banner">🏓</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Duelo Arcade</span>
+                                    <span class="tag-new">Smash ⚡</span>
+                                </div>
+                                <h4 class="game-title">CYBER PONG ARENA</h4>
+                                <p class="game-desc">Vença o Robô Cyber com Super Smash e escudos de energia!</p>
+                                <a href="games/cyberpong/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #00f5d4, #4f46e5);">JOGAR AGORA 🏓</a>
+                            </div>
+                        </div>
+
+                        <!-- Astro Jump (Ação) -->
+                        <div class="game-card card-astrojump" data-category="acao lancamentos" data-name="astro jump salto galactico astronauta espaco plataforma vertical">
+                            <div class="game-card-banner">👨‍🚀</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Salto Espacial</span>
+                                    <span class="tag-new">Jetpack 🚀</span>
+                                </div>
+                                <h4 class="game-title">ASTRO JUMP</h4>
+                                <p class="game-desc">Suba pelas plataformas móveis e decole com foguetes intergalácticos!</p>
+                                <a href="games/astrojump/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #a855f7, #00f5d4); color:#050711;">JOGAR AGORA 👨‍🚀</a>
+                            </div>
+                        </div>
+
                         <!-- Turbo Neon Racer (Ação) -->
                         <div class="game-card card-turboracer" data-category="acao lancamentos" data-name="turbo neon racer corrida carro velocidade synthwave acao">
                             <div class="game-card-banner">🏎️</div>
@@ -444,6 +526,20 @@
                     </div>
 
                     <div class="games-grid">
+                        <!-- Guardiões do Circo TD -->
+                        <div class="game-card card-towerdefense" data-category="puzzle lancamentos" data-name="guardioes do circo tower defense estrategia torres monstros caine">
+                            <div class="game-card-banner">🏰</div>
+                            <div class="game-card-body">
+                                <div class="card-tag-row">
+                                    <span class="tag-cat">Estratégia & Defesa</span>
+                                    <span class="tag-new">TD</span>
+                                </div>
+                                <h4 class="game-title">GUARDIÕES DO CIRCO</h4>
+                                <p class="game-desc">Posicione torres mágicas e proteja a Tenda do Circo contra os Abstraídos!</p>
+                                <a href="games/towerdefense/index.html" class="btn-play-game" style="background: linear-gradient(135deg, #ff2a5f, #ffcc00); color:#090414;">JOGAR AGORA 🏰</a>
+                            </div>
+                        </div>
+
                         <!-- Memória do Circo -->
                         <div class="game-card card-memorycircus" data-category="puzzle lancamentos" data-name="memoria do circo digital cartas pomni jax kinger puzzle">
                             <div class="game-card-banner">🃏</div>

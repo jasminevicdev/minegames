@@ -502,6 +502,9 @@ body, html {
 .card-turboracer { border-color: #ff2a85; }
 .card-neonbreaker { border-color: #00f5d4; }
 .card-memorycircus { border-color: #ffd000; }
+.card-cyberpong { border-color: #38bdf8; }
+.card-towerdefense { border-color: #ff2a5f; }
+.card-astrojump { border-color: #a855f7; }
 
 .game-card-banner {
     font-size: 3.5rem;
