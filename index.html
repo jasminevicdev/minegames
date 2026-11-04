@@ -30,6 +30,7 @@
             </div>
             
             <div class="header-actions">
+                <button id="btn-about-jasdev" class="btn-about-pill" title="Sobre JasDEV">❤️ Sobre JasDEV</button>
                 <button id="btn-mobile-info" class="btn-small-icon" title="Como Jogar no Celular">📱</button>
                 <button id="btn-theme-toggle" class="btn-small-icon" title="Alternar Modo Claro/Escuro">🌙</button>
                 
@@ -175,6 +176,7 @@
                     <button class="cat-pill" data-filter="lancamentos">✨ Lançamentos</button>
                     <button class="cat-pill" data-filter="acao">⚔️ Ação</button>
                     <button class="cat-pill" data-filter="puzzle">🧩 Puzzle</button>
+                    <button class="cat-pill" id="tab-about-jasdev" type="button">❤️ Sobre JasDEV</button>
                 </nav>
 
                 <!-- Área de Resultados de Busca Dinâmica -->
@@ -484,7 +486,63 @@
                     </div>
                 </section>
 
+                <!-- 5. SEÇÃO ESPECIAL: SOBRE JASDEV -->
+                <section id="section-about-jasdev" class="about-jasdev-section">
+                    <div class="about-jasdev-card">
+                        <div class="about-jasdev-badge">❤️ NOSSA HISTÓRIA • SOBRE JASDEV</div>
+                        <h3 class="about-jasdev-title">Sobre JasDEV — Uma Jornada de Pai e Filho ✨</h3>
+                        <div class="about-jasdev-content">
+                            <p>
+                                Olá! Meu nome é <strong>Jas Victor</strong>, e sou o <strong>criador</strong> deste site de jogos, desenvolvido lado a lado com o meu pai. ❤️
+                            </p>
+                            <p>
+                                Mais do que simplesmente criar um site, o meu maior sonho sempre foi construir algo especial que fizesse os olhos dele brilharem de orgulho por mim. Ao longo deste mês inteiro, coloquei todo o meu coração neste projeto — trabalhando em cada detalhe, realizando atualizações, criando novidades e buscando maneiras de tornar a experiência de cada jogador cada vez mais mágica e inesquecível.
+                            </p>
+                            <p>
+                                Cada linha de código e cada atualização carregam um pedaço do meu esforço, da minha dedicação e da minha vontade incansável de aprender, crescer e evoluir. Esse projeto tem um valor imensurável para mim, não apenas por tudo o que conseguimos construir, mas pelo significado profundo que ele carrega: a oportunidade única de compartilhar um sonho com o meu pai, transformar o tempo ao lado dele em memórias eternas e demonstrar o quanto me dediquei de corpo e alma para fazer isso acontecer.
+                            </p>
+                            <p>
+                                Espero de coração que todos gostem do site, se divirtam em cada jogo e acompanhem a sua evolução, porque isso é apenas o começo de uma grande história! 🎮✨
+                            </p>
+                        </div>
+                        <div class="about-jasdev-signature">
+                            <span>Atenciosamente,</span>
+                            <strong>Victor — criador do site. ❤️🚀</strong>
+                        </div>
+                    </div>
+                </section>
+
             </section>
+
+            <!-- MODAL: SOBRE JASDEV -->
+            <div id="modal-about-jasdev" class="about-modal-overlay hidden">
+                <div class="about-modal-box">
+                    <button id="btn-close-about-modal" class="btn-close-about" title="Fechar">✕</button>
+                    <div class="about-jasdev-badge">❤️ SOBRE JASDEV</div>
+                    <h3 class="about-jasdev-title">Uma Carta do Criador ✨</h3>
+                    <div class="about-jasdev-content">
+                        <p>
+                            Olá! Meu nome é <strong>Jas Victor</strong>, e sou o <strong>criador</strong> deste site de jogos, desenvolvido lado a lado com o meu pai. ❤️
+                        </p>
+                        <p>
+                            Mais do que simplesmente criar um site, o meu maior sonho sempre foi construir algo especial que fizesse os olhos dele brilharem de orgulho por mim. Ao longo deste mês inteiro, coloquei todo o meu coração neste projeto — trabalhando em cada detalhe, realizando atualizações, criando novidades e buscando maneiras de tornar a experiência de cada jogador cada vez mais mágica e inesquecível.
+                        </p>
+                        <p>
+                            Cada linha de código e cada atualização carregam um pedaço do meu esforço, da minha dedicação e da minha vontade incansável de aprender, crescer e evoluir. Esse projeto tem um valor imensurável para mim, não apenas por tudo o que conseguimos construir, mas pelo significado profundo que ele carrega: a oportunidade única de compartilhar um sonho com o meu pai, transformar o tempo ao lado dele em memórias eternas e demonstrar o quanto me dediquei de corpo e alma para fazer isso acontecer.
+                        </p>
+                        <p>
+                            Espero de coração que todos gostem do site, se divirtam em cada jogo e acompanhem a sua evolução, porque isso é apenas o começo de uma grande história! 🎮✨
+                        </p>
+                    </div>
+                    <div class="about-jasdev-signature">
+                        <span>Atenciosamente,</span>
+                        <strong>Victor — criador do site. ❤️🚀</strong>
+                    </div>
+                    <div style="margin-top: 22px; text-align: center;">
+                        <button id="btn-close-about-action" class="btn-big btn-green">CONTINUAR JOGANDO 🎮</button>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- 3. Rodapé Completo com Links Úteis (Hierarquia de 4 Colunas) -->
@@ -494,9 +552,9 @@
                 <div class="footer-col">
                     <div class="footer-logo">JASDEV HUB 🎪🎮</div>
                     <p class="footer-text">
-                        Portal de jogos rápidos, casuais e divertidos direto no seu navegador. Zero instalação, leve e acessível em qualquer dispositivo.
+                        Portal de jogos rápidos, casuais e divertidos direto no seu navegador. Criado por Jas Victor junto com seu pai. ❤️
                     </p>
-                    <div class="footer-badge">Versão 2.4 • WebGL & Canvas</div>
+                    <div class="footer-badge">Versão 2.5 • 10 Jogos WebGL & Canvas</div>
                 </div>
 
                 <!-- Coluna 2: Categorias -->
@@ -514,10 +572,10 @@
                 <div class="footer-col">
                     <h5 class="footer-title">Institucional</h5>
                     <ul class="footer-links">
-                        <li><a href="#">Sobre o JasDEV Estúdio</a></li>
-                        <li><a href="#">Para Desenvolvedores</a></li>
-                        <li><a href="#">Código Aberto (GitHub)</a></li>
-                        <li><a href="#">Novidades & Atualizações</a></li>
+                        <li><a href="#section-about-jasdev" id="link-footer-about">❤️ Sobre JasDEV</a></li>
+                        <li><a href="#section-about-jasdev" onclick="window.openAboutJasdev && window.openAboutJasdev(); return false;">👨‍👦 Criador: Jas Victor & Pai</a></li>
+                        <li><a href="https://github.com/jasminevicdev/minegames" target="_blank" rel="noopener">💻 Código Aberto (GitHub)</a></li>
+                        <li><a href="#view-games-catalog" onclick="filterGames('lancamentos')">🚀 Novidades & Atualizações</a></li>
                     </ul>
                 </div>
 
@@ -534,8 +592,8 @@
             </div>
 
             <div class="footer-bottom-bar">
-                <span>© 2026 JASDEV GAME HUB — Todos os direitos reservados.</span>
-                <span class="footer-signature">Feito com paixão para jogadores casuais ✨</span>
+                <span>© 2026 JASDEV GAME HUB — Criado por Jas Victor junto com seu pai ❤️</span>
+                <span class="footer-signature">Atenciosamente, Victor — criador do site ✨</span>
             </div>
         </footer>
     </div>

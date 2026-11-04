@@ -335,6 +335,7 @@ class GameHub {
     /* ================= FILTROS DE CATEGORIA ================= */
     initCategoryFilters() {
         this.catPills.forEach(pill => {
+            if (!pill.dataset.filter) return;
             pill.addEventListener('click', () => {
                 const filter = pill.dataset.filter;
                 this.applyCategoryFilter(filter);
@@ -343,7 +344,10 @@ class GameHub {
     }
 
     applyCategoryFilter(filter) {
-        this.catPills.forEach(p => p.classList.toggle('active', p.dataset.filter === filter));
+        this.catPills.forEach(p => {
+            if (!p.dataset.filter) return;
+            p.classList.toggle('active', p.dataset.filter === filter);
+        });
 
         if (filter === 'all') {
             this.categoryBlocks.forEach(b => b.classList.remove('hidden'));
@@ -365,6 +369,38 @@ class GameHub {
             const nextTheme = ThemeManager.toggleTheme();
             this.updateThemeButtonIcon(nextTheme);
         });
+
+        // Modal Sobre JasDEV
+        const modalAbout = document.getElementById('modal-about-jasdev');
+        const openAbout = () => {
+            if (modalAbout) modalAbout.classList.remove('hidden');
+        };
+        const closeAbout = () => {
+            if (modalAbout) modalAbout.classList.add('hidden');
+        };
+        window.openAboutJasdev = openAbout;
+
+        const btnAboutHeader = document.getElementById('btn-about-jasdev');
+        const tabAbout = document.getElementById('tab-about-jasdev');
+        const linkFooterAbout = document.getElementById('link-footer-about');
+        const btnCloseAboutModal = document.getElementById('btn-close-about-modal');
+        const btnCloseAboutAction = document.getElementById('btn-close-about-action');
+
+        if (btnAboutHeader) btnAboutHeader.addEventListener('click', openAbout);
+        if (tabAbout) tabAbout.addEventListener('click', openAbout);
+        if (linkFooterAbout) {
+            linkFooterAbout.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAbout();
+            });
+        }
+        if (btnCloseAboutModal) btnCloseAboutModal.addEventListener('click', closeAbout);
+        if (btnCloseAboutAction) btnCloseAboutAction.addEventListener('click', closeAbout);
+        if (modalAbout) {
+            modalAbout.addEventListener('click', (e) => {
+                if (e.target === modalAbout) closeAbout();
+            });
+        }
 
         const btnMobileInfo = document.getElementById('btn-mobile-info');
         if (btnMobileInfo) {
