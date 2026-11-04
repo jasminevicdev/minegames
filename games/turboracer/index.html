@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#07051a">
+    <title>Turbo Neon Racer — JasDEV Game Hub 🏎️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+        body {
+            background: radial-gradient(circle at top, #1b0a3a, #060412);
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+        #game-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            background: #0a081e;
+            border: 3px solid #ff2a85;
+            border-radius: 20px;
+            box-shadow: 0 15px 45px rgba(255, 42, 133, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        .viewport-16-9 {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #050210;
+            overflow: hidden;
+            touch-action: none;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none;
+        }
+        .hud-bar {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            right: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .hud-pill {
+            background: rgba(10, 6, 28, 0.82);
+            border: 2px solid rgba(0, 245, 212, 0.45);
+            border-radius: 12px;
+            padding: 6px 12px;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hud-label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; }
+        .hud-val { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.15rem; color: #00f5d4; }
+        .touch-layer {
+            position: absolute;
+            bottom: 14px;
+            left: 16px;
+            right: 16px;
+            display: none;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 15;
+            pointer-events: none;
+        }
+        @media (max-width: 900px), (pointer: coarse) {
+            .touch-layer { display: flex; }
+        }
+        .touch-group { display: flex; gap: 12px; pointer-events: auto; }
+        .t-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2.5px solid #00f5d4;
+            color: #00f5d4;
+            font-size: 1.6rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+        }
+        .t-btn:active, .t-btn.pressed { background: #00f5d4; color: #050210; transform: scale(0.92); }
+        .t-btn-nitro {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2a85, #ff9e00);
+            border: 3px solid #fff;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            flex-direction: column;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 4, 24, 0.88);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 20;
+        }
+        .overlay.hidden { display: none !important; }
+        .title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+            font-weight: 900;
+            background: linear-gradient(90deg, #ff2a85, #ffd60a, #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .subtitle { color: #cbd5e1; max-width: 480px; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4; }
+        .btn-main {
+            background: linear-gradient(135deg, #ff2a85, #7209b7);
+            color: #fff;
+            border: 2px solid #ffd60a;
+            padding: 13px 34px;
+            border-radius: 40px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 42, 133, 0.5);
+            transition: transform 0.2s;
+        }
+        .btn-main:hover { transform: scale(1.06); }
+        .bottom-bar {
+            background: #0d0a24;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-ctrl {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .btn-ctrl:hover { border-color: #00f5d4; color: #00f5d4; }
+    </style>
+</head>
+<body>
+    <div id="game-wrapper">
+        <div class="viewport-16-9">
+            <canvas id="race-canvas" width="1280" height="720"></canvas>
+
+            <div class="hud-bar">
+                <div class="hud-pill">
+                    <span class="hud-label">PONTOS:</span>
+                    <span id="hud-score" class="hud-val">0</span>
+                </div>
+                <div class="hud-pill">
+                    <span class="hud-label">VELOCIDADE:</span>
+                    <span id="hud-speed" class="hud-val" style="color:#ffd60a;">180 KM/H</span>
+                </div>
+                <div class="hud-pill">
+                    <span class="hud-label">NITRO:</span>
+                    <span id="hud-nitro" class="hud-val" style="color:#ff2a85;">100%</span>
+                </div>
+                <div class="hud-pill">
+                    <span class="hud-label">VIDAS:</span>
+                    <span id="hud-lives" class="hud-val">❤️❤️❤️</span>
+                </div>
+            </div>
+
+            <div class="touch-layer">
+                <div class="touch-group">
+                    <button id="t-left" class="t-btn">◀</button>
+                    <button id="t-right" class="t-btn">▶</button>
+                </div>
+                <button id="t-nitro" class="t-btn t-btn-nitro">
+                    <span>🔥</span>
+                    <span>NITRO</span>
+                </button>
+            </div>
+
+            <!-- Menu Inicial -->
+            <div id="menu-screen" class="overlay">
+                <div class="title">TURBO NEON RACER 🏎️</div>
+                <p class="subtitle">Acelere pela rodovia Synthwave! Desvie dos carros rivais, colete cristais de Nitro ⚡ e bata o recorde de velocidade!</p>
+                <button id="btn-start" class="btn-main">ACELERAR AGORA ▶</button>
+                <p style="margin-top: 14px; font-size: 0.8rem; color: #94a3b8;">💻 PC: Setas / A-D + Espaço (Nitro) &nbsp;|&nbsp; 📱 Celular: Botões ou Arrastar na pista</p>
+            </div>
+
+            <!-- Game Over -->
+            <div id="gameover-screen" class="overlay hidden">
+                <div class="title">FIM DE CORRIDA! 💥</div>
+                <p class="subtitle">Seu supercarro colidiu na rodovia neon!</p>
+                <div style="display:flex; gap:16px; margin-bottom:20px;">
+                    <div class="hud-pill"><span class="hud-label">PONTOS:</span><span id="final-score" class="hud-val">0</span></div>
+                    <div class="hud-pill"><span class="hud-label">RECORDE:</span><span id="best-score" class="hud-val" style="color:#ffd60a;">0</span></div>
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <button id="btn-restart" class="btn-main">CORRER DE NOVO 🔄</button>
+                    <a href="../../index.html" class="btn-ctrl" style="display:flex; align-items:center;">🏠 VOLTAR AO HUB</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-bar">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-family:'Outfit',sans-serif; font-weight:900; color:#ff2a85;">🏎️ TURBO NEON RACER</span>
+                <span id="player-label" style="font-size:0.8rem; color:#00f5d4;">JOGADOR: JAS</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <a href="../../index.html" class="btn-ctrl">🏠 Hub</a>
+                <button id="btn-fs" class="btn-ctrl">⛶ Tela Cheia</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('race-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = 1280, H = 720;
+
+        const activePlayer = SaveHub.getActivePlayer() || { name: 'JOGADOR' };
+        document.getElementById('player-label').innerText = `JOGADOR: ${activePlayer.name.toUpperCase()}`;
+        const saved = SaveHub.getGameSave('turboracer', activePlayer.name);
+        let highScore = saved.highScore || 0;
+
+        // Som Sintetizado
+        let audioCtx = null;
+        function playTone(freq, dur = 0.12, type = 'sawtooth') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        let state = 'menu';
+        let score = 0;
+        let lives = 3;
+        let nitro = 100;
+        let roadOffset = 0;
+        let carX = W / 2;
+        const carY = H - 135;
+
+        const keys = { left: false, right: false, nitro: false };
+        let rivals = [];
+        let pickups = [];
+        let particles = [];
+        let spawnTimer = 0;
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            nitro = 100;
+            carX = W / 2;
+            rivals = [];
+            pickups = [];
+            particles = [];
+            state = 'playing';
+            document.getElementById('menu-screen').classList.add('hidden');
+            document.getElementById('gameover-screen').classList.add('hidden');
+            playTone(440, 0.15, 'triangle');
+        }
+
+        function endGame() {
+            state = 'gameover';
+            if (score > highScore) {
+                highScore = Math.floor(score);
+                SaveHub.updateGameSave('turboracer', { highScore }, activePlayer.name);
+            }
+            document.getElementById('final-score').innerText = Math.floor(score);
+            document.getElementById('best-score').innerText = highScore;
+            document.getElementById('gameover-screen').classList.remove('hidden');
+            playTone(120, 0.35, 'sawtooth');
+        }
+
+        document.getElementById('btn-start').addEventListener('click', startGame);
+        document.getElementById('btn-restart').addEventListener('click', startGame);
+        document.getElementById('btn-fs').addEventListener('click', () => {
+            const wrapper = document.getElementById('game-wrapper');
+            if (!document.fullscreenElement) wrapper.requestFullscreen?.();
+            else document.exitFullscreen?.();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); keys.nitro = true; }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') keys.nitro = false;
+        });
+
+        const bindTouch = (id, k) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const on = (e) => { e.preventDefault(); keys[k] = true; el.classList.add('pressed'); };
+            const off = (e) => { e.preventDefault(); keys[k] = false; el.classList.remove('pressed'); };
+            el.addEventListener('touchstart', on, { passive: false });
+            el.addEventListener('touchend', off, { passive: false });
+            el.addEventListener('mousedown', on);
+            el.addEventListener('mouseup', off);
+        };
+        bindTouch('t-left', 'left');
+        bindTouch('t-right', 'right');
+        bindTouch('t-nitro', 'nitro');
+
+        // Arrastar dedo direto na pista
+        canvas.addEventListener('touchmove', (e) => {
+            if (state !== 'playing' || !e.touches.length) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const tx = ((e.touches[0].clientX - rect.left) / rect.width) * W;
+            carX = Math.max(310, Math.min(W - 310, tx));
+        }, { passive: false });
+
+        function drawSynthwaveScene(speedFactor) {
+            // Céu Noturno Synthwave
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, 280);
+            skyGrad.addColorStop(0, '#09031c');
+            skyGrad.addColorStop(0.6, '#2a0845');
+            skyGrad.addColorStop(1, '#ff2a85');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, W, 280);
+
+            // Sol Retrô Gigante no Horizonte
+            const sunGrad = ctx.createLinearGradient(0, 80, 0, 260);
+            sunGrad.addColorStop(0, '#ffd60a');
+            sunGrad.addColorStop(1, '#ff006e');
+            ctx.fillStyle = sunGrad;
+            ctx.beginPath();
+            ctx.arc(W / 2, 220, 110, Math.PI, 0);
+            ctx.fill();
+
+            // Montanhas Low-Poly no Horizonte
+            ctx.fillStyle = '#120529';
+            ctx.beginPath();
+            ctx.moveTo(0, 280);
+            for (let x = 0; x <= W; x += 160) {
+                ctx.lineTo(x + 80, 210 + Math.sin(x) * 35);
+                ctx.lineTo(x + 160, 280);
+            }
+            ctx.fill();
+
+            // Chão Grid Neon e Estrada Central
+            ctx.fillStyle = '#0d0421';
+            ctx.fillRect(0, 280, W, H - 280);
+
+            // Pista Asfáltica em Perspectiva
+            ctx.fillStyle = '#16132b';
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 110, 280);
+            ctx.lineTo(W / 2 + 110, 280);
+            ctx.lineTo(W - 180, H);
+            ctx.lineTo(180, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // Bordas Neon da Pista
+            ctx.strokeStyle = keys.nitro && nitro > 0 ? '#00f5d4' : '#ff2a85';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 110, 280); ctx.lineTo(180, H);
+            ctx.moveTo(W / 2 + 110, 280); ctx.lineTo(W - 180, H);
+            ctx.stroke();
+
+            // Faixas tracejadas em movimento
+            roadOffset = (roadOffset + 12 * speedFactor) % 80;
+            ctx.strokeStyle = '#ffd60a';
+            ctx.lineWidth = 4;
+            for (let y = 290 + roadOffset; y < H; y += 80) {
+                const prog = (y - 280) / (H - 280);
+                const spread = 35 + prog * 130;
+                ctx.beginPath();
+                ctx.moveTo(W / 2 - spread, y); ctx.lineTo(W / 2 - spread * 1.08, y + 32);
+                ctx.moveTo(W / 2 + spread, y); ctx.lineTo(W / 2 + spread * 1.08, y + 32);
+                ctx.stroke();
+            }
+        }
+
+        function drawPlayerCar(x, y, isNitro) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Sombra
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(-46, -10, 92, 54);
+
+            // Carroceria Esportiva Cyber
+            ctx.fillStyle = isNitro ? '#00f5d4' : '#ff2a85';
+            ctx.beginPath();
+            ctx.roundRect(-42, -28, 84, 52, 12);
+            ctx.fill();
+
+            // Teto / Para-brisa escuro
+            ctx.fillStyle = '#090d16';
+            ctx.beginPath();
+            ctx.roundRect(-28, -18, 56, 26, 8);
+            ctx.fill();
+
+            // Lanternas Traseiras Brilhantes + Chamas de Nitro
+            ctx.fillStyle = '#ff0033';
+            ctx.fillRect(-36, 12, 20, 8);
+            ctx.fillRect(16, 12, 20, 8);
+
+            if (isNitro) {
+                ctx.fillStyle = '#00f5d4';
+                ctx.beginPath();
+                ctx.moveTo(-22, 24); ctx.lineTo(-10, 56 + Math.random() * 20); ctx.lineTo(0, 24);
+                ctx.moveTo(0, 24); ctx.lineTo(10, 56 + Math.random() * 20); ctx.lineTo(22, 24);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function loop() {
+            const isBoosting = state === 'playing' && keys.nitro && nitro > 0;
+            const speedFactor = isBoosting ? 2.1 : 1.0 + Math.min(1.2, score / 4000);
+
+            drawSynthwaveScene(state === 'playing' ? speedFactor : 0.4);
+
+            if (state === 'playing') {
+                if (keys.left) carX -= 11;
+                if (keys.right) carX += 11;
+                carX = Math.max(250, Math.min(W - 250, carX));
+
+                if (isBoosting) {
+                    nitro = Math.max(0, nitro - 0.45);
+                } else {
+                    nitro = Math.min(100, nitro + 0.12);
+                }
+
+                score += 0.45 * speedFactor;
+
+                spawnTimer++;
+                if (spawnTimer > Math.max(22, 50 - score / 250)) {
+                    spawnTimer = 0;
+                    const lane = (Math.random() - 0.5) * 1.7;
+                    rivals.push({
+                        lane,
+                        y: 285,
+                        color: ['#00bbf9', '#ffd60a', '#9b5de5', '#00f5d4'][Math.floor(Math.random() * 4)]
+                    });
+
+                    if (Math.random() < 0.35) {
+                        pickups.push({
+                            lane: (Math.random() - 0.5) * 1.6,
+                            y: 285
+                        });
+                    }
+                }
+
+                // Cristais de Nitro
+                for (let i = pickups.length - 1; i >= 0; i--) {
+                    const p = pickups[i];
+                    p.y += 6.5 * speedFactor;
+                    const prog = (p.y - 280) / (H - 280);
+                    const px = W / 2 + p.lane * (90 + prog * 340);
+                    const pr = 10 + prog * 18;
+
+                    ctx.fillStyle = '#00f5d4';
+                    ctx.beginPath();
+                    ctx.arc(px, p.y, pr, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#050210';
+                    ctx.font = `900 ${Math.floor(pr)}px Outfit`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('⚡', px, p.y + pr * 0.35);
+
+                    if (Math.abs(px - carX) < 55 && Math.abs(p.y - carY) < 40) {
+                        nitro = Math.min(100, nitro + 30);
+                        score += 150;
+                        playTone(880, 0.1, 'sine');
+                        pickups.splice(i, 1);
+                        continue;
+                    }
+                    if (p.y > H + 50) pickups.splice(i, 1);
+                }
+
+                // Carros Rivais
+                for (let i = rivals.length - 1; i >= 0; i--) {
+                    const r = rivals[i];
+                    r.y += 6.0 * speedFactor;
+                    const prog = (r.y - 280) / (H - 280);
+                    const rx = W / 2 + r.lane * (90 + prog * 340);
+                    const rw = 26 + prog * 58;
+                    const rh = 18 + prog * 34;
+
+                    ctx.fillStyle = r.color;
+                    ctx.beginPath();
+                    ctx.roundRect(rx - rw / 2, r.y - rh / 2, rw, rh, 8);
+                    ctx.fill();
+                    ctx.fillStyle = '#111827';
+                    ctx.fillRect(rx - rw * 0.35, r.y - rh * 0.3, rw * 0.7, rh * 0.4);
+
+                    if (Math.abs(rx - carX) < (rw / 2 + 32) && Math.abs(r.y - carY) < (rh / 2 + 20)) {
+                        rivals.splice(i, 1);
+                        lives--;
+                        playTone(150, 0.25, 'square');
+                        if (lives <= 0) endGame();
+                        continue;
+                    }
+                    if (r.y > H + 60) {
+                        rivals.splice(i, 1);
+                        score += 25;
+                    }
+                }
+
+                drawPlayerCar(carX, carY, isBoosting);
+
+                document.getElementById('hud-score').innerText = Math.floor(score);
+                document.getElementById('hud-speed').innerText = `${Math.floor(180 * speedFactor)} KM/H`;
+                document.getElementById('hud-nitro').innerText = `${Math.floor(nitro)}%`;
+                document.getElementById('hud-lives').innerText = '❤️'.repeat(Math.max(0, lives));
+            }
+
+            requestAnimationFrame(loop);
+        }
+
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

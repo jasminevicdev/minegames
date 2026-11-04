@@ -49,6 +49,9 @@ class GameHub {
         this.statJasminecraftBlocks = document.getElementById('stat-jasminecraft-blocks');
         this.statMiyuEndings = document.getElementById('stat-miyu-endings');
         this.statCyberstrikeScore = document.getElementById('stat-cyberstrike-score');
+        this.statTurboracerScore = document.getElementById('stat-turboracer-score');
+        this.statNeonbreakerScore = document.getElementById('stat-neonbreaker-score');
+        this.statMemorycircusScore = document.getElementById('stat-memorycircus-score');
 
         this.selectedAvatar = '🎪';
 
@@ -135,6 +138,9 @@ class GameHub {
         const flappySave = SaveHub.getGameSave('flappy', player.name);
         const jasminecraftSave = SaveHub.getGameSave('jasminecraft', player.name);
         const cyberstrikeSave = SaveHub.getGameSave('cyberstrike', player.name);
+        const turboracerSave = SaveHub.getGameSave('turboracer', player.name);
+        const neonbreakerSave = SaveHub.getGameSave('neonbreaker', player.name);
+        const memorycircusSave = SaveHub.getGameSave('memorycircus', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -143,6 +149,9 @@ class GameHub {
         if (this.statJasminecraftBlocks) this.statJasminecraftBlocks.innerText = `${jasminecraftSave.blocksPlaced || 0} BLOCOS`;
         if (this.statMiyuEndings) this.statMiyuEndings.innerText = `${localStorage.getItem('stat_miyu_endings') || 0}`;
         if (this.statCyberstrikeScore) this.statCyberstrikeScore.innerText = `${cyberstrikeSave.highScore || 0} PTS`;
+        if (this.statTurboracerScore) this.statTurboracerScore.innerText = `${turboracerSave.highScore || 0} PTS`;
+        if (this.statNeonbreakerScore) this.statNeonbreakerScore.innerText = `${neonbreakerSave.highScore || 0} PTS`;
+        if (this.statMemorycircusScore) this.statMemorycircusScore.innerText = `${memorycircusSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {
