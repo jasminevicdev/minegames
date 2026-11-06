@@ -69,7 +69,12 @@ export class SaveHub {
                     pacman: { highScore: 0 },
                     rhythm: { highScore: 0 },
                     dinorun: { highScore: 0 },
-                    minesweeper: { highScore: 0 }
+                    minesweeper: { highScore: 0 },
+                    dressup: { highScore: 0 },
+                    makeup: { highScore: 0 },
+                    nailart: { highScore: 0 },
+                    spasalon: { highScore: 0 },
+                    sweetbakery: { highScore: 0 }
                 }
             };
         }

@@ -512,6 +512,11 @@ body, html {
 .card-rhythm { border-color: #e879f9; }
 .card-dinorun { border-color: #10b981; }
 .card-minesweeper { border-color: #f59e0b; }
+.card-dressup { border-color: #ec4899; }
+.card-makeup { border-color: #f43f5e; }
+.card-nailart { border-color: #fb7185; }
+.card-spasalon { border-color: #34d399; }
+.card-sweetbakery { border-color: #f472b6; }
 
 .game-card-banner {
     font-size: 3.5rem;

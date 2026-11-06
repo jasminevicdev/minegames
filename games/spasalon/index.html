@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Hair & Spa: Dia de Princesa 💇‍♀️🌸 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #064e3b 0%, #022c22 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 920px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #34d399;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #34d399;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .spa-grid {
+            width: 100%;
+            max-width: 920px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .spa-grid { grid-template-columns: 1fr; }
+        }
+        .spa-stage {
+            background: linear-gradient(180deg, #065f46, #022c22);
+            border: 3px solid #34d399;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .spa-tools {
+            background: rgba(4, 38, 28, 0.92);
+            border: 3px solid #6ee7b7;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .step-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #34d399;
+            color: #fff;
+            padding: 11px 14px;
+            border-radius: 16px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .step-btn.done {
+            background: rgba(52, 211, 153, 0.28);
+            border-color: #fde047;
+        }
+        .hair-colors { display: flex; gap: 10px; flex-wrap: wrap; }
+        .color-dot {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            cursor: pointer;
+        }
+        .btn-complete {
+            margin-top: auto;
+            background: linear-gradient(135deg, #34d399, #fde047);
+            color: #022c22;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">PONTOS SPA: <strong id="hud-score">0 🌸</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🌸</strong></div>
+        </div>
+    </div>
+
+    <div class="spa-grid">
+        <div class="spa-stage">
+            <canvas id="spa-canvas" width="440" height="440"></canvas>
+            <p id="spa-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Siga os passos do Spa Real para relaxar e transformar o visual! 🌸
+            </p>
+        </div>
+
+        <div class="spa-tools">
+            <button class="step-btn" id="btn-mask"><span>🥒 1. Aplicar Máscara Facial & Pepinos</span><strong id="st-mask">APLICAR</strong></button>
+            <button class="step-btn" id="btn-wash"><span>🫧 2. Enxaguar com Espuma de Rosas</span><strong id="st-wash">LAVAR</strong></button>
+            <button class="step-btn" id="btn-curl"><span>💇‍♀️ 3. Modelar Cachos de Princesa</span><strong id="st-curl">MODELAR</strong></button>
+
+            <div>
+                <div style="font-family:'Fredoka',sans-serif; color:#a7f3d0; font-size:0.9rem; margin-bottom:6px;">🎨 4. TINGIR MECHAS MÁGICAS:</div>
+                <div class="hair-colors" id="hair-colors"></div>
+            </div>
+
+            <button class="btn-complete" id="btn-finish-spa">✨ CONCLUIR DIA DE PRINCESA! 👑</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('spa-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const spaMsg = document.getElementById('spa-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('spasalon', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🌸`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 600) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.14);
+            } catch (e) {}
+        }
+
+        const DYES = ['#f472b6', '#fde047', '#38bdf8', '#c084fc', '#fb7185', '#34d399'];
+        let state = { mask: false, clean: false, curled: false, hairColor: '#f472b6' };
+        let score = 0;
+
+        const hc = document.getElementById('hair-colors');
+        DYES.forEach(c => {
+            const d = document.createElement('div');
+            d.className = 'color-dot';
+            d.style.background = c;
+            d.addEventListener('click', () => {
+                state.hairColor = c;
+                score += 25;
+                sfx(700);
+                updateScore();
+            });
+            hc.appendChild(d);
+        });
+
+        document.getElementById('btn-mask').addEventListener('click', () => {
+            state.mask = true;
+            state.clean = false;
+            document.getElementById('btn-mask').classList.add('done');
+            score += 40;
+            sfx(520);
+            updateScore();
+            spaMsg.innerText = '🥒 Máscara hidratante aplicada! Agora enxágue com espuma.';
+        });
+
+        document.getElementById('btn-wash').addEventListener('click', () => {
+            state.mask = false;
+            state.clean = true;
+            document.getElementById('btn-wash').classList.add('done');
+            score += 50;
+            sfx(660);
+            updateScore();
+            spaMsg.innerText = '✨ Pele radiante e iluminada! Agora modele os cabelos.';
+        });
+
+        document.getElementById('btn-curl').addEventListener('click', () => {
+            state.curled = !state.curled;
+            document.getElementById('btn-curl').classList.add('done');
+            score += 50;
+            sfx(760);
+            updateScore();
+            spaMsg.innerText = '💇‍♀️ Penteado real modelado com flores!';
+        });
+
+        document.getElementById('btn-finish-spa').addEventListener('click', () => {
+            score += 150;
+            sfx(880);
+            updateScore();
+            spaMsg.innerText = '👑 DIA DE PRINCESA COMPLETO! +150 🌸!';
+        });
+
+        function updateScore() {
+            hudScore.innerText = `${score} 🌸`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🌸`;
+                SaveHub.updateGameSave('spasalon', { highScore: bestScore }, playerName);
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#064e3b';
+            ctx.fillRect(0, 0, W, H);
+
+            const cx = W / 2;
+            const cy = H / 2 + 20;
+
+            // Hair Back
+            ctx.fillStyle = state.hairColor;
+            ctx.beginPath();
+            ctx.arc(cx, cy - 10, 145, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (state.curled) {
+                ctx.beginPath();
+                ctx.arc(cx - 115, cy + 75, 42, 0, Math.PI * 2);
+                ctx.arc(cx + 115, cy + 75, 42, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Face
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, 98, 115, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Green Mud Mask
+            if (state.mask) {
+                ctx.fillStyle = 'rgba(52, 211, 153, 0.72)';
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 5, 86, 96, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Eyes or Cucumber Slices
+            if (state.mask) {
+                ctx.font = '42px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🥒', cx - 38, cy - 4);
+                ctx.fillText('🥒', cx + 38, cy - 4);
+            } else {
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.arc(cx - 38, cy - 12, 9, 0, Math.PI * 2);
+                ctx.arc(cx + 38, cy - 12, 9, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Smile
+            ctx.strokeStyle = '#e11d48';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(cx, cy + 45, 22, 0.15 * Math.PI, 0.85 * Math.PI);
+            ctx.stroke();
+
+            // Hair Bangs & Flower Crown
+            ctx.fillStyle = state.hairColor;
+            ctx.beginPath();
+            ctx.arc(cx, cy - 34, 102, Math.PI, 0);
+            ctx.fill();
+
+            ctx.font = '36px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🌸👑🌸', cx, cy - 105);
+
+            if (state.clean) {
+                ctx.font = '26px serif';
+                ctx.fillText('✨', cx - 75, cy + 20);
+                ctx.fillText('✨', cx + 75, cy + 20);
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>

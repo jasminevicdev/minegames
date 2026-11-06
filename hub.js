@@ -62,6 +62,11 @@ class GameHub {
         this.statRhythmScore = document.getElementById('stat-rhythm-score');
         this.statDinorunScore = document.getElementById('stat-dinorun-score');
         this.statMinesweeperScore = document.getElementById('stat-minesweeper-score');
+        this.statDressupScore = document.getElementById('stat-dressup-score');
+        this.statMakeupScore = document.getElementById('stat-makeup-score');
+        this.statNailartScore = document.getElementById('stat-nailart-score');
+        this.statSpasalonScore = document.getElementById('stat-spasalon-score');
+        this.statSweetbakeryScore = document.getElementById('stat-sweetbakery-score');
 
         this.selectedAvatar = '🎪';
 
@@ -161,6 +166,11 @@ class GameHub {
         const rhythmSave = SaveHub.getGameSave('rhythm', player.name);
         const dinorunSave = SaveHub.getGameSave('dinorun', player.name);
         const minesweeperSave = SaveHub.getGameSave('minesweeper', player.name);
+        const dressupSave = SaveHub.getGameSave('dressup', player.name);
+        const makeupSave = SaveHub.getGameSave('makeup', player.name);
+        const nailartSave = SaveHub.getGameSave('nailart', player.name);
+        const spasalonSave = SaveHub.getGameSave('spasalon', player.name);
+        const sweetbakerySave = SaveHub.getGameSave('sweetbakery', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -182,6 +192,11 @@ class GameHub {
         if (this.statRhythmScore) this.statRhythmScore.innerText = `${rhythmSave.highScore || 0} PTS`;
         if (this.statDinorunScore) this.statDinorunScore.innerText = `${dinorunSave.highScore || 0}m`;
         if (this.statMinesweeperScore) this.statMinesweeperScore.innerText = `${minesweeperSave.highScore || 0} PTS`;
+        if (this.statDressupScore) this.statDressupScore.innerText = `${dressupSave.highScore || 0} ⭐`;
+        if (this.statMakeupScore) this.statMakeupScore.innerText = `${makeupSave.highScore || 0} 💖`;
+        if (this.statNailartScore) this.statNailartScore.innerText = `${nailartSave.highScore || 0} 💅`;
+        if (this.statSpasalonScore) this.statSpasalonScore.innerText = `${spasalonSave.highScore || 0} 🌸`;
+        if (this.statSweetbakeryScore) this.statSweetbakeryScore.innerText = `${sweetbakerySave.highScore || 0} 🧁`;
     }
 
     renderPlayersList() {

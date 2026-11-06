@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Confeitaria Fashion: Cupcakes & Doces 🧁🎀 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #831843 0%, #310719 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 920px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #fbcfe8;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .bakery-grid {
+            width: 100%;
+            max-width: 920px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .bakery-grid { grid-template-columns: 1fr; }
+        }
+        .cake-stage {
+            background: linear-gradient(180deg, #701a75, #3b0764);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+        }
+        .bakery-menu {
+            background: rgba(45, 8, 32, 0.92);
+            border: 3px solid #f9a8d4;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; margin-bottom: 6px; }
+        .opt-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .opt-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .btn-serve {
+            margin-top: auto;
+            background: linear-gradient(135deg, #f472b6, #fde047);
+            color: #310719;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">CUPCAKES: <strong id="hud-score">0 🧁</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🧁</strong></div>
+        </div>
+    </div>
+
+    <div class="bakery-grid">
+        <div class="cake-stage">
+            <canvas id="cake-canvas" width="440" height="440"></canvas>
+            <p id="cake-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Decore o Cupcake Fashion para servir na Confeitaria Rosa! 🎀
+            </p>
+        </div>
+
+        <div class="bakery-menu">
+            <div>
+                <div class="label">🧁 FORMINHA RENDADA:</div>
+                <div class="opt-row" id="row-cup"></div>
+            </div>
+            <div>
+                <div class="label">🍦 COBERTURA DE CHANTILLY:</div>
+                <div class="opt-row" id="row-frost"></div>
+            </div>
+            <div>
+                <div class="label">🍓 TOPPER & DECORAÇÃO FOFA:</div>
+                <div class="opt-row" id="row-topper"></div>
+            </div>
+            <button class="btn-serve" id="btn-serve">✨ SERVIR PEDIDO COM GLITTER! 🧁💖</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('cake-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const cakeMsg = document.getElementById('cake-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('sweetbakery', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🧁`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 640) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.14);
+            } catch (e) {}
+        }
+
+        const CUPS = ['#ec4899', '#a855f7', '#38bdf8', '#fde047', '#34d399'];
+        const FROSTS = ['#fbcfe8', '#e9d5ff', '#bae6fd', '#fef08a', '#fda4af', '#78350f'];
+        const TOPPERS = ['🍓', '🍒', '🦄', '👑', '🎀', '💖', '⭐'];
+
+        let cake = { cup: '#ec4899', frost: '#fbcfe8', topper: '🍓' };
+        let score = 0;
+
+        function buildMenu() {
+            const cEl = document.getElementById('row-cup');
+            CUPS.forEach(c => {
+                const b = document.createElement('div');
+                b.className = 'opt-btn';
+                b.style.background = c;
+                b.addEventListener('click', () => { cake.cup = c; sfx(560); });
+                cEl.appendChild(b);
+            });
+
+            const fEl = document.getElementById('row-frost');
+            FROSTS.forEach(f => {
+                const b = document.createElement('div');
+                b.className = 'opt-btn';
+                b.style.background = f;
+                b.addEventListener('click', () => { cake.frost = f; sfx(660); });
+                fEl.appendChild(b);
+            });
+
+            const tEl = document.getElementById('row-topper');
+            TOPPERS.forEach(t => {
+                const b = document.createElement('div');
+                b.className = 'opt-btn';
+                b.style.background = 'rgba(255,255,255,0.12)';
+                b.innerText = t;
+                b.addEventListener('click', () => { cake.topper = t; sfx(760); });
+                tEl.appendChild(b);
+            });
+        }
+
+        document.getElementById('btn-serve').addEventListener('click', () => {
+            score += 120;
+            sfx(880);
+            hudScore.innerText = `${score} 🧁`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🧁`;
+                SaveHub.updateGameSave('sweetbakery', { highScore: bestScore }, playerName);
+            }
+            cakeMsg.innerText = `🧁 DELÍCIA FASHION SERVIDA! +120 PTS!`;
+        });
+
+        function draw() {
+            ctx.fillStyle = '#4a044e';
+            ctx.fillRect(0, 0, W, H);
+
+            const cx = W / 2;
+
+            // Plate
+            ctx.fillStyle = '#fdf2f8';
+            ctx.beginPath();
+            ctx.ellipse(cx, 375, 145, 28, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cupcake Liner
+            ctx.fillStyle = cake.cup;
+            ctx.beginPath();
+            ctx.moveTo(cx - 88, 255);
+            ctx.lineTo(cx + 88, 255);
+            ctx.lineTo(cx + 64, 365);
+            ctx.lineTo(cx - 64, 365);
+            ctx.closePath();
+            ctx.fill();
+
+            // Frosting swirls
+            ctx.fillStyle = cake.frost;
+            ctx.beginPath();
+            ctx.ellipse(cx, 245, 96, 38, 0, 0, Math.PI * 2);
+            ctx.ellipse(cx, 205, 76, 34, 0, 0, Math.PI * 2);
+            ctx.ellipse(cx, 168, 52, 28, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Rainbow Sprinkles
+            const spCols = ['#ff2a85', '#fde047', '#38bdf8', '#34d399'];
+            for (let i = 0; i < 12; i++) {
+                ctx.fillStyle = spCols[i % spCols.length];
+                ctx.fillRect(cx - 55 + (i * 10), 185 + (i % 3) * 24, 8, 4);
+            }
+
+            // Topper
+            ctx.font = '56px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(cake.topper, cx, 142);
+
+            requestAnimationFrame(draw);
+        }
+
+        buildMenu();
+        draw();
+    </script>
+</body>
+</html>

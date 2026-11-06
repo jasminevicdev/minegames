@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Glamour Dress Up: Desfile Estelar 👗👑 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b0764 0%, #1a0526 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #f472b6;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .studio-layout {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 14px;
+            align-items: stretch;
+        }
+        @media (max-width: 720px) {
+            .studio-layout { grid-template-columns: 1fr; }
+        }
+        .stage-box {
+            background: linear-gradient(180deg, #2e1065, #170529);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 35px rgba(244, 114, 182, 0.35);
+            position: relative;
+        }
+        canvas {
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 4 / 5;
+            border-radius: 18px;
+            display: block;
+        }
+        .wardrobe-box {
+            background: rgba(25, 8, 45, 0.9);
+            border: 3px solid #e879f9;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .theme-banner {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.25), rgba(168, 85, 247, 0.25));
+            border: 2px solid #fde047;
+            border-radius: 16px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+        .theme-banner span { font-size: 0.78rem; color: #fbcfe8; display: block; }
+        .theme-banner strong { font-family: 'Fredoka', sans-serif; font-size: 1.15rem; color: #fde047; }
+        .cat-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .cat-btn {
+            flex: 1;
+            min-width: 78px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(244, 114, 182, 0.4);
+            color: #fff;
+            border-radius: 14px;
+            padding: 8px 6px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        .cat-btn.active {
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            border-color: #fde047;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            flex: 1;
+        }
+        .item-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .item-card:hover { transform: scale(1.04); }
+        .item-card.selected {
+            border-color: #fde047;
+            background: rgba(244, 114, 182, 0.28);
+            box-shadow: 0 0 15px rgba(253, 224, 71, 0.45);
+        }
+        .item-icon { font-size: 2rem; display: block; margin-bottom: 4px; }
+        .item-name { font-size: 0.78rem; font-weight: 700; color: #fce7f3; }
+        .runway-btn {
+            background: linear-gradient(135deg, #fde047, #ec4899);
+            color: #1f052c;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
+        }
+        .score-popup {
+            margin-top: 8px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            color: #fde047;
+            text-align: center;
+            min-height: 26px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div class="hud-stats">
+            <div class="stat-pill">DESFILES: <strong id="hud-shows">0</strong></div>
+            <div class="stat-pill">ESTRELAS: <strong id="hud-score">0 ⭐</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 ⭐</strong></div>
+        </div>
+    </div>
+
+    <div class="studio-layout">
+        <div class="stage-box">
+            <canvas id="dress-canvas" width="480" height="600"></canvas>
+            <div class="score-popup" id="judge-feedback">Combine o look perfeito e clique em DESFILAR! ✨</div>
+        </div>
+
+        <div class="wardrobe-box">
+            <div class="theme-banner">
+                <span>TEMA DO DESFILE ATUAL:</span>
+                <strong id="theme-title">👑 BAILE REAL DE CRISTAL</strong>
+            </div>
+
+            <div class="cat-tabs">
+                <button class="cat-btn active" data-cat="hair">💇‍♀️ Cabelo</button>
+                <button class="cat-btn" data-cat="dress">👗 Vestido</button>
+                <button class="cat-btn" data-cat="shoes">👠 Sapato</button>
+                <button class="cat-btn" data-cat="crown">👑 Acessório</button>
+                <button class="cat-btn" data-cat="bg">✨ Cenário</button>
+            </div>
+
+            <div class="items-grid" id="items-grid"></div>
+
+            <button class="runway-btn" id="btn-runway">✨ DESFILAR NA PASSARELA! 📸</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('dress-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudShows = document.getElementById('hud-shows');
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const themeTitle = document.getElementById('theme-title');
+        const itemsGrid = document.getElementById('items-grid');
+        const judgeFeedback = document.getElementById('judge-feedback');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('dressup', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} ⭐`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sparkleSfx(freq = 640) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(freq * 1.4, audioCtx.currentTime + 0.14);
+                g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.16);
+            } catch (e) {}
+        }
+
+        const CATALOG = {
+            hair: [
+                { id: 0, name: 'Loiro Princesa', color: '#fde047', style: 'long', icon: '👱‍♀️', tag: 'royal' },
+                { id: 1, name: 'Rosa Algodão', color: '#f472b6', style: 'twin', icon: '🌸', tag: 'pop' },
+                { id: 2, name: 'Azul Estelar', color: '#38bdf8', style: 'wavy', icon: '💎', tag: 'fairy' },
+                { id: 3, name: 'Castanho Gala', color: '#92400e', style: 'bun', icon: '✨', tag: 'gala' },
+                { id: 4, name: 'Roxo Místico', color: '#a855f7', style: 'long', icon: '🔮', tag: 'fairy' },
+                { id: 5, name: 'Ruivo Rubi', color: '#ef4444', style: 'wavy', icon: '🌹', tag: 'gala' }
+            ],
+            dress: [
+                { id: 0, name: 'Gala Rosa Real', color1: '#ec4899', color2: '#fbcfe8', style: 'ballgown', icon: '👗', tag: 'royal' },
+                { id: 1, name: 'Pop Star Neon', color1: '#a855f7', color2: '#00f5d4', style: 'mini', icon: '🎤', tag: 'pop' },
+                { id: 2, name: 'Fada Cristal', color1: '#38bdf8', color2: '#e0f2fe', style: 'fairy', icon: '🦋', tag: 'fairy' },
+                { id: 3, name: 'Ouro Imperial', color1: '#eab308', color2: '#fef08a', style: 'ballgown', icon: '👑', tag: 'royal' },
+                { id: 4, name: 'Rubi Vermelho', color1: '#e11d48', color2: '#fda4af', style: 'mermaid', icon: '🌹', tag: 'gala' },
+                { id: 5, name: 'Lavanda Doce', color1: '#c084fc', color2: '#f3e8ff', style: 'mini', icon: '🎀', tag: 'pop' }
+            ],
+            shoes: [
+                { id: 0, name: 'Salto Cristal', color: '#38bdf8', icon: '👠', tag: 'royal' },
+                { id: 1, name: 'Bota Pop Pink', color: '#ec4899', icon: '👢', tag: 'pop' },
+                { id: 2, name: 'Sapatilha Ouro', color: '#fde047', icon: '🥿', tag: 'fairy' },
+                { id: 3, name: 'Salto Rubi', color: '#e11d48', icon: '👠', tag: 'gala' },
+                { id: 4, name: 'Sapatilha Lilás', color: '#c084fc', icon: '🎀', tag: 'fairy' },
+                { id: 5, name: 'Salto Prata', color: '#e2e8f0', icon: '✨', tag: 'gala' }
+            ],
+            crown: [
+                { id: 0, name: 'Tiara de Ouro', icon: '👑', tag: 'royal' },
+                { id: 1, name: 'Laço Pink', icon: '🎀', tag: 'pop' },
+                { id: 2, name: 'Asas de Fada', icon: '🦋', tag: 'fairy' },
+                { id: 3, name: 'Coroa de Flores', icon: '🌸', tag: 'fairy' },
+                { id: 4, name: 'Colar Diamante', icon: '💎', tag: 'gala' },
+                { id: 5, name: 'Estrela Pop', icon: '⭐', tag: 'pop' }
+            ],
+            bg: [
+                { id: 0, name: 'Palácio Rosa', c1: '#500724', c2: '#be185d', icon: '🏰' },
+                { id: 1, name: 'Passarela Neon', c1: '#1e1b4b', c2: '#7e22ce', icon: '🌟' },
+                { id: 2, name: 'Jardim Encantado', c1: '#064e3b', c2: '#047857', icon: '🌸' },
+                { id: 3, name: 'Noite Estrelada', c1: '#090d16', c2: '#1d4ed8', icon: '🌙' },
+                { id: 4, name: 'Salão Dourado', c1: '#451a03', c2: '#b45309', icon: '✨' },
+                { id: 5, name: 'Nuvem Doce', c1: '#4a044e', c2: '#db2777', icon: '☁️' }
+            ]
+        };
+
+        const THEMES = [
+            { title: '👑 BAILE REAL DE CRISTAL', tag: 'royal' },
+            { title: '🎤 SHOW ESTRELA POP NEON', tag: 'pop' },
+            { title: '🦋 JARDIM DAS FADAS MÁGICAS', tag: 'fairy' },
+            { title: '🌹 NOITE DE GALA NO TAPETE VERMELHO', tag: 'gala' }
+        ];
+
+        let currentThemeIdx = 0;
+        let currentCat = 'hair';
+        let state = { hair: 0, dress: 0, shoes: 0, crown: 0, bg: 0 };
+        let totalStars = 0;
+        let showsCount = 0;
+        let sparkles = Array.from({ length: 28 }, () => ({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: 1.5 + Math.random() * 3,
+            vy: -0.4 - Math.random() * 0.6
+        }));
+        let flashAlpha = 0;
+
+        function renderWardrobe() {
+            itemsGrid.innerHTML = '';
+            const list = CATALOG[currentCat];
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card' + (state[currentCat] === item.id ? ' selected' : '');
+                card.innerHTML = `<span class="item-icon">${item.icon}</span><span class="item-name">${item.name}</span>`;
+                card.addEventListener('click', () => {
+                    state[currentCat] = item.id;
+                    sparkleSfx(580 + item.id * 45);
+                    renderWardrobe();
+                });
+                itemsGrid.appendChild(card);
+            });
+        }
+
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCat = btn.dataset.cat;
+                renderWardrobe();
+            });
+        });
+
+        document.getElementById('btn-runway').addEventListener('click', () => {
+            const theme = THEMES[currentThemeIdx];
+            let matchBonus = 0;
+            if (CATALOG.hair[state.hair].tag === theme.tag) matchBonus++;
+            if (CATALOG.dress[state.dress].tag === theme.tag) matchBonus += 2;
+            if (CATALOG.shoes[state.shoes].tag === theme.tag) matchBonus++;
+            if (CATALOG.crown[state.crown].tag === theme.tag) matchBonus++;
+
+            const earned = 100 + matchBonus * 50;
+            totalStars += earned;
+            showsCount++;
+            flashAlpha = 1;
+            sparkleSfx(880);
+
+            hudShows.innerText = showsCount;
+            hudScore.innerText = `${totalStars} ⭐`;
+            if (totalStars > bestScore) {
+                bestScore = totalStars;
+                hudBest.innerText = `${bestScore} ⭐`;
+                SaveHub.updateGameSave('dressup', { highScore: bestScore }, playerName);
+            }
+
+            const starsStr = '⭐'.repeat(Math.min(5, 3 + Math.ceil(matchBonus / 2)));
+            judgeFeedback.innerText = ` Nota dos Jurados: ${starsStr} (+${earned} PTS)!`;
+
+            currentThemeIdx = (currentThemeIdx + 1) % THEMES.length;
+            themeTitle.innerText = THEMES[currentThemeIdx].title;
+        });
+
+        function drawModel() {
+            const bg = CATALOG.bg[state.bg];
+            const hair = CATALOG.hair[state.hair];
+            const dress = CATALOG.dress[state.dress];
+            const shoes = CATALOG.shoes[state.shoes];
+            const crown = CATALOG.crown[state.crown];
+
+            // Background Gradient
+            const grad = ctx.createLinearGradient(0, 0, 0, H);
+            grad.addColorStop(0, bg.c1);
+            grad.addColorStop(1, bg.c2);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Stage spotlight
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 60, 0);
+            ctx.lineTo(W / 2 + 60, 0);
+            ctx.lineTo(W / 2 + 190, H);
+            ctx.lineTo(W / 2 - 190, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // Runway floor
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+            ctx.beginPath();
+            ctx.ellipse(W / 2, 535, 145, 32, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            const cx = W / 2;
+
+            // Fairy Wings if selected
+            if (crown.id === 2) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
+                ctx.strokeStyle = '#bae6fd';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.ellipse(cx - 75, 275, 65, 95, -0.35, 0, Math.PI * 2);
+                ctx.ellipse(cx + 75, 275, 65, 95, 0.35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Back Hair
+            ctx.save();
+            ctx.fillStyle = hair.color;
+            if (hair.style === 'long' || hair.style === 'wavy') {
+                ctx.beginPath();
+                ctx.roundRect(cx - 56, 130, 112, 165, 45);
+                ctx.fill();
+            } else if (hair.style === 'twin') {
+                ctx.beginPath();
+                ctx.ellipse(cx - 65, 190, 26, 75, 0.2, 0, Math.PI * 2);
+                ctx.ellipse(cx + 65, 190, 26, 75, -0.2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Legs & Shoes
+            ctx.fillStyle = '#fed7aa';
+            ctx.fillRect(cx - 28, 370, 18, 135);
+            ctx.fillRect(cx + 10, 370, 18, 135);
+
+            // Shoes
+            ctx.fillStyle = shoes.color;
+            ctx.beginPath();
+            ctx.roundRect(cx - 34, 495, 28, 22, 8);
+            ctx.roundRect(cx + 6, 495, 28, 22, 8);
+            ctx.fill();
+
+            // Arms
+            ctx.strokeStyle = '#fed7aa';
+            ctx.lineWidth = 16;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(cx - 38, 240); ctx.lineTo(cx - 72, 330);
+            ctx.moveTo(cx + 38, 240); ctx.lineTo(cx + 72, 330);
+            ctx.stroke();
+
+            // Neck & Torso base
+            ctx.fillStyle = '#fed7aa';
+            ctx.fillRect(cx - 12, 195, 24, 35);
+
+            // Dress
+            ctx.save();
+            const dGrad = ctx.createLinearGradient(cx, 225, cx, 475);
+            dGrad.addColorStop(0, dress.color1);
+            dGrad.addColorStop(1, dress.color2);
+            ctx.fillStyle = dGrad;
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath();
+            ctx.moveTo(cx - 36, 225);
+            ctx.lineTo(cx + 36, 225);
+            if (dress.style === 'ballgown') {
+                ctx.lineTo(cx + 28, 295);
+                ctx.quadraticCurveTo(cx + 125, 380, cx + 115, 480);
+                ctx.lineTo(cx - 115, 480);
+                ctx.quadraticCurveTo(cx - 125, 380, cx - 28, 295);
+            } else if (dress.style === 'mini') {
+                ctx.lineTo(cx + 58, 385);
+                ctx.lineTo(cx - 58, 385);
+            } else {
+                ctx.lineTo(cx + 85, 445);
+                ctx.lineTo(cx - 85, 445);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            // Head
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(cx, 155, 46, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes & Lashes
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            ctx.arc(cx - 16, 155, 6.5, 0, Math.PI * 2);
+            ctx.arc(cx + 16, 155, 6.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(cx - 14, 153, 2.5, 0, Math.PI * 2);
+            ctx.arc(cx + 18, 153, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Rosy Cheeks & Smile
+            ctx.fillStyle = 'rgba(244, 114, 182, 0.45)';
+            ctx.beginPath();
+            ctx.arc(cx - 26, 168, 8, 0, Math.PI * 2);
+            ctx.arc(cx + 26, 168, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#e11d48';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx, 168, 11, 0.15 * Math.PI, 0.85 * Math.PI);
+            ctx.stroke();
+
+            // Front Hair Bangs
+            ctx.fillStyle = hair.color;
+            ctx.beginPath();
+            ctx.arc(cx, 142, 48, Math.PI, 0);
+            ctx.fill();
+            if (hair.style === 'bun') {
+                ctx.beginPath();
+                ctx.arc(cx, 92, 24, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Crown / Accessory on head or neck
+            ctx.font = '38px serif';
+            ctx.textAlign = 'center';
+            if (crown.id === 4) {
+                ctx.fillText('💎', cx, 232);
+            } else if (crown.id !== 2) {
+                ctx.fillText(crown.icon, cx, 104);
+            }
+
+            // Floating Sparkles
+            ctx.fillStyle = '#fde047';
+            for (const s of sparkles) {
+                s.y += s.vy;
+                if (s.y < 0) { s.y = H; s.x = Math.random() * W; }
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Camera Flash
+            if (flashAlpha > 0) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha})`;
+                ctx.fillRect(0, 0, W, H);
+                flashAlpha = Math.max(0, flashAlpha - 0.06);
+            }
+
+            requestAnimationFrame(drawModel);
+        }
+
+        renderWardrobe();
+        drawModel();
+    </script>
+</body>
+</html>

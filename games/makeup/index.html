@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Glow Makeup Studio: Salão de Beleza 💄✨ — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #4a044e 0%, #17031c 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #f472b6;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .studio-grid {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .studio-grid { grid-template-columns: 1fr; }
+        }
+        .mirror-box {
+            background: linear-gradient(180deg, #3b0764, #1e052b);
+            border: 4px solid #f472b6;
+            border-radius: 26px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 38px rgba(244, 114, 182, 0.35);
+        }
+        canvas {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            display: block;
+        }
+        .palette-box {
+            background: rgba(30, 8, 42, 0.92);
+            border: 3px solid #e879f9;
+            border-radius: 26px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .section-label {
+            font-family: 'Fredoka', sans-serif;
+            color: #fbcfe8;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .swatch-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .swatch {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: transform 0.15s;
+        }
+        .swatch:hover { transform: scale(1.12); }
+        .swatch.active {
+            border-color: #fde047;
+            box-shadow: 0 0 14px #fde047;
+            transform: scale(1.12);
+        }
+        .btn-photo {
+            margin-top: auto;
+            background: linear-gradient(135deg, #ec4899, #fde047);
+            color: #1f0429;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .msg-bar {
+            margin-top: 8px;
+            font-family: 'Fredoka', sans-serif;
+            color: #fde047;
+            font-size: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">MAQUIAGENS: <strong id="hud-score">0 💖</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 💖</strong></div>
+        </div>
+    </div>
+
+    <div class="studio-grid">
+        <div class="mirror-box">
+            <canvas id="makeup-canvas" width="460" height="460"></canvas>
+            <div class="msg-bar" id="msg-bar">Personalize a maquiagem e tire uma foto de capa de revista! 📸✨</div>
+        </div>
+
+        <div class="palette-box">
+            <div>
+                <div class="section-label">👁️ SOMBRA DE OLHOS GLITTER:</div>
+                <div class="swatch-row" id="row-shadow"></div>
+            </div>
+            <div>
+                <div class="section-label">💄 BATOM GLOSSY & MATTE:</div>
+                <div class="swatch-row" id="row-lips"></div>
+            </div>
+            <div>
+                <div class="section-label">🌸 BLUSH NAS BOCHECHAS:</div>
+                <div class="swatch-row" id="row-blush"></div>
+            </div>
+            <div>
+                <div class="section-label">👁️ COR DOS OLHOS (LENTES):</div>
+                <div class="swatch-row" id="row-eyes"></div>
+            </div>
+            <div>
+                <div class="section-label">✨ ADESIVO FACIAL & CABELO:</div>
+                <div class="swatch-row" id="row-sticker"></div>
+            </div>
+
+            <button class="btn-photo" id="btn-photo">📸 FINALIZAR MAKE & TIRAR FOTO! ✨</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('makeup-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const msgBar = document.getElementById('msg-bar');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('makeup', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 💖`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function chime(freq = 660) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.14);
+            } catch (e) {}
+        }
+
+        const OPTIONS = {
+            shadow: ['#ec4899', '#a855f7', '#38bdf8', '#fde047', '#34d399', '#fb7185'],
+            lips: ['#e11d48', '#db2777', '#9333ea', '#f43f5e', '#c026d3', '#fb923c'],
+            blush: ['rgba(244,114,182,0.45)', 'rgba(251,113,133,0.5)', 'rgba(251,146,60,0.42)', 'rgba(192,132,252,0.4)', 'rgba(255,255,255,0)'],
+            eyes: ['#3b82f6', '#10b981', '#8b5cf6', '#78350f', '#06b6d4', '#ec4899'],
+            sticker: ['⭐', '💖', '🦋', '💎', '🌸', '✨']
+        };
+
+        let make = {
+            shadow: '#ec4899',
+            lips: '#e11d48',
+            blush: 'rgba(244,114,182,0.45)',
+            eyes: '#3b82f6',
+            sticker: '⭐'
+        };
+        let score = 0;
+        let flash = 0;
+
+        function buildRow(containerId, key, isEmoji = false) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = '';
+            OPTIONS[key].forEach(val => {
+                const b = document.createElement('div');
+                b.className = 'swatch' + (make[key] === val ? ' active' : '');
+                if (isEmoji) {
+                    b.style.background = 'rgba(255,255,255,0.12)';
+                    b.innerText = val;
+                } else {
+                    b.style.background = val;
+                }
+                b.addEventListener('click', () => {
+                    make[key] = val;
+                    chime(620);
+                    buildAllRows();
+                });
+                el.appendChild(b);
+            });
+        }
+
+        function buildAllRows() {
+            buildRow('row-shadow', 'shadow');
+            buildRow('row-lips', 'lips');
+            buildRow('row-blush', 'blush');
+            buildRow('row-eyes', 'eyes');
+            buildRow('row-sticker', 'sticker', true);
+        }
+
+        document.getElementById('btn-photo').addEventListener('click', () => {
+            score += 150;
+            flash = 1;
+            chime(880);
+            hudScore.innerText = `${score} 💖`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 💖`;
+                SaveHub.updateGameSave('makeup', { highScore: bestScore }, playerName);
+            }
+            msgBar.innerText = `🌟 CAPA DE REVISTA PERFEITA! +150 💖 (Total: ${score})`;
+        });
+
+        function drawFace() {
+            // Vanity mirror lighting background
+            const g = ctx.createRadialGradient(W / 2, H / 2, 40, W / 2, H / 2, 260);
+            g.addColorStop(0, '#581c87');
+            g.addColorStop(1, '#1e052b');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, W, H);
+
+            // Mirror lights around border
+            ctx.fillStyle = '#fef08a';
+            for (let i = 30; i < W; i += 65) {
+                ctx.beginPath();
+                ctx.arc(i, 16, 7, 0, Math.PI * 2);
+                ctx.arc(i, H - 16, 7, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            const cx = W / 2;
+            const cy = H / 2 + 15;
+
+            // Back Hair
+            ctx.fillStyle = '#31102f';
+            ctx.beginPath();
+            ctx.arc(cx, cy - 10, 145, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Neck & Shoulders
+            ctx.fillStyle = '#fed7aa';
+            ctx.fillRect(cx - 34, cy + 95, 68, 80);
+            ctx.fillStyle = '#ec4899';
+            ctx.beginPath();
+            ctx.roundRect(cx - 110, cy + 145, 220, 80, 40);
+            ctx.fill();
+
+            // Face Base
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, 105, 122, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyeshadow
+            ctx.save();
+            ctx.fillStyle = make.shadow;
+            ctx.globalAlpha = 0.65;
+            ctx.beginPath();
+            ctx.ellipse(cx - 42, cy - 18, 26, 15, -0.1, Math.PI, 0);
+            ctx.ellipse(cx + 42, cy - 18, 26, 15, 0.1, Math.PI, 0);
+            ctx.fill();
+            ctx.restore();
+
+            // Eyes
+            [-42, 42].forEach(ox => {
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.ellipse(cx + ox, cy - 14, 22, 13, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = make.eyes;
+                ctx.beginPath();
+                ctx.arc(cx + ox, cy - 14, 11, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.arc(cx + ox, cy - 14, 5.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(cx + ox + 4, cy - 18, 3.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eyeliner & Lashes
+                ctx.strokeStyle = '#1e1b4b';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(cx + ox, cy - 14, 22, 1.1 * Math.PI, 1.95 * Math.PI);
+                ctx.stroke();
+            });
+
+            // Blush
+            ctx.fillStyle = make.blush;
+            ctx.beginPath();
+            ctx.ellipse(cx - 58, cy + 25, 24, 15, 0, 0, Math.PI * 2);
+            ctx.ellipse(cx + 58, cy + 25, 24, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Lipstick
+            ctx.fillStyle = make.lips;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + 62, 28, 14, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,0.45)';
+            ctx.beginPath();
+            ctx.ellipse(cx - 6, cy + 59, 10, 3.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Face Sticker
+            ctx.font = '26px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(make.sticker, cx + 62, cy + 12);
+
+            // Front Hair Bangs
+            ctx.fillStyle = '#4a154b';
+            ctx.beginPath();
+            ctx.arc(cx, cy - 32, 108, Math.PI, 0);
+            ctx.fill();
+
+            if (flash > 0) {
+                ctx.fillStyle = `rgba(255,255,255,${flash})`;
+                ctx.fillRect(0, 0, W, H);
+                flash = Math.max(0, flash - 0.06);
+            }
+
+            requestAnimationFrame(drawFace);
+        }
+
+        buildAllRows();
+        drawFace();
+    </script>
+</body>
+</html>
