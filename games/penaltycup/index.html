@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super Copa Pênaltis ⚽ — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at center, #06281e 0%, #030e0a 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .topbar {
+            width: 96vw;
+            max-width: 980px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #10b981;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+        .stat-pill {
+            background: rgba(0,0,0,0.6);
+            border: 2px solid rgba(255,255,255,0.18);
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
+        .stage-wrap {
+            position: relative;
+            width: 96vw;
+            max-width: 980px;
+            aspect-ratio: 16 / 9;
+            background: #062019;
+            border: 3px solid #10b981;
+            border-radius: 20px;
+            box-shadow: 0 0 36px rgba(16, 185, 129, 0.35);
+            overflow: hidden;
+        }
+        canvas { width: 100%; height: 100%; display: block; cursor: pointer; }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(4, 18, 12, 0.88);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+        .overlay.hidden { display: none; }
+        .overlay h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: #10b981;
+            margin-bottom: 8px;
+        }
+        .overlay p {
+            color: #cbd5e1;
+            max-width: 520px;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            line-height: 1.45;
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #10b981, #ffcc00);
+            color: #03120b;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div class="hud-stats">
+            <div class="stat-pill">CHUTES RESTANTES: <strong id="hud-balls">⚽⚽⚽</strong></div>
+            <div class="stat-pill">SEQUÊNCIA: <strong id="hud-streak">0 🔥</strong></div>
+            <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
+        </div>
+    </div>
+
+    <div class="stage-wrap">
+        <canvas id="soccer-canvas" width="1280" height="720"></canvas>
+        <div class="overlay" id="soccer-overlay">
+            <h1>⚽ SUPER COPA PÊNALTIS</h1>
+            <p id="soccer-desc">
+                Clique ou toque dentro do gol onde deseja chutar a bola! Acerte os <strong>Alvos Dourados 🎯</strong> no ângulo para ganhar pontos em dobro e vença o Goleiro Robô!
+            </p>
+            <button class="btn-start" id="btn-start-soccer">ENTRAR EM CAMPO ⚽🏆</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('soccer-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudBalls = document.getElementById('hud-balls');
+        const hudStreak = document.getElementById('hud-streak');
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const overlay = document.getElementById('soccer-overlay');
+        const soccerDesc = document.getElementById('soccer-desc');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('penaltycup', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = bestScore;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 440, dur = 0.12, type = 'triangle', vol = 0.12) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(vol, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        const goal = { x: 260, y: 120, w: 760, h: 270 };
+        let running = false;
+        let missesLeft = 3;
+        let streak = 0;
+        let score = 0;
+        let bannerText = '';
+        let bannerTimer = 0;
+
+        let keeper = { x: W / 2, y: 275, targetX: W / 2, w: 96, h: 120 };
+        let bullseye = { x: 400, y: 180, r: 38 };
+        let ball = { x: W / 2, y: 610, r: 28, tx: W / 2, ty: 260, moving: false, progress: 0 };
+
+        function placeBullseye() {
+            bullseye.x = goal.x + 65 + Math.random() * (goal.w - 130);
+            bullseye.y = goal.y + 50 + Math.random() * (goal.h - 110);
+        }
+
+        function resetShot() {
+            ball.x = W / 2;
+            ball.y = 610;
+            ball.r = 28;
+            ball.moving = false;
+            ball.progress = 0;
+            keeper.x = W / 2;
+            keeper.y = 275;
+            keeper.targetX = W / 2;
+            placeBullseye();
+        }
+
+        function startGame() {
+            missesLeft = 3;
+            streak = 0;
+            score = 0;
+            resetShot();
+            updateHud();
+            overlay.classList.add('hidden');
+            running = true;
+            sfx(560, 0.14, 'triangle');
+        }
+
+        function updateHud() {
+            hudBalls.innerText = '⚽'.repeat(Math.max(0, missesLeft)) || '❌';
+            hudStreak.innerText = `${streak} 🔥`;
+            hudScore.innerText = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = bestScore;
+                SaveHub.updateGameSave('penaltycup', { highScore: bestScore, bestStreak: streak }, playerName);
+            }
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            if (!running || ball.moving) return;
+            const rect = canvas.getBoundingClientRect();
+            const mx = ((e.clientX - rect.left) / rect.width) * W;
+            const my = ((e.clientY - rect.top) / rect.height) * H;
+
+            // Clamp target inside or near the goal
+            ball.tx = Math.max(goal.x + 25, Math.min(goal.x + goal.w - 25, mx));
+            ball.ty = Math.max(goal.y + 25, Math.min(goal.y + goal.h - 15, my));
+            ball.moving = true;
+            ball.progress = 0;
+
+            // Keeper dives towards a spot (smarter with higher streak)
+            const smartChance = Math.min(0.68, 0.28 + streak * 0.04);
+            if (Math.random() < smartChance) {
+                keeper.targetX = ball.tx + (Math.random() - 0.5) * 140;
+            } else {
+                keeper.targetX = goal.x + 90 + Math.random() * (goal.w - 180);
+            }
+            sfx(280, 0.1, 'sine');
+        });
+
+        function update() {
+            if (!running) return;
+            if (bannerTimer > 0) bannerTimer--;
+
+            if (ball.moving) {
+                ball.progress += 0.045;
+                const t = Math.min(1, ball.progress);
+                ball.x = (W / 2) + (ball.tx - W / 2) * t;
+                ball.y = 610 + (ball.ty - 610) * t - Math.sin(t * Math.PI) * 75;
+                ball.r = 28 - t * 11;
+
+                keeper.x += (keeper.targetX - keeper.x) * 0.14;
+
+                if (t >= 1) {
+                    ball.moving = false;
+                    // Check keeper save
+                    const saved = Math.abs(ball.x - keeper.x) < 58 && Math.abs(ball.y - keeper.y) < 75;
+                    if (saved) {
+                        missesLeft--;
+                        streak = 0;
+                        bannerText = '🧤 DEFESA DO GOLEIRO!';
+                        bannerTimer = 55;
+                        sfx(170, 0.25, 'sawtooth');
+                        updateHud();
+                        if (missesLeft <= 0) {
+                            setTimeout(() => {
+                                running = false;
+                                soccerDesc.innerHTML = `🏆 <strong>FIM DE CAMPEONATO!</strong><br>Você marcou <strong>${score} PTS</strong> na Super Copa Pênaltis!`;
+                                overlay.classList.remove('hidden');
+                            }, 650);
+                        } else {
+                            setTimeout(resetShot, 650);
+                        }
+                    } else {
+                        streak++;
+                        const hitBullseye = Math.hypot(ball.x - bullseye.x, ball.y - bullseye.y) <= bullseye.r + 18;
+                        const pts = (hitBullseye ? 250 : 100) + streak * 25;
+                        score += pts;
+                        bannerText = hitBullseye ? `🎯 NO ÂNGULO! +${pts} PTS!` : `⚽ GOOOL! +${pts} PTS!`;
+                        bannerTimer = 55;
+                        sfx(hitBullseye ? 840 : 620, 0.22, 'triangle');
+                        updateHud();
+                        setTimeout(resetShot, 650);
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            // Sky & stadium lights
+            const sky = ctx.createLinearGradient(0, 0, 0, 400);
+            sky.addColorStop(0, '#04091a');
+            sky.addColorStop(1, '#0c2438');
+            ctx.fillStyle = sky;
+            ctx.fillRect(0, 0, W, 400);
+
+            // Pitch grass
+            const grass = ctx.createLinearGradient(0, 380, 0, H);
+            grass.addColorStop(0, '#064e3b');
+            grass.addColorStop(1, '#022c22');
+            ctx.fillStyle = grass;
+            ctx.fillRect(0, 380, W, H - 380);
+
+            // Goal net
+            ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+            ctx.lineWidth = 1.5;
+            for (let x = goal.x; x <= goal.x + goal.w; x += 28) {
+                ctx.beginPath(); ctx.moveTo(x, goal.y); ctx.lineTo(x, goal.y + goal.h); ctx.stroke();
+            }
+            for (let y = goal.y; y <= goal.y + goal.h; y += 28) {
+                ctx.beginPath(); ctx.moveTo(goal.x, y); ctx.lineTo(goal.x + goal.w, y); ctx.stroke();
+            }
+
+            // Goal posts
+            ctx.save();
+            ctx.strokeStyle = '#ffffff';
+            ctx.shadowColor = '#00f5d4';
+            ctx.shadowBlur = 16;
+            ctx.lineWidth = 12;
+            ctx.strokeRect(goal.x, goal.y, goal.w, goal.h);
+            ctx.restore();
+
+            // Bullseye target
+            ctx.save();
+            ctx.strokeStyle = '#ffcc00';
+            ctx.shadowColor = '#ffcc00';
+            ctx.shadowBlur = 15;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(bullseye.x, bullseye.y, bullseye.r, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.font = '30px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎯', bullseye.x, bullseye.y + 10);
+            ctx.restore();
+
+            // Goalkeeper
+            ctx.save();
+            ctx.fillStyle = '#ff2a5f';
+            ctx.shadowColor = '#ff2a5f';
+            ctx.shadowBlur = 16;
+            ctx.beginPath();
+            ctx.roundRect(keeper.x - 42, keeper.y - 50, 84, 100, 18);
+            ctx.fill();
+            ctx.font = '42px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🤖', keeper.x, keeper.y - 8);
+            ctx.fillText('🧤', keeper.x - 48, keeper.y + 5);
+            ctx.fillText('🧤', keeper.x + 48, keeper.y + 5);
+            ctx.restore();
+
+            // Penalty spot & Ball
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.beginPath();
+            ctx.ellipse(W / 2, 622, 22, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.save();
+            ctx.font = `${Math.round(ball.r * 2)}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('⚽', ball.x, ball.y);
+            ctx.restore();
+
+            if (bannerTimer > 0) {
+                ctx.save();
+                ctx.font = '900 44px Fredoka';
+                ctx.fillStyle = '#ffcc00';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 12;
+                ctx.fillText(bannerText, W / 2, 75);
+                ctx.restore();
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        document.getElementById('btn-start-soccer').addEventListener('click', startGame);
+        loop();
+    </script>
+</body>
+</html>

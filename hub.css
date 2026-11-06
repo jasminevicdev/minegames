@@ -505,6 +505,13 @@ body, html {
 .card-cyberpong { border-color: #38bdf8; }
 .card-towerdefense { border-color: #ff2a5f; }
 .card-astrojump { border-color: #a855f7; }
+.card-ninjaslice { border-color: #f43f5e; }
+.card-neon2048 { border-color: #2dd4bf; }
+.card-penaltycup { border-color: #10b981; }
+.card-pacmaze { border-color: #facc15; }
+.card-rhythmbeats { border-color: #ec4899; }
+.card-minesweeper { border-color: #60a5fa; }
+.card-glitchhunt { border-color: #c084fc; }
 
 .game-card-banner {
     font-size: 3.5rem;

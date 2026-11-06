@@ -55,6 +55,13 @@ class GameHub {
         this.statCyberpongScore = document.getElementById('stat-cyberpong-score');
         this.statTowerdefenseScore = document.getElementById('stat-towerdefense-score');
         this.statAstrojumpScore = document.getElementById('stat-astrojump-score');
+        this.statNinjasliceScore = document.getElementById('stat-ninjaslice-score');
+        this.statNeon2048Score = document.getElementById('stat-neon2048-score');
+        this.statPenaltycupScore = document.getElementById('stat-penaltycup-score');
+        this.statPacmazeScore = document.getElementById('stat-pacmaze-score');
+        this.statRhythmbeatsScore = document.getElementById('stat-rhythmbeats-score');
+        this.statMinesweeperScore = document.getElementById('stat-minesweeper-score');
+        this.statGlitchhuntScore = document.getElementById('stat-glitchhunt-score');
 
         this.selectedAvatar = '🎪';
 
@@ -147,6 +154,13 @@ class GameHub {
         const cyberpongSave = SaveHub.getGameSave('cyberpong', player.name);
         const towerdefenseSave = SaveHub.getGameSave('towerdefense', player.name);
         const astrojumpSave = SaveHub.getGameSave('astrojump', player.name);
+        const ninjasliceSave = SaveHub.getGameSave('ninjaslice', player.name);
+        const neon2048Save = SaveHub.getGameSave('neon2048', player.name);
+        const penaltycupSave = SaveHub.getGameSave('penaltycup', player.name);
+        const pacmazeSave = SaveHub.getGameSave('pacmaze', player.name);
+        const rhythmbeatsSave = SaveHub.getGameSave('rhythmbeats', player.name);
+        const minesweeperSave = SaveHub.getGameSave('minesweeper', player.name);
+        const glitchhuntSave = SaveHub.getGameSave('glitchhunt', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -161,6 +175,13 @@ class GameHub {
         if (this.statCyberpongScore) this.statCyberpongScore.innerText = `${cyberpongSave.highScore || 0} PTS`;
         if (this.statTowerdefenseScore) this.statTowerdefenseScore.innerText = `${towerdefenseSave.highScore || 0} PTS`;
         if (this.statAstrojumpScore) this.statAstrojumpScore.innerText = `${astrojumpSave.highScore || 0}m`;
+        if (this.statNinjasliceScore) this.statNinjasliceScore.innerText = `${ninjasliceSave.highScore || 0} PTS`;
+        if (this.statNeon2048Score) this.statNeon2048Score.innerText = `${neon2048Save.highScore || 0} PTS`;
+        if (this.statPenaltycupScore) this.statPenaltycupScore.innerText = `${penaltycupSave.highScore || 0} PTS`;
+        if (this.statPacmazeScore) this.statPacmazeScore.innerText = `${pacmazeSave.highScore || 0} PTS`;
+        if (this.statRhythmbeatsScore) this.statRhythmbeatsScore.innerText = `${rhythmbeatsSave.highScore || 0} PTS`;
+        if (this.statMinesweeperScore) this.statMinesweeperScore.innerText = `${minesweeperSave.highScore || 0} PTS`;
+        if (this.statGlitchhuntScore) this.statGlitchhuntScore.innerText = `${glitchhuntSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {

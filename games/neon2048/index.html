@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber 2048 Neon 🔢 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #0f172a 0%, #050814 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            touch-action: none;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #00f5d4;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0,0,0,0.55);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
+        .board-card {
+            width: 100%;
+            max-width: 440px;
+            background: #0b1124;
+            border: 3px solid #00f5d4;
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 0 35px rgba(0, 245, 212, 0.25);
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            color: #00f5d4;
+        }
+        .btn-group { display: flex; gap: 8px; }
+        .btn-act {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #ffcc00;
+            color: #ffcc00;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+        .grid-2048 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background: #060916;
+            padding: 10px;
+            border-radius: 16px;
+            aspect-ratio: 1 / 1;
+        }
+        .cell {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(1.3rem, 5vw, 1.9rem);
+            font-weight: 900;
+            transition: transform 0.12s, background 0.15s;
+        }
+        .cell[data-v="2"] { background: #1e293b; color: #e2e8f0; border: 2px solid #38bdf8; }
+        .cell[data-v="4"] { background: #0f766e; color: #fff; border: 2px solid #00f5d4; }
+        .cell[data-v="8"] { background: #4f46e5; color: #fff; border: 2px solid #818cf8; }
+        .cell[data-v="16"] { background: #7e22ce; color: #fff; border: 2px solid #c084fc; }
+        .cell[data-v="32"] { background: #be185d; color: #fff; border: 2px solid #f472b6; }
+        .cell[data-v="64"] { background: #e11d48; color: #fff; border: 2px solid #fda4af; }
+        .cell[data-v="128"] { background: #d97706; color: #fff; border: 2px solid #fde047; }
+        .cell[data-v="256"] { background: #ca8a04; color: #fff; border: 2px solid #fef08a; box-shadow: 0 0 14px #facc15; }
+        .cell[data-v="512"] { background: #16a34a; color: #fff; border: 2px solid #86efac; box-shadow: 0 0 16px #4ade80; }
+        .cell[data-v="1024"] { background: #0284c7; color: #fff; border: 2px solid #7dd3fc; box-shadow: 0 0 18px #38bdf8; }
+        .cell[data-v="2048"] { background: linear-gradient(135deg, #ffcc00, #ff2a85); color: #050814; border: 2px solid #fff; box-shadow: 0 0 24px #ffcc00; }
+        .dpad {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 64px);
+            grid-template-rows: repeat(2, 48px);
+            gap: 8px;
+            justify-content: center;
+        }
+        .btn-dir {
+            background: rgba(0, 245, 212, 0.15);
+            border: 2px solid #00f5d4;
+            color: #fff;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ HUB</a>
+        <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
+        <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
+    </div>
+
+    <div class="board-card">
+        <div class="header-row">
+            <div class="title">🔢 CYBER 2048</div>
+            <div class="btn-group">
+                <button class="btn-act" id="btn-undo">↩️ DESFAZER</button>
+                <button class="btn-act" id="btn-reset">🔄 NOVO</button>
+            </div>
+        </div>
+        <div class="grid-2048" id="grid-2048"></div>
+        <p style="text-align:center; font-size:0.78rem; color:#94a3b8; margin-top:10px;">
+            Deslize na grade (Swipe), use as Setas/WASD ou os botões abaixo para fundir os blocos iguais!
+        </p>
+    </div>
+
+    <div class="dpad">
+        <div></div>
+        <button class="btn-dir" data-dir="up">⬆️</button>
+        <div></div>
+        <button class="btn-dir" data-dir="left">⬅️</button>
+        <button class="btn-dir" data-dir="down">⬇️</button>
+        <button class="btn-dir" data-dir="right">➡️</button>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const gridEl = document.getElementById('grid-2048');
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('neon2048', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = bestScore;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 440, dur = 0.06) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        let board = Array(16).fill(0);
+        let prevBoard = null;
+        let score = 0;
+        let prevScore = 0;
+
+        function spawnTile() {
+            const empty = board.map((v, i) => v === 0 ? i : -1).filter(i => i !== -1);
+            if (!empty.length) return;
+            const idx = empty[Math.floor(Math.random() * empty.length)];
+            board[idx] = Math.random() < 0.88 ? 2 : 4;
+        }
+
+        function render() {
+            gridEl.innerHTML = '';
+            board.forEach(v => {
+                const d = document.createElement('div');
+                d.className = 'cell';
+                if (v > 0) {
+                    d.dataset.v = v;
+                    d.innerText = v;
+                }
+                gridEl.appendChild(d);
+            });
+            hudScore.innerText = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = bestScore;
+                SaveHub.updateGameSave('neon2048', { highScore: bestScore, bestTile: Math.max(...board) }, playerName);
+            }
+        }
+
+        function slideLine(line) {
+            let arr = line.filter(v => v !== 0);
+            for (let i = 0; i < arr.length - 1; i++) {
+                if (arr[i] === arr[i + 1]) {
+                    arr[i] *= 2;
+                    score += arr[i];
+                    arr.splice(i + 1, 1);
+                }
+            }
+            while (arr.length < 4) arr.push(0);
+            return arr;
+        }
+
+        function move(dir) {
+            const snapshot = [...board];
+            const oldScore = score;
+
+            for (let i = 0; i < 4; i++) {
+                let idxs = [];
+                for (let j = 0; j < 4; j++) {
+                    if (dir === 'left') idxs.push(i * 4 + j);
+                    if (dir === 'right') idxs.push(i * 4 + (3 - j));
+                    if (dir === 'up') idxs.push(j * 4 + i);
+                    if (dir === 'down') idxs.push((3 - j) * 4 + i);
+                }
+                const line = idxs.map(k => board[k]);
+                const merged = slideLine(line);
+                idxs.forEach((k, pos) => { board[k] = merged[pos]; });
+            }
+
+            const changed = board.some((v, idx) => v !== snapshot[idx]);
+            if (changed) {
+                prevBoard = snapshot;
+                prevScore = oldScore;
+                spawnTile();
+                sfx(score > oldScore ? 620 : 380, 0.07);
+                render();
+            }
+        }
+
+        function initGame() {
+            board = Array(16).fill(0);
+            score = 0;
+            prevBoard = null;
+            spawnTile();
+            spawnTile();
+            render();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') move('left');
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') move('right');
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') move('up');
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') move('down');
+        });
+
+        document.querySelectorAll('.btn-dir').forEach(btn => {
+            btn.addEventListener('click', () => move(btn.dataset.dir));
+        });
+
+        let sx = 0, sy = 0;
+        gridEl.addEventListener('touchstart', (e) => {
+            sx = e.touches[0].clientX;
+            sy = e.touches[0].clientY;
+        }, { passive: true });
+        gridEl.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - sx;
+            const dy = e.changedTouches[0].clientY - sy;
+            if (Math.max(Math.abs(dx), Math.abs(dy)) < 25) return;
+            if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
+            else move(dy > 0 ? 'down' : 'up');
+        }, { passive: true });
+
+        document.getElementById('btn-undo').addEventListener('click', () => {
+            if (prevBoard) {
+                board = [...prevBoard];
+                score = prevScore;
+                prevBoard = null;
+                render();
+            }
+        });
+        document.getElementById('btn-reset').addEventListener('click', initGame);
+
+        initGame();
+    </script>
+</body>
+</html>

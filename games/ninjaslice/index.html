@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Ninja Slice ⚔️ — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at center, #1a0628 0%, #06020c 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .topbar {
+            width: 96vw;
+            max-width: 980px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #ff2a85;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+        .stat-pill {
+            background: rgba(0,0,0,0.55);
+            border: 2px solid rgba(255,255,255,0.18);
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
+        .stage-wrap {
+            position: relative;
+            width: 96vw;
+            max-width: 980px;
+            aspect-ratio: 16 / 9;
+            background: #0a0414;
+            border: 3px solid #ff2a85;
+            border-radius: 20px;
+            box-shadow: 0 0 38px rgba(255, 42, 133, 0.35);
+            overflow: hidden;
+        }
+        canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 4, 20, 0.88);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+        .overlay.hidden { display: none; }
+        .overlay h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: #ff2a85;
+            text-shadow: 0 0 18px rgba(255,42,133,0.7);
+            margin-bottom: 8px;
+        }
+        .overlay p {
+            color: #cbd5e1;
+            max-width: 520px;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            line-height: 1.45;
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #ff2a85, #ffcc00);
+            color: #090312;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div class="hud-stats">
+            <div class="stat-pill">VIDAS: <strong id="hud-lives">❤️❤️❤️</strong></div>
+            <div class="stat-pill">COMBO: <strong id="hud-combo">x1</strong></div>
+            <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
+        </div>
+    </div>
+
+    <div class="stage-wrap">
+        <canvas id="slice-canvas" width="1280" height="720"></canvas>
+        <div class="overlay" id="slice-overlay">
+            <h1>⚔️ CYBER NINJA SLICE</h1>
+            <p id="slice-desc">
+                Deslize o dedo na tela ou passe o mouse para fatiar as <strong>Frutas & Cristais Neon 🍉💎⭐</strong> no ar! Faça combos múltiplos e cuidado para <strong>NÃO cortar as Bombas 💣</strong>!
+            </p>
+            <button class="btn-start" id="btn-start-slice">EMPUHAR KATANA NEON ⚔️</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('slice-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudLives = document.getElementById('hud-lives');
+        const hudCombo = document.getElementById('hud-combo');
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const overlay = document.getElementById('slice-overlay');
+        const sliceDesc = document.getElementById('slice-desc');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('ninjaslice', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = bestScore;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 500, dur = 0.08, type = 'triangle', vol = 0.1) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(vol, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        const ITEMS = [
+            { emoji: '🍉', color: '#ff2a5f', pts: 15 },
+            { emoji: '🍍', color: '#ffcc00', pts: 20 },
+            { emoji: '🍓', color: '#ff4d79', pts: 15 },
+            { emoji: '💎', color: '#00f5d4', pts: 35 },
+            { emoji: '⭐', color: '#ffd000', pts: 40 }
+        ];
+
+        let running = false;
+        let score = 0;
+        let lives = 3;
+        let combo = 1;
+        let comboTimer = 0;
+        let targets = [];
+        let halves = [];
+        let particles = [];
+        let bladeTrail = [];
+        let spawnTimer = 0;
+        let isSlicing = false;
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            combo = 1;
+            targets = [];
+            halves = [];
+            particles = [];
+            bladeTrail = [];
+            spawnTimer = 25;
+            updateHud();
+            overlay.classList.add('hidden');
+            running = true;
+            sfx(640, 0.12, 'triangle');
+        }
+
+        function updateHud() {
+            hudLives.innerText = '❤️'.repeat(Math.max(0, lives)) || '💀';
+            hudCombo.innerText = `x${combo}`;
+            hudScore.innerText = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = bestScore;
+                SaveHub.updateGameSave('ninjaslice', { highScore: bestScore }, playerName);
+            }
+        }
+
+        function spawnWave() {
+            const count = 2 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < count; i++) {
+                const isBomb = Math.random() < 0.18;
+                const spec = isBomb
+                    ? { emoji: '💣', color: '#ef4444', pts: 0, isBomb: true }
+                    : ITEMS[Math.floor(Math.random() * ITEMS.length)];
+                const x = 160 + Math.random() * (W - 320);
+                const vx = (W / 2 - x) * 0.008 + (Math.random() - 0.5) * 4;
+                const vy = -(15.5 + Math.random() * 4.5);
+                targets.push({
+                    x,
+                    y: H + 40,
+                    vx,
+                    vy,
+                    r: 44,
+                    rot: 0,
+                    vrot: (Math.random() - 0.5) * 0.14,
+                    ...spec
+                });
+            }
+        }
+
+        function addSplash(x, y, color, count = 18) {
+            for (let i = 0; i < count; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const s = 2 + Math.random() * 8;
+                particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, color });
+            }
+        }
+
+        function sliceAt(px, py) {
+            if (!running) return;
+            bladeTrail.push({ x: px, y: py, life: 1 });
+            if (bladeTrail.length > 18) bladeTrail.shift();
+
+            for (let i = targets.length - 1; i >= 0; i--) {
+                const t = targets[i];
+                if (Math.hypot(px - t.x, py - t.y) <= t.r + 14) {
+                    if (t.isBomb) {
+                        lives--;
+                        combo = 1;
+                        addSplash(t.x, t.y, '#ef4444', 35);
+                        sfx(150, 0.25, 'sawtooth', 0.2);
+                        targets.splice(i, 1);
+                        updateHud();
+                        if (lives <= 0) {
+                            endGame();
+                            return;
+                        }
+                    } else {
+                        if (comboTimer > 0) combo = Math.min(8, combo + 1);
+                        else combo = 1;
+                        comboTimer = 45;
+                        score += t.pts * combo;
+                        addSplash(t.x, t.y, t.color, 22);
+                        sfx(520 + combo * 70, 0.09, 'triangle');
+                        halves.push(
+                            { x: t.x - 12, y: t.y, vx: -4, vy: -4, rot: t.rot, emoji: t.emoji, life: 1 },
+                            { x: t.x + 12, y: t.y, vx: 4, vy: -4, rot: t.rot + 0.5, emoji: t.emoji, life: 1 }
+                        );
+                        targets.splice(i, 1);
+                        updateHud();
+                    }
+                }
+            }
+        }
+
+        function endGame() {
+            running = false;
+            sliceDesc.innerHTML = `⚔️ <strong>FIM DO TREINO NINJA!</strong><br>Você fatiou <strong>${score} PTS</strong> na arena neon!`;
+            overlay.classList.remove('hidden');
+        }
+
+        function update() {
+            if (!running) return;
+
+            if (comboTimer > 0) {
+                comboTimer--;
+                if (comboTimer === 0) {
+                    combo = 1;
+                    updateHud();
+                }
+            }
+
+            spawnTimer--;
+            if (spawnTimer <= 0) {
+                spawnWave();
+                spawnTimer = Math.max(48, 95 - Math.floor(score / 400) * 4);
+            }
+
+            for (let i = targets.length - 1; i >= 0; i--) {
+                const t = targets[i];
+                t.x += t.vx;
+                t.y += t.vy;
+                t.vy += 0.34;
+                t.rot += t.vrot;
+                if (t.y > H + 70 && t.vy > 0) {
+                    if (!t.isBomb) {
+                        lives--;
+                        combo = 1;
+                        sfx(210, 0.14, 'sawtooth');
+                        updateHud();
+                        if (lives <= 0) {
+                            endGame();
+                            return;
+                        }
+                    }
+                    targets.splice(i, 1);
+                }
+            }
+
+            for (let i = halves.length - 1; i >= 0; i--) {
+                const h = halves[i];
+                h.x += h.vx;
+                h.y += h.vy;
+                h.vy += 0.45;
+                h.life -= 0.025;
+                if (h.life <= 0) halves.splice(i, 1);
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.035;
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+
+            for (let i = bladeTrail.length - 1; i >= 0; i--) {
+                bladeTrail[i].life -= 0.08;
+                if (bladeTrail[i].life <= 0) bladeTrail.splice(i, 1);
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#0a0414';
+            ctx.fillRect(0, 0, W, H);
+
+            // Subtle dojo grid
+            ctx.strokeStyle = 'rgba(255, 42, 133, 0.08)';
+            ctx.lineWidth = 2;
+            for (let x = 0; x < W; x += 80) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+            }
+            for (let y = 0; y < H; y += 80) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+            }
+
+            // Targets
+            for (const t of targets) {
+                ctx.save();
+                ctx.translate(t.x, t.y);
+                ctx.rotate(t.rot);
+                ctx.shadowColor = t.color;
+                ctx.shadowBlur = 20;
+                ctx.font = '64px serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(t.emoji, 0, 0);
+                ctx.restore();
+            }
+
+            // Sliced halves
+            for (const h of halves) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, h.life);
+                ctx.translate(h.x, h.y);
+                ctx.rotate(h.rot);
+                ctx.font = '44px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('✨', 0, 0);
+                ctx.restore();
+            }
+
+            // Particles
+            for (const p of particles) {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // Blade trail
+            if (bladeTrail.length > 1) {
+                ctx.save();
+                ctx.strokeStyle = '#00f5d4';
+                ctx.shadowColor = '#00f5d4';
+                ctx.shadowBlur = 18;
+                ctx.lineWidth = 7;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                bladeTrail.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: ((e.clientX - rect.left) / rect.width) * W,
+                y: ((e.clientY - rect.top) / rect.height) * H
+            };
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            isSlicing = true;
+            const pt = getCanvasCoords(e);
+            sliceAt(pt.x, pt.y);
+        });
+        canvas.addEventListener('pointermove', (e) => {
+            if (!isSlicing && e.pointerType !== 'mouse') return;
+            const pt = getCanvasCoords(e);
+            sliceAt(pt.x, pt.y);
+        });
+        window.addEventListener('pointerup', () => { isSlicing = false; });
+
+        document.getElementById('btn-start-slice').addEventListener('click', startGame);
+        loop();
+    </script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Campo Minado Cyber 💣 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #111827 0%, #030712 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #f43f5e;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0,0,0,0.6);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
+        .card {
+            width: 100%;
+            max-width: 460px;
+            background: #0f172a;
+            border: 3px solid #38bdf8;
+            border-radius: 22px;
+            padding: 14px;
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.25);
+        }
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-tool {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .btn-tool.active {
+            background: linear-gradient(135deg, #00f5d4, #38bdf8);
+            color: #030712;
+            border-color: #fff;
+        }
+        .grid-mine {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            background: #060b16;
+            padding: 8px;
+            border-radius: 16px;
+            aspect-ratio: 1 / 1;
+        }
+        .mcell {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .mcell.open {
+            background: #090d16;
+            border-color: rgba(255,255,255,0.06);
+            cursor: default;
+        }
+        .mcell.mine { background: #e11d48; border-color: #fda4af; }
+        .status-msg {
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ HUB</a>
+        <div class="stat-pill">ESCUDO: <strong id="hud-shield">🛡️ ATIVO</strong></div>
+        <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
+        <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
+    </div>
+
+    <div class="card">
+        <div class="controls-row">
+            <button class="btn-tool active" id="mode-dig">🔍 ESCAVAR</button>
+            <button class="btn-tool" id="mode-flag">🚩 BANDEIRA</button>
+            <button class="btn-tool" id="btn-new">🔄 REINICIAR</button>
+        </div>
+        <div class="grid-mine" id="grid-mine"></div>
+        <div class="status-msg" id="status-msg">Desarme o campo sem ativar as 10 Minas de Plasma!</div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const gridEl = document.getElementById('grid-mine');
+        const hudShield = document.getElementById('hud-shield');
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const statusMsg = document.getElementById('status-msg');
+        const btnDig = document.getElementById('mode-dig');
+        const btnFlag = document.getElementById('mode-flag');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('minesweeper', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = bestScore;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 440, dur = 0.07, type = 'triangle') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        const SIZE = 8;
+        const MINES = 10;
+        const COLORS = ['', '#38bdf8', '#4ade80', '#facc15', '#c084fc', '#f43f5e', '#2dd4bf', '#fff', '#94a3b8'];
+
+        let cells = [];
+        let flagMode = false;
+        let shield = true;
+        let score = 0;
+        let over = false;
+
+        btnDig.addEventListener('click', () => {
+            flagMode = false;
+            btnDig.classList.add('active');
+            btnFlag.classList.remove('active');
+        });
+        btnFlag.addEventListener('click', () => {
+            flagMode = true;
+            btnFlag.classList.add('active');
+            btnDig.classList.remove('active');
+        });
+
+        function initBoard() {
+            cells = Array.from({ length: SIZE * SIZE }, (_, idx) => ({
+                idx,
+                mine: false,
+                open: false,
+                flag: false,
+                count: 0
+            }));
+            shield = true;
+            score = 0;
+            over = false;
+            hudShield.innerText = '🛡️ ATIVO';
+            statusMsg.innerText = 'Desarme o campo sem ativar as 10 Minas de Plasma!';
+
+            let placed = 0;
+            while (placed < MINES) {
+                const r = Math.floor(Math.random() * cells.length);
+                if (!cells[r].mine) {
+                    cells[r].mine = true;
+                    placed++;
+                }
+            }
+
+            for (let i = 0; i < cells.length; i++) {
+                if (cells[i].mine) continue;
+                cells[i].count = neighbors(i).filter(n => cells[n].mine).length;
+            }
+            render();
+        }
+
+        function neighbors(idx) {
+            const x = idx % SIZE;
+            const y = Math.floor(idx / SIZE);
+            const res = [];
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    if (dx === 0 && dy === 0) continue;
+                    const nx = x + dx, ny = y + dy;
+                    if (nx >= 0 && nx < SIZE && ny >= 0 && ny < SIZE) {
+                        res.push(ny * SIZE + nx);
+                    }
+                }
+            }
+            return res;
+        }
+
+        function reveal(idx) {
+            const c = cells[idx];
+            if (c.open || c.flag || over) return;
+
+            if (c.mine) {
+                if (shield) {
+                    shield = false;
+                    c.flag = true;
+                    hudShield.innerText = 'USADO ⚡';
+                    statusMsg.innerText = '🛡️ O Escudo Cyber salvou você de uma mina!';
+                    sfx(680, 0.16);
+                    render();
+                    return;
+                }
+                c.open = true;
+                over = true;
+                cells.forEach(cell => { if (cell.mine) cell.open = true; });
+                statusMsg.innerText = '💥 MINA ATIVADA! Clique em Reiniciar para jogar novamente.';
+                sfx(150, 0.25, 'sawtooth');
+                render();
+                return;
+            }
+
+            c.open = true;
+            score += 20;
+            if (c.count === 0) {
+                neighbors(idx).forEach(n => { if (!cells[n].open) reveal(n); });
+            }
+
+            const safeLeft = cells.filter(cell => !cell.mine && !cell.open).length;
+            if (safeLeft === 0) {
+                over = true;
+                score += 500;
+                statusMsg.innerText = '🏆 CAMPO DESARMADO COM SUCESSO! (+500 PTS)';
+                sfx(880, 0.25);
+            } else {
+                sfx(500, 0.05);
+            }
+            render();
+        }
+
+        function render() {
+            gridEl.innerHTML = '';
+            cells.forEach(c => {
+                const el = document.createElement('div');
+                el.className = 'mcell' + (c.open ? ' open' : '') + (c.open && c.mine ? ' mine' : '');
+                if (c.open) {
+                    if (c.mine) el.innerText = '💣';
+                    else if (c.count > 0) {
+                        el.innerText = c.count;
+                        el.style.color = COLORS[c.count];
+                    }
+                } else if (c.flag) {
+                    el.innerText = '🚩';
+                }
+
+                el.addEventListener('click', () => {
+                    if (over) return;
+                    if (flagMode) {
+                        if (!c.open) {
+                            c.flag = !c.flag;
+                            sfx(360, 0.05);
+                            render();
+                        }
+                    } else {
+                        reveal(c.idx);
+                    }
+                });
+
+                el.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (!over && !c.open) {
+                        c.flag = !c.flag;
+                        sfx(360, 0.05);
+                        render();
+                    }
+                });
+
+                gridEl.appendChild(el);
+            });
+
+            hudScore.innerText = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = bestScore;
+                SaveHub.updateGameSave('minesweeper', { highScore: bestScore }, playerName);
+            }
+        }
+
+        document.getElementById('btn-new').addEventListener('click', initBoard);
+        initBoard();
+    </script>
+</body>
+</html>
