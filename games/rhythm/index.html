@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ritmo do Circo (Music Beats) 🎵 — JasDEV Hub</title>
+    <title>Neon Beats: Guitarra de Luz 🎸🎵 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at top, #1f0836 0%, #070210 100%);
+            background: radial-gradient(circle at top, #1f0933 0%, #06020c 100%);
             color: #fff;
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -27,13 +27,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 4px;
+            padding: 6px 4px;
             gap: 6px;
-            flex-wrap: wrap;
         }
         .btn-back {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #00f5d4;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #e879f9;
             color: #fff;
             padding: 6px 14px;
             border-radius: 20px;
@@ -42,8 +41,8 @@
             font-size: 0.85rem;
         }
         .stat-pill {
-            background: rgba(0,0,0,0.6);
-            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.15);
             border-radius: 14px;
             padding: 5px 12px;
             font-size: 0.82rem;
@@ -53,20 +52,20 @@
         .stage-wrap {
             position: relative;
             width: 94vw;
-            max-width: 500px;
-            height: 78vh;
-            max-height: 700px;
-            background: #0a0418;
-            border: 3px solid #ff2a85;
+            max-width: 480px;
+            height: 72vh;
+            max-height: 680px;
+            background: #090314;
+            border: 3px solid #e879f9;
             border-radius: 22px;
-            box-shadow: 0 0 38px rgba(255, 42, 133, 0.35);
+            box-shadow: 0 0 38px rgba(232, 121, 249, 0.35);
             overflow: hidden;
         }
-        canvas { width: 100%; height: 100%; display: block; cursor: pointer; }
+        canvas { width: 100%; height: 100%; display: block; }
         .overlay {
             position: absolute;
             inset: 0;
-            background: rgba(10, 4, 24, 0.9);
+            background: rgba(9, 3, 20, 0.88);
             backdrop-filter: blur(6px);
             display: flex;
             flex-direction: column;
@@ -80,24 +79,42 @@
         .overlay h1 {
             font-family: 'Fredoka', sans-serif;
             font-size: 2rem;
-            color: #00f5d4;
+            color: #f472b6;
             margin-bottom: 8px;
         }
         .overlay p {
             color: #cbd5e1;
             font-size: 0.92rem;
-            line-height: 1.45;
             margin-bottom: 18px;
+            line-height: 1.45;
         }
         .btn-start {
-            background: linear-gradient(135deg, #00f5d4, #ff2a85);
-            color: #070210;
+            background: linear-gradient(135deg, #f472b6, #00f5d4);
+            color: #090314;
             border: none;
             padding: 12px 28px;
             border-radius: 30px;
             font-family: 'Fredoka', sans-serif;
             font-size: 1.1rem;
             font-weight: 900;
+            cursor: pointer;
+        }
+        .pad-row {
+            width: 94vw;
+            max-width: 480px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding-top: 8px;
+        }
+        .pad-btn {
+            padding: 14px 0;
+            border-radius: 14px;
+            border: 2px solid #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #06020c;
             cursor: pointer;
         }
     </style>
@@ -111,14 +128,21 @@
     </div>
 
     <div class="stage-wrap">
-        <canvas id="rhythm-canvas" width="480" height="720"></canvas>
+        <canvas id="rhythm-canvas" width="480" height="680"></canvas>
         <div class="overlay" id="rhythm-overlay">
-            <h1>🎵 RITMO DO CIRCO</h1>
+            <h1>🎸 NEON BEATS</h1>
             <p id="rhythm-desc">
-                Toque nas 4 pistas iluminadas (ou pressione <strong>D, F, J, K</strong> / <strong>Setas</strong>) quando as notas neon cruzarem a linha dourada!
+                Toque nos 4 pedais neon (ou teclas <strong>D, F, J, K / 1, 2, 3, 4</strong>) quando as notas musicais passarem pela linha brilhante!
             </p>
-            <button class="btn-start" id="btn-start-rhythm">SOLTAR O SOM 🎹✨</button>
+            <button class="btn-start" id="btn-start-rhythm">SOLTAR O SOM 🎵</button>
         </div>
+    </div>
+
+    <div class="pad-row">
+        <button class="pad-btn" data-lane="0" style="background:#00f5d4;">D / 1</button>
+        <button class="pad-btn" data-lane="1" style="background:#ffcc00;">F / 2</button>
+        <button class="pad-btn" data-lane="2" style="background:#ff2a85; color:#fff;">J / 3</button>
+        <button class="pad-btn" data-lane="3" style="background:#a855f7; color:#fff;">K / 4</button>
     </div>
 
     <script type="module">
@@ -128,6 +152,13 @@
         const ctx = canvas.getContext('2d');
         const W = canvas.width;
         const H = canvas.height;
+        const HIT_Y = H - 85;
+        const LANES = [
+            { color: '#00f5d4', freq: 261.63 },
+            { color: '#ffcc00', freq: 329.63 },
+            { color: '#ff2a85', freq: 392.00 },
+            { color: '#a855f7', freq: 523.25 }
+        ];
 
         const hudCombo = document.getElementById('hud-combo');
         const hudScore = document.getElementById('hud-score');
@@ -137,49 +168,35 @@
 
         const activePlayer = SaveHub.getActivePlayer();
         const playerName = activePlayer ? activePlayer.name : null;
-        let save = SaveHub.getGameSave('rhythmbeats', playerName);
+        let save = SaveHub.getGameSave('rhythm', playerName);
         let bestScore = save.highScore || 0;
         hudBest.innerText = bestScore;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const SCALE = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
-        let melodyIdx = 0;
-
-        function playMelodyNote(isMiss = false) {
+        function playNote(freq, dur = 0.14, type = 'triangle') {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const o = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
-                o.type = isMiss ? 'sawtooth' : 'triangle';
-                const freq = isMiss ? 130 : SCALE[melodyIdx % SCALE.length];
-                if (!isMiss) melodyIdx++;
+                o.type = type;
                 o.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 g.gain.setValueAtTime(0.14, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
                 o.connect(g);
                 g.connect(audioCtx.destination);
                 o.start();
-                o.stop(audioCtx.currentTime + 0.16);
+                o.stop(audioCtx.currentTime + dur);
             } catch (e) {}
         }
-
-        const LANES = [
-            { color: '#ff2a85', label: 'D / ⬅️' },
-            { color: '#00f5d4', label: 'F / ⬇️' },
-            { color: '#ffcc00', label: 'J / ⬆️' },
-            { color: '#a855f7', label: 'K / ➡️' }
-        ];
-        const HIT_Y = H - 105;
 
         let running = false;
         let score = 0;
         let combo = 0;
         let misses = 0;
         let notes = [];
-        let feedback = '';
-        let feedbackTimer = 0;
         let spawnTimer = 0;
-        let laneFlash = [0, 0, 0, 0];
+        let feedback = { text: '', color: '#fff', life: 0 };
+        let flashLane = [0, 0, 0, 0];
 
         function startGame() {
             score = 0;
@@ -190,7 +207,7 @@
             updateHud();
             overlay.classList.add('hidden');
             running = true;
-            playMelodyNote();
+            playNote(523.25, 0.18);
         }
 
         function updateHud() {
@@ -199,120 +216,125 @@
             if (score > bestScore) {
                 bestScore = score;
                 hudBest.innerText = bestScore;
-                SaveHub.updateGameSave('rhythmbeats', { highScore: bestScore, maxCombo: combo }, playerName);
+                SaveHub.updateGameSave('rhythm', { highScore: bestScore }, playerName);
             }
         }
 
         function triggerLane(laneIdx) {
             if (!running) return;
-            laneFlash[laneIdx] = 1;
-
-            // Find closest note in lane near HIT_Y
-            let targetIdx = -1;
+            flashLane[laneIdx] = 1;
+            let hitIdx = -1;
             let bestDist = 999;
-            notes.forEach((n, idx) => {
-                if (n.lane === laneIdx) {
-                    const d = Math.abs(n.y - HIT_Y);
-                    if (d < bestDist) {
+            for (let i = 0; i < notes.length; i++) {
+                if (notes[i].lane === laneIdx) {
+                    const d = Math.abs(notes[i].y - HIT_Y);
+                    if (d < 68 && d < bestDist) {
                         bestDist = d;
-                        targetIdx = idx;
+                        hitIdx = i;
                     }
                 }
-            });
+            }
 
-            if (targetIdx !== -1 && bestDist <= 75) {
-                notes.splice(targetIdx, 1);
+            if (hitIdx !== -1) {
+                notes.splice(hitIdx, 1);
                 combo++;
-                const isPerfect = bestDist <= 28;
-                const mult = Math.min(4, 1 + Math.floor(combo / 10));
-                score += (isPerfect ? 50 : 30) * mult;
-                feedback = isPerfect ? '✨ PERFEITO!' : '🔥 ÓTIMO!';
-                feedbackTimer = 25;
-                playMelodyNote(false);
+                const mult = Math.min(8, 1 + Math.floor(combo / 6));
+                const pts = (bestDist < 24 ? 100 : 60) * mult;
+                score += pts;
+                feedback = {
+                    text: bestDist < 24 ? `PERFEITO! +${pts}` : `BOM! +${pts}`,
+                    color: bestDist < 24 ? '#00f5d4' : '#ffcc00',
+                    life: 1
+                };
+                playNote(LANES[laneIdx].freq * (combo % 8 === 0 ? 1.5 : 1), 0.15);
+                updateHud();
+            } else {
+                combo = 0;
+                playNote(130, 0.1, 'sawtooth');
                 updateHud();
             }
         }
 
         function update() {
             if (!running) return;
-            if (feedbackTimer > 0) feedbackTimer--;
-            for (let i = 0; i < 4; i++) {
-                if (laneFlash[i] > 0) laneFlash[i] = Math.max(0, laneFlash[i] - 0.1);
-            }
 
             spawnTimer--;
             if (spawnTimer <= 0) {
                 const lane = Math.floor(Math.random() * 4);
-                notes.push({ lane, y: -30, speed: 5.8 + Math.min(4, score / 1500) });
+                notes.push({ lane, y: -30, speed: 5.2 + Math.min(4.5, score / 2500) });
                 spawnTimer = Math.max(18, 36 - Math.floor(score / 800));
             }
 
             for (let i = notes.length - 1; i >= 0; i--) {
                 notes[i].y += notes[i].speed;
-                if (notes[i].y > H + 30) {
+                if (notes[i].y > H + 25) {
                     notes.splice(i, 1);
                     combo = 0;
                     misses++;
-                    feedback = '❌ ERROU!';
-                    feedbackTimer = 25;
-                    playMelodyNote(true);
+                    feedback = { text: 'PERDEU!', color: '#ff2a5f', life: 1 };
                     updateHud();
-                    if (misses >= 6) {
+                    if (misses >= 10) {
                         running = false;
-                        rhythmDesc.innerHTML = `🎵 <strong>FIM DO SHOW MUSICAL!</strong><br>Você marcou <strong>${score} PTS</strong> no Ritmo do Circo!`;
+                        rhythmDesc.innerHTML = `🎵 <strong>FIM DO SHOW!</strong><br>Você marcou <strong>${score} PTS</strong> no palco Neon Beats!`;
                         overlay.classList.remove('hidden');
                         return;
                     }
                 }
             }
+
+            for (let i = 0; i < 4; i++) {
+                if (flashLane[i] > 0) flashLane[i] = Math.max(0, flashLane[i] - 0.1);
+            }
+            if (feedback.life > 0) feedback.life -= 0.04;
         }
 
         function draw() {
-            ctx.fillStyle = '#0a0418';
+            ctx.fillStyle = '#090314';
             ctx.fillRect(0, 0, W, H);
 
             const lw = W / 4;
             for (let i = 0; i < 4; i++) {
-                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                ctx.strokeRect(i * lw, 0, lw, H);
-
-                if (laneFlash[i] > 0) {
-                    ctx.fillStyle = `rgba(255, 255, 255, ${laneFlash[i] * 0.2})`;
+                if (flashLane[i] > 0) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${flashLane[i] * 0.18})`;
                     ctx.fillRect(i * lw, 0, lw, H);
                 }
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.beginPath();
+                ctx.moveTo(i * lw, 0);
+                ctx.lineTo(i * lw, H);
+                ctx.stroke();
 
-                // Hit receptor
+                // Target receptor
                 ctx.save();
                 ctx.strokeStyle = LANES[i].color;
                 ctx.lineWidth = 4;
                 ctx.beginPath();
-                ctx.roundRect(i * lw + 12, HIT_Y - 18, lw - 24, 36, 12);
+                ctx.arc(i * lw + lw / 2, HIT_Y, 28, 0, Math.PI * 2);
                 ctx.stroke();
-                ctx.font = '700 13px Outfit';
-                ctx.fillStyle = '#94a3b8';
-                ctx.textAlign = 'center';
-                ctx.fillText(LANES[i].label, i * lw + lw / 2, H - 35);
                 ctx.restore();
             }
 
             // Notes
             for (const n of notes) {
-                const col = LANES[n.lane].color;
+                const x = n.lane * lw + lw / 2;
                 ctx.save();
-                ctx.fillStyle = col;
-                ctx.shadowColor = col;
-                ctx.shadowBlur = 16;
+                ctx.fillStyle = LANES[n.lane].color;
+                ctx.shadowColor = LANES[n.lane].color;
+                ctx.shadowBlur = 18;
                 ctx.beginPath();
-                ctx.roundRect(n.lane * lw + 16, n.y - 16, lw - 32, 32, 10);
+                ctx.arc(x, n.y, 24, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
             }
 
-            if (feedbackTimer > 0) {
-                ctx.font = '900 32px Fredoka';
-                ctx.fillStyle = '#ffcc00';
+            if (feedback.life > 0) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, feedback.life);
+                ctx.font = '900 30px Fredoka';
+                ctx.fillStyle = feedback.color;
                 ctx.textAlign = 'center';
-                ctx.fillText(feedback, W / 2, 110);
+                ctx.fillText(feedback.text, W / 2, H / 2);
+                ctx.restore();
             }
         }
 
@@ -324,10 +346,17 @@
 
         window.addEventListener('keydown', (e) => {
             const k = e.key.toLowerCase();
-            if (k === 'd' || e.key === 'ArrowLeft') triggerLane(0);
-            if (k === 'f' || e.key === 'ArrowDown') triggerLane(1);
-            if (k === 'j' || e.key === 'ArrowUp') triggerLane(2);
-            if (k === 'k' || e.key === 'ArrowRight') triggerLane(3);
+            if (k === 'd' || k === '1' || e.key === 'ArrowLeft') triggerLane(0);
+            if (k === 'f' || k === '2' || e.key === 'ArrowDown') triggerLane(1);
+            if (k === 'j' || k === '3' || e.key === 'ArrowUp') triggerLane(2);
+            if (k === 'k' || k === '4' || e.key === 'ArrowRight') triggerLane(3);
+        });
+
+        document.querySelectorAll('.pad-btn').forEach(btn => {
+            btn.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                triggerLane(parseInt(btn.dataset.lane, 10));
+            });
         });
 
         canvas.addEventListener('pointerdown', (e) => {

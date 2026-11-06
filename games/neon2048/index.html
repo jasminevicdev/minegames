@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber 2048 Neon 🔢 — JasDEV Hub</title>
+    <title>Cyber 2048: Fusão Quântica 🔢⚡ — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
@@ -28,38 +28,31 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-            gap: 6px;
-            flex-wrap: wrap;
+            gap: 8px;
         }
         .btn-back {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border: 2px solid #00f5d4;
             color: #fff;
-            padding: 6px 14px;
+            padding: 7px 14px;
             border-radius: 20px;
             text-decoration: none;
             font-family: 'Fredoka', sans-serif;
             font-size: 0.85rem;
         }
-        .stat-pill {
-            background: rgba(0,0,0,0.55);
-            border: 2px solid rgba(255,255,255,0.15);
+        .score-row { display: flex; gap: 8px; }
+        .stat-box {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid rgba(0, 245, 212, 0.35);
             border-radius: 14px;
-            padding: 5px 12px;
-            font-size: 0.82rem;
-            font-weight: 700;
+            padding: 6px 12px;
+            text-align: center;
         }
-        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
-        .board-card {
+        .stat-box span { display: block; font-size: 0.68rem; color: #94a3b8; }
+        .stat-box strong { font-family: 'Fredoka', sans-serif; font-size: 1.05rem; color: #ffcc00; }
+        .header-card {
             width: 100%;
             max-width: 440px;
-            background: #0b1124;
-            border: 3px solid #00f5d4;
-            border-radius: 22px;
-            padding: 14px;
-            box-shadow: 0 0 35px rgba(0, 245, 212, 0.25);
-        }
-        .header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -67,61 +60,67 @@
         }
         .title {
             font-family: 'Fredoka', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             color: #00f5d4;
+            text-shadow: 0 0 16px rgba(0, 245, 212, 0.5);
         }
-        .btn-group { display: flex; gap: 8px; }
+        .actions { display: flex; gap: 8px; }
         .btn-act {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #ffcc00;
-            color: #ffcc00;
+            background: linear-gradient(135deg, #4f46e5, #00f5d4);
+            color: #040711;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 16px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.8rem;
-            padding: 6px 12px;
-            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.85rem;
             cursor: pointer;
         }
-        .grid-2048 {
+        .board {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            background: #0b1124;
+            border: 3px solid #00f5d4;
+            border-radius: 22px;
+            padding: 12px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
             gap: 10px;
-            background: #060916;
-            padding: 10px;
-            border-radius: 16px;
-            aspect-ratio: 1 / 1;
+            box-shadow: 0 0 36px rgba(0, 245, 212, 0.25);
         }
         .cell {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Fredoka', sans-serif;
-            font-size: clamp(1.3rem, 5vw, 1.9rem);
+            font-size: clamp(1.3rem, 5vw, 2rem);
             font-weight: 900;
-            transition: transform 0.12s, background 0.15s;
+            transition: transform 0.12s ease, background 0.15s ease;
         }
-        .cell[data-v="2"] { background: #1e293b; color: #e2e8f0; border: 2px solid #38bdf8; }
-        .cell[data-v="4"] { background: #0f766e; color: #fff; border: 2px solid #00f5d4; }
-        .cell[data-v="8"] { background: #4f46e5; color: #fff; border: 2px solid #818cf8; }
-        .cell[data-v="16"] { background: #7e22ce; color: #fff; border: 2px solid #c084fc; }
-        .cell[data-v="32"] { background: #be185d; color: #fff; border: 2px solid #f472b6; }
-        .cell[data-v="64"] { background: #e11d48; color: #fff; border: 2px solid #fda4af; }
-        .cell[data-v="128"] { background: #d97706; color: #fff; border: 2px solid #fde047; }
-        .cell[data-v="256"] { background: #ca8a04; color: #fff; border: 2px solid #fef08a; box-shadow: 0 0 14px #facc15; }
-        .cell[data-v="512"] { background: #16a34a; color: #fff; border: 2px solid #86efac; box-shadow: 0 0 16px #4ade80; }
-        .cell[data-v="1024"] { background: #0284c7; color: #fff; border: 2px solid #7dd3fc; box-shadow: 0 0 18px #38bdf8; }
-        .cell[data-v="2048"] { background: linear-gradient(135deg, #ffcc00, #ff2a85); color: #050814; border: 2px solid #fff; box-shadow: 0 0 24px #ffcc00; }
+        .cell[data-v="2"] { background: #1e293b; color: #38bdf8; border: 2px solid #38bdf8; }
+        .cell[data-v="4"] { background: #1e1b4b; color: #818cf8; border: 2px solid #818cf8; }
+        .cell[data-v="8"] { background: #3b0764; color: #e879f9; border: 2px solid #e879f9; }
+        .cell[data-v="16"] { background: #4c0519; color: #fb7185; border: 2px solid #fb7185; }
+        .cell[data-v="32"] { background: #7c2d12; color: #fdba74; border: 2px solid #fdba74; }
+        .cell[data-v="64"] { background: #713f12; color: #fde047; border: 2px solid #fde047; }
+        .cell[data-v="128"] { background: #064e3b; color: #34d399; border: 2px solid #34d399; box-shadow: 0 0 12px #34d399; }
+        .cell[data-v="256"] { background: #083344; color: #22d3ee; border: 2px solid #22d3ee; box-shadow: 0 0 15px #22d3ee; }
+        .cell[data-v="512"] { background: #4a044e; color: #f472b6; border: 2px solid #f472b6; box-shadow: 0 0 18px #f472b6; }
+        .cell[data-v="1024"] { background: #881337; color: #fda4af; border: 2px solid #fda4af; box-shadow: 0 0 20px #ff2a85; }
+        .cell[data-v="2048"] { background: linear-gradient(135deg, #ffcc00, #ff2a5f); color: #050814; box-shadow: 0 0 25px #ffcc00; }
         .dpad {
             margin-top: 12px;
             display: grid;
             grid-template-columns: repeat(3, 64px);
             grid-template-rows: repeat(2, 48px);
             gap: 8px;
-            justify-content: center;
         }
         .btn-dir {
-            background: rgba(0, 245, 212, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             border: 2px solid #00f5d4;
             color: #fff;
             border-radius: 12px;
@@ -133,23 +132,21 @@
 <body>
     <div class="topbar">
         <a href="../../index.html" class="btn-back">⬅ HUB</a>
-        <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
-        <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
+        <div class="score-row">
+            <div class="stat-box"><span>PONTOS</span><strong id="hud-score">0</strong></div>
+            <div class="stat-box"><span>RECORDE</span><strong id="hud-best">0</strong></div>
+        </div>
     </div>
 
-    <div class="board-card">
-        <div class="header-row">
-            <div class="title">🔢 CYBER 2048</div>
-            <div class="btn-group">
-                <button class="btn-act" id="btn-undo">↩️ DESFAZER</button>
-                <button class="btn-act" id="btn-reset">🔄 NOVO</button>
-            </div>
+    <div class="header-card">
+        <div class="title">🔢 CYBER 2048</div>
+        <div class="actions">
+            <button class="btn-act" id="btn-undo">↩️ DESFAZER</button>
+            <button class="btn-act" id="btn-restart">🔄 NOVO</button>
         </div>
-        <div class="grid-2048" id="grid-2048"></div>
-        <p style="text-align:center; font-size:0.78rem; color:#94a3b8; margin-top:10px;">
-            Deslize na grade (Swipe), use as Setas/WASD ou os botões abaixo para fundir os blocos iguais!
-        </p>
     </div>
+
+    <div class="board" id="board"></div>
 
     <div class="dpad">
         <div></div>
@@ -163,7 +160,7 @@
     <script type="module">
         import { SaveHub } from '../../shared/SaveHub.js';
 
-        const gridEl = document.getElementById('grid-2048');
+        const boardEl = document.getElementById('board');
         const hudScore = document.getElementById('hud-score');
         const hudBest = document.getElementById('hud-best');
 
@@ -174,7 +171,7 @@
         hudBest.innerText = bestScore;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sfx(freq = 440, dur = 0.06) {
+        function beep(freq = 420, dur = 0.06) {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const o = audioCtx.createOscillator();
@@ -190,119 +187,135 @@
             } catch (e) {}
         }
 
-        let board = Array(16).fill(0);
-        let prevBoard = null;
+        let grid = [];
         let score = 0;
-        let prevScore = 0;
-
-        function spawnTile() {
-            const empty = board.map((v, i) => v === 0 ? i : -1).filter(i => i !== -1);
-            if (!empty.length) return;
-            const idx = empty[Math.floor(Math.random() * empty.length)];
-            board[idx] = Math.random() < 0.88 ? 2 : 4;
-        }
-
-        function render() {
-            gridEl.innerHTML = '';
-            board.forEach(v => {
-                const d = document.createElement('div');
-                d.className = 'cell';
-                if (v > 0) {
-                    d.dataset.v = v;
-                    d.innerText = v;
-                }
-                gridEl.appendChild(d);
-            });
-            hudScore.innerText = score;
-            if (score > bestScore) {
-                bestScore = score;
-                hudBest.innerText = bestScore;
-                SaveHub.updateGameSave('neon2048', { highScore: bestScore, bestTile: Math.max(...board) }, playerName);
-            }
-        }
-
-        function slideLine(line) {
-            let arr = line.filter(v => v !== 0);
-            for (let i = 0; i < arr.length - 1; i++) {
-                if (arr[i] === arr[i + 1]) {
-                    arr[i] *= 2;
-                    score += arr[i];
-                    arr.splice(i + 1, 1);
-                }
-            }
-            while (arr.length < 4) arr.push(0);
-            return arr;
-        }
-
-        function move(dir) {
-            const snapshot = [...board];
-            const oldScore = score;
-
-            for (let i = 0; i < 4; i++) {
-                let idxs = [];
-                for (let j = 0; j < 4; j++) {
-                    if (dir === 'left') idxs.push(i * 4 + j);
-                    if (dir === 'right') idxs.push(i * 4 + (3 - j));
-                    if (dir === 'up') idxs.push(j * 4 + i);
-                    if (dir === 'down') idxs.push((3 - j) * 4 + i);
-                }
-                const line = idxs.map(k => board[k]);
-                const merged = slideLine(line);
-                idxs.forEach((k, pos) => { board[k] = merged[pos]; });
-            }
-
-            const changed = board.some((v, idx) => v !== snapshot[idx]);
-            if (changed) {
-                prevBoard = snapshot;
-                prevScore = oldScore;
-                spawnTile();
-                sfx(score > oldScore ? 620 : 380, 0.07);
-                render();
-            }
-        }
+        let prevState = null;
 
         function initGame() {
-            board = Array(16).fill(0);
+            grid = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
             score = 0;
-            prevBoard = null;
+            prevState = null;
             spawnTile();
             spawnTile();
             render();
         }
 
+        function spawnTile() {
+            const empties = [];
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (grid[r][c] === 0) empties.push([r, c]);
+                }
+            }
+            if (empties.length === 0) return;
+            const [r, c] = empties[Math.floor(Math.random() * empties.length)];
+            grid[r][c] = Math.random() < 0.88 ? 2 : 4;
+        }
+
+        function slideLine(row) {
+            const filtered = row.filter(v => v !== 0);
+            const out = [];
+            let gained = 0;
+            for (let i = 0; i < filtered.length; i++) {
+                if (filtered[i] === filtered[i + 1]) {
+                    const merged = filtered[i] * 2;
+                    out.push(merged);
+                    gained += merged;
+                    i++;
+                } else {
+                    out.push(filtered[i]);
+                }
+            }
+            while (out.length < 4) out.push(0);
+            return { out, gained };
+        }
+
+        function move(dir) {
+            const snapshot = grid.map(r => [...r]);
+            let moved = false;
+            let totalGained = 0;
+
+            for (let i = 0; i < 4; i++) {
+                let line = [];
+                for (let j = 0; j < 4; j++) {
+                    if (dir === 'left') line.push(grid[i][j]);
+                    if (dir === 'right') line.push(grid[i][3 - j]);
+                    if (dir === 'up') line.push(grid[j][i]);
+                    if (dir === 'down') line.push(grid[3 - j][i]);
+                }
+                const { out, gained } = slideLine(line);
+                totalGained += gained;
+                for (let j = 0; j < 4; j++) {
+                    const val = out[j];
+                    let r = i, c = j;
+                    if (dir === 'right') { r = i; c = 3 - j; }
+                    if (dir === 'up') { r = j; c = i; }
+                    if (dir === 'down') { r = 3 - j; c = i; }
+                    if (grid[r][c] !== val) moved = true;
+                    grid[r][c] = val;
+                }
+            }
+
+            if (moved) {
+                prevState = { grid: snapshot, score };
+                score += totalGained;
+                spawnTile();
+                beep(totalGained > 0 ? 580 : 340, 0.07);
+                render();
+            }
+        }
+
+        function render() {
+            hudScore.innerText = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = bestScore;
+                SaveHub.updateGameSave('neon2048', { highScore: bestScore }, playerName);
+            }
+            boardEl.innerHTML = '';
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    const v = grid[r][c];
+                    const div = document.createElement('div');
+                    div.className = 'cell';
+                    if (v > 0) {
+                        div.dataset.v = v <= 2048 ? v : 2048;
+                        div.innerText = v;
+                    }
+                    boardEl.appendChild(div);
+                }
+            }
+        }
+
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') move('left');
-            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') move('right');
-            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') move('up');
-            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') move('down');
+            if (e.key === 'ArrowLeft' || e.key === 'a') move('left');
+            if (e.key === 'ArrowRight' || e.key === 'd') move('right');
+            if (e.key === 'ArrowUp' || e.key === 'w') move('up');
+            if (e.key === 'ArrowDown' || e.key === 's') move('down');
+        });
+
+        let sx = 0, sy = 0;
+        boardEl.addEventListener('pointerdown', (e) => { sx = e.clientX; sy = e.clientY; });
+        boardEl.addEventListener('pointerup', (e) => {
+            const dx = e.clientX - sx;
+            const dy = e.clientY - sy;
+            if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+            if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
+            else move(dy > 0 ? 'down' : 'up');
         });
 
         document.querySelectorAll('.btn-dir').forEach(btn => {
             btn.addEventListener('click', () => move(btn.dataset.dir));
         });
-
-        let sx = 0, sy = 0;
-        gridEl.addEventListener('touchstart', (e) => {
-            sx = e.touches[0].clientX;
-            sy = e.touches[0].clientY;
-        }, { passive: true });
-        gridEl.addEventListener('touchend', (e) => {
-            const dx = e.changedTouches[0].clientX - sx;
-            const dy = e.changedTouches[0].clientY - sy;
-            if (Math.max(Math.abs(dx), Math.abs(dy)) < 25) return;
-            if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
-            else move(dy > 0 ? 'down' : 'up');
-        }, { passive: true });
-
+        document.getElementById('btn-restart').addEventListener('click', initGame);
         document.getElementById('btn-undo').addEventListener('click', () => {
-            if (prevBoard) {
-                board = [...prevBoard];
-                score = prevScore;
-                prevBoard = null;
+            if (prevState) {
+                grid = prevState.grid;
+                score = prevState.score;
+                prevState = null;
                 render();
             }
         });
-        document.getElementById('btn-reset').addEventListener('click', initGame);
 
         initGame();
     </script>

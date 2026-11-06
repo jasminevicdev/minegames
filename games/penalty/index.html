@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Super Copa Pênaltis ⚽ — JasDEV Hub</title>
+    <title>Super Penalty Neon ⚽🥅 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at center, #06281e 0%, #030e0a 100%);
+            background: radial-gradient(circle at center, #052e16 0%, #020b06 100%);
             color: #fff;
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -23,17 +23,17 @@
         }
         .topbar {
             width: 96vw;
-            max-width: 980px;
+            max-width: 1000px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 10px;
+            padding: 8px 12px;
             gap: 8px;
             flex-wrap: wrap;
         }
         .btn-back {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #10b981;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #22c55e;
             color: #fff;
             padding: 7px 14px;
             border-radius: 20px;
@@ -43,8 +43,8 @@
         }
         .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
         .stat-pill {
-            background: rgba(0,0,0,0.6);
-            border: 2px solid rgba(255,255,255,0.18);
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.18);
             border-radius: 14px;
             padding: 5px 12px;
             font-size: 0.85rem;
@@ -54,19 +54,19 @@
         .stage-wrap {
             position: relative;
             width: 96vw;
-            max-width: 980px;
+            max-width: 1000px;
             aspect-ratio: 16 / 9;
-            background: #062019;
-            border: 3px solid #10b981;
+            background: #061c10;
+            border: 3px solid #22c55e;
             border-radius: 20px;
-            box-shadow: 0 0 36px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 0 38px rgba(34, 197, 94, 0.3);
             overflow: hidden;
         }
         canvas { width: 100%; height: 100%; display: block; cursor: pointer; }
         .overlay {
             position: absolute;
             inset: 0;
-            background: rgba(4, 18, 12, 0.88);
+            background: rgba(3, 14, 8, 0.88);
             backdrop-filter: blur(6px);
             display: flex;
             flex-direction: column;
@@ -79,8 +79,8 @@
         .overlay.hidden { display: none; }
         .overlay h1 {
             font-family: 'Fredoka', sans-serif;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            color: #10b981;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            color: #4ade80;
             margin-bottom: 8px;
         }
         .overlay p {
@@ -91,13 +91,13 @@
             line-height: 1.45;
         }
         .btn-start {
-            background: linear-gradient(135deg, #10b981, #ffcc00);
-            color: #03120b;
+            background: linear-gradient(135deg, #22c55e, #eab308);
+            color: #031108;
             border: none;
-            padding: 12px 30px;
+            padding: 13px 30px;
             border-radius: 30px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 900;
             cursor: pointer;
         }
@@ -107,8 +107,8 @@
     <div class="topbar">
         <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
         <div class="hud-stats">
-            <div class="stat-pill">CHUTES RESTANTES: <strong id="hud-balls">⚽⚽⚽</strong></div>
-            <div class="stat-pill">SEQUÊNCIA: <strong id="hud-streak">0 🔥</strong></div>
+            <div class="stat-pill">CHUTES RESTANTES: <strong id="hud-balls">⚽⚽⚽⚽⚽</strong></div>
+            <div class="stat-pill">SEQUÊNCIA: <strong id="hud-streak">0🔥</strong></div>
             <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
             <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
         </div>
@@ -117,11 +117,11 @@
     <div class="stage-wrap">
         <canvas id="soccer-canvas" width="1280" height="720"></canvas>
         <div class="overlay" id="soccer-overlay">
-            <h1>⚽ SUPER COPA PÊNALTIS</h1>
+            <h1>⚽ SUPER PENALTY NEON</h1>
             <p id="soccer-desc">
-                Clique ou toque dentro do gol onde deseja chutar a bola! Acerte os <strong>Alvos Dourados 🎯</strong> no ângulo para ganhar pontos em dobro e vença o Goleiro Robô!
+                Clique ou toque exatamente onde quer chutar no gol! Acerte o <strong>Alvo Dourado 🎯</strong> no ângulo para ganhar pontos em dobro e vencer o Goleiro Robô!
             </p>
-            <button class="btn-start" id="btn-start-soccer">ENTRAR EM CAMPO ⚽🏆</button>
+            <button class="btn-start" id="btn-start-soccer">ENTRAR EM CAMPO ⚽</button>
         </div>
     </div>
 
@@ -142,12 +142,12 @@
 
         const activePlayer = SaveHub.getActivePlayer();
         const playerName = activePlayer ? activePlayer.name : null;
-        let save = SaveHub.getGameSave('penaltycup', playerName);
+        let save = SaveHub.getGameSave('penalty', playerName);
         let bestScore = save.highScore || 0;
         hudBest.innerText = bestScore;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sfx(freq = 440, dur = 0.12, type = 'triangle', vol = 0.12) {
+        function sfx(freq = 440, dur = 0.1, type = 'triangle', vol = 0.1) {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const o = audioCtx.createOscillator();
@@ -163,196 +163,172 @@
             } catch (e) {}
         }
 
-        const goal = { x: 260, y: 120, w: 760, h: 270 };
+        const goal = { x: 290, y: 120, w: 700, h: 270 };
         let running = false;
-        let missesLeft = 3;
-        let streak = 0;
         let score = 0;
-        let bannerText = '';
+        let streak = 0;
+        let missesLeft = 3;
+        let ball = { x: W / 2, y: H - 110, r: 28, tx: W / 2, ty: 260, t: 0, shooting: false };
+        let keeper = { x: W / 2, y: 265, w: 96, h: 130, tx: W / 2 };
+        let targetRing = { x: 400, y: 180, r: 38 };
+        let bannerMsg = '';
         let bannerTimer = 0;
 
-        let keeper = { x: W / 2, y: 275, targetX: W / 2, w: 96, h: 120 };
-        let bullseye = { x: 400, y: 180, r: 38 };
-        let ball = { x: W / 2, y: 610, r: 28, tx: W / 2, ty: 260, moving: false, progress: 0 };
-
-        function placeBullseye() {
-            bullseye.x = goal.x + 65 + Math.random() * (goal.w - 130);
-            bullseye.y = goal.y + 50 + Math.random() * (goal.h - 110);
+        function placeTarget() {
+            targetRing.x = goal.x + 65 + Math.random() * (goal.w - 130);
+            targetRing.y = goal.y + 55 + Math.random() * (goal.h - 110);
         }
 
         function resetShot() {
             ball.x = W / 2;
-            ball.y = 610;
+            ball.y = H - 110;
             ball.r = 28;
-            ball.moving = false;
-            ball.progress = 0;
-            keeper.x = W / 2;
-            keeper.y = 275;
-            keeper.targetX = W / 2;
-            placeBullseye();
+            ball.t = 0;
+            ball.shooting = false;
+            keeper.tx = W / 2;
+            placeTarget();
         }
 
         function startGame() {
-            missesLeft = 3;
-            streak = 0;
             score = 0;
+            streak = 0;
+            missesLeft = 3;
             resetShot();
             updateHud();
             overlay.classList.add('hidden');
             running = true;
-            sfx(560, 0.14, 'triangle');
+            sfx(540, 0.14, 'triangle');
         }
 
         function updateHud() {
             hudBalls.innerText = '⚽'.repeat(Math.max(0, missesLeft)) || '❌';
-            hudStreak.innerText = `${streak} 🔥`;
+            hudStreak.innerText = `${streak}🔥`;
             hudScore.innerText = score;
             if (score > bestScore) {
                 bestScore = score;
                 hudBest.innerText = bestScore;
-                SaveHub.updateGameSave('penaltycup', { highScore: bestScore, bestStreak: streak }, playerName);
+                SaveHub.updateGameSave('penalty', { highScore: bestScore }, playerName);
             }
         }
 
         canvas.addEventListener('pointerdown', (e) => {
-            if (!running || ball.moving) return;
+            if (!running || ball.shooting) return;
             const rect = canvas.getBoundingClientRect();
             const mx = ((e.clientX - rect.left) / rect.width) * W;
             const my = ((e.clientY - rect.top) / rect.height) * H;
 
-            // Clamp target inside or near the goal
+            // Clamp inside/near goal area
             ball.tx = Math.max(goal.x + 25, Math.min(goal.x + goal.w - 25, mx));
-            ball.ty = Math.max(goal.y + 25, Math.min(goal.y + goal.h - 15, my));
-            ball.moving = true;
-            ball.progress = 0;
+            ball.ty = Math.max(goal.y + 25, Math.min(goal.y + goal.h - 20, my));
+            ball.shooting = true;
+            ball.t = 0;
 
-            // Keeper dives towards a spot (smarter with higher streak)
-            const smartChance = Math.min(0.68, 0.28 + streak * 0.04);
+            // Keeper dives towards a spot (smarter as streak grows)
+            const smartChance = Math.min(0.68, 0.25 + streak * 0.05);
             if (Math.random() < smartChance) {
-                keeper.targetX = ball.tx + (Math.random() - 0.5) * 140;
+                keeper.tx = ball.tx + (Math.random() - 0.5) * 140;
             } else {
-                keeper.targetX = goal.x + 90 + Math.random() * (goal.w - 180);
+                keeper.tx = goal.x + 80 + Math.random() * (goal.w - 160);
             }
-            sfx(280, 0.1, 'sine');
+            sfx(320, 0.09, 'sine');
         });
 
         function update() {
             if (!running) return;
             if (bannerTimer > 0) bannerTimer--;
 
-            if (ball.moving) {
-                ball.progress += 0.045;
-                const t = Math.min(1, ball.progress);
-                ball.x = (W / 2) + (ball.tx - W / 2) * t;
-                ball.y = 610 + (ball.ty - 610) * t - Math.sin(t * Math.PI) * 75;
-                ball.r = 28 - t * 11;
+            keeper.x += (keeper.tx - keeper.x) * 0.14;
 
-                keeper.x += (keeper.targetX - keeper.x) * 0.14;
+            if (ball.shooting) {
+                ball.t += 0.055;
+                ball.x = (W / 2) + (ball.tx - W / 2) * ball.t;
+                ball.y = (H - 110) + (ball.ty - (H - 110)) * ball.t - Math.sin(ball.t * Math.PI) * 90;
+                ball.r = 28 - ball.t * 11;
 
-                if (t >= 1) {
-                    ball.moving = false;
-                    // Check keeper save
-                    const saved = Math.abs(ball.x - keeper.x) < 58 && Math.abs(ball.y - keeper.y) < 75;
+                if (ball.t >= 1) {
+                    ball.shooting = false;
+                    // Check if keeper saved it
+                    const saved = Math.abs(ball.x - keeper.x) < 58 && Math.abs(ball.y - keeper.y) < 72;
                     if (saved) {
                         missesLeft--;
                         streak = 0;
-                        bannerText = '🧤 DEFESA DO GOLEIRO!';
-                        bannerTimer = 55;
-                        sfx(170, 0.25, 'sawtooth');
+                        bannerMsg = '🧤 DEFESA DO GOLEIRO!';
+                        bannerTimer = 50;
+                        sfx(180, 0.22, 'sawtooth');
                         updateHud();
                         if (missesLeft <= 0) {
                             setTimeout(() => {
                                 running = false;
-                                soccerDesc.innerHTML = `🏆 <strong>FIM DE CAMPEONATO!</strong><br>Você marcou <strong>${score} PTS</strong> na Super Copa Pênaltis!`;
+                                soccerDesc.innerHTML = `⚽ <strong>FIM DE DISPUTA!</strong><br>Você marcou <strong>${score} PTS</strong> no Estádio Cyber!`;
                                 overlay.classList.remove('hidden');
                             }, 650);
-                        } else {
-                            setTimeout(resetShot, 650);
+                            return;
                         }
                     } else {
                         streak++;
-                        const hitBullseye = Math.hypot(ball.x - bullseye.x, ball.y - bullseye.y) <= bullseye.r + 18;
+                        const hitBullseye = Math.hypot(ball.x - targetRing.x, ball.y - targetRing.y) <= targetRing.r + 18;
                         const pts = (hitBullseye ? 250 : 100) + streak * 25;
                         score += pts;
-                        bannerText = hitBullseye ? `🎯 NO ÂNGULO! +${pts} PTS!` : `⚽ GOOOL! +${pts} PTS!`;
+                        bannerMsg = hitBullseye ? `🎯 NO ÂNGULO! +${pts} PTS!` : `⚽ GOOOL! +${pts} PTS!`;
                         bannerTimer = 55;
-                        sfx(hitBullseye ? 840 : 620, 0.22, 'triangle');
+                        sfx(hitBullseye ? 820 : 620, 0.18, 'triangle');
                         updateHud();
-                        setTimeout(resetShot, 650);
                     }
+                    setTimeout(() => { if (running) resetShot(); }, 650);
                 }
             }
         }
 
         function draw() {
-            // Sky & stadium lights
-            const sky = ctx.createLinearGradient(0, 0, 0, 400);
-            sky.addColorStop(0, '#04091a');
-            sky.addColorStop(1, '#0c2438');
-            ctx.fillStyle = sky;
-            ctx.fillRect(0, 0, W, 400);
+            // Sky & Pitch
+            ctx.fillStyle = '#04120b';
+            ctx.fillRect(0, 0, W, 390);
+            ctx.fillStyle = '#062c19';
+            ctx.fillRect(0, 390, W, H - 390);
 
-            // Pitch grass
-            const grass = ctx.createLinearGradient(0, 380, 0, H);
-            grass.addColorStop(0, '#064e3b');
-            grass.addColorStop(1, '#022c22');
-            ctx.fillStyle = grass;
-            ctx.fillRect(0, 380, W, H - 380);
-
-            // Goal net
-            ctx.strokeStyle = 'rgba(255,255,255,0.16)';
-            ctx.lineWidth = 1.5;
-            for (let x = goal.x; x <= goal.x + goal.w; x += 28) {
-                ctx.beginPath(); ctx.moveTo(x, goal.y); ctx.lineTo(x, goal.y + goal.h); ctx.stroke();
-            }
-            for (let y = goal.y; y <= goal.y + goal.h; y += 28) {
-                ctx.beginPath(); ctx.moveTo(goal.x, y); ctx.lineTo(goal.x + goal.w, y); ctx.stroke();
-            }
-
-            // Goal posts
-            ctx.save();
-            ctx.strokeStyle = '#ffffff';
-            ctx.shadowColor = '#00f5d4';
-            ctx.shadowBlur = 16;
-            ctx.lineWidth = 12;
-            ctx.strokeRect(goal.x, goal.y, goal.w, goal.h);
-            ctx.restore();
-
-            // Bullseye target
-            ctx.save();
-            ctx.strokeStyle = '#ffcc00';
-            ctx.shadowColor = '#ffcc00';
-            ctx.shadowBlur = 15;
+            // Pitch lines
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.35)';
             ctx.lineWidth = 4;
             ctx.beginPath();
-            ctx.arc(bullseye.x, bullseye.y, bullseye.r, 0, Math.PI * 2);
+            ctx.moveTo(140, 390); ctx.lineTo(40, H);
+            ctx.moveTo(W - 140, 390); ctx.lineTo(W - 40, H);
             ctx.stroke();
-            ctx.font = '30px serif';
+
+            // Goal Net & Posts
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+            ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+            ctx.strokeStyle = '#00f5d4';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(goal.x, goal.y, goal.w, goal.h);
+
+            // Target Ring
+            ctx.save();
+            ctx.strokeStyle = '#ffcc00';
+            ctx.lineWidth = 5;
+            ctx.shadowColor = '#ffcc00';
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.arc(targetRing.x, targetRing.y, targetRing.r, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.font = '24px serif';
             ctx.textAlign = 'center';
-            ctx.fillText('🎯', bullseye.x, bullseye.y + 10);
+            ctx.fillText('🎯', targetRing.x, targetRing.y + 8);
             ctx.restore();
 
-            // Goalkeeper
+            // Goalkeeper Robot
             ctx.save();
             ctx.fillStyle = '#ff2a5f';
             ctx.shadowColor = '#ff2a5f';
-            ctx.shadowBlur = 16;
+            ctx.shadowBlur = 18;
             ctx.beginPath();
-            ctx.roundRect(keeper.x - 42, keeper.y - 50, 84, 100, 18);
+            ctx.roundRect(keeper.x - keeper.w / 2, keeper.y - keeper.h / 2, keeper.w, keeper.h, 16);
             ctx.fill();
             ctx.font = '42px serif';
             ctx.textAlign = 'center';
-            ctx.fillText('🤖', keeper.x, keeper.y - 8);
-            ctx.fillText('🧤', keeper.x - 48, keeper.y + 5);
-            ctx.fillText('🧤', keeper.x + 48, keeper.y + 5);
+            ctx.fillText('🤖', keeper.x, keeper.y + 12);
             ctx.restore();
 
-            // Penalty spot & Ball
-            ctx.fillStyle = 'rgba(255,255,255,0.4)';
-            ctx.beginPath();
-            ctx.ellipse(W / 2, 622, 22, 7, 0, 0, Math.PI * 2);
-            ctx.fill();
-
+            // Soccer Ball
             ctx.save();
             ctx.font = `${Math.round(ball.r * 2)}px serif`;
             ctx.textAlign = 'center';
@@ -367,7 +343,7 @@
                 ctx.textAlign = 'center';
                 ctx.shadowColor = '#000';
                 ctx.shadowBlur = 12;
-                ctx.fillText(bannerText, W / 2, 75);
+                ctx.fillText(bannerMsg, W / 2, 78);
                 ctx.restore();
             }
         }

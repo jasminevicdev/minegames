@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Campo Minado Cyber 💣 — JasDEV Hub</title>
+    <title>Campo Minado Estelar 💣🪐 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at top, #111827 0%, #030712 100%);
+            background: radial-gradient(circle at top, #17153b 0%, #070614 100%);
             color: #fff;
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -18,11 +18,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 10px;
         }
         .topbar {
             width: 100%;
-            max-width: 460px;
+            max-width: 480px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -31,121 +31,116 @@
             flex-wrap: wrap;
         }
         .btn-back {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #f43f5e;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f59e0b;
             color: #fff;
-            padding: 6px 14px;
+            padding: 7px 14px;
             border-radius: 20px;
             text-decoration: none;
             font-family: 'Fredoka', sans-serif;
             font-size: 0.85rem;
         }
         .stat-pill {
-            background: rgba(0,0,0,0.6);
-            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.18);
             border-radius: 14px;
             padding: 5px 12px;
             font-size: 0.82rem;
             font-weight: 700;
         }
         .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
-        .card {
+        .controls-bar {
             width: 100%;
-            max-width: 460px;
-            background: #0f172a;
-            border: 3px solid #38bdf8;
-            border-radius: 22px;
-            padding: 14px;
-            box-shadow: 0 0 35px rgba(56, 189, 248, 0.25);
-        }
-        .controls-row {
+            max-width: 480px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             gap: 8px;
-            flex-wrap: wrap;
         }
-        .btn-tool {
+        .btn-mode {
             flex: 1;
-            background: rgba(255,255,255,0.08);
-            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00f5d4;
             color: #fff;
-            padding: 8px 12px;
-            border-radius: 14px;
+            padding: 9px 12px;
+            border-radius: 16px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             cursor: pointer;
         }
-        .btn-tool.active {
-            background: linear-gradient(135deg, #00f5d4, #38bdf8);
-            color: #030712;
-            border-color: #fff;
+        .btn-mode.flag-active {
+            background: linear-gradient(135deg, #ff2a5f, #f59e0b);
+            border-color: #ffcc00;
         }
-        .grid-mine {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 5px;
-            background: #060b16;
-            padding: 8px;
-            border-radius: 16px;
+        .board {
+            width: 100%;
+            max-width: 460px;
             aspect-ratio: 1 / 1;
+            background: #0b0a20;
+            border: 3px solid #f59e0b;
+            border-radius: 20px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(9, 1fr);
+            gap: 5px;
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.25);
         }
-        .mcell {
-            background: #1e293b;
-            border: 2px solid #334155;
+        .tile {
+            background: #1e1b4b;
+            border: 2px solid rgba(255, 255, 255, 0.14);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Fredoka', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 800;
+            font-size: 1.05rem;
+            font-weight: 900;
             cursor: pointer;
         }
-        .mcell.open {
-            background: #090d16;
-            border-color: rgba(255,255,255,0.06);
+        .tile.revealed {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.05);
             cursor: default;
         }
-        .mcell.mine { background: #e11d48; border-color: #fda4af; }
+        .tile.mine { background: #dc2626; }
         .status-msg {
-            text-align: center;
             margin-top: 10px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ffcc00;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="topbar">
         <a href="../../index.html" class="btn-back">⬅ HUB</a>
-        <div class="stat-pill">ESCUDO: <strong id="hud-shield">🛡️ ATIVO</strong></div>
+        <div class="stat-pill">MINAS: <strong id="hud-mines">10 💣</strong></div>
         <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
         <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
     </div>
 
-    <div class="card">
-        <div class="controls-row">
-            <button class="btn-tool active" id="mode-dig">🔍 ESCAVAR</button>
-            <button class="btn-tool" id="mode-flag">🚩 BANDEIRA</button>
-            <button class="btn-tool" id="btn-new">🔄 REINICIAR</button>
-        </div>
-        <div class="grid-mine" id="grid-mine"></div>
-        <div class="status-msg" id="status-msg">Desarme o campo sem ativar as 10 Minas de Plasma!</div>
+    <div class="controls-bar">
+        <button class="btn-mode" id="btn-toggle-flag">🔍 MODO: ESCAVAR (Toque p/ 🚩)</button>
+        <button class="btn-mode" id="btn-reset" style="flex:0.45;">🔄 NOVO</button>
     </div>
+
+    <div class="board" id="mine-board"></div>
+    <div class="status-msg" id="status-msg">Clique ou toque em um setor estelar para começar!</div>
 
     <script type="module">
         import { SaveHub } from '../../shared/SaveHub.js';
 
-        const gridEl = document.getElementById('grid-mine');
-        const hudShield = document.getElementById('hud-shield');
+        const SIZE = 9;
+        const MINES = 10;
+        const boardEl = document.getElementById('mine-board');
+        const hudMines = document.getElementById('hud-mines');
         const hudScore = document.getElementById('hud-score');
         const hudBest = document.getElementById('hud-best');
         const statusMsg = document.getElementById('status-msg');
-        const btnDig = document.getElementById('mode-dig');
-        const btnFlag = document.getElementById('mode-flag');
+        const btnFlag = document.getElementById('btn-toggle-flag');
 
         const activePlayer = SaveHub.getActivePlayer();
         const playerName = activePlayer ? activePlayer.name : null;
@@ -154,14 +149,14 @@
         hudBest.innerText = bestScore;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sfx(freq = 440, dur = 0.07, type = 'triangle') {
+        function sfx(freq = 480, dur = 0.07, type = 'triangle') {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const o = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
                 o.type = type;
                 o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
                 o.connect(g);
                 g.connect(audioCtx.destination);
@@ -170,153 +165,116 @@
             } catch (e) {}
         }
 
-        const SIZE = 8;
-        const MINES = 10;
-        const COLORS = ['', '#38bdf8', '#4ade80', '#facc15', '#c084fc', '#f43f5e', '#2dd4bf', '#fff', '#94a3b8'];
-
         let cells = [];
+        let firstClick = true;
         let flagMode = false;
-        let shield = true;
+        let gameOver = false;
         let score = 0;
-        let over = false;
-
-        btnDig.addEventListener('click', () => {
-            flagMode = false;
-            btnDig.classList.add('active');
-            btnFlag.classList.remove('active');
-        });
-        btnFlag.addEventListener('click', () => {
-            flagMode = true;
-            btnFlag.classList.add('active');
-            btnDig.classList.remove('active');
-        });
 
         function initBoard() {
-            cells = Array.from({ length: SIZE * SIZE }, (_, idx) => ({
-                idx,
-                mine: false,
-                open: false,
-                flag: false,
-                count: 0
-            }));
-            shield = true;
+            cells = [];
+            firstClick = true;
+            gameOver = false;
             score = 0;
-            over = false;
-            hudShield.innerText = '🛡️ ATIVO';
-            statusMsg.innerText = 'Desarme o campo sem ativar as 10 Minas de Plasma!';
-
-            let placed = 0;
-            while (placed < MINES) {
-                const r = Math.floor(Math.random() * cells.length);
-                if (!cells[r].mine) {
-                    cells[r].mine = true;
-                    placed++;
+            hudScore.innerText = '0';
+            hudMines.innerText = `${MINES} 💣`;
+            statusMsg.innerText = 'Escave os setores seguros da galáxia! 🪐';
+            for (let r = 0; r < SIZE; r++) {
+                cells[r] = [];
+                for (let c = 0; c < SIZE; c++) {
+                    cells[r][c] = { r, c, mine: false, revealed: false, flagged: false, count: 0 };
                 }
-            }
-
-            for (let i = 0; i < cells.length; i++) {
-                if (cells[i].mine) continue;
-                cells[i].count = neighbors(i).filter(n => cells[n].mine).length;
             }
             render();
         }
 
-        function neighbors(idx) {
-            const x = idx % SIZE;
-            const y = Math.floor(idx / SIZE);
-            const res = [];
-            for (let dy = -1; dy <= 1; dy++) {
-                for (let dx = -1; dx <= 1; dx++) {
-                    if (dx === 0 && dy === 0) continue;
-                    const nx = x + dx, ny = y + dy;
-                    if (nx >= 0 && nx < SIZE && ny >= 0 && ny < SIZE) {
-                        res.push(ny * SIZE + nx);
+        function placeMines(safeR, safeC) {
+            let placed = 0;
+            while (placed < MINES) {
+                const r = Math.floor(Math.random() * SIZE);
+                const c = Math.floor(Math.random() * SIZE);
+                if (Math.abs(r - safeR) <= 1 && Math.abs(c - safeC) <= 1) continue;
+                if (!cells[r][c].mine) {
+                    cells[r][c].mine = true;
+                    placed++;
+                }
+            }
+            for (let r = 0; r < SIZE; r++) {
+                for (let c = 0; c < SIZE; c++) {
+                    let cnt = 0;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            if (cells[r + dr]?.[c + dc]?.mine) cnt++;
+                        }
+                    }
+                    cells[r][c].count = cnt;
+                }
+            }
+        }
+
+        function reveal(r, c) {
+            const cell = cells[r]?.[c];
+            if (!cell || cell.revealed || cell.flagged) return;
+            cell.revealed = true;
+            if (!cell.mine) {
+                score += 20;
+                if (cell.count === 0) {
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            if (dr !== 0 || dc !== 0) reveal(r + dr, c + dc);
+                        }
                     }
                 }
             }
-            return res;
         }
 
-        function reveal(idx) {
-            const c = cells[idx];
-            if (c.open || c.flag || over) return;
+        function handleTileClick(r, c, forceFlag = false) {
+            if (gameOver) return;
+            const cell = cells[r][c];
+            if (flagMode || forceFlag) {
+                if (cell.revealed) return;
+                cell.flagged = !cell.flagged;
+                sfx(580, 0.05);
+                render();
+                return;
+            }
+            if (cell.flagged || cell.revealed) return;
 
-            if (c.mine) {
-                if (shield) {
-                    shield = false;
-                    c.flag = true;
-                    hudShield.innerText = 'USADO ⚡';
-                    statusMsg.innerText = '🛡️ O Escudo Cyber salvou você de uma mina!';
-                    sfx(680, 0.16);
-                    render();
-                    return;
+            if (firstClick) {
+                firstClick = false;
+                placeMines(r, c);
+            }
+
+            if (cell.mine) {
+                cell.revealed = true;
+                gameOver = true;
+                for (let rr = 0; rr < SIZE; rr++) {
+                    for (let cc = 0; cc < SIZE; cc++) {
+                        if (cells[rr][cc].mine) cells[rr][cc].revealed = true;
+                    }
                 }
-                c.open = true;
-                over = true;
-                cells.forEach(cell => { if (cell.mine) cell.open = true; });
-                statusMsg.innerText = '💥 MINA ATIVADA! Clique em Reiniciar para jogar novamente.';
-                sfx(150, 0.25, 'sawtooth');
+                statusMsg.innerText = '💥 MINA QUÂNTICA ATIVADA! Clique em NOVO para jogar novamente.';
+                sfx(160, 0.25, 'sawtooth');
                 render();
                 return;
             }
 
-            c.open = true;
-            score += 20;
-            if (c.count === 0) {
-                neighbors(idx).forEach(n => { if (!cells[n].open) reveal(n); });
-            }
+            reveal(r, c);
+            sfx(480, 0.06);
 
-            const safeLeft = cells.filter(cell => !cell.mine && !cell.open).length;
-            if (safeLeft === 0) {
-                over = true;
-                score += 500;
-                statusMsg.innerText = '🏆 CAMPO DESARMADO COM SUCESSO! (+500 PTS)';
-                sfx(880, 0.25);
-            } else {
-                sfx(500, 0.05);
-            }
-            render();
-        }
-
-        function render() {
-            gridEl.innerHTML = '';
-            cells.forEach(c => {
-                const el = document.createElement('div');
-                el.className = 'mcell' + (c.open ? ' open' : '') + (c.open && c.mine ? ' mine' : '');
-                if (c.open) {
-                    if (c.mine) el.innerText = '💣';
-                    else if (c.count > 0) {
-                        el.innerText = c.count;
-                        el.style.color = COLORS[c.count];
-                    }
-                } else if (c.flag) {
-                    el.innerText = '🚩';
+            // Check win
+            let unrevealedSafe = 0;
+            for (let rr = 0; rr < SIZE; rr++) {
+                for (let cc = 0; cc < SIZE; cc++) {
+                    if (!cells[rr][cc].mine && !cells[rr][cc].revealed) unrevealedSafe++;
                 }
-
-                el.addEventListener('click', () => {
-                    if (over) return;
-                    if (flagMode) {
-                        if (!c.open) {
-                            c.flag = !c.flag;
-                            sfx(360, 0.05);
-                            render();
-                        }
-                    } else {
-                        reveal(c.idx);
-                    }
-                });
-
-                el.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    if (!over && !c.open) {
-                        c.flag = !c.flag;
-                        sfx(360, 0.05);
-                        render();
-                    }
-                });
-
-                gridEl.appendChild(el);
-            });
+            }
+            if (unrevealedSafe === 0) {
+                gameOver = true;
+                score += 500;
+                statusMsg.innerText = `🏆 SETOR GALÁCTICO LIMPO! +500 BÔNUS!`;
+                sfx(840, 0.25);
+            }
 
             hudScore.innerText = score;
             if (score > bestScore) {
@@ -324,9 +282,44 @@
                 hudBest.innerText = bestScore;
                 SaveHub.updateGameSave('minesweeper', { highScore: bestScore }, playerName);
             }
+            render();
         }
 
-        document.getElementById('btn-new').addEventListener('click', initBoard);
+        const COLORS = ['', '#38bdf8', '#4ade80', '#f472b6', '#c084fc', '#fb923c', '#facc15', '#fff', '#fff'];
+
+        function render() {
+            let flags = 0;
+            boardEl.innerHTML = '';
+            for (let r = 0; r < SIZE; r++) {
+                for (let c = 0; c < SIZE; c++) {
+                    const cell = cells[r][c];
+                    if (cell.flagged) flags++;
+                    const div = document.createElement('div');
+                    div.className = 'tile' + (cell.revealed ? ' revealed' : '') + (cell.revealed && cell.mine ? ' mine' : '');
+                    if (cell.revealed) {
+                        if (cell.mine) div.innerText = '💣';
+                        else if (cell.count > 0) {
+                            div.innerText = cell.count;
+                            div.style.color = COLORS[cell.count];
+                        }
+                    } else if (cell.flagged) {
+                        div.innerText = '🚩';
+                    }
+                    div.addEventListener('click', () => handleTileClick(r, c, false));
+                    div.addEventListener('contextmenu', (e) => { e.preventDefault(); handleTileClick(r, c, true); });
+                    boardEl.appendChild(div);
+                }
+            }
+            hudMines.innerText = `${Math.max(0, MINES - flags)} 💣`;
+        }
+
+        btnFlag.addEventListener('click', () => {
+            flagMode = !flagMode;
+            btnFlag.classList.toggle('flag-active', flagMode);
+            btnFlag.innerText = flagMode ? '🚩 MODO: BANDEIRA (Toque p/ 🔍)' : '🔍 MODO: ESCAVAR (Toque p/ 🚩)';
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', initBoard);
         initBoard();
     </script>
 </body>

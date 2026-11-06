@@ -57,11 +57,11 @@ class GameHub {
         this.statAstrojumpScore = document.getElementById('stat-astrojump-score');
         this.statNinjasliceScore = document.getElementById('stat-ninjaslice-score');
         this.statNeon2048Score = document.getElementById('stat-neon2048-score');
-        this.statPenaltycupScore = document.getElementById('stat-penaltycup-score');
-        this.statPacmazeScore = document.getElementById('stat-pacmaze-score');
-        this.statRhythmbeatsScore = document.getElementById('stat-rhythmbeats-score');
+        this.statPenaltyScore = document.getElementById('stat-penalty-score');
+        this.statPacmanScore = document.getElementById('stat-pacman-score');
+        this.statRhythmScore = document.getElementById('stat-rhythm-score');
+        this.statDinorunScore = document.getElementById('stat-dinorun-score');
         this.statMinesweeperScore = document.getElementById('stat-minesweeper-score');
-        this.statGlitchhuntScore = document.getElementById('stat-glitchhunt-score');
 
         this.selectedAvatar = '🎪';
 
@@ -156,11 +156,11 @@ class GameHub {
         const astrojumpSave = SaveHub.getGameSave('astrojump', player.name);
         const ninjasliceSave = SaveHub.getGameSave('ninjaslice', player.name);
         const neon2048Save = SaveHub.getGameSave('neon2048', player.name);
-        const penaltycupSave = SaveHub.getGameSave('penaltycup', player.name);
-        const pacmazeSave = SaveHub.getGameSave('pacmaze', player.name);
-        const rhythmbeatsSave = SaveHub.getGameSave('rhythmbeats', player.name);
+        const penaltySave = SaveHub.getGameSave('penalty', player.name);
+        const pacmanSave = SaveHub.getGameSave('pacman', player.name);
+        const rhythmSave = SaveHub.getGameSave('rhythm', player.name);
+        const dinorunSave = SaveHub.getGameSave('dinorun', player.name);
         const minesweeperSave = SaveHub.getGameSave('minesweeper', player.name);
-        const glitchhuntSave = SaveHub.getGameSave('glitchhunt', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -177,11 +177,11 @@ class GameHub {
         if (this.statAstrojumpScore) this.statAstrojumpScore.innerText = `${astrojumpSave.highScore || 0}m`;
         if (this.statNinjasliceScore) this.statNinjasliceScore.innerText = `${ninjasliceSave.highScore || 0} PTS`;
         if (this.statNeon2048Score) this.statNeon2048Score.innerText = `${neon2048Save.highScore || 0} PTS`;
-        if (this.statPenaltycupScore) this.statPenaltycupScore.innerText = `${penaltycupSave.highScore || 0} PTS`;
-        if (this.statPacmazeScore) this.statPacmazeScore.innerText = `${pacmazeSave.highScore || 0} PTS`;
-        if (this.statRhythmbeatsScore) this.statRhythmbeatsScore.innerText = `${rhythmbeatsSave.highScore || 0} PTS`;
+        if (this.statPenaltyScore) this.statPenaltyScore.innerText = `${penaltySave.highScore || 0} PTS`;
+        if (this.statPacmanScore) this.statPacmanScore.innerText = `${pacmanSave.highScore || 0} PTS`;
+        if (this.statRhythmScore) this.statRhythmScore.innerText = `${rhythmSave.highScore || 0} PTS`;
+        if (this.statDinorunScore) this.statDinorunScore.innerText = `${dinorunSave.highScore || 0}m`;
         if (this.statMinesweeperScore) this.statMinesweeperScore.innerText = `${minesweeperSave.highScore || 0} PTS`;
-        if (this.statGlitchhuntScore) this.statGlitchhuntScore.innerText = `${glitchhuntSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {

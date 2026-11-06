@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Ninja Slice ⚔️ — JasDEV Hub</title>
+    <title>Cyber Ninja Slice ⚔️🍉 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at center, #1a0628 0%, #06020c 100%);
+            background: radial-gradient(circle at center, #1b0624 0%, #07020d 100%);
             color: #fff;
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -23,28 +23,28 @@
         }
         .topbar {
             width: 96vw;
-            max-width: 980px;
+            max-width: 1000px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 10px;
+            padding: 8px 12px;
             gap: 8px;
             flex-wrap: wrap;
         }
         .btn-back {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border: 2px solid #ff2a85;
             color: #fff;
             padding: 7px 15px;
             border-radius: 20px;
             text-decoration: none;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
         }
-        .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+        .hud-stats { display: flex; gap: 10px; flex-wrap: wrap; }
         .stat-pill {
-            background: rgba(0,0,0,0.55);
-            border: 2px solid rgba(255,255,255,0.18);
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.18);
             border-radius: 14px;
             padding: 5px 12px;
             font-size: 0.85rem;
@@ -54,19 +54,19 @@
         .stage-wrap {
             position: relative;
             width: 96vw;
-            max-width: 980px;
+            max-width: 1000px;
             aspect-ratio: 16 / 9;
-            background: #0a0414;
+            background: #090314;
             border: 3px solid #ff2a85;
             border-radius: 20px;
-            box-shadow: 0 0 38px rgba(255, 42, 133, 0.35);
+            box-shadow: 0 0 40px rgba(255, 42, 133, 0.35);
             overflow: hidden;
         }
         canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
         .overlay {
             position: absolute;
             inset: 0;
-            background: rgba(10, 4, 20, 0.88);
+            background: rgba(9, 3, 20, 0.88);
             backdrop-filter: blur(6px);
             display: flex;
             flex-direction: column;
@@ -79,9 +79,9 @@
         .overlay.hidden { display: none; }
         .overlay h1 {
             font-family: 'Fredoka', sans-serif;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-size: clamp(1.8rem, 4vw, 3rem);
             color: #ff2a85;
-            text-shadow: 0 0 18px rgba(255,42,133,0.7);
+            text-shadow: 0 0 20px rgba(255, 42, 133, 0.7);
             margin-bottom: 8px;
         }
         .overlay p {
@@ -93,12 +93,12 @@
         }
         .btn-start {
             background: linear-gradient(135deg, #ff2a85, #ffcc00);
-            color: #090312;
+            color: #090314;
             border: none;
-            padding: 12px 30px;
+            padding: 13px 30px;
             border-radius: 30px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 900;
             cursor: pointer;
         }
@@ -109,7 +109,7 @@
         <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
         <div class="hud-stats">
             <div class="stat-pill">VIDAS: <strong id="hud-lives">❤️❤️❤️</strong></div>
-            <div class="stat-pill">COMBO: <strong id="hud-combo">x1</strong></div>
+            <div class="stat-pill">COMBO: <strong id="hud-combo">1x</strong></div>
             <div class="stat-pill">PONTOS: <strong id="hud-score">0</strong></div>
             <div class="stat-pill">RECORDE: <strong id="hud-best">0</strong></div>
         </div>
@@ -120,9 +120,9 @@
         <div class="overlay" id="slice-overlay">
             <h1>⚔️ CYBER NINJA SLICE</h1>
             <p id="slice-desc">
-                Deslize o dedo na tela ou passe o mouse para fatiar as <strong>Frutas & Cristais Neon 🍉💎⭐</strong> no ar! Faça combos múltiplos e cuidado para <strong>NÃO cortar as Bombas 💣</strong>!
+                Deslize o dedo ou o mouse pela tela para fatiar as frutas e cristais neon com sua Katana de Plasma! Faça combos múltiplos e <strong>não corte as bombas 💣</strong>!
             </p>
-            <button class="btn-start" id="btn-start-slice">EMPUHAR KATANA NEON ⚔️</button>
+            <button class="btn-start" id="btn-start-slice">EMPUHAR KATANA ⚔️</button>
         </div>
     </div>
 
@@ -164,44 +164,44 @@
             } catch (e) {}
         }
 
-        const ITEMS = [
+        const FRUITS = [
             { emoji: '🍉', color: '#ff2a5f', pts: 15 },
             { emoji: '🍍', color: '#ffcc00', pts: 20 },
-            { emoji: '🍓', color: '#ff4d79', pts: 15 },
-            { emoji: '💎', color: '#00f5d4', pts: 35 },
-            { emoji: '⭐', color: '#ffd000', pts: 40 }
+            { emoji: '🍓', color: '#ff0055', pts: 15 },
+            { emoji: '🍇', color: '#a855f7', pts: 20 },
+            { emoji: '💎', color: '#00f5d4', pts: 45 },
+            { emoji: '⭐', color: '#fde047', pts: 35 }
         ];
 
         let running = false;
         let score = 0;
         let lives = 3;
-        let combo = 1;
-        let comboTimer = 0;
-        let targets = [];
+        let items = [];
         let halves = [];
         let particles = [];
+        let floatingTexts = [];
         let bladeTrail = [];
-        let spawnTimer = 0;
-        let isSlicing = false;
+        let isSwiping = false;
+        let spawnCooldown = 0;
 
         function startGame() {
             score = 0;
             lives = 3;
-            combo = 1;
-            targets = [];
+            items = [];
             halves = [];
             particles = [];
+            floatingTexts = [];
             bladeTrail = [];
-            spawnTimer = 25;
-            updateHud();
+            spawnCooldown = 25;
+            updateHud(1);
             overlay.classList.add('hidden');
             running = true;
-            sfx(640, 0.12, 'triangle');
+            sfx(620, 0.12, 'triangle');
         }
 
-        function updateHud() {
-            hudLives.innerText = '❤️'.repeat(Math.max(0, lives)) || '💀';
-            hudCombo.innerText = `x${combo}`;
+        function updateHud(combo = 1) {
+            hudLives.innerText = '❤️'.repeat(Math.max(0, lives)) || '💔';
+            hudCombo.innerText = `${combo}x`;
             hudScore.innerText = score;
             if (score > bestScore) {
                 bestScore = score;
@@ -213,31 +213,25 @@
         function spawnWave() {
             const count = 2 + Math.floor(Math.random() * 3);
             for (let i = 0; i < count; i++) {
-                const isBomb = Math.random() < 0.18;
-                const spec = isBomb
-                    ? { emoji: '💣', color: '#ef4444', pts: 0, isBomb: true }
-                    : ITEMS[Math.floor(Math.random() * ITEMS.length)];
-                const x = 160 + Math.random() * (W - 320);
-                const vx = (W / 2 - x) * 0.008 + (Math.random() - 0.5) * 4;
+                const isBomb = Math.random() < 0.16;
+                const pick = FRUITS[Math.floor(Math.random() * FRUITS.length)];
+                const x = 180 + Math.random() * (W - 360);
+                const vx = (W / 2 - x) * 0.01 + (Math.random() - 0.5) * 4;
                 const vy = -(15.5 + Math.random() * 4.5);
-                targets.push({
+                items.push({
                     x,
                     y: H + 40,
                     vx,
                     vy,
-                    r: 44,
+                    r: 42,
                     rot: 0,
                     vrot: (Math.random() - 0.5) * 0.14,
-                    ...spec
+                    isBomb,
+                    emoji: isBomb ? '💣' : pick.emoji,
+                    color: isBomb ? '#ef4444' : pick.color,
+                    pts: isBomb ? 0 : pick.pts,
+                    sliced: false
                 });
-            }
-        }
-
-        function addSplash(x, y, color, count = 18) {
-            for (let i = 0; i < count; i++) {
-                const a = Math.random() * Math.PI * 2;
-                const s = 2 + Math.random() * 8;
-                particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, color });
             }
         }
 
@@ -246,79 +240,84 @@
             bladeTrail.push({ x: px, y: py, life: 1 });
             if (bladeTrail.length > 18) bladeTrail.shift();
 
-            for (let i = targets.length - 1; i >= 0; i--) {
-                const t = targets[i];
-                if (Math.hypot(px - t.x, py - t.y) <= t.r + 14) {
-                    if (t.isBomb) {
+            let hitCount = 0;
+            for (let i = items.length - 1; i >= 0; i--) {
+                const it = items[i];
+                if (!it.sliced && Math.hypot(px - it.x, py - it.y) <= it.r + 16) {
+                    it.sliced = true;
+                    if (it.isBomb) {
                         lives--;
-                        combo = 1;
-                        addSplash(t.x, t.y, '#ef4444', 35);
-                        sfx(150, 0.25, 'sawtooth', 0.2);
-                        targets.splice(i, 1);
-                        updateHud();
-                        if (lives <= 0) {
-                            endGame();
-                            return;
+                        for (let k = 0; k < 35; k++) {
+                            const a = Math.random() * Math.PI * 2;
+                            const s = 3 + Math.random() * 9;
+                            particles.push({ x: it.x, y: it.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, color: '#ff2a5f' });
                         }
+                        sfx(140, 0.3, 'sawtooth', 0.2);
+                        items.splice(i, 1);
+                        updateHud(1);
+                        if (lives <= 0) endGame();
+                        return;
                     } else {
-                        if (comboTimer > 0) combo = Math.min(8, combo + 1);
-                        else combo = 1;
-                        comboTimer = 45;
-                        score += t.pts * combo;
-                        addSplash(t.x, t.y, t.color, 22);
-                        sfx(520 + combo * 70, 0.09, 'triangle');
-                        halves.push(
-                            { x: t.x - 12, y: t.y, vx: -4, vy: -4, rot: t.rot, emoji: t.emoji, life: 1 },
-                            { x: t.x + 12, y: t.y, vx: 4, vy: -4, rot: t.rot + 0.5, emoji: t.emoji, life: 1 }
-                        );
-                        targets.splice(i, 1);
-                        updateHud();
+                        hitCount++;
+                        // Create two flying halves
+                        halves.push({ x: it.x - 10, y: it.y, vx: it.vx - 3, vy: it.vy - 2, rot: it.rot, vrot: -0.12, emoji: it.emoji, life: 1 });
+                        halves.push({ x: it.x + 10, y: it.y, vx: it.vx + 3, vy: it.vy - 2, rot: it.rot, vrot: 0.12, emoji: it.emoji, life: 1 });
+                        for (let k = 0; k < 18; k++) {
+                            const a = Math.random() * Math.PI * 2;
+                            const s = 2 + Math.random() * 6;
+                            particles.push({ x: it.x, y: it.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, color: it.color });
+                        }
+                        score += it.pts;
+                        floatingTexts.push({ x: it.x, y: it.y, text: `+${it.pts}`, color: it.color, life: 1 });
+                        items.splice(i, 1);
                     }
                 }
+            }
+
+            if (hitCount > 0) {
+                if (hitCount >= 2) {
+                    const bonus = hitCount * 25;
+                    score += bonus;
+                    floatingTexts.push({ x: px, y: py - 30, text: `COMBO ${hitCount}x! +${bonus}`, color: '#ffcc00', life: 1.2 });
+                }
+                sfx(640 + hitCount * 110, 0.09, 'sawtooth', 0.12);
+                updateHud(hitCount);
             }
         }
 
         function endGame() {
             running = false;
-            sliceDesc.innerHTML = `⚔️ <strong>FIM DO TREINO NINJA!</strong><br>Você fatiou <strong>${score} PTS</strong> na arena neon!`;
+            sliceDesc.innerHTML = `⚔️ <strong>FIM DO TREINO NINJA!</strong><br>Você marcou <strong>${score} PTS</strong> fatiando na arena neon!`;
             overlay.classList.remove('hidden');
         }
 
         function update() {
             if (!running) return;
 
-            if (comboTimer > 0) {
-                comboTimer--;
-                if (comboTimer === 0) {
-                    combo = 1;
-                    updateHud();
-                }
-            }
-
-            spawnTimer--;
-            if (spawnTimer <= 0) {
+            spawnCooldown--;
+            if (spawnCooldown <= 0) {
                 spawnWave();
-                spawnTimer = Math.max(48, 95 - Math.floor(score / 400) * 4);
+                spawnCooldown = Math.max(42, 85 - Math.floor(score / 250));
             }
 
-            for (let i = targets.length - 1; i >= 0; i--) {
-                const t = targets[i];
-                t.x += t.vx;
-                t.y += t.vy;
-                t.vy += 0.34;
-                t.rot += t.vrot;
-                if (t.y > H + 70 && t.vy > 0) {
-                    if (!t.isBomb) {
+            for (let i = items.length - 1; i >= 0; i--) {
+                const it = items[i];
+                it.x += it.vx;
+                it.y += it.vy;
+                it.vy += 0.36;
+                it.rot += it.vrot;
+
+                if (it.y > H + 70 && it.vy > 0) {
+                    if (!it.isBomb && !it.sliced) {
                         lives--;
-                        combo = 1;
-                        sfx(210, 0.14, 'sawtooth');
-                        updateHud();
+                        sfx(210, 0.15, 'sawtooth');
+                        updateHud(1);
                         if (lives <= 0) {
                             endGame();
                             return;
                         }
                     }
-                    targets.splice(i, 1);
+                    items.splice(i, 1);
                 }
             }
 
@@ -326,7 +325,8 @@
                 const h = halves[i];
                 h.x += h.vx;
                 h.y += h.vy;
-                h.vy += 0.45;
+                h.vy += 0.42;
+                h.rot += h.vrot;
                 h.life -= 0.025;
                 if (h.life <= 0) halves.splice(i, 1);
             }
@@ -339,18 +339,25 @@
                 if (p.life <= 0) particles.splice(i, 1);
             }
 
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y -= 1.8;
+                ft.life -= 0.03;
+                if (ft.life <= 0) floatingTexts.splice(i, 1);
+            }
+
             for (let i = bladeTrail.length - 1; i >= 0; i--) {
-                bladeTrail[i].life -= 0.08;
+                bladeTrail[i].life -= 0.1;
                 if (bladeTrail[i].life <= 0) bladeTrail.splice(i, 1);
             }
         }
 
         function draw() {
-            ctx.fillStyle = '#0a0414';
+            ctx.fillStyle = '#090314';
             ctx.fillRect(0, 0, W, H);
 
-            // Subtle dojo grid
-            ctx.strokeStyle = 'rgba(255, 42, 133, 0.08)';
+            // Dojo Neon Grid
+            ctx.strokeStyle = 'rgba(255, 42, 133, 0.09)';
             ctx.lineWidth = 2;
             for (let x = 0; x < W; x += 80) {
                 ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
@@ -359,17 +366,17 @@
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
             }
 
-            // Targets
-            for (const t of targets) {
+            // Items
+            for (const it of items) {
                 ctx.save();
-                ctx.translate(t.x, t.y);
-                ctx.rotate(t.rot);
-                ctx.shadowColor = t.color;
-                ctx.shadowBlur = 20;
+                ctx.translate(it.x, it.y);
+                ctx.rotate(it.rot);
+                ctx.shadowColor = it.color;
+                ctx.shadowBlur = 22;
                 ctx.font = '64px serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(t.emoji, 0, 0);
+                ctx.fillText(it.emoji, 0, 0);
                 ctx.restore();
             }
 
@@ -381,7 +388,7 @@
                 ctx.rotate(h.rot);
                 ctx.font = '44px serif';
                 ctx.textAlign = 'center';
-                ctx.fillText('✨', 0, 0);
+                ctx.fillText(h.emoji, 0, 0);
                 ctx.restore();
             }
 
@@ -395,17 +402,31 @@
             }
             ctx.globalAlpha = 1;
 
-            // Blade trail
+            // Katana Neon Trail
             if (bladeTrail.length > 1) {
                 ctx.save();
                 ctx.strokeStyle = '#00f5d4';
                 ctx.shadowColor = '#00f5d4';
                 ctx.shadowBlur = 18;
-                ctx.lineWidth = 7;
                 ctx.lineCap = 'round';
-                ctx.beginPath();
-                bladeTrail.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
-                ctx.stroke();
+                for (let i = 1; i < bladeTrail.length; i++) {
+                    ctx.lineWidth = bladeTrail[i].life * 12;
+                    ctx.beginPath();
+                    ctx.moveTo(bladeTrail[i - 1].x, bladeTrail[i - 1].y);
+                    ctx.lineTo(bladeTrail[i].x, bladeTrail[i].y);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            // Floating texts
+            for (const ft of floatingTexts) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, ft.life);
+                ctx.font = '900 26px Outfit';
+                ctx.fillStyle = ft.color;
+                ctx.textAlign = 'center';
+                ctx.fillText(ft.text, ft.x, ft.y);
                 ctx.restore();
             }
         }
@@ -416,25 +437,16 @@
             requestAnimationFrame(loop);
         }
 
-        function getCanvasCoords(e) {
+        function handlePointer(e) {
             const rect = canvas.getBoundingClientRect();
-            return {
-                x: ((e.clientX - rect.left) / rect.width) * W,
-                y: ((e.clientY - rect.top) / rect.height) * H
-            };
+            const px = ((e.clientX - rect.left) / rect.width) * W;
+            const py = ((e.clientY - rect.top) / rect.height) * H;
+            sliceAt(px, py);
         }
 
-        canvas.addEventListener('pointerdown', (e) => {
-            isSlicing = true;
-            const pt = getCanvasCoords(e);
-            sliceAt(pt.x, pt.y);
-        });
-        canvas.addEventListener('pointermove', (e) => {
-            if (!isSlicing && e.pointerType !== 'mouse') return;
-            const pt = getCanvasCoords(e);
-            sliceAt(pt.x, pt.y);
-        });
-        window.addEventListener('pointerup', () => { isSlicing = false; });
+        canvas.addEventListener('pointerdown', (e) => { isSwiping = true; handlePointer(e); });
+        canvas.addEventListener('pointermove', (e) => { if (isSwiping || e.pointerType === 'mouse') handlePointer(e); });
+        window.addEventListener('pointerup', () => { isSwiping = false; });
 
         document.getElementById('btn-start-slice').addEventListener('click', startGame);
         loop();

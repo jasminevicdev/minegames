@@ -64,12 +64,12 @@ export class SaveHub {
                     towerdefense: { highScore: 0, bestWave: 1 },
                     astrojump: { highScore: 0 },
                     ninjaslice: { highScore: 0 },
-                    neon2048: { highScore: 0, bestTile: 2 },
-                    penaltycup: { highScore: 0, bestStreak: 0 },
-                    pacmaze: { highScore: 0, level: 1 },
-                    rhythmbeats: { highScore: 0, maxCombo: 0 },
-                    minesweeper: { highScore: 0, wins: 0 },
-                    glitchhunt: { highScore: 0 }
+                    neon2048: { highScore: 0, bestTile: 0 },
+                    penalty: { highScore: 0 },
+                    pacman: { highScore: 0 },
+                    rhythm: { highScore: 0 },
+                    dinorun: { highScore: 0 },
+                    minesweeper: { highScore: 0 }
                 }
             };
         }

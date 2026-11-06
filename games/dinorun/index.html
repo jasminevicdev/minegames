@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Dino Runner 🦖🌵 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at center, #111827 0%, #030712 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .topbar {
+            width: 96vw;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            gap: 8px;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #10b981;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .hud-stats { display: flex; gap: 10px; }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #ffcc00; font-family: 'Fredoka', sans-serif; }
+        .stage-wrap {
+            position: relative;
+            width: 96vw;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background: #080d1a;
+            border: 3px solid #10b981;
+            border-radius: 20px;
+            box-shadow: 0 0 38px rgba(16, 185, 129, 0.3);
+            overflow: hidden;
+        }
+        canvas { width: 100%; height: 100%; display: block; }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 13, 26, 0.88);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+        .overlay.hidden { display: none; }
+        .overlay h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            color: #10b981;
+            margin-bottom: 8px;
+        }
+        .overlay p {
+            color: #cbd5e1;
+            max-width: 520px;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            line-height: 1.45;
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #10b981, #ffcc00);
+            color: #04120c;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .ctrl-row {
+            width: 96vw;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 10px;
+        }
+        .btn-ctrl {
+            flex: 1;
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            padding: 12px;
+            border-radius: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div class="hud-stats">
+            <div class="stat-pill">DISTÂNCIA: <strong id="hud-score">0m</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0m</strong></div>
+        </div>
+    </div>
+
+    <div class="stage-wrap">
+        <canvas id="dino-canvas" width="1280" height="720"></canvas>
+        <div class="overlay" id="dino-overlay">
+            <h1>🦖 CYBER DINO RUNNER</h1>
+            <p id="dino-desc">
+                Salte sobre os cactos de laser (<strong>Espaço / W / Seta Cima</strong>) e abaixe-se sob os drones voadores (<strong>S / Seta Baixo</strong>) com o T-Rex Cibernético!
+            </p>
+            <button class="btn-start" id="btn-start-dino">CORRER AGORA 🦖</button>
+        </div>
+    </div>
+
+    <div class="ctrl-row">
+        <button class="btn-ctrl" id="btn-jump">⬆️ PULAR (SALTO DUPLO)</button>
+        <button class="btn-ctrl" id="btn-duck">⬇️ ABAIXAR / MERGULHAR</button>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('dino-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const GROUND_Y = 560;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const overlay = document.getElementById('dino-overlay');
+        const dinoDesc = document.getElementById('dino-desc');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('dinorun', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore}m`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 480, dur = 0.08, type = 'triangle') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + dur);
+            } catch (e) {}
+        }
+
+        let running = false;
+        let dist = 0;
+        let speed = 9;
+        let dino = { x: 160, y: GROUND_Y, vy: 0, jumps: 0, ducking: false };
+        let obstacles = [];
+        let spawnTimer = 0;
+
+        function startGame() {
+            dist = 0;
+            speed = 9.5;
+            dino = { x: 160, y: GROUND_Y, vy: 0, jumps: 0, ducking: false };
+            obstacles = [];
+            spawnTimer = 45;
+            overlay.classList.add('hidden');
+            running = true;
+            sfx(540, 0.12);
+        }
+
+        function jump() {
+            if (!running) return;
+            if (dino.jumps < 2) {
+                dino.vy = -16.5;
+                dino.jumps++;
+                sfx(460 + dino.jumps * 140, 0.09);
+            }
+        }
+
+        function setDuck(state) {
+            dino.ducking = state;
+            if (state && dino.y < GROUND_Y) dino.vy += 8;
+        }
+
+        function update() {
+            if (!running) return;
+
+            dist += 0.25;
+            speed = Math.min(18, 9.5 + dist * 0.004);
+            const scoreInt = Math.floor(dist);
+            hudScore.innerText = `${scoreInt}m`;
+            if (scoreInt > bestScore) {
+                bestScore = scoreInt;
+                hudBest.innerText = `${bestScore}m`;
+                SaveHub.updateGameSave('dinorun', { highScore: bestScore }, playerName);
+            }
+
+            dino.y += dino.vy;
+            dino.vy += 0.82;
+            if (dino.y >= GROUND_Y) {
+                dino.y = GROUND_Y;
+                dino.vy = 0;
+                dino.jumps = 0;
+            }
+
+            spawnTimer--;
+            if (spawnTimer <= 0) {
+                const isDrone = Math.random() < 0.32 && dist > 40;
+                obstacles.push({
+                    x: W + 60,
+                    y: isDrone ? GROUND_Y - 78 : GROUND_Y,
+                    w: isDrone ? 64 : 52,
+                    h: isDrone ? 46 : 74,
+                    emoji: isDrone ? '🛸' : '🌵',
+                    color: isDrone ? '#ff2a85' : '#10b981'
+                });
+                spawnTimer = Math.max(38, Math.floor(85 - speed * 2 + Math.random() * 35));
+            }
+
+            const dh = dino.ducking ? 46 : 76;
+            const dyTop = dino.y - dh;
+
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const ob = obstacles[i];
+                ob.x -= speed;
+
+                const obTop = ob.y - ob.h;
+                if (
+                    dino.x + 24 > ob.x - ob.w / 2 &&
+                    dino.x - 24 < ob.x + ob.w / 2 &&
+                    dino.y > obTop + 10 &&
+                    dyTop < ob.y - 10
+                ) {
+                    running = false;
+                    sfx(170, 0.25, 'sawtooth');
+                    dinoDesc.innerHTML = `🦖 <strong>COLISÃO NO DESERTO NEON!</strong><br>Você correu <strong>${scoreInt}m</strong>!`;
+                    overlay.classList.remove('hidden');
+                    return;
+                }
+
+                if (ob.x < -80) obstacles.splice(i, 1);
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#080d1a';
+            ctx.fillRect(0, 0, W, H);
+
+            // Synthwave Sun
+            ctx.save();
+            const grad = ctx.createLinearGradient(0, 120, 0, 340);
+            grad.addColorStop(0, '#ffcc00');
+            grad.addColorStop(1, '#ff2a85');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(W / 2, 240, 110, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Ground line
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_Y + 6);
+            ctx.lineTo(W, GROUND_Y + 6);
+            ctx.stroke();
+
+            // Dino
+            ctx.save();
+            const dh = dino.ducking ? 50 : 78;
+            ctx.font = `${dh}px serif`;
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 18;
+            ctx.fillText('🦖', dino.x, dino.y);
+            ctx.restore();
+
+            // Obstacles
+            for (const ob of obstacles) {
+                ctx.save();
+                ctx.font = '62px serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = ob.color;
+                ctx.shadowBlur = 18;
+                ctx.fillText(ob.emoji, ob.x, ob.y);
+                ctx.restore();
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'w') {
+                e.preventDefault();
+                jump();
+            }
+            if (e.key === 'ArrowDown' || e.key === 's') setDuck(true);
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 's') setDuck(false);
+        });
+
+        document.getElementById('btn-jump').addEventListener('pointerdown', (e) => { e.preventDefault(); jump(); });
+        const btnDuck = document.getElementById('btn-duck');
+        btnDuck.addEventListener('pointerdown', (e) => { e.preventDefault(); setDuck(true); });
+        btnDuck.addEventListener('pointerup', () => setDuck(false));
+        btnDuck.addEventListener('pointerleave', () => setDuck(false));
+        canvas.addEventListener('pointerdown', jump);
+
+        document.getElementById('btn-start-dino').addEventListener('click', startGame);
+        loop();
+    </script>
+</body>
+</html>
