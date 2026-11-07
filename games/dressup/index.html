@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Glamour Dress Up: Desfile Estelar 👗👑 — JasDEV Hub</title>
+    <title>Glamour Dress Up HD: Desfile Estelar 👗👑 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at top, #3b0764 0%, #1a0526 100%);
+            background: radial-gradient(circle at top, #4a044e 0%, #160322 100%);
             color: #fff;
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -21,7 +21,7 @@
         }
         .topbar {
             width: 100%;
-            max-width: 960px;
+            max-width: 1120px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -33,132 +33,204 @@
             background: rgba(255, 255, 255, 0.12);
             border: 2px solid #f472b6;
             color: #fff;
-            padding: 7px 15px;
+            padding: 7px 16px;
             border-radius: 20px;
             text-decoration: none;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
+            transition: 0.2s;
         }
+        .btn-back:hover { background: #f472b6; color: #160322; }
         .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
         .stat-pill {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.55);
             border: 2px solid #f472b6;
             border-radius: 16px;
-            padding: 5px 12px;
-            font-size: 0.82rem;
+            padding: 5px 14px;
+            font-size: 0.84rem;
             font-weight: 700;
         }
         .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
         .studio-layout {
             width: 100%;
-            max-width: 960px;
+            max-width: 1120px;
             display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 14px;
+            grid-template-columns: 460px 1fr;
+            gap: 16px;
             align-items: stretch;
         }
-        @media (max-width: 720px) {
+        @media (max-width: 880px) {
             .studio-layout { grid-template-columns: 1fr; }
         }
         .stage-box {
-            background: linear-gradient(180deg, #2e1065, #170529);
+            background: linear-gradient(180deg, #2e1065, #140326);
             border: 3px solid #f472b6;
-            border-radius: 24px;
-            padding: 10px;
+            border-radius: 26px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 0 35px rgba(244, 114, 182, 0.35);
+            box-shadow: 0 0 42px rgba(244, 114, 182, 0.4);
             position: relative;
         }
         canvas {
             width: 100%;
             max-width: 440px;
             aspect-ratio: 4 / 5;
-            border-radius: 18px;
+            border-radius: 20px;
             display: block;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
         }
+        .stage-actions {
+            width: 100%;
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-Quick {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #e879f9;
+            color: #fff;
+            padding: 9px 10px;
+            border-radius: 16px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-Quick:hover { background: rgba(232, 121, 249, 0.3); transform: translateY(-2px); }
         .wardrobe-box {
-            background: rgba(25, 8, 45, 0.9);
+            background: rgba(26, 7, 45, 0.92);
             border: 3px solid #e879f9;
-            border-radius: 24px;
+            border-radius: 26px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            box-shadow: 0 0 32px rgba(168, 85, 247, 0.25);
         }
         .theme-banner {
-            background: linear-gradient(135deg, rgba(244, 114, 182, 0.25), rgba(168, 85, 247, 0.25));
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.28), rgba(168, 85, 247, 0.28));
             border: 2px solid #fde047;
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 10px 14px;
-            text-align: center;
-        }
-        .theme-banner span { font-size: 0.78rem; color: #fbcfe8; display: block; }
-        .theme-banner strong { font-family: 'Fredoka', sans-serif; font-size: 1.15rem; color: #fde047; }
-        .cat-tabs {
             display: flex;
-            gap: 6px;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
+            gap: 8px;
+        }
+        .theme-info span { font-size: 0.75rem; color: #fbcfe8; display: block; font-weight: 700; }
+        .theme-info strong { font-family: 'Fredoka', sans-serif; font-size: 1.15rem; color: #fde047; }
+        .theme-tip {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(253, 224, 71, 0.5);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            color: #fef08a;
+        }
+        .cat-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        @media (max-width: 500px) {
+            .cat-tabs { grid-template-columns: repeat(2, 1fr); }
         }
         .cat-btn {
-            flex: 1;
-            min-width: 78px;
             background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(244, 114, 182, 0.4);
-            color: #fff;
+            border: 2px solid rgba(244, 114, 182, 0.35);
+            color: #fce7f3;
             border-radius: 14px;
             padding: 8px 6px;
             font-family: 'Fredoka', sans-serif;
             font-size: 0.82rem;
             cursor: pointer;
+            transition: 0.15s;
         }
+        .cat-btn:hover { background: rgba(244, 114, 182, 0.2); }
         .cat-btn.active {
-            background: linear-gradient(135deg, #ec4899, #a855f7);
+            background: linear-gradient(135deg, #ec4899, #9333ea);
             border-color: #fde047;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
         }
         .items-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             flex: 1;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 4px;
         }
         .item-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 2px solid rgba(255, 255, 255, 0.16);
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
-            padding: 12px 8px;
+            padding: 10px 8px;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.15s, border-color 0.15s;
+            transition: transform 0.15s, border-color 0.15s, background 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
-        .item-card:hover { transform: scale(1.04); }
+        .item-card:hover { transform: translateY(-2px); border-color: #f472b6; }
         .item-card.selected {
             border-color: #fde047;
-            background: rgba(244, 114, 182, 0.28);
-            box-shadow: 0 0 15px rgba(253, 224, 71, 0.45);
+            background: linear-gradient(145deg, rgba(236, 72, 153, 0.32), rgba(147, 51, 234, 0.32));
+            box-shadow: 0 0 16px rgba(253, 224, 71, 0.45);
         }
-        .item-icon { font-size: 2rem; display: block; margin-bottom: 4px; }
-        .item-name { font-size: 0.78rem; font-weight: 700; color: #fce7f3; }
+        .item-icon { font-size: 1.9rem; line-height: 1; }
+        .item-name { font-size: 0.8rem; font-weight: 800; color: #fff; }
+        .item-sub { font-size: 0.68rem; color: #f9a8d4; }
+        .judges-panel {
+            background: rgba(0, 0, 0, 0.45);
+            border: 2px solid rgba(244, 114, 182, 0.35);
+            border-radius: 18px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .judges-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .judge-card {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 6px 8px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+        .judge-card strong { color: #fde047; font-family: 'Fredoka', sans-serif; font-size: 0.95rem; display: block; }
         .runway-btn {
-            background: linear-gradient(135deg, #fde047, #ec4899);
-            color: #1f052c;
-            border: none;
+            background: linear-gradient(135deg, #fde047, #ec4899, #9333ea);
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            border: 2px solid #fff;
             padding: 14px;
             border-radius: 30px;
             font-family: 'Fredoka', sans-serif;
             font-size: 1.15rem;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
+            box-shadow: 0 6px 24px rgba(236, 72, 153, 0.6);
+            transition: transform 0.15s;
         }
+        .runway-btn:hover { transform: scale(1.02); }
         .score-popup {
-            margin-top: 8px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             color: #fde047;
             text-align: center;
-            min-height: 26px;
         }
     </style>
 </head>
@@ -173,28 +245,49 @@
     </div>
 
     <div class="studio-layout">
+        <!-- Palco e Modelo HD -->
         <div class="stage-box">
-            <canvas id="dress-canvas" width="480" height="600"></canvas>
-            <div class="score-popup" id="judge-feedback">Combine o look perfeito e clique em DESFILAR! ✨</div>
+            <canvas id="dress-canvas" width="520" height="650"></canvas>
+            <div class="stage-actions">
+                <button class="btn-Quick" id="btn-random">🎲 Look Surpresa</button>
+                <button class="btn-Quick" id="btn-pose">💃 Mudar Pose</button>
+                <button class="btn-Quick" id="btn-save-photo">📸 Baixar Foto</button>
+            </div>
         </div>
 
+        <!-- Guarda-Roupa Completo -->
         <div class="wardrobe-box">
             <div class="theme-banner">
-                <span>TEMA DO DESFILE ATUAL:</span>
-                <strong id="theme-title">👑 BAILE REAL DE CRISTAL</strong>
+                <div class="theme-info">
+                    <span>TEMA DO DESFILE ATUAL:</span>
+                    <strong id="theme-title">👑 BAILE REAL DE CRISTAL</strong>
+                </div>
+                <div class="theme-tip" id="theme-tip">Dica: Peças Reais 👑 dão bônus máximo!</div>
             </div>
 
             <div class="cat-tabs">
-                <button class="cat-btn active" data-cat="hair">💇‍♀️ Cabelo</button>
-                <button class="cat-btn" data-cat="dress">👗 Vestido</button>
-                <button class="cat-btn" data-cat="shoes">👠 Sapato</button>
-                <button class="cat-btn" data-cat="crown">👑 Acessório</button>
-                <button class="cat-btn" data-cat="bg">✨ Cenário</button>
+                <button class="cat-btn active" data-cat="dress">👗 Vestidos</button>
+                <button class="cat-btn" data-cat="hair">💇‍♀️ Cabelos</button>
+                <button class="cat-btn" data-cat="makeup">💄 Pele & Make</button>
+                <button class="cat-btn" data-cat="shoes">👠 Sapatos</button>
+                <button class="cat-btn" data-cat="crown">👑 Joias & Tiaras</button>
+                <button class="cat-btn" data-cat="bag">👛 Bolsas & Pets</button>
+                <button class="cat-btn" data-cat="wings">🦋 Asas & Capas</button>
+                <button class="cat-btn" data-cat="bg">🏰 Cenários</button>
             </div>
 
             <div class="items-grid" id="items-grid"></div>
 
-            <button class="runway-btn" id="btn-runway">✨ DESFILAR NA PASSARELA! 📸</button>
+            <div class="judges-panel">
+                <div class="score-popup" id="judge-feedback">Monte cada detalhe do seu look e desfile para os 3 jurados! ✨</div>
+                <div class="judges-row">
+                    <div class="judge-card">👩🏻‍🎤 Lady Vogue<strong id="j1-score">—</strong></div>
+                    <div class="judge-card">🎩 Estilista Caine<strong id="j2-score">—</strong></div>
+                    <div class="judge-card">👸🏼 Princesa Star<strong id="j3-score">—</strong></div>
+                </div>
+            </div>
+
+            <button class="runway-btn" id="btn-runway">✨ DESFILAR NA PASSARELA AGORA! 📸👑</button>
         </div>
     </div>
 
@@ -210,8 +303,12 @@
         const hudScore = document.getElementById('hud-score');
         const hudBest = document.getElementById('hud-best');
         const themeTitle = document.getElementById('theme-title');
+        const themeTip = document.getElementById('theme-tip');
         const itemsGrid = document.getElementById('items-grid');
         const judgeFeedback = document.getElementById('judge-feedback');
+        const j1Score = document.getElementById('j1-score');
+        const j2Score = document.getElementById('j2-score');
+        const j3Score = document.getElementById('j3-score');
 
         const activePlayer = SaveHub.getActivePlayer();
         const playerName = activePlayer ? activePlayer.name : null;
@@ -220,85 +317,121 @@
         hudBest.innerText = `${bestScore} ⭐`;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sparkleSfx(freq = 640) {
+        function playGlamourSound(freq = 640, type = 'triangle', dur = 0.16) {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const o = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
-                o.type = 'triangle';
+                o.type = type;
                 o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                o.frequency.exponentialRampToValueAtTime(freq * 1.4, audioCtx.currentTime + 0.14);
-                g.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+                o.frequency.exponentialRampToValueAtTime(freq * 1.45, audioCtx.currentTime + dur);
+                g.gain.setValueAtTime(0.11, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
                 o.connect(g);
                 g.connect(audioCtx.destination);
                 o.start();
-                o.stop(audioCtx.currentTime + 0.16);
+                o.stop(audioCtx.currentTime + dur);
             } catch (e) {}
         }
 
         const CATALOG = {
-            hair: [
-                { id: 0, name: 'Loiro Princesa', color: '#fde047', style: 'long', icon: '👱‍♀️', tag: 'royal' },
-                { id: 1, name: 'Rosa Algodão', color: '#f472b6', style: 'twin', icon: '🌸', tag: 'pop' },
-                { id: 2, name: 'Azul Estelar', color: '#38bdf8', style: 'wavy', icon: '💎', tag: 'fairy' },
-                { id: 3, name: 'Castanho Gala', color: '#92400e', style: 'bun', icon: '✨', tag: 'gala' },
-                { id: 4, name: 'Roxo Místico', color: '#a855f7', style: 'long', icon: '🔮', tag: 'fairy' },
-                { id: 5, name: 'Ruivo Rubi', color: '#ef4444', style: 'wavy', icon: '🌹', tag: 'gala' }
-            ],
             dress: [
-                { id: 0, name: 'Gala Rosa Real', color1: '#ec4899', color2: '#fbcfe8', style: 'ballgown', icon: '👗', tag: 'royal' },
-                { id: 1, name: 'Pop Star Neon', color1: '#a855f7', color2: '#00f5d4', style: 'mini', icon: '🎤', tag: 'pop' },
-                { id: 2, name: 'Fada Cristal', color1: '#38bdf8', color2: '#e0f2fe', style: 'fairy', icon: '🦋', tag: 'fairy' },
-                { id: 3, name: 'Ouro Imperial', color1: '#eab308', color2: '#fef08a', style: 'ballgown', icon: '👑', tag: 'royal' },
-                { id: 4, name: 'Rubi Vermelho', color1: '#e11d48', color2: '#fda4af', style: 'mermaid', icon: '🌹', tag: 'gala' },
-                { id: 5, name: 'Lavanda Doce', color1: '#c084fc', color2: '#f3e8ff', style: 'mini', icon: '🎀', tag: 'pop' }
+                { id: 0, name: 'Gala Rosa Imperial', sub: 'Bordado & Renda', c1: '#ec4899', c2: '#fbcfe8', accent: '#fde047', style: 'ballgown', icon: '👗', tag: 'royal' },
+                { id: 1, name: 'Pop Star Holográfica', sub: 'Jaqueta & Plissado', c1: '#a855f7', c2: '#00f5d4', accent: '#ff2a85', style: 'popstar', icon: '🎤', tag: 'pop' },
+                { id: 2, name: 'Fada Pétala Cristal', sub: 'Tule Translúcido', c1: '#38bdf8', c2: '#bae6fd', accent: '#fde047', style: 'fairy', icon: '🦋', tag: 'fairy' },
+                { id: 3, name: 'Rainha Ouro Solar', sub: 'Corset de Diamantes', c1: '#eab308', c2: '#fef08a', accent: '#ffffff', style: 'ballgown', icon: '👑', tag: 'royal' },
+                { id: 4, name: 'Sereia Rubi de Gala', sub: 'Seda & Fenda', c1: '#e11d48', c2: '#fda4af', accent: '#fde047', style: 'mermaid', icon: '🌹', tag: 'gala' },
+                { id: 5, name: 'Cisne Bailarina', sub: 'Tutu de Plumas', c1: '#f472b6', c2: '#fdf2f8', accent: '#e2e8f0', style: 'tutudress', icon: '🩰', tag: 'fairy' },
+                { id: 6, name: 'Noite das Estrelas', sub: 'Constelação Real', c1: '#1d4ed8', c2: '#60a5fa', accent: '#fde047', style: 'mermaid', icon: '🌌', tag: 'gala' },
+                { id: 7, name: 'Cyber Idol Pink', sub: 'Top & Saia Neon', c1: '#ff2a85', c2: '#f43f5e', accent: '#00f5d4', style: 'popstar', icon: '⚡', tag: 'pop' },
+                { id: 8, name: 'Princesa Esmeralda', sub: 'Veludo Encantado', c1: '#059669', c2: '#6ee7b7', accent: '#fde047', style: 'ballgown', icon: '💚', tag: 'royal' }
+            ],
+            hair: [
+                { id: 0, name: 'Loiro Cachos Reais', sub: 'Longo Ondulado', color: '#fde047', shade: '#ca8a04', style: 'long_curls', icon: '👱‍♀️', tag: 'royal' },
+                { id: 1, name: 'Rosa Maria-Chiquinha', sub: 'Idol Pop Longa', color: '#f472b6', shade: '#db2777', style: 'twintails', icon: '🌸', tag: 'pop' },
+                { id: 2, name: 'Azul Sereia Místico', sub: 'Ondas de Cristal', color: '#38bdf8', shade: '#0284c7', style: 'mermaid_waves', icon: '💎', tag: 'fairy' },
+                { id: 3, name: 'Coque Imperial', sub: 'Alta Costura', color: '#78350f', shade: '#451a03', style: 'royal_bun', icon: '✨', tag: 'gala' },
+                { id: 4, name: 'Violeta Estelar', sub: 'Franja & Mechas', color: '#c084fc', shade: '#7e22ce', style: 'long_curls', icon: '🔮', tag: 'fairy' },
+                { id: 5, name: 'Ruivo Diva Hollywood', sub: 'Volume Glamour', color: '#ef4444', shade: '#991b1b', style: 'mermaid_waves', icon: '🌹', tag: 'gala' },
+                { id: 6, name: 'Preto Perolado', sub: 'Liso Espelhado', color: '#1e1b4b', shade: '#0f172a', style: 'twintails', icon: '🖤', tag: 'pop' },
+                { id: 7, name: 'Platinado Diamante', sub: 'Princesa do Gelo', color: '#f1f5f9', shade: '#94a3b8', style: 'royal_bun', icon: '❄️', tag: 'royal' },
+                { id: 8, name: 'Mel Dourado Trançado', sub: 'Romântico', color: '#d97706', shade: '#92400e', style: 'long_curls', icon: '🍯', tag: 'fairy' }
+            ],
+            makeup: [
+                { id: 0, name: 'Pêssego & Make Rosa', sub: 'Olhos Safira', skin: '#fed7aa', skinShade: '#fdba74', eye: '#3b82f6', lip: '#ec4899', shadow: '#f472b6', icon: '💄', tag: 'royal' },
+                { id: 1, name: 'Porcelana & Rubi', sub: 'Olhos Esmeralda', skin: '#ffedd5', skinShade: '#fed7aa', eye: '#10b981', lip: '#e11d48', shadow: '#fda4af', icon: '🌹', tag: 'gala' },
+                { id: 2, name: 'Bronze & Ouro Glow', sub: 'Olhos Âmbar', skin: '#d97706', skinShade: '#b45309', eye: '#eab308', lip: '#db2777', shadow: '#fde047', icon: '✨', tag: 'royal' },
+                { id: 3, name: 'Cacau & Ameixa Pop', sub: 'Olhos Violeta', skin: '#92400e', skinShade: '#78350f', eye: '#a855f7', lip: '#f43f5e', shadow: '#e879f9', icon: '💜', tag: 'pop' },
+                { id: 4, name: 'Mel & Cristal Azul', sub: 'Olhos Turquesa', skin: '#f59e0b', skinShade: '#d97706', eye: '#06b6d4', lip: '#fb7185', shadow: '#38bdf8', icon: '💎', tag: 'fairy' },
+                { id: 5, name: 'Ébano & Glam Neon', sub: 'Olhos Dourados', skin: '#5c2d16', skinShade: '#3e1d0d', eye: '#fde047', lip: '#ec4899', shadow: '#00f5d4', icon: '🌟', tag: 'pop' }
             ],
             shoes: [
-                { id: 0, name: 'Salto Cristal', color: '#38bdf8', icon: '👠', tag: 'royal' },
-                { id: 1, name: 'Bota Pop Pink', color: '#ec4899', icon: '👢', tag: 'pop' },
-                { id: 2, name: 'Sapatilha Ouro', color: '#fde047', icon: '🥿', tag: 'fairy' },
-                { id: 3, name: 'Salto Rubi', color: '#e11d48', icon: '👠', tag: 'gala' },
-                { id: 4, name: 'Sapatilha Lilás', color: '#c084fc', icon: '🎀', tag: 'fairy' },
-                { id: 5, name: 'Salto Prata', color: '#e2e8f0', icon: '✨', tag: 'gala' }
+                { id: 0, name: 'Salto Cinderela', sub: 'Cristal & Meia Renda', color: '#38bdf8', stockings: 'rgba(255,255,255,0.45)', style: 'heels', icon: '👠', tag: 'royal' },
+                { id: 1, name: 'Bota Cano Alto Pop', sub: 'Cadarço Neon', color: '#ec4899', stockings: 'rgba(168,85,247,0.35)', style: 'boots', icon: '👢', tag: 'pop' },
+                { id: 2, name: 'Sapatilha de Fitas', sub: 'Bailarina & Fada', color: '#f472b6', stockings: 'rgba(253,242,248,0.55)', style: 'ballet', icon: '🩰', tag: 'fairy' },
+                { id: 3, name: 'Escarpim Rubi Gala', sub: 'Salto Agulha Ouro', color: '#e11d48', stockings: 'rgba(0,0,0,0.28)', style: 'heels', icon: '🌹', tag: 'gala' },
+                { id: 4, name: 'Sandália Imperial', sub: 'Tiras de Ouro', color: '#fde047', stockings: 'transparent', style: 'ballet', icon: '👑', tag: 'royal' },
+                { id: 5, name: 'Bota Plataforma', sub: 'Estrela Cyber', color: '#00f5d4', stockings: 'rgba(236,72,153,0.3)', style: 'boots', icon: '⚡', tag: 'pop' }
             ],
             crown: [
-                { id: 0, name: 'Tiara de Ouro', icon: '👑', tag: 'royal' },
-                { id: 1, name: 'Laço Pink', icon: '🎀', tag: 'pop' },
-                { id: 2, name: 'Asas de Fada', icon: '🦋', tag: 'fairy' },
-                { id: 3, name: 'Coroa de Flores', icon: '🌸', tag: 'fairy' },
-                { id: 4, name: 'Colar Diamante', icon: '💎', tag: 'gala' },
-                { id: 5, name: 'Estrela Pop', icon: '⭐', tag: 'pop' }
+                { id: 0, name: 'Tiara Real & Brincos', sub: 'Ouro & Diamantes', icon: '👑', type: 'tiara', tag: 'royal' },
+                { id: 1, name: 'Headset Gatinho Neon', sub: 'Estrela Pop', icon: '🎧', type: 'headset', tag: 'pop' },
+                { id: 2, name: 'Coroa de Flores', sub: 'Rosas & Pérolas', icon: '🌸', type: 'flowers', tag: 'fairy' },
+                { id: 3, name: 'Colar & Diadema Rubi', sub: 'Alta Joalheria', icon: '💎', type: 'diamonds', tag: 'gala' },
+                { id: 4, name: 'Laço Cetim Gigante', sub: 'Boneca de Luxo', icon: '🎀', type: 'bow', tag: 'pop' },
+                { id: 5, name: 'Auréola das Estrelas', sub: 'Luz Celestial', icon: '🌟', type: 'halo', tag: 'fairy' }
+            ],
+            bag: [
+                { id: 0, name: 'Cetro Real de Cristal', sub: 'Magia & Realeza', icon: '🪄', tag: 'royal' },
+                { id: 1, name: 'Gatinha Real c/ Coroa', sub: 'Pet de Estimação', icon: '🐱', tag: 'fairy' },
+                { id: 2, name: 'Bolsa Clutch Diamante', sub: 'Tapete Vermelho', icon: '👛', tag: 'gala' },
+                { id: 3, name: 'Microfone Cravejado', sub: 'Show Pop Star', icon: '🎤', tag: 'pop' },
+                { id: 4, name: 'Buquê de Rosas Reais', sub: 'Perfume Encantado', icon: '💐', tag: 'royal' },
+                { id: 5, name: 'Poodle Rosa Fashion', sub: 'Pet Glamour', icon: '🐩', tag: 'gala' }
+            ],
+            wings: [
+                { id: 0, name: 'Asas de Borboleta', sub: 'Cristal Iridescente', icon: '🦋', type: 'butterfly', tag: 'fairy' },
+                { id: 1, name: 'Asas de Anjo Douradas', sub: 'Plumas Celestiais', icon: '🪽', type: 'angel', tag: 'royal' },
+                { id: 2, name: 'Capa Real de Veludo', sub: 'Realeza Imperial', icon: '🧣', type: 'cape', tag: 'royal' },
+                { id: 3, name: 'Aura Neon Musical', sub: 'Ondas de Luz', icon: '🎵', type: 'neon_aura', tag: 'pop' },
+                { id: 4, name: 'Echarpe de Seda Gala', sub: 'Elegância Pura', icon: '✨', type: 'scarf', tag: 'gala' },
+                { id: 5, name: 'Sem Asas / Natural', sub: 'Look Clássico', icon: '🚫', type: 'none', tag: 'gala' }
             ],
             bg: [
-                { id: 0, name: 'Palácio Rosa', c1: '#500724', c2: '#be185d', icon: '🏰' },
-                { id: 1, name: 'Passarela Neon', c1: '#1e1b4b', c2: '#7e22ce', icon: '🌟' },
-                { id: 2, name: 'Jardim Encantado', c1: '#064e3b', c2: '#047857', icon: '🌸' },
-                { id: 3, name: 'Noite Estrelada', c1: '#090d16', c2: '#1d4ed8', icon: '🌙' },
-                { id: 4, name: 'Salão Dourado', c1: '#451a03', c2: '#b45309', icon: '✨' },
-                { id: 5, name: 'Nuvem Doce', c1: '#4a044e', c2: '#db2777', icon: '☁️' }
+                { id: 0, name: 'Salão do Trono Real', sub: 'Lustres de Cristal', c1: '#4a044e', c2: '#be185d', floor: '#831843', icon: '🏰' },
+                { id: 1, name: 'Palco Pop Arena', sub: 'Lasers & Holofotes', c1: '#0f172a', c2: '#6d28d9', floor: '#311042', icon: '🎤' },
+                { id: 2, name: 'Bosque das Fadas', sub: 'Vagalumes Mágicos', c1: '#064e3b', c2: '#0f766e', floor: '#042f2e', icon: '🌸' },
+                { id: 3, name: 'Tapete Vermelho VIP', sub: 'Flashes & Paparazzi', c1: '#450a0a', c2: '#991b1b', floor: '#7f1d1d', icon: '📸' },
+                { id: 4, name: 'Castelo nas Nuvens', sub: 'Pôr do Sol Dourado', c1: '#7c2d12', c2: '#db2777', floor: '#701a75', icon: '☁️' },
+                { id: 5, name: 'Noite em Paris', sub: 'Luzes Românticas', c1: '#1e1b4b', c2: '#3b82f6', floor: '#172554', icon: '🌙' }
             ]
         };
 
         const THEMES = [
-            { title: '👑 BAILE REAL DE CRISTAL', tag: 'royal' },
-            { title: '🎤 SHOW ESTRELA POP NEON', tag: 'pop' },
-            { title: '🦋 JARDIM DAS FADAS MÁGICAS', tag: 'fairy' },
-            { title: '🌹 NOITE DE GALA NO TAPETE VERMELHO', tag: 'gala' }
+            { title: '👑 BAILE REAL DE CRISTAL', tip: 'Dica: Vestidos de Gala, Tiaras e Cetros Reais 👑 dão nota 10!', tag: 'royal' },
+            { title: '🎤 TURNÊ MUNDIAL POP STAR', tip: 'Dica: Looks Holográficos, Microfone e Headset 🎤 arrasam!', tag: 'pop' },
+            { title: '🦋 FESTIVAL DAS FADAS ENCANTADAS', tip: 'Dica: Asas de Borboleta, Flores e Pets Fofos 🦋 brilham!', tag: 'fairy' },
+            { title: '🌹 NOITE DE GALA NO TAPETE VERMELHO', tip: 'Dica: Vestido Sereia, Joias de Diamante e Bolsa Clutch 💎!', tag: 'gala' }
         ];
 
         let currentThemeIdx = 0;
-        let currentCat = 'hair';
-        let state = { hair: 0, dress: 0, shoes: 0, crown: 0, bg: 0 };
+        let currentCat = 'dress';
+        let state = { dress: 0, hair: 0, makeup: 0, shoes: 0, crown: 0, bag: 0, wings: 0, bg: 0 };
+        let poseIdx = 0;
         let totalStars = 0;
         let showsCount = 0;
-        let sparkles = Array.from({ length: 28 }, () => ({
+        let flashAlpha = 0;
+        let tick = 0;
+
+        let sparkles = Array.from({ length: 34 }, () => ({
             x: Math.random() * W,
             y: Math.random() * H,
-            r: 1.5 + Math.random() * 3,
-            vy: -0.4 - Math.random() * 0.6
+            r: 1.5 + Math.random() * 3.5,
+            vy: -0.45 - Math.random() * 0.7,
+            phase: Math.random() * Math.PI * 2
         }));
-        let flashAlpha = 0;
+
+        let confetti = [];
 
         function renderWardrobe() {
             itemsGrid.innerHTML = '';
@@ -306,10 +439,14 @@
             list.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'item-card' + (state[currentCat] === item.id ? ' selected' : '');
-                card.innerHTML = `<span class="item-icon">${item.icon}</span><span class="item-name">${item.name}</span>`;
+                card.innerHTML = `
+                    <span class="item-icon">${item.icon}</span>
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-sub">${item.sub || ''}</span>
+                `;
                 card.addEventListener('click', () => {
                     state[currentCat] = item.id;
-                    sparkleSfx(580 + item.id * 45);
+                    playGlamourSound(540 + item.id * 45);
                     renderWardrobe();
                 });
                 itemsGrid.appendChild(card);
@@ -325,19 +462,61 @@
             });
         });
 
+        document.getElementById('btn-random').addEventListener('click', () => {
+            Object.keys(CATALOG).forEach(k => {
+                state[k] = Math.floor(Math.random() * CATALOG[k].length);
+            });
+            playGlamourSound(740, 'sine', 0.2);
+            renderWardrobe();
+            judgeFeedback.innerText = '🎲 Look Surpresa criado! Veja como ficou cada detalhe!';
+        });
+
+        document.getElementById('btn-pose').addEventListener('click', () => {
+            poseIdx = (poseIdx + 1) % 3;
+            playGlamourSound(660, 'triangle', 0.12);
+        });
+
+        document.getElementById('btn-save-photo').addEventListener('click', () => {
+            flashAlpha = 1;
+            playGlamourSound(880, 'sine', 0.25);
+            const link = document.createElement('a');
+            link.download = `glamour-dressup-look-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            judgeFeedback.innerText = '📸 Foto HD salva no seu dispositivo com sucesso!';
+        });
+
         document.getElementById('btn-runway').addEventListener('click', () => {
             const theme = THEMES[currentThemeIdx];
-            let matchBonus = 0;
-            if (CATALOG.hair[state.hair].tag === theme.tag) matchBonus++;
-            if (CATALOG.dress[state.dress].tag === theme.tag) matchBonus += 2;
-            if (CATALOG.shoes[state.shoes].tag === theme.tag) matchBonus++;
-            if (CATALOG.crown[state.crown].tag === theme.tag) matchBonus++;
+            let matches = 0;
+            ['dress', 'hair', 'makeup', 'shoes', 'crown', 'bag', 'wings'].forEach(k => {
+                if (CATALOG[k][state[k]].tag === theme.tag) matches++;
+            });
 
-            const earned = 100 + matchBonus * 50;
+            const baseNote = Math.min(10, 7.6 + matches * 0.45);
+            const n1 = Math.min(10, (baseNote + (Math.random() * 0.4 - 0.1)).toFixed(1));
+            const n2 = Math.min(10, (baseNote + (Math.random() * 0.4 - 0.1)).toFixed(1));
+            const n3 = Math.min(10, (baseNote + (Math.random() * 0.4)).toFixed(1));
+
+            j1Score.innerText = `⭐ ${n1}`;
+            j2Score.innerText = `⭐ ${n2}`;
+            j3Score.innerText = `⭐ ${n3}`;
+
+            const earned = Math.round((parseFloat(n1) + parseFloat(n2) + parseFloat(n3)) * 10);
             totalStars += earned;
             showsCount++;
             flashAlpha = 1;
-            sparkleSfx(880);
+
+            // Spawn runway confetti
+            confetti = Array.from({ length: 55 }, () => ({
+                x: Math.random() * W,
+                y: -20 - Math.random() * 120,
+                vx: (Math.random() - 0.5) * 3,
+                vy: 2.5 + Math.random() * 3.5,
+                c: ['#fde047', '#ec4899', '#00f5d4', '#a855f7', '#ffffff'][Math.floor(Math.random() * 5)]
+            }));
+
+            playGlamourSound(880, 'triangle', 0.3);
 
             hudShows.innerText = showsCount;
             hudScore.innerText = `${totalStars} ⭐`;
@@ -347,201 +526,585 @@
                 SaveHub.updateGameSave('dressup', { highScore: bestScore }, playerName);
             }
 
-            const starsStr = '⭐'.repeat(Math.min(5, 3 + Math.ceil(matchBonus / 2)));
-            judgeFeedback.innerText = ` Nota dos Jurados: ${starsStr} (+${earned} PTS)!`;
+            judgeFeedback.innerText = `🏆 DESFILE DESLUMBRANTE! Você ganhou +${earned} ⭐ dos jurados!`;
 
             currentThemeIdx = (currentThemeIdx + 1) % THEMES.length;
             themeTitle.innerText = THEMES[currentThemeIdx].title;
+            themeTip.innerText = THEMES[currentThemeIdx].tip;
         });
 
-        function drawModel() {
+        function drawStar(cx, cy, spikes, outerR, innerR, color) {
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            const step = Math.PI / spikes;
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerR);
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerR;
+                y = cy + Math.sin(rot) * outerR;
+                ctx.lineTo(x, y);
+                rot += step;
+                x = cx + Math.cos(rot) * innerR;
+                y = cy + Math.sin(rot) * innerR;
+                ctx.lineTo(x, y);
+                rot += step;
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawScene() {
+            tick++;
+            const breathe = Math.sin(tick * 0.05) * 2.5;
+            const isBlinking = (tick % 190) > 182;
+
             const bg = CATALOG.bg[state.bg];
-            const hair = CATALOG.hair[state.hair];
             const dress = CATALOG.dress[state.dress];
+            const hair = CATALOG.hair[state.hair];
+            const make = CATALOG.makeup[state.makeup];
             const shoes = CATALOG.shoes[state.shoes];
             const crown = CATALOG.crown[state.crown];
+            const bag = CATALOG.bag[state.bag];
+            const wings = CATALOG.wings[state.wings];
 
-            // Background Gradient
+            // 1. Rich Stage Background
             const grad = ctx.createLinearGradient(0, 0, 0, H);
             grad.addColorStop(0, bg.c1);
             grad.addColorStop(1, bg.c2);
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
 
-            // Stage spotlight
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            // Ornamental Palace Arches & Curtains
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
             ctx.beginPath();
-            ctx.moveTo(W / 2 - 60, 0);
-            ctx.lineTo(W / 2 + 60, 0);
-            ctx.lineTo(W / 2 + 190, H);
-            ctx.lineTo(W / 2 - 190, H);
+            ctx.arc(W / 2, 230, 210, Math.PI, 0);
+            ctx.lineTo(W / 2 + 210, H);
+            ctx.lineTo(W / 2 - 210, H);
             ctx.closePath();
             ctx.fill();
 
-            // Runway floor
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+            // Stage Spotlights
+            ctx.save();
+            const spot = ctx.createLinearGradient(W / 2, 0, W / 2, H);
+            spot.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+            spot.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+            ctx.fillStyle = spot;
             ctx.beginPath();
-            ctx.ellipse(W / 2, 535, 145, 32, 0, 0, Math.PI * 2);
+            ctx.moveTo(W / 2 - 70, 0);
+            ctx.lineTo(W / 2 + 70, 0);
+            ctx.lineTo(W / 2 + 220, H);
+            ctx.lineTo(W / 2 - 220, H);
+            ctx.closePath();
             ctx.fill();
+            ctx.restore();
+
+            // Runway Carpet & Gold Rim
+            ctx.fillStyle = bg.floor;
+            ctx.beginPath();
+            ctx.ellipse(W / 2, 585, 195, 42, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
             const cx = W / 2;
+            const cy = 165 + breathe;
 
-            // Fairy Wings if selected
-            if (crown.id === 2) {
-                ctx.save();
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
-                ctx.strokeStyle = '#bae6fd';
-                ctx.lineWidth = 3;
+            // 2. Wings / Royal Cape / Aura (Behind Character)
+            ctx.save();
+            if (wings.type === 'butterfly') {
+                const flap = Math.sin(tick * 0.08) * 6;
+                const wGrad = ctx.createRadialGradient(cx, cy + 120, 10, cx, cy + 120, 160);
+                wGrad.addColorStop(0, 'rgba(244, 114, 182, 0.75)');
+                wGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.55)');
+                wGrad.addColorStop(1, 'rgba(253, 224, 71, 0.35)');
+                ctx.fillStyle = wGrad;
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2.5;
+
+                // Upper wings
                 ctx.beginPath();
-                ctx.ellipse(cx - 75, 275, 65, 95, -0.35, 0, Math.PI * 2);
-                ctx.ellipse(cx + 75, 275, 65, 95, 0.35, 0, Math.PI * 2);
+                ctx.ellipse(cx - 88, cy + 95, 78 - flap, 105, -0.42, 0, Math.PI * 2);
+                ctx.ellipse(cx + 88, cy + 95, 78 - flap, 105, 0.42, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
-                ctx.restore();
-            }
 
-            // Back Hair
-            ctx.save();
-            ctx.fillStyle = hair.color;
-            if (hair.style === 'long' || hair.style === 'wavy') {
+                // Lower wings
                 ctx.beginPath();
-                ctx.roundRect(cx - 56, 130, 112, 165, 45);
+                ctx.ellipse(cx - 72, cy + 185, 52 - flap * 0.5, 72, 0.35, 0, Math.PI * 2);
+                ctx.ellipse(cx + 72, cy + 185, 52 - flap * 0.5, 72, -0.35, 0, Math.PI * 2);
                 ctx.fill();
-            } else if (hair.style === 'twin') {
+                ctx.stroke();
+            } else if (wings.type === 'angel') {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2.5;
                 ctx.beginPath();
-                ctx.ellipse(cx - 65, 190, 26, 75, 0.2, 0, Math.PI * 2);
-                ctx.ellipse(cx + 65, 190, 26, 75, -0.2, 0, Math.PI * 2);
+                ctx.ellipse(cx - 95, cy + 110, 82, 115, -0.3, 0, Math.PI * 2);
+                ctx.ellipse(cx + 95, cy + 110, 82, 115, 0.3, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.stroke();
+            } else if (wings.type === 'cape') {
+                const cGrad = ctx.createLinearGradient(cx, cy + 60, cx, 550);
+                cGrad.addColorStop(0, '#991b1b');
+                cGrad.addColorStop(1, '#450a0a');
+                ctx.fillStyle = cGrad;
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(cx - 48, cy + 65);
+                ctx.lineTo(cx + 48, cy + 65);
+                ctx.lineTo(cx + 125, 540);
+                ctx.lineTo(cx - 125, 540);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (wings.type === 'neon_aura') {
+                ctx.strokeStyle = '#00f5d4';
+                ctx.lineWidth = 3;
+                ctx.shadowColor = '#00f5d4';
+                ctx.shadowBlur = 18;
+                ctx.beginPath();
+                ctx.arc(cx, cy + 135, 135 + Math.sin(tick * 0.1) * 6, 0, Math.PI * 2);
+                ctx.stroke();
             }
             ctx.restore();
 
-            // Legs & Shoes
-            ctx.fillStyle = '#fed7aa';
-            ctx.fillRect(cx - 28, 370, 18, 135);
-            ctx.fillRect(cx + 10, 370, 18, 135);
+            // 3. Back Hair Layer with Strands
+            ctx.save();
+            ctx.fillStyle = hair.color;
+            ctx.strokeStyle = hair.shade;
+            ctx.lineWidth = 2.5;
+            if (hair.style === 'long_curls' || hair.style === 'mermaid_waves') {
+                ctx.beginPath();
+                ctx.roundRect(cx - 68, cy - 20, 136, 225, 55);
+                ctx.fill();
+                ctx.stroke();
+                // Side curls
+                ctx.beginPath();
+                ctx.arc(cx - 64, cy + 175, 26, 0, Math.PI * 2);
+                ctx.arc(cx + 64, cy + 175, 26, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            } else if (hair.style === 'twintails') {
+                ctx.beginPath();
+                ctx.ellipse(cx - 82, cy + 65, 28, 115, 0.22, 0, Math.PI * 2);
+                ctx.ellipse(cx + 82, cy + 65, 28, 115, -0.22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            } else if (hair.style === 'royal_bun') {
+                ctx.beginPath();
+                ctx.arc(cx, cy - 68, 34, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+            ctx.restore();
 
-            // Shoes
-            ctx.fillStyle = shoes.color;
+            // 4. Legs, Stockings & Detailed Shoes
+            ctx.save();
+            // Legs base
+            ctx.fillStyle = make.skin;
+            ctx.strokeStyle = make.skinShade;
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(cx - 34, 495, 28, 22, 8);
-            ctx.roundRect(cx + 6, 495, 28, 22, 8);
+            ctx.roundRect(cx - 32, 390, 22, 165, 10);
+            ctx.roundRect(cx + 10, 390, 22, 165, 10);
+            ctx.fill();
+            ctx.stroke();
+
+            // Stockings / Lace Tights
+            if (shoes.stockings !== 'transparent') {
+                ctx.fillStyle = shoes.stockings;
+                ctx.beginPath();
+                ctx.roundRect(cx - 32, 415, 22, 140, 10);
+                ctx.roundRect(cx + 10, 415, 22, 140, 10);
+                ctx.fill();
+            }
+
+            // Shoes styles
+            ctx.fillStyle = shoes.color;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            if (shoes.style === 'boots') {
+                ctx.beginPath();
+                ctx.roundRect(cx - 35, 465, 28, 95, 10);
+                ctx.roundRect(cx + 7, 465, 28, 95, 10);
+                ctx.fill();
+                ctx.stroke();
+                // Laces
+                ctx.strokeStyle = '#fde047';
+                for (let y = 480; y < 540; y += 14) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx - 30, y); ctx.lineTo(cx - 12, y);
+                    ctx.moveTo(cx + 12, y); ctx.lineTo(cx + 30, y);
+                    ctx.stroke();
+                }
+            } else if (shoes.style === 'ballet') {
+                ctx.beginPath();
+                ctx.roundRect(cx - 35, 535, 28, 25, 10);
+                ctx.roundRect(cx + 7, 535, 28, 25, 10);
+                ctx.fill();
+                ctx.stroke();
+                // Crisscross ribbons up the legs
+                ctx.strokeStyle = shoes.color;
+                ctx.lineWidth = 2.5;
+                for (let y = 465; y < 535; y += 18) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx - 32, y); ctx.lineTo(cx - 10, y + 12);
+                    ctx.moveTo(cx - 10, y); ctx.lineTo(cx - 32, y + 12);
+                    ctx.moveTo(cx + 10, y); ctx.lineTo(cx + 32, y + 12);
+                    ctx.moveTo(cx + 32, y); ctx.lineTo(cx + 10, y + 12);
+                    ctx.stroke();
+                }
+            } else {
+                // High Heels with crystal buckle
+                ctx.beginPath();
+                ctx.roundRect(cx - 36, 532, 30, 26, 9);
+                ctx.roundRect(cx + 6, 532, 30, 26, 9);
+                ctx.fill();
+                ctx.stroke();
+                drawStar(cx - 21, 540, 4, 6, 2.5, '#fde047');
+                drawStar(cx + 21, 540, 4, 6, 2.5, '#fde047');
+            }
+            ctx.restore();
+
+            // 5. Neck, Collarbone & Arms (with Pose variation)
+            ctx.save();
+            ctx.fillStyle = make.skin;
+            ctx.strokeStyle = make.skinShade;
+            ctx.lineWidth = 2;
+            // Neck & shoulders
+            ctx.beginPath();
+            ctx.roundRect(cx - 14, cy + 40, 28, 42, 8);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(cx - 52, cy + 68, 104, 34, 16);
             ctx.fill();
 
             // Arms
-            ctx.strokeStyle = '#fed7aa';
-            ctx.lineWidth = 16;
+            ctx.strokeStyle = make.skin;
+            ctx.lineWidth = 17;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.beginPath();
-            ctx.moveTo(cx - 38, 240); ctx.lineTo(cx - 72, 330);
-            ctx.moveTo(cx + 38, 240); ctx.lineTo(cx + 72, 330);
-            ctx.stroke();
+            if (poseIdx === 0) {
+                // Left hand on hip, right hand holding bag/wand
+                ctx.moveTo(cx - 46, cy + 78);
+                ctx.lineTo(cx - 78, cy + 125);
+                ctx.lineTo(cx - 45, cy + 160);
 
-            // Neck & Torso base
-            ctx.fillStyle = '#fed7aa';
-            ctx.fillRect(cx - 12, 195, 24, 35);
+                ctx.moveTo(cx + 46, cy + 78);
+                ctx.lineTo(cx + 84, cy + 145);
+            } else if (poseIdx === 1) {
+                // Runway wave pose
+                ctx.moveTo(cx - 46, cy + 78);
+                ctx.lineTo(cx - 88, cy + 35);
 
-            // Dress
-            ctx.save();
-            const dGrad = ctx.createLinearGradient(cx, 225, cx, 475);
-            dGrad.addColorStop(0, dress.color1);
-            dGrad.addColorStop(1, dress.color2);
-            ctx.fillStyle = dGrad;
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2.5;
-
-            ctx.beginPath();
-            ctx.moveTo(cx - 36, 225);
-            ctx.lineTo(cx + 36, 225);
-            if (dress.style === 'ballgown') {
-                ctx.lineTo(cx + 28, 295);
-                ctx.quadraticCurveTo(cx + 125, 380, cx + 115, 480);
-                ctx.lineTo(cx - 115, 480);
-                ctx.quadraticCurveTo(cx - 125, 380, cx - 28, 295);
-            } else if (dress.style === 'mini') {
-                ctx.lineTo(cx + 58, 385);
-                ctx.lineTo(cx - 58, 385);
+                ctx.moveTo(cx + 46, cy + 78);
+                ctx.lineTo(cx + 82, cy + 150);
             } else {
-                ctx.lineTo(cx + 85, 445);
-                ctx.lineTo(cx - 85, 445);
+                // Diva both hands elegant pose
+                ctx.moveTo(cx - 46, cy + 78);
+                ctx.lineTo(cx - 82, cy + 145);
+                ctx.moveTo(cx + 46, cy + 78);
+                ctx.lineTo(cx + 78, cy + 120);
+                ctx.lineTo(cx + 46, cy + 158);
             }
-            ctx.closePath();
-            ctx.fill();
             ctx.stroke();
             ctx.restore();
 
-            // Head
-            ctx.fillStyle = '#fed7aa';
-            ctx.beginPath();
-            ctx.arc(cx, 155, 46, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Eyes & Lashes
-            ctx.fillStyle = '#1e1b4b';
-            ctx.beginPath();
-            ctx.arc(cx - 16, 155, 6.5, 0, Math.PI * 2);
-            ctx.arc(cx + 16, 155, 6.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(cx - 14, 153, 2.5, 0, Math.PI * 2);
-            ctx.arc(cx + 18, 153, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Rosy Cheeks & Smile
-            ctx.fillStyle = 'rgba(244, 114, 182, 0.45)';
-            ctx.beginPath();
-            ctx.arc(cx - 26, 168, 8, 0, Math.PI * 2);
-            ctx.arc(cx + 26, 168, 8, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.strokeStyle = '#e11d48';
+            // 6. Detailed Couture Dress
+            ctx.save();
+            const dGrad = ctx.createLinearGradient(cx, cy + 72, cx, 530);
+            dGrad.addColorStop(0, dress.c1);
+            dGrad.addColorStop(1, dress.c2);
+            ctx.fillStyle = dGrad;
+            ctx.strokeStyle = dress.accent;
             ctx.lineWidth = 3;
+
+            if (dress.style === 'ballgown') {
+                // Puff sleeves
+                ctx.beginPath();
+                ctx.arc(cx - 52, cy + 82, 20, 0, Math.PI * 2);
+                ctx.arc(cx + 52, cy + 82, 20, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Bodice & Wide Layered Skirt
+                ctx.beginPath();
+                ctx.moveTo(cx - 42, cy + 72);
+                ctx.lineTo(cx + 42, cy + 72);
+                ctx.lineTo(cx + 30, cy + 155);
+                ctx.quadraticCurveTo(cx + 145, cy + 230, cx + 135, 520);
+                ctx.lineTo(cx - 135, 520);
+                ctx.quadraticCurveTo(cx - 145, cy + 230, cx - 30, cy + 155);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Corset lacing & Ruffle scallops
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+                ctx.lineWidth = 2;
+                for (let y = cy + 86; y < cy + 148; y += 14) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx - 14, y);
+                    ctx.lineTo(cx + 14, y + 8);
+                    ctx.moveTo(cx + 14, y);
+                    ctx.lineTo(cx - 14, y + 8);
+                    ctx.stroke();
+                }
+                // Gems along skirt
+                for (let x = cx - 95; x <= cx + 95; x += 38) {
+                    drawStar(x, 485, 4, 7, 3, dress.accent);
+                }
+            } else if (dress.style === 'popstar') {
+                // Jacket & Pleated Skirt
+                ctx.beginPath();
+                ctx.moveTo(cx - 44, cy + 72);
+                ctx.lineTo(cx + 44, cy + 72);
+                ctx.lineTo(cx + 34, cy + 145);
+                ctx.lineTo(cx + 76, 405);
+                ctx.lineTo(cx - 76, 405);
+                ctx.lineTo(cx - 34, cy + 145);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Pleats & Star Belt
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                for (let x = cx - 50; x <= cx + 50; x += 20) {
+                    ctx.beginPath();
+                    ctx.moveTo(x * 0.4 + cx * 0.6, cy + 150);
+                    ctx.lineTo(x, 405);
+                    ctx.stroke();
+                }
+                drawStar(cx, cy + 150, 5, 13, 6, '#fde047');
+            } else if (dress.style === 'mermaid') {
+                ctx.beginPath();
+                ctx.moveTo(cx - 40, cy + 72);
+                ctx.lineTo(cx + 40, cy + 72);
+                ctx.lineTo(cx + 32, cy + 150);
+                ctx.lineTo(cx + 46, 415);
+                ctx.lineTo(cx + 105, 525);
+                ctx.lineTo(cx - 105, 525);
+                ctx.lineTo(cx - 46, 415);
+                ctx.lineTo(cx - 32, cy + 150);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                drawStar(cx, cy + 95, 4, 9, 4, '#fde047');
+            } else {
+                // Fairy / Ballet Petal Tutu Dress
+                ctx.beginPath();
+                ctx.moveTo(cx - 40, cy + 72);
+                ctx.lineTo(cx + 40, cy + 72);
+                ctx.lineTo(cx + 28, cy + 150);
+                ctx.quadraticCurveTo(cx + 125, cy + 195, cx + 98, 425);
+                ctx.lineTo(cx - 98, 425);
+                ctx.quadraticCurveTo(cx - 125, cy + 195, cx - 28, cy + 150);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // 7. Jewelry on Neck (if Diamonds selected)
+            if (crown.type === 'diamonds' || crown.type === 'tiara') {
+                ctx.save();
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(cx, cy + 62, 22, 0.15 * Math.PI, 0.85 * Math.PI);
+                ctx.stroke();
+                drawStar(cx, cy + 86, 4, 7, 3, '#38bdf8');
+                ctx.restore();
+            }
+
+            // 8. Detailed Head & Anime/Fashion Face
+            ctx.save();
+            // Ears & Earrings
+            ctx.fillStyle = make.skin;
             ctx.beginPath();
-            ctx.arc(cx, 168, 11, 0.15 * Math.PI, 0.85 * Math.PI);
+            ctx.arc(cx - 52, cy + 4, 10, 0, Math.PI * 2);
+            ctx.arc(cx + 52, cy + 4, 10, 0, Math.PI * 2);
+            ctx.fill();
+            // Pearl / Diamond Earrings
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(cx - 53, cy + 15, 4.5, 0, Math.PI * 2);
+            ctx.arc(cx + 53, cy + 15, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Face Contour
+            ctx.fillStyle = make.skin;
+            ctx.strokeStyle = make.skinShade;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, 52, 58, 0, 0, Math.PI * 2);
+            ctx.fill();
             ctx.stroke();
 
-            // Front Hair Bangs
-            ctx.fillStyle = hair.color;
+            // Eyeshadow Shimmer
+            ctx.fillStyle = make.shadow;
+            ctx.globalAlpha = 0.55;
             ctx.beginPath();
-            ctx.arc(cx, 142, 48, Math.PI, 0);
+            ctx.ellipse(cx - 21, cy - 4, 14, 9, -0.1, Math.PI, 0);
+            ctx.ellipse(cx + 21, cy - 4, 14, 9, 0.1, Math.PI, 0);
             ctx.fill();
-            if (hair.style === 'bun') {
+            ctx.globalAlpha = 1;
+
+            // Detailed Expressive Eyes (or Blink)
+            [-21, 21].forEach(ox => {
+                if (isBlinking) {
+                    ctx.strokeStyle = '#1e1b4b';
+                    ctx.lineWidth = 3.5;
+                    ctx.beginPath();
+                    ctx.arc(cx + ox, cy, 11, 0.1 * Math.PI, 0.9 * Math.PI);
+                    ctx.stroke();
+                } else {
+                    // Sclera
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.ellipse(cx + ox, cy, 12, 9.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Iris
+                    ctx.fillStyle = make.eye;
+                    ctx.beginPath();
+                    ctx.arc(cx + ox, cy + 1, 7.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Pupil
+                    ctx.fillStyle = '#0f172a';
+                    ctx.beginPath();
+                    ctx.arc(cx + ox, cy + 1, 3.8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Starlight Catchlights
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(cx + ox - 2.5, cy - 2.5, 2.6, 0, Math.PI * 2);
+                    ctx.arc(cx + ox + 3, cy + 3, 1.4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Eyeliner & Lashes
+                    ctx.strokeStyle = '#1e1b4b';
+                    ctx.lineWidth = 3.2;
+                    ctx.beginPath();
+                    ctx.arc(cx + ox, cy, 12, 1.08 * Math.PI, 1.95 * Math.PI);
+                    ctx.stroke();
+                }
+
+                // Eyebrows
+                ctx.strokeStyle = hair.shade;
+                ctx.lineWidth = 2.5;
                 ctx.beginPath();
-                ctx.arc(cx, 92, 24, 0, Math.PI * 2);
-                ctx.fill();
-            }
+                ctx.arc(cx + ox, cy - 8, 12, 1.2 * Math.PI, 1.8 * Math.PI);
+                ctx.stroke();
+            });
 
-            // Crown / Accessory on head or neck
-            ctx.font = '38px serif';
+            // Soft Blush
+            ctx.fillStyle = 'rgba(244, 114, 182, 0.42)';
+            ctx.beginPath();
+            ctx.ellipse(cx - 30, cy + 15, 11, 6.5, 0, 0, Math.PI * 2);
+            ctx.ellipse(cx + 30, cy + 15, 11, 6.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cute Nose highlight
+            ctx.fillStyle = make.skinShade;
+            ctx.beginPath();
+            ctx.arc(cx, cy + 10, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Glossy Lips
+            ctx.fillStyle = make.lip;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + 28, 12, 6.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.beginPath();
+            ctx.ellipse(cx - 3, cy + 26, 4.5, 1.8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // 9. Front Hair Bangs & Specular Shine Ribbon
+            ctx.save();
+            ctx.fillStyle = hair.color;
+            ctx.strokeStyle = hair.shade;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy - 14, 54, Math.PI, 0);
+            ctx.quadraticCurveTo(cx + 56, cy + 25, cx + 44, cy + 42);
+            ctx.quadraticCurveTo(cx + 38, cy - 10, cx, cy - 18);
+            ctx.quadraticCurveTo(cx - 38, cy - 10, cx - 44, cy + 42);
+            ctx.quadraticCurveTo(cx - 56, cy + 25, cx - 54, cy - 14);
+            ctx.fill();
+            ctx.stroke();
+
+            // Hair Gloss Highlight Band
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+            ctx.beginPath();
+            ctx.ellipse(cx, cy - 36, 34, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // 10. Headpiece / Tiara / Crown
+            ctx.save();
+            ctx.font = '44px serif';
             ctx.textAlign = 'center';
-            if (crown.id === 4) {
-                ctx.fillText('💎', cx, 232);
-            } else if (crown.id !== 2) {
-                ctx.fillText(crown.icon, cx, 104);
-            }
+            ctx.fillText(crown.icon, cx, cy - 52);
+            ctx.restore();
 
-            // Floating Sparkles
-            ctx.fillStyle = '#fde047';
+            // 11. Handbag / Wand / Royal Pet
+            ctx.save();
+            ctx.font = '52px serif';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(253, 224, 71, 0.6)';
+            ctx.shadowBlur = 14;
+            if (bag.id === 1 || bag.id === 5) {
+                // Cute Pet standing beside the model on the runway
+                ctx.fillText(bag.icon, cx + 108, 560 + Math.sin(tick * 0.1) * 4);
+                ctx.font = '22px serif';
+                ctx.fillText('👑', cx + 108, 518 + Math.sin(tick * 0.1) * 4);
+            } else {
+                // Held in right hand
+                ctx.fillText(bag.icon, cx + 88, cy + 160);
+            }
+            ctx.restore();
+
+            // 12. Floating Sparkles & Runway Confetti
             for (const s of sparkles) {
                 s.y += s.vy;
                 if (s.y < 0) { s.y = H; s.x = Math.random() * W; }
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fill();
+                const sc = 0.6 + Math.sin(tick * 0.08 + s.phase) * 0.4;
+                drawStar(s.x, s.y, 4, s.r * 2.2 * sc, s.r * 0.8 * sc, '#fde047');
+            }
+
+            for (let i = confetti.length - 1; i >= 0; i--) {
+                const c = confetti[i];
+                c.x += c.vx;
+                c.y += c.vy;
+                ctx.fillStyle = c.c;
+                ctx.fillRect(c.x, c.y, 8, 5);
+                if (c.y > H) confetti.splice(i, 1);
             }
 
             // Camera Flash
             if (flashAlpha > 0) {
                 ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha})`;
                 ctx.fillRect(0, 0, W, H);
-                flashAlpha = Math.max(0, flashAlpha - 0.06);
+                flashAlpha = Math.max(0, flashAlpha - 0.05);
             }
 
-            requestAnimationFrame(drawModel);
+            requestAnimationFrame(drawScene);
         }
 
         renderWardrobe();
-        drawModel();
+        drawScene();
     </script>
 </body>
 </html>
