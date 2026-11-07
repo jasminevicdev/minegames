@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Jewelry & Tiara Atelier 💎👑 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #581c87 0%, #170529 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #fde047;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #fde047;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .atelier-grid {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .atelier-grid { grid-template-columns: 1fr; }
+        }
+        .velvet-box {
+            background: radial-gradient(circle, #4c1d95 0%, #1e0936 100%);
+            border: 3px solid #fde047;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 35px rgba(253, 224, 71, 0.3);
+        }
+        canvas {
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+        }
+        .gems-panel {
+            background: rgba(34, 8, 54, 0.92);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.9rem; margin-bottom: 5px; }
+        .opt-row { display: flex; gap: 9px; flex-wrap: wrap; }
+        .opt-btn {
+            min-width: 45px;
+            height: 45px;
+            padding: 0 10px;
+            border-radius: 14px;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            transition: transform 0.15s;
+        }
+        .opt-btn:hover { transform: scale(1.1); border-color: #fde047; }
+        .btn-polish {
+            margin-top: auto;
+            background: linear-gradient(135deg, #fde047, #f472b6, #38bdf8);
+            color: #1e0936;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">JOIAS: <strong id="hud-score">0 💎</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 💎</strong></div>
+        </div>
+    </div>
+
+    <div class="atelier-grid">
+        <div class="velvet-box">
+            <canvas id="jewel-canvas" width="440" height="440"></canvas>
+            <p id="jewel-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Crie Tiaras Reais e Colares de Diamante dignos de uma Princesa! 💎👑
+            </p>
+        </div>
+
+        <div class="gems-panel">
+            <div>
+                <div class="label">👑 TIPO DE JOIA REAL:</div>
+                <div class="opt-row" id="row-type"></div>
+            </div>
+            <div>
+                <div class="label">✨ METAL NOBRE (OURO, ROSÉ, PRATA):</div>
+                <div class="opt-row" id="row-metal"></div>
+            </div>
+            <div>
+                <div class="label">💎 PEDRA PRECIOSA PRINCIPAL:</div>
+                <div class="opt-row" id="row-gem"></div>
+            </div>
+            <div>
+                <div class="label">🌟 PINGENTE REAL DO CENTRO:</div>
+                <div class="opt-row" id="row-charm"></div>
+            </div>
+            <button class="btn-polish" id="btn-polish">💎 CRAVEJAR & POLIR JOIA REAL! (+160 💎)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('jewel-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const jewelMsg = document.getElementById('jewel-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('jewelry', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 💎`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 780) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(freq * 1.4, audioCtx.currentTime + 0.16);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.16);
+            } catch (e) {}
+        }
+
+        const TYPES = [
+            { id: 'tiara', icon: '👑', label: 'Tiara de Princesa' },
+            { id: 'necklace', icon: '📿', label: 'Colar Imperial' }
+        ];
+        const METALS = ['#fde047', '#f9a8d4', '#e2e8f0', '#c084fc', '#67e8f9'];
+        const GEMS = ['#ec4899', '#38bdf8', '#ef4444', '#10b981', '#a855f7', '#ffffff'];
+        const CHARMS = ['💎', '💖', '🦋', '🌟', '🌸', '🌙'];
+
+        let jewel = {
+            type: 'tiara',
+            metal: '#fde047',
+            gem: '#ec4899',
+            charm: '💎',
+            glints: []
+        };
+        let score = 0;
+        let angle = 0;
+
+        function buildMenu() {
+            const tRow = document.getElementById('row-type');
+            TYPES.forEach(item => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = item.icon;
+                b.onclick = () => {
+                    jewel.type = item.id;
+                    sfx(680);
+                    jewelMsg.innerText = `Modelo selecionado: ${item.label}! ✨`;
+                };
+                tRow.appendChild(b);
+            });
+
+            const mRow = document.getElementById('row-metal');
+            METALS.forEach(m => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = m;
+                b.onclick = () => { jewel.metal = m; sfx(740); };
+                mRow.appendChild(b);
+            });
+
+            const gRow = document.getElementById('row-gem');
+            GEMS.forEach(g => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = g;
+                b.onclick = () => { jewel.gem = g; sfx(840); };
+                gRow.appendChild(b);
+            });
+
+            const cRow = document.getElementById('row-charm');
+            CHARMS.forEach(c => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = c;
+                b.onclick = () => { jewel.charm = c; sfx(920); };
+                cRow.appendChild(b);
+            });
+        }
+
+        document.getElementById('btn-polish').onclick = () => {
+            score += 160;
+            sfx(1040);
+            hudScore.innerText = `${score} 💎`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 💎`;
+                SaveHub.updateGameSave('jewelry', { highScore: bestScore }, playerName);
+            }
+            for (let i = 0; i < 18; i++) {
+                jewel.glints.push({
+                    x: W / 2 + (Math.random() - 0.5) * 260,
+                    y: H / 2 + (Math.random() - 0.5) * 200,
+                    life: 50
+                });
+            }
+            jewelMsg.innerText = '👑 JOIA REAL FINALIZADA COM BRILHO MÁGICO! +160 💎';
+        };
+
+        function drawFacetGem(x, y, r, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const a = (i * Math.PI) / 3;
+                const px = x + Math.cos(a) * r;
+                const py = y + Math.sin(a) * r;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Inner shine
+            ctx.fillStyle = 'rgba(255,255,255,0.55)';
+            ctx.beginPath();
+            ctx.arc(x - r * 0.25, y - r * 0.25, r * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawJewel() {
+            angle += 0.04;
+            const cx = W / 2;
+            const cy = H / 2;
+
+            // Royal Velvet Cushion background
+            const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 230);
+            grad.addColorStop(0, '#581c87');
+            grad.addColorStop(1, '#1e052b');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            if (jewel.type === 'tiara') {
+                // Tiara base arch
+                ctx.strokeStyle = jewel.metal;
+                ctx.lineWidth = 14;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 55, 140, 48, 0, Math.PI, Math.PI * 2);
+                ctx.stroke();
+
+                // Royal Spires
+                const peaks = [
+                    { dx: -110, h: 65, r: 14 },
+                    { dx: -60, h: 105, r: 18 },
+                    { dx: 0, h: 145, r: 24 },
+                    { dx: 60, h: 105, r: 18 },
+                    { dx: 110, h: 65, r: 14 }
+                ];
+                peaks.forEach(p => {
+                    ctx.strokeStyle = jewel.metal;
+                    ctx.lineWidth = 8;
+                    ctx.beginPath();
+                    ctx.moveTo(cx + p.dx - 24, cy + 25);
+                    ctx.lineTo(cx + p.dx, cy + 25 - p.h);
+                    ctx.lineTo(cx + p.dx + 24, cy + 25);
+                    ctx.stroke();
+
+                    drawFacetGem(cx + p.dx, cy + 25 - p.h, p.r, jewel.gem);
+                });
+
+                // Centerpiece charm
+                ctx.font = '56px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(jewel.charm, cx, cy + 12);
+            } else {
+                // Royal Necklace chain
+                ctx.strokeStyle = jewel.metal;
+                ctx.lineWidth = 10;
+                ctx.beginPath();
+                ctx.arc(cx, cy - 30, 125, 0.15, Math.PI - 0.15);
+                ctx.stroke();
+
+                // Pearls & Gems along necklace
+                for (let i = 1; i <= 7; i++) {
+                    const a = 0.2 + (i / 8) * (Math.PI - 0.4);
+                    const gx = cx + Math.cos(a) * 125;
+                    const gy = cy - 30 + Math.sin(a) * 125;
+                    drawFacetGem(gx, gy, i === 4 ? 22 : 14, jewel.gem);
+                }
+
+                // Hanging Center Pendant
+                ctx.font = '64px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(jewel.charm, cx, cy + 165);
+            }
+
+            // Ambient Twinkles
+            const sx = cx + Math.cos(angle * 2) * 110;
+            const sy = cy - 40 + Math.sin(angle * 3) * 60;
+            ctx.font = '26px serif';
+            ctx.fillText('✨', sx, sy);
+
+            for (let i = jewel.glints.length - 1; i >= 0; i--) {
+                const g = jewel.glints[i];
+                g.life--;
+                ctx.font = '24px serif';
+                ctx.fillText('✨', g.x, g.y);
+                if (g.life <= 0) jewel.glints.splice(i, 1);
+            }
+
+            requestAnimationFrame(drawJewel);
+        }
+
+        buildMenu();
+        drawJewel();
+    </script>
+</body>
+</html>

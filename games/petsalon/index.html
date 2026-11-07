@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kawaii Pet Salon & Boutique 🐾🎀 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #701a75 0%, #2e0530 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #f9a8d4;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .salon-grid {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .salon-grid { grid-template-columns: 1fr; }
+        }
+        .pet-stage {
+            background: linear-gradient(180deg, #581c87, #3b0764);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 32px rgba(244, 114, 182, 0.35);
+        }
+        canvas {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .care-panel {
+            background: rgba(42, 8, 45, 0.92);
+            border: 3px solid #f9a8d4;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; margin-bottom: 6px; }
+        .opt-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .opt-btn {
+            min-width: 46px;
+            height: 46px;
+            padding: 0 10px;
+            border-radius: 14px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .opt-btn:hover, .opt-btn.active {
+            transform: scale(1.1);
+            border-color: #fde047;
+            box-shadow: 0 0 12px rgba(253, 224, 71, 0.5);
+        }
+        .action-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .tool-btn {
+            background: rgba(236, 72, 153, 0.25);
+            border: 2px solid #f472b6;
+            color: #fff;
+            padding: 10px 6px;
+            border-radius: 16px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .tool-btn:hover {
+            background: rgba(236, 72, 153, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-finish {
+            margin-top: auto;
+            background: linear-gradient(135deg, #ec4899, #fde047);
+            color: #310719;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">MIMOS: <strong id="hud-score">0 🐾</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🐾</strong></div>
+        </div>
+    </div>
+
+    <div class="salon-grid">
+        <div class="pet-stage">
+            <canvas id="pet-canvas" width="440" height="440"></canvas>
+            <p id="pet-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Escolha seu bichinho fofo, dê banho de espuma e vista acessórios! 🐾💖
+            </p>
+        </div>
+
+        <div class="care-panel">
+            <div>
+                <div class="label">🐾 ESCOLHA O BICHINHO KAWAII:</div>
+                <div class="opt-row" id="row-species"></div>
+            </div>
+            <div>
+                <div class="label">🎨 COR DO PELINHO MACIO:</div>
+                <div class="opt-row" id="row-fur"></div>
+            </div>
+            <div>
+                <div class="label">🎀 LAÇO, COROA OU CHAPÉU:</div>
+                <div class="opt-row" id="row-hat"></div>
+            </div>
+            <div>
+                <div class="label">💎 COLEIRA & ACESSÓRIO:</div>
+                <div class="opt-row" id="row-collar"></div>
+            </div>
+            <div>
+                <div class="label">🛁 CUIDADOS DE SPA PET:</div>
+                <div class="action-row">
+                    <button class="tool-btn" id="btn-bath">🫧 Espuma</button>
+                    <button class="tool-btn" id="btn-brush">🪮 Escovar</button>
+                    <button class="tool-btn" id="btn-treat">🍓 Petisco</button>
+                </div>
+            </div>
+            <button class="btn-finish" id="btn-finish">✨ DESFILAR PET FOFO! (+150 🐾)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('pet-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const petMsg = document.getElementById('pet-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('petsalon', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🐾`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 640, type = 'triangle') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(freq * 1.25, audioCtx.currentTime + 0.14);
+                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.15);
+            } catch (e) {}
+        }
+
+        const SPECIES = [
+            { id: 'cat', icon: '🐱', name: 'Gatinha Persa' },
+            { id: 'dog', icon: '🐶', name: 'Lulu Pomerânia' },
+            { id: 'bunny', icon: '🐰', name: 'Coelhinha Mágica' },
+            { id: 'unicorn', icon: '🦄', name: 'Pônei Unicórnio' }
+        ];
+        const FURS = ['#fdf2f8', '#fbcfe8', '#fde68a', '#e9d5ff', '#bae6fd', '#fed7aa'];
+        const HATS = ['🎀', '👑', '🌸', '🎩', '🍓', '⭐'];
+        const COLLARS = ['💖', '🔔', '💎', '🦋', '🌙'];
+
+        let pet = {
+            species: 'cat',
+            fur: '#fdf2f8',
+            hat: '🎀',
+            collar: '💖',
+            bubbles: [],
+            hearts: [],
+            cleanLevel: 1
+        };
+        let score = 0;
+        let tick = 0;
+
+        function addScore(pts, msg) {
+            score += pts;
+            hudScore.innerText = `${score} 🐾`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🐾`;
+                SaveHub.updateGameSave('petsalon', { highScore: bestScore }, playerName);
+            }
+            if (msg) petMsg.innerText = msg;
+        }
+
+        function spawnParticles(list, emoji, count = 8) {
+            for (let i = 0; i < count; i++) {
+                list.push({
+                    x: W / 2 + (Math.random() - 0.5) * 180,
+                    y: H / 2 + (Math.random() - 0.5) * 150,
+                    vy: -1 - Math.random() * 1.8,
+                    life: 60 + Math.random() * 30,
+                    emoji
+                });
+            }
+        }
+
+        function buildMenu() {
+            const spRow = document.getElementById('row-species');
+            SPECIES.forEach(s => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = s.icon;
+                b.title = s.name;
+                b.onclick = () => {
+                    pet.species = s.id;
+                    sfx(620);
+                    petMsg.innerText = `Você escolheu: ${s.name}! 💕`;
+                };
+                spRow.appendChild(b);
+            });
+
+            const furRow = document.getElementById('row-fur');
+            FURS.forEach(c => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = c;
+                b.onclick = () => { pet.fur = c; sfx(540); };
+                furRow.appendChild(b);
+            });
+
+            const hatRow = document.getElementById('row-hat');
+            HATS.forEach(h => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = h;
+                b.onclick = () => { pet.hat = h; sfx(720); };
+                hatRow.appendChild(b);
+            });
+
+            const colRow = document.getElementById('row-collar');
+            COLLARS.forEach(col => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = col;
+                b.onclick = () => { pet.collar = col; sfx(790); };
+                colRow.appendChild(b);
+            });
+        }
+
+        document.getElementById('btn-bath').onclick = () => {
+            sfx(500, 'sine');
+            spawnParticles(pet.bubbles, '🫧', 12);
+            addScore(35, '🫧 Banho de espuma cheiroso aplicado! +35 🐾');
+        };
+        document.getElementById('btn-brush').onclick = () => {
+            sfx(680, 'sine');
+            spawnParticles(pet.hearts, '✨', 10);
+            addScore(40, '🪮 Pelinho escovado e super macio! +40 🐾');
+        };
+        document.getElementById('btn-treat').onclick = () => {
+            sfx(820, 'triangle');
+            spawnParticles(pet.hearts, '💖', 12);
+            addScore(50, '🍓 Nhac! Seu pet amou o petisco doce! +50 🐾');
+        };
+        document.getElementById('btn-finish').onclick = () => {
+            sfx(920, 'triangle');
+            spawnParticles(pet.hearts, '🌟', 16);
+            addScore(150, '🏆 DESFILE PET PERFEITO! +150 🐾');
+        };
+
+        canvas.addEventListener('click', () => {
+            sfx(760);
+            spawnParticles(pet.hearts, '💕', 6);
+            addScore(15, 'Carinho no bichinho! +15 🐾');
+        });
+
+        function drawPet() {
+            tick += 0.05;
+            const bounce = Math.sin(tick) * 5;
+            const cx = W / 2;
+            const cy = H / 2 + 25 + bounce;
+
+            // Cozy cushion background
+            const grad = ctx.createRadialGradient(cx, cy, 30, cx, cy, 220);
+            grad.addColorStop(0, '#86198f');
+            grad.addColorStop(1, '#3b0764');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Royal Pillow
+            ctx.fillStyle = '#ec4899';
+            ctx.beginPath();
+            ctx.ellipse(cx, 365, 145, 38, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Ears based on species
+            ctx.fillStyle = pet.fur;
+            if (pet.species === 'bunny') {
+                ctx.beginPath();
+                ctx.ellipse(cx - 42, cy - 125, 20, 58, -0.15, 0, Math.PI * 2);
+                ctx.ellipse(cx + 42, cy - 125, 20, 58, 0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#f472b6';
+                ctx.beginPath();
+                ctx.ellipse(cx - 42, cy - 125, 10, 40, -0.15, 0, Math.PI * 2);
+                ctx.ellipse(cx + 42, cy - 125, 10, 40, 0.15, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (pet.species === 'dog') {
+                ctx.beginPath();
+                ctx.ellipse(cx - 72, cy - 55, 26, 48, 0.4, 0, Math.PI * 2);
+                ctx.ellipse(cx + 72, cy - 55, 26, 48, -0.4, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Cat / Unicorn ears
+                ctx.beginPath();
+                ctx.moveTo(cx - 75, cy - 55);
+                ctx.lineTo(cx - 48, cy - 125);
+                ctx.lineTo(cx - 15, cy - 75);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(cx + 75, cy - 55);
+                ctx.lineTo(cx + 48, cy - 125);
+                ctx.lineTo(cx + 15, cy - 75);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Fluffy Body
+            ctx.fillStyle = pet.fur;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + 55, 78, 65, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Paws
+            ctx.beginPath();
+            ctx.arc(cx - 45, cy + 108, 20, 0, Math.PI * 2);
+            ctx.arc(cx + 45, cy + 108, 20, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Head
+            ctx.beginPath();
+            ctx.arc(cx, cy - 30, 74, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Unicorn horn if unicorn
+            if (pet.species === 'unicorn') {
+                ctx.fillStyle = '#fde047';
+                ctx.beginPath();
+                ctx.moveTo(cx - 12, cy - 95);
+                ctx.lineTo(cx, cy - 155);
+                ctx.lineTo(cx + 12, cy - 95);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Cute anime eyes
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            ctx.arc(cx - 28, cy - 32, 13, 0, Math.PI * 2);
+            ctx.arc(cx + 28, cy - 32, 13, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eye sparkles
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(cx - 32, cy - 36, 5, 0, Math.PI * 2);
+            ctx.arc(cx + 24, cy - 36, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Rosy cheeks
+            ctx.fillStyle = 'rgba(244, 114, 182, 0.55)';
+            ctx.beginPath();
+            ctx.ellipse(cx - 46, cy - 14, 14, 8, 0, 0, Math.PI * 2);
+            ctx.ellipse(cx + 46, cy - 14, 14, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cute nose & smile
+            ctx.fillStyle = '#ec4899';
+            ctx.beginPath();
+            ctx.arc(cx, cy - 18, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#1e1b4b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx - 7, cy - 12, 7, 0, Math.PI);
+            ctx.arc(cx + 7, cy - 12, 7, 0, Math.PI);
+            ctx.stroke();
+
+            // Collar ribbon & charm
+            ctx.strokeStyle = '#ec4899';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(cx, cy + 5, 56, 0.35, Math.PI - 0.35);
+            ctx.stroke();
+
+            ctx.font = '34px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(pet.collar, cx, cy + 52);
+
+            // Hat / Bow
+            ctx.font = '48px serif';
+            ctx.fillText(pet.hat, cx, cy - 92);
+
+            // Floating Bubbles & Hearts
+            [pet.bubbles, pet.hearts].forEach(arr => {
+                for (let i = arr.length - 1; i >= 0; i--) {
+                    const p = arr[i];
+                    p.y += p.vy;
+                    p.life--;
+                    ctx.font = '28px serif';
+                    ctx.fillText(p.emoji, p.x, p.y);
+                    if (p.life <= 0) arr.splice(i, 1);
+                }
+            });
+
+            requestAnimationFrame(drawPet);
+        }
+
+        buildMenu();
+        drawPet();
+    </script>
+</body>
+</html>

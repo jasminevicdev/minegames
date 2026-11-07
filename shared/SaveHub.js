@@ -74,7 +74,12 @@ export class SaveHub {
                     makeup: { highScore: 0 },
                     nailart: { highScore: 0 },
                     spasalon: { highScore: 0 },
-                    sweetbakery: { highScore: 0 }
+                    sweetbakery: { highScore: 0 },
+                    petsalon: { highScore: 0 },
+                    roomdecor: { highScore: 0 },
+                    jewelry: { highScore: 0 },
+                    magicaltea: { highScore: 0 },
+                    perfume: { highScore: 0 }
                 }
             };
         }

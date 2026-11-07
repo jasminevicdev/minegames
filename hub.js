@@ -67,6 +67,11 @@ class GameHub {
         this.statNailartScore = document.getElementById('stat-nailart-score');
         this.statSpasalonScore = document.getElementById('stat-spasalon-score');
         this.statSweetbakeryScore = document.getElementById('stat-sweetbakery-score');
+        this.statPetsalonScore = document.getElementById('stat-petsalon-score');
+        this.statRoomdecorScore = document.getElementById('stat-roomdecor-score');
+        this.statJewelryScore = document.getElementById('stat-jewelry-score');
+        this.statMagicalteaScore = document.getElementById('stat-magicaltea-score');
+        this.statPerfumeScore = document.getElementById('stat-perfume-score');
 
         this.selectedAvatar = '🎪';
 
@@ -171,6 +176,11 @@ class GameHub {
         const nailartSave = SaveHub.getGameSave('nailart', player.name);
         const spasalonSave = SaveHub.getGameSave('spasalon', player.name);
         const sweetbakerySave = SaveHub.getGameSave('sweetbakery', player.name);
+        const petsalonSave = SaveHub.getGameSave('petsalon', player.name);
+        const roomdecorSave = SaveHub.getGameSave('roomdecor', player.name);
+        const jewelrySave = SaveHub.getGameSave('jewelry', player.name);
+        const magicalteaSave = SaveHub.getGameSave('magicaltea', player.name);
+        const perfumeSave = SaveHub.getGameSave('perfume', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -197,6 +207,11 @@ class GameHub {
         if (this.statNailartScore) this.statNailartScore.innerText = `${nailartSave.highScore || 0} 💅`;
         if (this.statSpasalonScore) this.statSpasalonScore.innerText = `${spasalonSave.highScore || 0} 🌸`;
         if (this.statSweetbakeryScore) this.statSweetbakeryScore.innerText = `${sweetbakerySave.highScore || 0} 🧁`;
+        if (this.statPetsalonScore) this.statPetsalonScore.innerText = `${petsalonSave.highScore || 0} 🐾`;
+        if (this.statRoomdecorScore) this.statRoomdecorScore.innerText = `${roomdecorSave.highScore || 0} 🏠`;
+        if (this.statJewelryScore) this.statJewelryScore.innerText = `${jewelrySave.highScore || 0} 💎`;
+        if (this.statMagicalteaScore) this.statMagicalteaScore.innerText = `${magicalteaSave.highScore || 0} 🧋`;
+        if (this.statPerfumeScore) this.statPerfumeScore.innerText = `${perfumeSave.highScore || 0} 🌸`;
     }
 
     renderPlayersList() {

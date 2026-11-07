@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boba & Magical Tea Café 🧋🌸 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #9d174d 0%, #3b0764 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #fbcfe8;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .cafe-grid {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .cafe-grid { grid-template-columns: 1fr; }
+        }
+        .tea-stage {
+            background: linear-gradient(180deg, #701a75, #310719);
+            border: 3px solid #f9a8d4;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 32px rgba(244, 114, 182, 0.35);
+        }
+        canvas {
+            width: 100%;
+            max-width: 430px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+        }
+        .tea-menu {
+            background: rgba(45, 8, 36, 0.92);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; margin-bottom: 5px; }
+        .opt-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .opt-btn {
+            min-width: 45px;
+            height: 45px;
+            padding: 0 10px;
+            border-radius: 14px;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            transition: transform 0.15s;
+        }
+        .opt-btn:hover { transform: scale(1.1); border-color: #fde047; }
+        .btn-serve {
+            margin-top: auto;
+            background: linear-gradient(135deg, #f472b6, #c084fc, #fde047);
+            color: #310719;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">BEBIDAS: <strong id="hud-score">0 🧋</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🧋</strong></div>
+        </div>
+    </div>
+
+    <div class="cafe-grid">
+        <div class="tea-stage">
+            <canvas id="tea-canvas" width="440" height="440"></canvas>
+            <p id="tea-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Prepare seu Bubble Tea Kawaii com pérolas, chantilly e cobertura fofa! 🧋🌸
+            </p>
+        </div>
+
+        <div class="tea-menu">
+            <div>
+                <div class="label">🥛 SABOR DO CHÁ CREMOSO:</div>
+                <div class="opt-row" id="row-flavor"></div>
+            </div>
+            <div>
+                <div class="label">⚫ PÉROLAS DE BOBA & GELATINAS:</div>
+                <div class="opt-row" id="row-boba"></div>
+            </div>
+            <div>
+                <div class="label">🍦 COBERTURA & CHANTILLY:</div>
+                <div class="opt-row" id="row-cream"></div>
+            </div>
+            <div>
+                <div class="label">🍓 TOPPING KAWAII DO COPO:</div>
+                <div class="opt-row" id="row-topper"></div>
+            </div>
+            <button class="btn-serve" id="btn-serve">🧋 SERVIR BUBBLE TEA KAWAII! (+130 🧋)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('tea-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const teaMsg = document.getElementById('tea-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('magicaltea', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🧋`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 640) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.14);
+            } catch (e) {}
+        }
+
+        const FLAVORS = ['#f9a8d4', '#d8b4fe', '#86efac', '#7dd3fc', '#fde047', '#fdba74'];
+        const BOBAS = ['#27272a', '#ec4899', '#f59e0b', '#a855f7', '#06b6d4'];
+        const CREAMS = ['#ffffff', '#fce7f3', '#fef08a', '#e9d5ff'];
+        const TOPPERS = ['🍓', '🐱', '🐰', '🌸', '🌈', '🍒', '🦄'];
+
+        let drink = {
+            flavor: '#f9a8d4',
+            boba: '#27272a',
+            cream: '#ffffff',
+            topper: '🍓',
+            bubbles: []
+        };
+        let score = 0;
+        let tick = 0;
+
+        function buildMenu() {
+            const fRow = document.getElementById('row-flavor');
+            FLAVORS.forEach(f => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = f;
+                b.onclick = () => { drink.flavor = f; sfx(540); };
+                fRow.appendChild(b);
+            });
+
+            const bRow = document.getElementById('row-boba');
+            BOBAS.forEach(bo => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = bo;
+                b.onclick = () => { drink.boba = bo; sfx(620); };
+                bRow.appendChild(b);
+            });
+
+            const cRow = document.getElementById('row-cream');
+            CREAMS.forEach(c => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = c;
+                b.onclick = () => { drink.cream = c; sfx(700); };
+                cRow.appendChild(b);
+            });
+
+            const tRow = document.getElementById('row-topper');
+            TOPPERS.forEach(top => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = top;
+                b.onclick = () => { drink.topper = top; sfx(780); };
+                tRow.appendChild(b);
+            });
+        }
+
+        document.getElementById('btn-serve').onclick = () => {
+            score += 130;
+            sfx(920);
+            hudScore.innerText = `${score} 🧋`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🧋`;
+                SaveHub.updateGameSave('magicaltea', { highScore: bestScore }, playerName);
+            }
+            for (let i = 0; i < 14; i++) {
+                drink.bubbles.push({
+                    x: W / 2 + (Math.random() - 0.5) * 160,
+                    y: 280,
+                    vy: -1.5 - Math.random(),
+                    life: 50
+                });
+            }
+            teaMsg.innerText = '🧋 BUBBLE TEA KAWAII SERVIDO COM AMOR! +130 🧋';
+        };
+
+        function drawTea() {
+            tick += 0.05;
+            const cx = W / 2;
+
+            ctx.fillStyle = '#3b0764';
+            ctx.fillRect(0, 0, W, H);
+
+            // Cute Coaster
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.ellipse(cx, 385, 115, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Straw
+            ctx.save();
+            ctx.translate(cx + 22, 130);
+            ctx.rotate(0.16);
+            ctx.fillStyle = '#ec4899';
+            ctx.fillRect(-10, -85, 20, 175);
+            ctx.fillStyle = '#fde047';
+            for (let y = -80; y < 75; y += 24) {
+                ctx.fillRect(-10, y, 20, 10);
+            }
+            ctx.restore();
+
+            // Cup Liquid
+            ctx.fillStyle = drink.flavor;
+            ctx.beginPath();
+            ctx.moveTo(cx - 82, 170);
+            ctx.lineTo(cx + 82, 170);
+            ctx.lineTo(cx + 62, 375);
+            ctx.lineTo(cx - 62, 375);
+            ctx.closePath();
+            ctx.fill();
+
+            // Glass Outline
+            ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+
+            // Boba Pearls at bottom
+            const pearlPos = [
+                [-42, 355], [-15, 360], [15, 358], [42, 354],
+                [-32, 332], [0, 335], [30, 330],
+                [-18, 312], [16, 314]
+            ];
+            pearlPos.forEach(([dx, py], i) => {
+                const floatY = py + Math.sin(tick + i) * 2.5;
+                ctx.fillStyle = drink.boba;
+                ctx.beginPath();
+                ctx.arc(cx + dx, floatY, 11, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,0.45)';
+                ctx.beginPath();
+                ctx.arc(cx + dx - 3, floatY - 3, 3.5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Kawaii Face on the Cup
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            ctx.arc(cx - 28, 255, 8, 0, Math.PI * 2);
+            ctx.arc(cx + 28, 255, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(cx - 30, 252, 3, 0, Math.PI * 2);
+            ctx.arc(cx + 26, 252, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#1e1b4b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx, 262, 9, 0.2, Math.PI - 0.2);
+            ctx.stroke();
+
+            // Dome Whipped Cream
+            ctx.fillStyle = drink.cream;
+            ctx.beginPath();
+            ctx.arc(cx, 170, 82, Math.PI, 0);
+            ctx.fill();
+
+            // Topper
+            ctx.font = '52px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(drink.topper, cx - 12, 132);
+
+            // Floating hearts/sparkles
+            for (let i = drink.bubbles.length - 1; i >= 0; i--) {
+                const b = drink.bubbles[i];
+                b.y += b.vy;
+                b.life--;
+                ctx.font = '24px serif';
+                ctx.fillText('💖', b.x, b.y);
+                if (b.life <= 0) drink.bubbles.splice(i, 1);
+            }
+
+            requestAnimationFrame(drawTea);
+        }
+
+        buildMenu();
+        drawTea();
+    </script>
+</body>
+</html>

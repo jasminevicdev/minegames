@@ -517,6 +517,11 @@ body, html {
 .card-nailart { border-color: #fb7185; }
 .card-spasalon { border-color: #34d399; }
 .card-sweetbakery { border-color: #f472b6; }
+.card-petsalon { border-color: #f9a8d4; }
+.card-roomdecor { border-color: #c084fc; }
+.card-jewelry { border-color: #fde047; }
+.card-magicaltea { border-color: #f472b6; }
+.card-perfume { border-color: #e879f9; }
 
 .game-card-banner {
     font-size: 3.5rem;

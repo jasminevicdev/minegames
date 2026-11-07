@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Crystal Perfume & Potion Lab 🧪🌸 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #831843 0%, #1e052b 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #f9a8d4;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .perfume-grid {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .perfume-grid { grid-template-columns: 1fr; }
+        }
+        .bottle-stage {
+            background: linear-gradient(180deg, #4a044e, #1f0429);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 32px rgba(244, 114, 182, 0.35);
+        }
+        canvas {
+            width: 100%;
+            max-width: 430px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .lab-menu {
+            background: rgba(38, 6, 45, 0.92);
+            border: 3px solid #f9a8d4;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; margin-bottom: 5px; }
+        .opt-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .opt-btn {
+            min-width: 45px;
+            height: 45px;
+            padding: 0 10px;
+            border-radius: 14px;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            transition: transform 0.15s;
+        }
+        .opt-btn:hover { transform: scale(1.1); border-color: #fde047; }
+        .btn-spray {
+            margin-top: auto;
+            background: linear-gradient(135deg, #ec4899, #a855f7, #fde047);
+            color: #1f0429;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">PERFUMES: <strong id="hud-score">0 🌸</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🌸</strong></div>
+        </div>
+    </div>
+
+    <div class="perfume-grid">
+        <div class="bottle-stage">
+            <canvas id="perfume-canvas" width="440" height="440"></canvas>
+            <p id="perfume-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Misture essências florais, escolha o frasco de cristal e borrife brilho! 🧪🌸
+            </p>
+        </div>
+
+        <div class="lab-menu">
+            <div>
+                <div class="label">💎 FORMATO DO FRASCO DE CRISTAL:</div>
+                <div class="opt-row" id="row-shape"></div>
+            </div>
+            <div>
+                <div class="label">🌸 ESSÊNCIA FLORAL & COR DA POÇÃO:</div>
+                <div class="opt-row" id="row-essence"></div>
+            </div>
+            <div>
+                <div class="label">🎀 TAMPA REAL & ADORNO:</div>
+                <div class="opt-row" id="row-cap"></div>
+            </div>
+            <div>
+                <div class="label">✨ NOTA AROMÁTICA SECRETA:</div>
+                <div class="opt-row" id="row-note"></div>
+            </div>
+            <button class="btn-spray" id="btn-spray">✨ BORRIFAR PERFUME ENCANTADO! (+150 🌸)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('perfume-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const perfumeMsg = document.getElementById('perfume-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('perfume', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🌸`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 720) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(freq * 1.35, audioCtx.currentTime + 0.16);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.16);
+            } catch (e) {}
+        }
+
+        const SHAPES = [
+            { id: 'heart', icon: '💖', name: 'Coração de Cristal' },
+            { id: 'diamond', icon: '💎', name: 'Diamante Imperial' },
+            { id: 'round', icon: '🔮', name: 'Orbe de Fada' }
+        ];
+        const ESSENCES = ['#ec4899', '#a855f7', '#38bdf8', '#fde047', '#34d399', '#fb7185'];
+        const CAPS = ['👑', '🎀', '💎', '🦋', '🌹'];
+        const NOTES = ['🌸', '🍓', '🍦', '🌙', '✨', '🍒'];
+
+        let bottle = {
+            shape: 'heart',
+            essence: '#ec4899',
+            cap: '👑',
+            note: '🌸',
+            mist: []
+        };
+        let score = 0;
+        let t = 0;
+
+        function buildMenu() {
+            const sRow = document.getElementById('row-shape');
+            SHAPES.forEach(s => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = s.icon;
+                b.onclick = () => {
+                    bottle.shape = s.id;
+                    sfx(640);
+                    perfumeMsg.innerText = `Frasco: ${s.name}! ✨`;
+                };
+                sRow.appendChild(b);
+            });
+
+            const eRow = document.getElementById('row-essence');
+            ESSENCES.forEach(e => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.style.background = e;
+                b.onclick = () => { bottle.essence = e; sfx(720); };
+                eRow.appendChild(b);
+            });
+
+            const cRow = document.getElementById('row-cap');
+            CAPS.forEach(c => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = c;
+                b.onclick = () => { bottle.cap = c; sfx(800); };
+                cRow.appendChild(b);
+            });
+
+            const nRow = document.getElementById('row-note');
+            NOTES.forEach(n => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = n;
+                b.onclick = () => { bottle.note = n; sfx(880); };
+                nRow.appendChild(b);
+            });
+        }
+
+        function triggerSpray() {
+            score += 150;
+            sfx(980);
+            hudScore.innerText = `${score} 🌸`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🌸`;
+                SaveHub.updateGameSave('perfume', { highScore: bestScore }, playerName);
+            }
+            for (let i = 0; i < 20; i++) {
+                bottle.mist.push({
+                    x: W / 2 + (Math.random() - 0.5) * 60,
+                    y: 120,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: -1 - Math.random() * 2.5,
+                    life: 55
+                });
+            }
+            perfumeMsg.innerText = '🌸 FRAGRÂNCIA REAL BORRIFADA COM SUCESSO! +150 🌸';
+        }
+
+        document.getElementById('btn-spray').onclick = triggerSpray;
+        canvas.addEventListener('click', triggerSpray);
+
+        function drawBottle() {
+            t += 0.05;
+            const cx = W / 2;
+            const cy = H / 2 + 35;
+
+            const grad = ctx.createRadialGradient(cx, cy, 30, cx, cy, 220);
+            grad.addColorStop(0, '#701a75');
+            grad.addColorStop(1, '#1f0429');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Golden Pedestal
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.ellipse(cx, 385, 110, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bottle Neck & Atomizer
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(cx - 22, 130, 44, 38);
+
+            // Vintage Puff Atomizer Bulb on side
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(cx + 22, 145);
+            ctx.quadraticCurveTo(cx + 75, 135, cx + 85, 175);
+            ctx.stroke();
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.arc(cx + 90, 190, 22, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Crystal Bottle Body
+            ctx.fillStyle = bottle.essence;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+
+            if (bottle.shape === 'heart') {
+                ctx.beginPath();
+                ctx.moveTo(cx, cy + 115);
+                ctx.bezierCurveTo(cx - 140, cy + 30, cx - 125, cy - 95, cx, cy - 45);
+                ctx.bezierCurveTo(cx + 125, cy - 95, cx + 140, cy + 30, cx, cy + 115);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (bottle.shape === 'diamond') {
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - 90);
+                ctx.lineTo(cx + 105, cy);
+                ctx.lineTo(cx + 65, cy + 115);
+                ctx.lineTo(cx - 65, cy + 115);
+                ctx.lineTo(cx - 105, cy);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.arc(cx, cy + 15, 98, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // Shimmering sparkles inside liquid
+            ctx.fillStyle = 'rgba(255,255,255,0.65)';
+            for (let i = 0; i < 6; i++) {
+                const sx = cx + Math.sin(t + i * 1.3) * 45;
+                const sy = cy + 15 + Math.cos(t + i * 1.7) * 40;
+                ctx.beginPath();
+                ctx.arc(sx, sy, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Label with secret note
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+            ctx.beginPath();
+            ctx.roundRect(cx - 38, cy - 18, 76, 68, 14);
+            ctx.fill();
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.font = '40px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(bottle.note, cx, cy + 30);
+
+            // Cap Topper
+            ctx.font = '50px serif';
+            ctx.fillText(bottle.cap, cx, 122);
+
+            // Spray Mist Particles
+            for (let i = bottle.mist.length - 1; i >= 0; i--) {
+                const m = bottle.mist[i];
+                m.x += m.vx;
+                m.y += m.vy;
+                m.life--;
+                ctx.font = '24px serif';
+                ctx.fillText('✨', m.x, m.y);
+                if (m.life <= 0) bottle.mist.splice(i, 1);
+            }
+
+            requestAnimationFrame(drawBottle);
+        }
+
+        buildMenu();
+        drawBottle();
+    </script>
+</body>
+</html>
