@@ -399,24 +399,309 @@
                     { id: 'heartCrest', name: 'Brasão de Coração', color: '#ffffff', draw: (c) => { c.arc(260, 265, 18, 0, Math.PI * 2); } }
                 ],
                 unicorn: [
-                    { id: 'sky', name: 'Céu Mágico', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
-                    { id: 'rb1', name: 'Arco-Íris Faixa 1', color: '#ffffff', draw: (c) => { c.arc(260, 440, 230, Math.PI, 0); } },
-                    { id: 'rb2', name: 'Arco-Íris Faixa 2', color: '#ffffff', draw: (c) => { c.arc(260, 440, 200, Math.PI, 0); } },
-                    { id: 'rb3', name: 'Arco-Íris Faixa 3', color: '#ffffff', draw: (c) => { c.arc(260, 440, 170, Math.PI, 0); } },
-                    { id: 'cloudL', name: 'Nuvem Fofa Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(24, 395, 150, 75, 36); } },
-                    { id: 'cloudR', name: 'Nuvem Fofa Direita', color: '#ffffff', draw: (c) => { c.roundRect(346, 395, 150, 75, 36); } },
-                    { id: 'tail1', name: 'Cauda Mecha Superior', color: '#ffffff', draw: (c) => { c.ellipse(382, 315, 55, 24, -0.3, 0, Math.PI * 2); } },
-                    { id: 'tail2', name: 'Cauda Mecha Inferior', color: '#ffffff', draw: (c) => { c.ellipse(390, 352, 52, 22, 0.2, 0, Math.PI * 2); } },
-                    { id: 'body', name: 'Corpo do Unicórnio', color: '#ffffff', draw: (c) => { c.roundRect(175, 280, 165, 112, 52); } },
-                    { id: 'leg1', name: 'Patas Dianteiras', color: '#ffffff', draw: (c) => { c.roundRect(190, 375, 38, 82, 16); } },
-                    { id: 'leg2', name: 'Patas Traseiras', color: '#ffffff', draw: (c) => { c.roundRect(285, 375, 38, 82, 16); } },
-                    { id: 'saddle', name: 'Manta Real de Estrela', color: '#ffffff', draw: (c) => { c.ellipse(265, 315, 48, 32, 0, 0, Math.PI * 2); } },
-                    { id: 'mane1', name: 'Crina Mágica Topo', color: '#ffffff', draw: (c) => { c.ellipse(235, 152, 46, 26, -0.2, 0, Math.PI * 2); } },
-                    { id: 'mane2', name: 'Crina Mágica Lateral', color: '#ffffff', draw: (c) => { c.ellipse(258, 225, 42, 30, 0.4, 0, Math.PI * 2); } },
-                    { id: 'head', name: 'Cabeça do Unicórnio', color: '#ffffff', draw: (c) => { c.arc(195, 205, 68, 0, Math.PI * 2); } },
-                    { id: 'snout', name: 'Focinho Doce', color: '#ffffff', draw: (c) => { c.ellipse(142, 222, 34, 28, 0, 0, Math.PI * 2); } },
-                    { id: 'ear', name: 'Orelhinha', color: '#ffffff', draw: (c) => { c.ellipse(222, 138, 16, 32, 0.2, 0, Math.PI * 2); } },
-                    { id: 'horn', name: 'Chifre de Cristal Dourado', color: '#ffffff', draw: (c) => { c.moveTo(165, 148); c.lineTo(135, 48); c.lineTo(202, 138); c.closePath(); } }
+                    { id: 'sky', name: 'Céu Mágico Estelar', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    {
+                        id: 'moon', name: 'Lua Crescente', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(88, 86, 36, 0.4, Math.PI * 1.65);
+                            c.quadraticCurveTo(68, 86, 98, 118);
+                            c.closePath();
+                        }
+                    },
+                    // 4 Faixas do Arco-Íris em Anel Curvo
+                    {
+                        id: 'rb1', name: 'Arco-Íris Faixa Externa', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(260, 445, 232, Math.PI, 0, false);
+                            c.arc(260, 445, 206, 0, Math.PI, true);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'rb2', name: 'Arco-Íris Faixa 2', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(260, 445, 206, Math.PI, 0, false);
+                            c.arc(260, 445, 180, 0, Math.PI, true);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'rb3', name: 'Arco-Íris Faixa 3', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(260, 445, 180, Math.PI, 0, false);
+                            c.arc(260, 445, 154, 0, Math.PI, true);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'rb4', name: 'Arco-Íris Faixa Interna', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(260, 445, 154, Math.PI, 0, false);
+                            c.arc(260, 445, 128, 0, Math.PI, true);
+                            c.closePath();
+                        }
+                    },
+                    // Nuvens Fofas Esculpidas
+                    {
+                        id: 'cloudL', name: 'Nuvem Fofa Esquerda', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(22, 465);
+                            c.arc(48, 435, 28, Math.PI * 0.7, Math.PI * 1.7);
+                            c.arc(88, 418, 34, Math.PI, Math.PI * 1.85);
+                            c.arc(132, 426, 30, Math.PI * 1.1, Math.PI * 1.95);
+                            c.arc(165, 445, 24, Math.PI * 1.3, Math.PI * 0.3);
+                            c.lineTo(22, 465);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'cloudR', name: 'Nuvem Fofa Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(335, 465);
+                            c.arc(360, 438, 26, Math.PI * 0.7, Math.PI * 1.75);
+                            c.arc(402, 418, 34, Math.PI, Math.PI * 1.9);
+                            c.arc(448, 428, 30, Math.PI * 1.15, Math.PI * 1.95);
+                            c.arc(482, 448, 24, Math.PI * 1.3, Math.PI * 0.3);
+                            c.lineTo(335, 465);
+                            c.closePath();
+                        }
+                    },
+                    // Cauda Ondulada em 3 Mechas
+                    {
+                        id: 'tail1', name: 'Cauda Mecha Superior', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(342, 268);
+                            c.bezierCurveTo(395, 225, 455, 255, 468, 305);
+                            c.bezierCurveTo(435, 312, 392, 295, 345, 292);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'tail2', name: 'Cauda Mecha Central', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(345, 285);
+                            c.bezierCurveTo(410, 278, 462, 318, 458, 362);
+                            c.bezierCurveTo(418, 365, 382, 332, 342, 306);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'tail3', name: 'Cauda Mecha Inferior', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(338, 298);
+                            c.bezierCurveTo(385, 322, 425, 365, 418, 402);
+                            c.bezierCurveTo(380, 392, 355, 355, 332, 315);
+                            c.closePath();
+                        }
+                    },
+                    // Patas de Trás + Cascos
+                    {
+                        id: 'legFrontL', name: 'Pata Dianteira Elevada', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(192, 315);
+                            c.quadraticCurveTo(142, 338, 138, 378);
+                            c.lineTo(164, 384);
+                            c.quadraticCurveTo(175, 352, 212, 332);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'hoofFrontL', name: 'Casco Dianteiro Esq', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(132, 374, 32, 20, 8);
+                        }
+                    },
+                    {
+                        id: 'legBackL', name: 'Pata Traseira Esq', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(292, 325);
+                            c.lineTo(278, 415);
+                            c.lineTo(306, 415);
+                            c.lineTo(320, 325);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'hoofBackL', name: 'Casco Traseiro Esq', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(275, 410, 33, 20, 7);
+                        }
+                    },
+                    // Corpo Esculpido & Pescoço Gracioso do Unicórnio
+                    {
+                        id: 'body', name: 'Corpo & Pescoço do Unicórnio', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(192, 185);
+                            c.bezierCurveTo(212, 218, 226, 252, 245, 258);
+                            c.bezierCurveTo(282, 262, 325, 252, 345, 275);
+                            c.bezierCurveTo(365, 302, 355, 345, 325, 355);
+                            c.bezierCurveTo(285, 362, 240, 358, 205, 350);
+                            c.bezierCurveTo(172, 342, 165, 305, 175, 265);
+                            c.bezierCurveTo(178, 235, 172, 205, 170, 185);
+                            c.closePath();
+                        }
+                    },
+                    // Patas da Frente + Cascos
+                    {
+                        id: 'legFrontR', name: 'Pata Dianteira Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(202, 335);
+                            c.lineTo(195, 422);
+                            c.lineTo(225, 422);
+                            c.lineTo(232, 335);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'hoofFrontR', name: 'Casco Dianteiro Dir', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(192, 416, 35, 22, 8);
+                        }
+                    },
+                    {
+                        id: 'legBackR', name: 'Pata Traseira Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(315, 332);
+                            c.lineTo(322, 422);
+                            c.lineTo(352, 422);
+                            c.lineTo(348, 330);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'hoofBackR', name: 'Casco Traseiro Dir', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(320, 416, 35, 22, 8);
+                        }
+                    },
+                    // Cutie Mark de Coração na Garupa
+                    {
+                        id: 'cutieMark', name: 'Coração Mágico (Cutie Mark)', color: '#ffffff',
+                        draw: (c) => {
+                            const cx = 318, cy = 305;
+                            c.moveTo(cx, cy + 16);
+                            c.bezierCurveTo(cx - 24, cy + 2, cx - 22, cy - 18, cx, cy - 8);
+                            c.bezierCurveTo(cx + 22, cy - 18, cx + 24, cy + 2, cx, cy + 16);
+                            c.closePath();
+                        }
+                    },
+                    // Colar Imperial no Pescoço
+                    {
+                        id: 'collar', name: 'Colar Real com Joia', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(170, 242, 62, 18, 9);
+                        }
+                    },
+                    // Asa de Pégaso Esculpida com Penas
+                    {
+                        id: 'wingMain', name: 'Asa de Pégaso Superior', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(242, 282);
+                            c.bezierCurveTo(235, 210, 295, 162, 352, 175);
+                            c.bezierCurveTo(345, 205, 322, 225, 295, 242);
+                            c.bezierCurveTo(325, 245, 338, 265, 305, 282);
+                            c.bezierCurveTo(285, 292, 262, 295, 242, 282);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'wingFeathers', name: 'Penas Internas da Asa', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(252, 278);
+                            c.bezierCurveTo(255, 235, 292, 205, 325, 212);
+                            c.bezierCurveTo(312, 238, 288, 265, 252, 278);
+                            c.closePath();
+                        }
+                    },
+                    // Crina Ondulada em 3 Mechas + Franja
+                    {
+                        id: 'mane1', name: 'Crina Mágica Superior', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(205, 128);
+                            c.bezierCurveTo(258, 118, 285, 148, 268, 178);
+                            c.bezierCurveTo(242, 182, 218, 168, 202, 152);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'mane2', name: 'Crina Mágica Central', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(205, 162);
+                            c.bezierCurveTo(262, 165, 285, 198, 262, 222);
+                            c.bezierCurveTo(235, 225, 212, 205, 200, 188);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'mane3', name: 'Crina Mágica Inferior', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(205, 198);
+                            c.bezierCurveTo(255, 205, 272, 238, 248, 256);
+                            c.bezierCurveTo(224, 255, 208, 235, 198, 218);
+                            c.closePath();
+                        }
+                    },
+                    // Cabeça Kawaii & Focinho
+                    {
+                        id: 'head', name: 'Cabeça do Unicórnio', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(172, 168, 52, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'snout', name: 'Focinho Delicado', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(122, 182, 28, 24, -0.1, 0, Math.PI * 2);
+                        }
+                    },
+                    // Orelha Externa e Interna
+                    {
+                        id: 'ear', name: 'Orelhinha Externa', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(182, 125);
+                            c.quadraticCurveTo(198, 72, 222, 92);
+                            c.quadraticCurveTo(222, 122, 202, 134);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'earInner', name: 'Interior da Orelha', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(190, 122);
+                            c.quadraticCurveTo(200, 88, 214, 98);
+                            c.quadraticCurveTo(212, 118, 198, 126);
+                            c.closePath();
+                        }
+                    },
+                    // Franja Cacheada na Testa
+                    {
+                        id: 'forelock', name: 'Franja Cacheada', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(155, 122);
+                            c.bezierCurveTo(125, 108, 115, 142, 142, 152);
+                            c.bezierCurveTo(165, 156, 182, 138, 175, 120);
+                            c.closePath();
+                        }
+                    },
+                    // Chifre Espiral de Cristal Dourado
+                    {
+                        id: 'horn', name: 'Chifre Mágico de Cristal', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(145, 124);
+                            c.lineTo(102, 32);
+                            c.lineTo(174, 114);
+                            c.closePath();
+                        }
+                    },
+                    // Coroa de Flores na Base do Chifre
+                    {
+                        id: 'flower1', name: 'Flor de Sakura Esq', color: '#ffffff',
+                        draw: (c) => { c.arc(146, 122, 13, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'flower2', name: 'Flor de Sakura Dir', color: '#ffffff',
+                        draw: (c) => { c.arc(172, 116, 13, 0, Math.PI * 2); }
+                    }
                 ],
                 mermaid: [
                     { id: 'sea', name: 'Oceano de Cristal', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
@@ -581,13 +866,62 @@
             ctx.lineWidth = 3;
 
             if (page === 'unicorn') {
+                // Anéis espirais no chifre do unicórnio
+                ctx.strokeStyle = '#3b0764';
+                ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.arc(178, 195, 8, 0, Math.PI * 2);
+                ctx.moveTo(134, 102); ctx.lineTo(162, 95);
+                ctx.moveTo(123, 78); ctx.lineTo(148, 72);
+                ctx.moveTo(112, 55); ctx.lineTo(132, 50);
+                ctx.stroke();
+
+                // Olho grande estilo anime kawaii com cílios curvados
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.ellipse(158, 166, 12, 15, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Íris violeta brilhante
+                ctx.fillStyle = '#a855f7';
+                ctx.beginPath();
+                ctx.ellipse(157, 168, 8, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pupila e 2 brilhos estelares brancos
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.arc(157, 168, 5, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(175, 192, 3, 0, Math.PI * 2);
+                ctx.arc(153, 161, 4.5, 0, Math.PI * 2);
+                ctx.arc(162, 172, 2.2, 0, Math.PI * 2);
                 ctx.fill();
+
+                // Cílios longos de princesa
+                ctx.strokeStyle = '#1e1b4b';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(166, 154); ctx.lineTo(176, 146);
+                ctx.moveTo(169, 161); ctx.lineTo(180, 156);
+                ctx.stroke();
+
+                // Bochecha rosada fofa
+                ctx.fillStyle = 'rgba(244, 114, 182, 0.55)';
+                ctx.beginPath();
+                ctx.ellipse(154, 188, 11, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Narina e sorriso doce no focinho
+                ctx.fillStyle = '#db2777';
+                ctx.beginPath();
+                ctx.arc(112, 176, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#3b0764';
+                ctx.lineWidth = 2.8;
+                ctx.beginPath();
+                ctx.arc(120, 188, 8, 0.15, Math.PI * 0.85);
+                ctx.stroke();
             } else if (page === 'mermaid' || page === 'princess') {
                 const ey = page === 'mermaid' ? 162 : 158;
                 ctx.beginPath();
