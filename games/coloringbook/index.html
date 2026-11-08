@@ -1065,15 +1065,243 @@
             }
         };
 
+        let magicThemeVariant = 0;
+
+        // Paletas lógicas e harmônicas por região para cada ilustração
+        const LOGICAL_PALETTES = {
+            castle: [
+                {
+                    name: 'Dia Real no Palácio Rosa 🏰☀️',
+                    regions: {
+                        sky: { c: '#bae6fd', m: 'solid' },
+                        sun: { c: '#fde047', m: 'glitter' },
+                        cloud1: { c: '#ffffff', m: 'solid' },
+                        cloud2: { c: '#ffffff', m: 'solid' },
+                        hillL: { c: '#4ade80', m: 'solid' },
+                        hillR: { c: '#22c55e', m: 'solid' },
+                        river: { c: '#38bdf8', m: 'glitter' },
+                        towerL: { c: '#fce7f3', m: 'solid' },
+                        towerR: { c: '#fce7f3', m: 'solid' },
+                        towerC: { c: '#fbcfe8', m: 'solid' },
+                        wallM: { c: '#fdf2f8', m: 'solid' },
+                        roofL: { c: '#ec4899', m: 'gradient' },
+                        roofR: { c: '#ec4899', m: 'gradient' },
+                        roofC: { c: '#a855f7', m: 'gradient' },
+                        flagC: { c: '#fde047', m: 'glitter' },
+                        winL: { c: '#fef08a', m: 'glitter' },
+                        winR: { c: '#fef08a', m: 'glitter' },
+                        winC: { c: '#67e8f9', m: 'glitter' },
+                        gate: { c: '#9a5840', m: 'solid' },
+                        heartCrest: { c: '#ff2a85', m: 'glitter' }
+                    }
+                },
+                {
+                    name: 'Pôr do Sol Imperial Dourado 🏰🌅',
+                    regions: {
+                        sky: { c: '#fbcfe8', m: 'gradient' },
+                        sun: { c: '#fb923c', m: 'glitter' },
+                        cloud1: { c: '#ffe4e6', m: 'solid' },
+                        cloud2: { c: '#ffe4e6', m: 'solid' },
+                        hillL: { c: '#10b981', m: 'solid' },
+                        hillR: { c: '#2dd4bf', m: 'solid' },
+                        river: { c: '#fde047', m: 'glitter' },
+                        towerL: { c: '#e9d5ff', m: 'solid' },
+                        towerR: { c: '#e9d5ff', m: 'solid' },
+                        towerC: { c: '#d8b4fe', m: 'solid' },
+                        wallM: { c: '#f3e8ff', m: 'solid' },
+                        roofL: { c: '#8b5cf6', m: 'gradient' },
+                        roofR: { c: '#8b5cf6', m: 'gradient' },
+                        roofC: { c: '#ff2a85', m: 'gradient' },
+                        flagC: { c: '#fde047', m: 'glitter' },
+                        winL: { c: '#fde047', m: 'glitter' },
+                        winR: { c: '#fde047', m: 'glitter' },
+                        winC: { c: '#fbcfe8', m: 'glitter' },
+                        gate: { c: '#f59e0b', m: 'solid' },
+                        heartCrest: { c: '#ff2a85', m: 'glitter' }
+                    }
+                }
+            ],
+            unicorn: [
+                {
+                    name: 'Unicórnio Branco Perolado no Arco-Íris Clássico 🦄🌈',
+                    regions: {
+                        sky: { c: '#bae6fd', m: 'solid' },
+                        moon: { c: '#fde047', m: 'glitter' },
+                        rb1: { c: '#ff2a85', m: 'solid' },
+                        rb2: { c: '#fde047', m: 'solid' },
+                        rb3: { c: '#22c55e', m: 'solid' },
+                        rb4: { c: '#38bdf8', m: 'solid' },
+                        cloudL: { c: '#ffffff', m: 'solid' },
+                        cloudR: { c: '#ffffff', m: 'solid' },
+                        body: { c: '#fff5f8', m: 'solid' },
+                        head: { c: '#fff5f8', m: 'solid' },
+                        snout: { c: '#fbcfe8', m: 'solid' },
+                        ear: { c: '#fff5f8', m: 'solid' },
+                        earInner: { c: '#f472b6', m: 'solid' },
+                        legFrontL: { c: '#fff5f8', m: 'solid' },
+                        legFrontR: { c: '#fff5f8', m: 'solid' },
+                        legBackL: { c: '#fff5f8', m: 'solid' },
+                        legBackR: { c: '#fff5f8', m: 'solid' },
+                        hoofFrontL: { c: '#fde047', m: 'glitter' },
+                        hoofFrontR: { c: '#fde047', m: 'glitter' },
+                        hoofBackL: { c: '#fde047', m: 'glitter' },
+                        hoofBackR: { c: '#fde047', m: 'glitter' },
+                        wingMain: { c: '#fbcfe8', m: 'glitter' },
+                        wingFeathers: { c: '#ffffff', m: 'glitter' },
+                        mane1: { c: '#ff2a85', m: 'gradient' },
+                        mane2: { c: '#a855f7', m: 'gradient' },
+                        mane3: { c: '#38bdf8', m: 'gradient' },
+                        forelock: { c: '#f472b6', m: 'glitter' },
+                        tail1: { c: '#ff2a85', m: 'gradient' },
+                        tail2: { c: '#a855f7', m: 'gradient' },
+                        tail3: { c: '#38bdf8', m: 'gradient' },
+                        horn: { c: '#fde047', m: 'glitter' },
+                        cutieMark: { c: '#ff2a85', m: 'glitter' },
+                        collar: { c: '#fde047', m: 'glitter' },
+                        flower1: { c: '#f472b6', m: 'solid' },
+                        flower2: { c: '#38bdf8', m: 'solid' }
+                    }
+                },
+                {
+                    name: 'Unicórnio Rosa Sakura & Estrelas 🦄🌸',
+                    regions: {
+                        sky: { c: '#d8b4fe', m: 'solid' },
+                        moon: { c: '#fef08a', m: 'glitter' },
+                        rb1: { c: '#ec4899', m: 'solid' },
+                        rb2: { c: '#fb923c', m: 'solid' },
+                        rb3: { c: '#fde047', m: 'solid' },
+                        rb4: { c: '#2dd4bf', m: 'solid' },
+                        cloudL: { c: '#fdf2f8', m: 'solid' },
+                        cloudR: { c: '#fdf2f8', m: 'solid' },
+                        body: { c: '#fbcfe8', m: 'solid' },
+                        head: { c: '#fbcfe8', m: 'solid' },
+                        snout: { c: '#f472b6', m: 'solid' },
+                        ear: { c: '#fbcfe8', m: 'solid' },
+                        earInner: { c: '#ec4899', m: 'solid' },
+                        legFrontL: { c: '#fbcfe8', m: 'solid' },
+                        legFrontR: { c: '#fbcfe8', m: 'solid' },
+                        legBackL: { c: '#fbcfe8', m: 'solid' },
+                        legBackR: { c: '#fbcfe8', m: 'solid' },
+                        hoofFrontL: { c: '#38bdf8', m: 'glitter' },
+                        hoofFrontR: { c: '#38bdf8', m: 'glitter' },
+                        hoofBackL: { c: '#38bdf8', m: 'glitter' },
+                        hoofBackR: { c: '#38bdf8', m: 'glitter' },
+                        wingMain: { c: '#bae6fd', m: 'glitter' },
+                        wingFeathers: { c: '#ffffff', m: 'glitter' },
+                        mane1: { c: '#8b5cf6', m: 'gradient' },
+                        mane2: { c: '#ec4899', m: 'gradient' },
+                        mane3: { c: '#fde047', m: 'gradient' },
+                        forelock: { c: '#8b5cf6', m: 'glitter' },
+                        tail1: { c: '#8b5cf6', m: 'gradient' },
+                        tail2: { c: '#ec4899', m: 'gradient' },
+                        tail3: { c: '#fde047', m: 'gradient' },
+                        horn: { c: '#fde047', m: 'glitter' },
+                        cutieMark: { c: '#fde047', m: 'glitter' },
+                        collar: { c: '#ec4899', m: 'glitter' },
+                        flower1: { c: '#fde047', m: 'solid' },
+                        flower2: { c: '#ff2a85', m: 'solid' }
+                    }
+                }
+            ],
+            mermaid: [
+                {
+                    name: 'Princesa Sereia Esmeralda & Ruiva 🧜‍♀️🐚',
+                    regions: {
+                        sea: { c: '#bae6fd', m: 'solid' },
+                        shellBg: { c: '#fbcfe8', m: 'gradient' },
+                        hairBack: { c: '#ef4444', m: 'solid' },
+                        torso: { c: '#ffe4e6', m: 'solid' },
+                        head: { c: '#ffe4e6', m: 'solid' },
+                        shellTopL: { c: '#a855f7', m: 'glitter' },
+                        shellTopR: { c: '#a855f7', m: 'glitter' },
+                        belt: { c: '#fde047', m: 'glitter' },
+                        tail: { c: '#10b981', m: 'glitter' },
+                        tailFinL: { c: '#2dd4bf', m: 'gradient' },
+                        tailFinR: { c: '#2dd4bf', m: 'gradient' },
+                        crown: { c: '#fde047', m: 'glitter' },
+                        starfish: { c: '#fb923c', m: 'solid' },
+                        pearl: { c: '#ffffff', m: 'glitter' }
+                    }
+                }
+            ],
+            butterfly: [
+                {
+                    name: 'Borboleta Simétrica Real Rosa & Azul 🦋💎',
+                    regions: {
+                        bg: { c: '#fdf2f8', m: 'solid' },
+                        wingTL: { c: '#ec4899', m: 'gradient' },
+                        wingTR: { c: '#ec4899', m: 'gradient' },
+                        wingBL: { c: '#a855f7', m: 'gradient' },
+                        wingBR: { c: '#a855f7', m: 'gradient' },
+                        gemTL: { c: '#38bdf8', m: 'glitter' },
+                        gemTR: { c: '#38bdf8', m: 'glitter' },
+                        dotTL: { c: '#fde047', m: 'glitter' },
+                        dotTR: { c: '#fde047', m: 'glitter' },
+                        gemBL: { c: '#2dd4bf', m: 'glitter' },
+                        gemBR: { c: '#2dd4bf', m: 'glitter' },
+                        body: { c: '#6366f1', m: 'solid' },
+                        crown: { c: '#fde047', m: 'glitter' }
+                    }
+                }
+            ],
+            kitty: [
+                {
+                    name: 'Gatinha Branca Real com Cupcake de Morango 🐱🧁',
+                    regions: {
+                        bg: { c: '#fce7f3', m: 'solid' },
+                        earL: { c: '#ffffff', m: 'solid' },
+                        earR: { c: '#ffffff', m: 'solid' },
+                        innerEarL: { c: '#fda4af', m: 'solid' },
+                        innerEarR: { c: '#fda4af', m: 'solid' },
+                        head: { c: '#ffffff', m: 'solid' },
+                        dress: { c: '#c084fc', m: 'gradient' },
+                        bowL: { c: '#ff2a85', m: 'glitter' },
+                        bowR: { c: '#ff2a85', m: 'glitter' },
+                        bowCenter: { c: '#fde047', m: 'glitter' },
+                        cupBase: { c: '#38bdf8', m: 'solid' },
+                        cupFrost: { c: '#fbcfe8', m: 'glitter' },
+                        cherry: { c: '#ef4444', m: 'solid' }
+                    }
+                }
+            ],
+            princess: [
+                {
+                    name: 'Princesa Loira Estelar em Gala Rosa 👗👑',
+                    regions: {
+                        sky: { c: '#e9d5ff', m: 'solid' },
+                        wingL: { c: '#bae6fd', m: 'glitter' },
+                        wingR: { c: '#bae6fd', m: 'glitter' },
+                        hairBack: { c: '#fde047', m: 'solid' },
+                        head: { c: '#ffe4e6', m: 'solid' },
+                        bodice: { c: '#ec4899', m: 'glitter' },
+                        puffL: { c: '#fbcfe8', m: 'solid' },
+                        puffR: { c: '#fbcfe8', m: 'solid' },
+                        skirt1: { c: '#f472b6', m: 'gradient' },
+                        skirt2: { c: '#ec4899', m: 'solid' },
+                        skirt3: { c: '#a855f7', m: 'gradient' },
+                        tiara: { c: '#fde047', m: 'glitter' },
+                        gem: { c: '#ff2a85', m: 'glitter' }
+                    }
+                }
+            ]
+        };
+
         document.getElementById('btn-auto').onclick = () => {
             saveUndoState();
-            PAGES[currentPage].forEach((reg, idx) => {
-                reg.color = idx === 0 ? '#fce7f3' : CRAYONS[(idx * 3) % (CRAYONS.length - 1)];
-                reg.mode = idx % 3 === 0 ? 'glitter' : (idx % 2 === 0 ? 'gradient' : 'solid');
+            const themes = LOGICAL_PALETTES[currentPage];
+            const chosenTheme = themes[magicThemeVariant % themes.length];
+            magicThemeVariant++;
+
+            PAGES[currentPage].forEach((reg) => {
+                const spec = chosenTheme.regions[reg.id];
+                if (spec) {
+                    reg.color = spec.c;
+                    reg.mode = spec.m;
+                }
             });
             updateProgress();
             sfx(860);
-            colorMsg.innerText = '🌈 Pintura Mágica com Degradê e Glitter aplicada!';
+            colorMsg.innerText = `🌈 Colorir Mágico: ${chosenTheme.name}!`;
         };
 
         document.getElementById('btn-reset').onclick = () => {
