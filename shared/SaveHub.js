@@ -79,7 +79,12 @@ export class SaveHub {
                     roomdecor: { highScore: 0 },
                     jewelry: { highScore: 0 },
                     magicaltea: { highScore: 0 },
-                    perfume: { highScore: 0 }
+                    perfume: { highScore: 0 },
+                    magiccanvas: { highScore: 0 },
+                    pixelart: { highScore: 0 },
+                    kaleidoscope: { highScore: 0 },
+                    coloringbook: { highScore: 0 },
+                    quickdraw: { highScore: 0 }
                 }
             };
         }

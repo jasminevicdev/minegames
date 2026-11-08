@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Livro de Colorir Encantado 🖍️🦄 — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #701a75 0%, #1e052b 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 1040px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #f472b6;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .book-grid {
+            width: 100%;
+            max-width: 1040px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 14px;
+        }
+        @media (max-width: 820px) {
+            .book-grid { grid-template-columns: 1fr; }
+        }
+        .page-stage {
+            background: rgba(34, 6, 48, 0.92);
+            border: 3px solid #f472b6;
+            border-radius: 24px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 36px rgba(244, 114, 182, 0.35);
+        }
+        canvas {
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 1 / 1;
+            border-radius: 18px;
+            background: #fff9fc;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+        }
+        .crayon-box {
+            background: rgba(42, 8, 52, 0.95);
+            border: 3px solid #f9a8d4;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.88rem; margin-bottom: 5px; }
+        .row-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+        .page-btn {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        .page-btn.active, .page-btn:hover {
+            border-color: #fde047;
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+        }
+        .crayon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .crayon.active, .crayon:hover {
+            transform: scale(1.16);
+            border-color: #fde047;
+            box-shadow: 0 0 12px #fde047;
+        }
+        .btn-finish {
+            margin-top: auto;
+            background: linear-gradient(135deg, #ec4899, #fde047);
+            color: #310719;
+            border: none;
+            padding: 14px;
+            border-radius: 28px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">COLORIDOS: <strong id="hud-score">0 🖍️</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🖍️</strong></div>
+        </div>
+    </div>
+
+    <div class="book-grid">
+        <div class="page-stage">
+            <canvas id="color-canvas" width="480" height="480"></canvas>
+            <p id="color-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Escolha uma cor e toque nas partes do desenho para colorir! 🖍️🦄
+            </p>
+        </div>
+
+        <div class="crayon-box">
+            <div>
+                <div class="label">📖 ESCOLHA O DESENHO PARA COLORIR:</div>
+                <div class="row-wrap" id="pages-row">
+                    <button class="page-btn active" data-page="castle">🏰 Castelo Real</button>
+                    <button class="page-btn" data-page="butterfly">🦋 Borboleta</button>
+                    <button class="page-btn" data-page="unicorn">🦄 Unicórnio</button>
+                    <button class="page-btn" data-page="kitty">🐱 Gatinha</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="label">🖍️ ESTOJO DE CORES MÁGICAS:</div>
+                <div class="row-wrap" id="crayons-row"></div>
+            </div>
+
+            <div>
+                <div class="label">✨ OPÇÕES EXTRAS:</div>
+                <div class="row-wrap">
+                    <button class="page-btn" id="btn-auto">🌈 Colorir Mágico</button>
+                    <button class="page-btn" id="btn-reset">🔄 Deixar em Branco</button>
+                </div>
+            </div>
+
+            <button class="btn-finish" id="btn-finish">🌟 COMPLETAR PÁGINA DO LIVRO! (+150 🖍️)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('color-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const colorMsg = document.getElementById('color-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('coloringbook', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🖍️`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 680) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.14);
+            } catch (e) {}
+        }
+
+        const CRAYONS = [
+            '#ff2a85', '#f472b6', '#fbcfe8', '#c084fc',
+            '#818cf8', '#38bdf8', '#67e8f9', '#34d399',
+            '#fde047', '#fef08a', '#fb923c', '#ffffff'
+        ];
+
+        let currentCrayon = '#ff2a85';
+        let currentPage = 'castle';
+        let score = 0;
+
+        // Regions for each coloring page
+        const PAGES = {
+            castle: [
+                { id: 'sky', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
+                { id: 'sun', type: 'circle', x: 90, y: 90, r: 44, color: '#ffffff' },
+                { id: 'leftTower', type: 'rect', x: 85, y: 190, w: 70, h: 190, color: '#ffffff' },
+                { id: 'rightTower', type: 'rect', x: 325, y: 190, w: 70, h: 190, color: '#ffffff' },
+                { id: 'mainWall', type: 'rect', x: 155, y: 210, w: 170, h: 170, color: '#ffffff' },
+                { id: 'centerTower', type: 'rect', x: 200, y: 120, w: 80, h: 90, color: '#ffffff' },
+                { id: 'roofL', type: 'tri', x1: 75, y1: 190, x2: 120, y2: 110, x3: 165, y3: 190, color: '#ffffff' },
+                { id: 'roofR', type: 'tri', x1: 315, y1: 190, x2: 360, y2: 110, x3: 405, y3: 190, color: '#ffffff' },
+                { id: 'roofC', type: 'tri', x1: 190, y1: 120, x2: 240, y2: 45, x3: 290, y3: 120, color: '#ffffff' },
+                { id: 'door', type: 'circle', x: 240, y: 335, r: 42, color: '#ffffff' },
+                { id: 'lawn', type: 'rect', x: 0, y: 380, w: 480, h: 100, color: '#ffffff' }
+            ],
+            butterfly: [
+                { id: 'bg', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
+                { id: 'wingTL', type: 'circle', x: 155, y: 175, r: 92, color: '#ffffff' },
+                { id: 'wingTR', type: 'circle', x: 325, y: 175, r: 92, color: '#ffffff' },
+                { id: 'wingBL', type: 'circle', x: 170, y: 310, r: 72, color: '#ffffff' },
+                { id: 'wingBR', type: 'circle', x: 310, y: 310, r: 72, color: '#ffffff' },
+                { id: 'spotTL', type: 'circle', x: 145, y: 165, r: 38, color: '#ffffff' },
+                { id: 'spotTR', type: 'circle', x: 335, y: 165, r: 38, color: '#ffffff' },
+                { id: 'spotBL', type: 'circle', x: 165, y: 315, r: 28, color: '#ffffff' },
+                { id: 'spotBR', type: 'circle', x: 315, y: 315, r: 28, color: '#ffffff' },
+                { id: 'body', type: 'rect', x: 224, y: 130, w: 32, h: 220, color: '#ffffff' }
+            ],
+            unicorn: [
+                { id: 'bg', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
+                { id: 'rainbow1', type: 'circle', x: 240, y: 390, r: 210, color: '#ffffff' },
+                { id: 'rainbow2', type: 'circle', x: 240, y: 390, r: 175, color: '#ffffff' },
+                { id: 'body', type: 'circle', x: 240, y: 340, r: 95, color: '#ffffff' },
+                { id: 'mane', type: 'circle', x: 175, y: 220, r: 58, color: '#ffffff' },
+                { id: 'head', type: 'circle', x: 240, y: 215, r: 74, color: '#ffffff' },
+                { id: 'snout', type: 'circle', x: 240, y: 242, r: 36, color: '#ffffff' },
+                { id: 'horn', type: 'tri', x1: 215, y1: 150, x2: 240, y2: 52, x3: 265, y3: 150, color: '#ffffff' }
+            ],
+            kitty: [
+                { id: 'bg', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
+                { id: 'earL', type: 'tri', x1: 115, y1: 190, x2: 145, y2: 75, x3: 215, y3: 150, color: '#ffffff' },
+                { id: 'earR', type: 'tri', x1: 365, y1: 190, x2: 335, y2: 75, x3: 265, y3: 150, color: '#ffffff' },
+                { id: 'body', type: 'circle', x: 240, y: 360, r: 95, color: '#ffffff' },
+                { id: 'head', type: 'circle', x: 240, y: 225, r: 102, color: '#ffffff' },
+                { id: 'bowL', type: 'circle', x: 305, y: 135, r: 28, color: '#ffffff' },
+                { id: 'bowR', type: 'circle', x: 350, y: 155, r: 28, color: '#ffffff' },
+                { id: 'heart', type: 'circle', x: 240, y: 365, r: 42, color: '#ffffff' }
+            ]
+        };
+
+        function buildShapePath(reg) {
+            ctx.beginPath();
+            if (reg.type === 'rect') {
+                ctx.rect(reg.x, reg.y, reg.w, reg.h);
+            } else if (reg.type === 'circle') {
+                ctx.arc(reg.x, reg.y, reg.r, 0, Math.PI * 2);
+            } else if (reg.type === 'tri') {
+                ctx.moveTo(reg.x1, reg.y1);
+                ctx.lineTo(reg.x2, reg.y2);
+                ctx.lineTo(reg.x3, reg.y3);
+                ctx.closePath();
+            }
+        }
+
+        function drawPage() {
+            ctx.clearRect(0, 0, W, H);
+            const list = PAGES[currentPage];
+            list.forEach(reg => {
+                buildShapePath(reg);
+                ctx.fillStyle = reg.color;
+                ctx.fill();
+                if (reg.id !== 'bg' && reg.id !== 'sky') {
+                    ctx.strokeStyle = '#3b0764';
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+                }
+            });
+
+            // Cute facial details on top for unicorn/kitty
+            if (currentPage === 'unicorn' || currentPage === 'kitty') {
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.arc(210, 210, 9, 0, Math.PI * 2);
+                ctx.arc(270, 210, 9, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * W;
+            const y = ((e.clientY - rect.top) / rect.height) * H;
+
+            const list = PAGES[currentPage];
+            for (let i = list.length - 1; i >= 0; i--) {
+                const reg = list[i];
+                buildShapePath(reg);
+                if (ctx.isPointInPath(x, y)) {
+                    reg.color = currentCrayon;
+                    sfx(660 + i * 25);
+                    drawPage();
+                    break;
+                }
+            }
+        });
+
+        const cRow = document.getElementById('crayons-row');
+        CRAYONS.forEach((c, idx) => {
+            const d = document.createElement('div');
+            d.className = 'crayon' + (idx === 0 ? ' active' : '');
+            d.style.background = c;
+            d.onclick = () => {
+                document.querySelectorAll('.crayon').forEach(el => el.classList.remove('active'));
+                d.classList.add('active');
+                currentCrayon = c;
+                sfx(600);
+            };
+            cRow.appendChild(d);
+        });
+
+        document.querySelectorAll('[data-page]').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('[data-page]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPage = btn.dataset.page;
+                sfx(700);
+                drawPage();
+            };
+        });
+
+        document.getElementById('btn-auto').onclick = () => {
+            PAGES[currentPage].forEach((reg, idx) => {
+                reg.color = CRAYONS[(idx * 2) % (CRAYONS.length - 1)];
+            });
+            sfx(840);
+            drawPage();
+        };
+
+        document.getElementById('btn-reset').onclick = () => {
+            PAGES[currentPage].forEach((reg, idx) => {
+                reg.color = idx === 0 ? '#fdf2f8' : '#ffffff';
+            });
+            sfx(500);
+            drawPage();
+        };
+
+        document.getElementById('btn-finish').onclick = () => {
+            score += 150;
+            sfx(950);
+            hudScore.innerText = `${score} 🖍️`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🖍️`;
+                SaveHub.updateGameSave('coloringbook', { highScore: bestScore }, playerName);
+            }
+            colorMsg.innerText = '🌟 DESENHO COLORIDO COM PERFEIÇÃO! +150 🖍️';
+        };
+
+        drawPage();
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Princess Room Decor HD: Suíte dos Sonhos 🛏️👑 — JasDEV Hub</title>
+    <title>Princess Room Decor Ultra HD: Suíte dos Sonhos 🛏️👑 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
         }
         .topbar {
             width: 100%;
-            max-width: 1140px;
+            max-width: 1160px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,13 +54,13 @@
 
         .studio-layout {
             width: 100%;
-            max-width: 1140px;
+            max-width: 1160px;
             display: grid;
-            grid-template-columns: 540px 1fr;
+            grid-template-columns: 560px 1fr;
             gap: 16px;
             align-items: stretch;
         }
-        @media (max-width: 940px) {
+        @media (max-width: 960px) {
             .studio-layout { grid-template-columns: 1fr; }
         }
 
@@ -77,7 +77,7 @@
         }
         canvas {
             width: 100%;
-            max-width: 520px;
+            max-width: 540px;
             aspect-ratio: 13 / 12;
             border-radius: 20px;
             display: block;
@@ -87,18 +87,19 @@
         .stage-actions {
             width: 100%;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
         .btn-quick {
             flex: 1;
             background: rgba(255, 255, 255, 0.12);
             border: 2px solid #e879f9;
             color: #fff;
-            padding: 9px 10px;
-            border-radius: 16px;
+            padding: 8px 8px;
+            border-radius: 14px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             cursor: pointer;
             transition: 0.2s;
         }
@@ -267,13 +268,14 @@
     </div>
 
     <div class="studio-layout">
-        <!-- PALCO DA SUÍTE HD -->
+        <!-- PALCO DA SUÍTE ULTRA HD -->
         <div class="stage-box">
-            <canvas id="room-canvas" width="520" height="480"></canvas>
+            <canvas id="room-canvas" width="540" height="495"></canvas>
             <div class="stage-actions">
                 <button class="btn-quick" id="btn-night">🌙 MODO NOITE / LED</button>
-                <button class="btn-quick" id="btn-random">🎲 SORTEAR QUARTO</button>
-                <button class="btn-quick" id="btn-sparkle">✨ BRILHO MÁGICO</button>
+                <button class="btn-quick" id="btn-princess">👸 PRINCESA NO QUARTO</button>
+                <button class="btn-quick" id="btn-random">🎲 SORTEAR TUDO</button>
+                <button class="btn-quick" id="btn-sparkle">✨ CHUVA DE BRILHO</button>
             </div>
         </div>
 
@@ -293,9 +295,9 @@
                 <button class="cat-btn" data-cat="floor">🪵 Pisos</button>
                 <button class="cat-btn" data-cat="window">🪟 Janela</button>
                 <button class="cat-btn" data-cat="vanity">🪞 Móveis</button>
-                <button class="cat-btn" data-cat="light"> chandelier</button>
+                <button class="cat-btn" data-cat="light">💎 Lustres</button>
                 <button class="cat-btn" data-cat="rug">🧶 Tapetes</button>
-                <button class="cat-btn" data-cat="pet">🐾 Pets & Pelúcia</button>
+                <button class="cat-btn" data-cat="pet">🐾 Pets & Quadros</button>
             </div>
 
             <div class="items-grid" id="items-grid"></div>
@@ -319,9 +321,6 @@
 
     <script type="module">
         import { SaveHub } from '../../shared/SaveHub.js';
-
-        // Fix label on light tab
-        document.querySelector('[data-cat="light"]').innerText = '💎 Lustres';
 
         const canvas = document.getElementById('room-canvas');
         const ctx = canvas.getContext('2d');
@@ -362,7 +361,7 @@
             { name: 'Suíte Imperial Rosa & Ouro 👑', tag: 'Realeza', tip: 'Dica: Use Cama de Dossel, Lustre de Cristal e Mármore!' },
             { name: 'Quarto Gamer Girl Kawaii 🎮', tag: 'Gamer', tip: 'Dica: Combine Setup RGB, Parede Galáxia e Cama Neon!' },
             { name: 'Jardim Secreto de Sakura 🌸', tag: 'Fada', tip: 'Dica: Escolha Vista de Cerejeiras, Harpa e Coelhinha!' },
-            { name: 'Palácio Perolado das Sereias 🐚', tag: 'Sereia', tip: 'Dica: Use Cama Concha, Tons Aqua e Espelho Camarim!' }
+            { name: 'Palácio Perolado das Sereias 🐚', tag: 'Sereia', tip: 'Dica: Use Cama Concha, Tons Aqua e Aquário Coral!' }
         ];
         let currentThemeIdx = 0;
 
@@ -376,20 +375,20 @@
                 { id: 'sakura', name: 'Cama Flor de Lótus', color: '#fb7185', accent: '#fef08a', icon: '🌸', tag: 'Fada' }
             ],
             wall: [
-                { id: 'damask', name: 'Boiserie Rosa Real', color: '#fbcfe8', stripe: '#f472b6', icon: '🎀', tag: 'Realeza' },
-                { id: 'lavender', name: 'Palácio Lavanda', color: '#e9d5ff', stripe: '#c084fc', icon: '💜', tag: 'Realeza' },
-                { id: 'galaxy', name: 'Galáxia Estelar', color: '#312e81', stripe: '#6366f1', icon: '🌌', tag: 'Gamer' },
-                { id: 'sakura', name: 'Pétalas de Sakura', color: '#ffe4e6', stripe: '#fda4af', icon: '🌸', tag: 'Fada' },
-                { id: 'aqua', name: 'Lagoa de Cristal', color: '#cffafe', stripe: '#67e8f9', icon: '🐚', tag: 'Sereia' },
-                { id: 'gold', name: 'Champagne Imperial', color: '#fef3c7', stripe: '#fde047', icon: '✨', tag: 'Realeza' }
+                { id: 'damask', name: 'Boiserie Rosa Real', color: '#fbcfe8', stripe: '#f472b6', pattern: 'hearts', icon: '🎀', tag: 'Realeza' },
+                { id: 'lavender', name: 'Palácio Lavanda', color: '#e9d5ff', stripe: '#c084fc', pattern: 'crowns', icon: '💜', tag: 'Realeza' },
+                { id: 'galaxy', name: 'Galáxia Estelar', color: '#312e81', stripe: '#6366f1', pattern: 'stars', icon: '🌌', tag: 'Gamer' },
+                { id: 'sakura', name: 'Pétalas de Sakura', color: '#ffe4e6', stripe: '#fda4af', pattern: 'flowers', icon: '🌸', tag: 'Fada' },
+                { id: 'aqua', name: 'Lagoa de Cristal', color: '#cffafe', stripe: '#67e8f9', pattern: 'bubbles', icon: '🐚', tag: 'Sereia' },
+                { id: 'gold', name: 'Champagne Imperial', color: '#fef3c7', stripe: '#fde047', pattern: 'diamonds', icon: '✨', tag: 'Realeza' }
             ],
             floor: [
-                { id: 'parquet', name: 'Parquet Nobre Mel', color: '#9a5840', line: '#783c26', icon: '🪵', tag: 'Fada' },
-                { id: 'marble', name: 'Mármore Carrara Ouro', color: '#fdf2f8', line: '#f9a8d4', icon: '💎', tag: 'Realeza' },
-                { id: 'rosewood', name: 'Madeira Rosa Pastel', color: '#f472b6', line: '#db2777', icon: '🌸', tag: 'Gamer' },
-                { id: 'pearl', name: 'Piso Madrepérola', color: '#e0f2fe', line: '#7dd3fc', icon: '🐚', tag: 'Sereia' },
-                { id: 'velvet', name: 'Carpete Lilás Real', color: '#581c87', line: '#7e22ce', icon: '👑', tag: 'Gamer' },
-                { id: 'cream', name: 'Porcelanato Creme', color: '#fef9c3', line: '#fde047', icon: '⭐', tag: 'Realeza' }
+                { id: 'parquet', name: 'Parquet Nobre Mel', color: '#9a5840', line: '#783c26', style: 'wood', icon: '🪵', tag: 'Fada' },
+                { id: 'marble', name: 'Mármore Carrara Ouro', color: '#fdf2f8', line: '#f9a8d4', style: 'marble', icon: '💎', tag: 'Realeza' },
+                { id: 'rosewood', name: 'Madeira Rosa Pastel', color: '#f472b6', line: '#db2777', style: 'wood', icon: '🌸', tag: 'Gamer' },
+                { id: 'pearl', name: 'Piso Madrepérola', color: '#e0f2fe', line: '#7dd3fc', style: 'marble', icon: '🐚', tag: 'Sereia' },
+                { id: 'velvet', name: 'Carpete Lilás Real', color: '#581c87', line: '#7e22ce', style: 'carpet', icon: '👑', tag: 'Gamer' },
+                { id: 'cream', name: 'Porcelanato Creme', color: '#fef9c3', line: '#fde047', style: 'marble', icon: '⭐', tag: 'Realeza' }
             ],
             window: [
                 { id: 'castle', name: 'Castelo ao Pôr do Sol', sky1: '#f472b6', sky2: '#fde047', curtain: '#db2777', icon: '🏰', tag: 'Realeza' },
@@ -416,20 +415,20 @@
                 { id: 'crownlight', name: 'Coroa Iluminada', color: '#f472b6', glow: '#fde047', icon: '👑', tag: 'Realeza' }
             ],
             rug: [
-                { id: 'heart', name: 'Coração Felpudo Rosa', color: '#ec4899', trim: '#fbcfe8', icon: '💖', tag: 'Realeza' },
-                { id: 'royal', name: 'Tapete Redondo Ouro', color: '#9333ea', trim: '#fde047', icon: '👑', tag: 'Realeza' },
-                { id: 'star', name: 'Tapete Estrela Neon', color: '#3b82f6', trim: '#22d3ee', icon: '🌟', tag: 'Gamer' },
-                { id: 'shellrug', name: 'Tapete Pérola do Mar', color: '#67e8f9', trim: '#ffffff', icon: '🐚', tag: 'Sereia' },
-                { id: 'flower', name: 'Tapete Flor de Sakura', color: '#fda4af', trim: '#fef08a', icon: '🌸', tag: 'Fada' },
-                { id: 'paw', name: 'Patinha de Gato Fofa', color: '#f9a8d4', trim: '#ffffff', icon: '🐾', tag: 'Gamer' }
+                { id: 'heart', name: 'Coração Felpudo Rosa', color: '#ec4899', trim: '#fbcfe8', shape: 'heart', icon: '💖', tag: 'Realeza' },
+                { id: 'royal', name: 'Tapete Persa Ouro', color: '#9333ea', trim: '#fde047', shape: 'oval', icon: '👑', tag: 'Realeza' },
+                { id: 'star', name: 'Tapete Estrela Neon', color: '#3b82f6', trim: '#22d3ee', shape: 'star', icon: '🌟', tag: 'Gamer' },
+                { id: 'shellrug', name: 'Tapete Concha do Mar', color: '#67e8f9', trim: '#ffffff', shape: 'shell', icon: '🐚', tag: 'Sereia' },
+                { id: 'flower', name: 'Tapete Flor de Sakura', color: '#fda4af', trim: '#fef08a', shape: 'flower', icon: '🌸', tag: 'Fada' },
+                { id: 'paw', name: 'Patinha de Gato Fofa', color: '#f9a8d4', trim: '#ffffff', shape: 'paw', icon: '🐾', tag: 'Gamer' }
             ],
             pet: [
-                { id: 'kitten', name: 'Gatinha Persa Real', emoji: '🐱', accessory: '👑', color: '#ffffff', tag: 'Realeza' },
-                { id: 'unicorn', name: 'Unicórnio Estelar', emoji: '🦄', accessory: '✨', color: '#fbcfe8', tag: 'Fada' },
-                { id: 'bunny', name: 'Coelhinha Sakura', emoji: '🐰', accessory: '🎀', color: '#fce7f3', tag: 'Gamer' },
-                { id: 'puppy', name: 'Lulu da Pomerânia', emoji: '🐶', accessory: '💖', color: '#fde68a', tag: 'Realeza' },
-                { id: 'seahorse', name: 'Pelúcia Golfinho Rosa', emoji: '🐬', accessory: '🫧', color: '#7dd3fc', tag: 'Sereia' },
-                { id: 'teddy', name: 'Ursinho Imperial', emoji: '🧸', accessory: '👑', color: '#f472b6', tag: 'Fada' }
+                { id: 'kitten', name: 'Gatinha Persa Real', emoji: '🐱', accessory: '👑', art: '🦄', color: '#ffffff', tag: 'Realeza' },
+                { id: 'unicorn', name: 'Unicórnio Estelar', emoji: '🦄', accessory: '✨', art: '🌈', color: '#fbcfe8', tag: 'Fada' },
+                { id: 'bunny', name: 'Coelhinha Sakura', emoji: '🐰', accessory: '🎀', art: '🌸', color: '#fce7f3', tag: 'Gamer' },
+                { id: 'puppy', name: 'Lulu da Pomerânia', emoji: '🐶', accessory: '💖', art: '👑', color: '#fde68a', tag: 'Realeza' },
+                { id: 'seahorse', name: 'Golfinho Perolado', emoji: '🐬', accessory: '🫧', art: '🐚', color: '#7dd3fc', tag: 'Sereia' },
+                { id: 'teddy', name: 'Ursinho Imperial', emoji: '🧸', accessory: '👑', art: '🦋', color: '#f472b6', tag: 'Fada' }
             ]
         };
 
@@ -443,6 +442,7 @@
             rug: CATALOG.rug[0],
             pet: CATALOG.pet[0],
             nightMode: false,
+            showPrincess: true,
             particles: []
         };
 
@@ -453,7 +453,7 @@
         function spawnSparkles(count = 16, xCenter = W / 2, yCenter = H / 2) {
             for (let i = 0; i < count; i++) {
                 room.particles.push({
-                    x: xCenter + (Math.random() - 0.5) * 340,
+                    x: xCenter + (Math.random() - 0.5) * 360,
                     y: yCenter + (Math.random() - 0.5) * 260,
                     vx: (Math.random() - 0.5) * 1.2,
                     vy: -0.8 - Math.random() * 1.8,
@@ -506,6 +506,15 @@
             feedbackEl.innerText = room.nightMode
                 ? '🌙 Modo Noite Aconchegante ativado: luzes LED e lustre acesos!'
                 : '☀️ Iluminação Diurna Real ativada!';
+        };
+
+        document.getElementById('btn-princess').onclick = () => {
+            room.showPrincess = !room.showPrincess;
+            sfx(720, 'triangle');
+            spawnSparkles(10, 145, 345);
+            feedbackEl.innerText = room.showPrincess
+                ? '👸 A Princesa entrou na suíte para admirar a decoração!'
+                : '👸 Modo visualização livre da arquitetura!';
         };
 
         document.getElementById('btn-random').onclick = () => {
@@ -564,37 +573,44 @@
             spawnSparkles(12, x, y);
         });
 
-        // ======== DESENHO ARQUITETÔNICO HD DO QUARTO DE PRINCESA ========
+        // ======== DESENHO ARQUITETÔNICO ULTRA-DETALHADO DO QUARTO ========
         function drawRoom() {
             tick += 0.04;
 
-            // 1. PAREDE COM TEXTURA E BOISERIE CLÁSSICA
+            // 1. PAREDE COM TEXTURA DAMASK / ESTRELAS E BOISERIE CLÁSSICA
             const wallGrad = ctx.createLinearGradient(0, 0, 0, 325);
             wallGrad.addColorStop(0, room.wall.color);
             wallGrad.addColorStop(1, room.wall.stripe);
             ctx.fillStyle = wallGrad;
             ctx.fillRect(0, 0, W, 325);
 
-            // Papel de parede listrado sutil + arabescos
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+            // Papel de parede listrado + motivos decorativos
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
             for (let x = 18; x < W; x += 36) {
-                ctx.fillRect(x, 22, 10, 235);
+                ctx.fillRect(x, 22, 12, 232);
+            }
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+            for (let x = 36; x < W - 20; x += 72) {
+                for (let y = 55; y < 235; y += 60) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
 
             // Painel Boiserie Inferior (Wainscoting Real)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-            ctx.fillRect(0, 255, W, 70);
-            ctx.strokeStyle = '#fde047';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 255);
-            ctx.lineTo(W, 255);
-            ctx.stroke();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(0, 252, W, 73);
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(0, 250, W, 4);
 
-            for (let bx = 16; bx < W - 30; bx += 82) {
+            for (let bx = 14; bx < W - 30; bx += 76) {
                 ctx.strokeStyle = room.wall.stripe;
-                ctx.lineWidth = 2;
-                ctx.strokeRect(bx, 265, 68, 46);
+                ctx.lineWidth = 2.5;
+                ctx.strokeRect(bx, 261, 62, 48);
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(bx + 4, 265, 54, 40);
             }
 
             // Sanca de Gesso Superior Dourada
@@ -603,23 +619,23 @@
             ctx.fillStyle = '#fde047';
             ctx.fillRect(0, 18, W, 4);
 
-            // 2. PISO EM PERSPECTIVA 3D
+            // 2. PISO EM PERSPECTIVA 3D COM REFLEXOS
             const floorGrad = ctx.createLinearGradient(0, 325, 0, H);
             floorGrad.addColorStop(0, room.floor.color);
             floorGrad.addColorStop(1, room.floor.line);
             ctx.fillStyle = floorGrad;
             ctx.fillRect(0, 325, W, H - 325);
 
-            // Linhas de perspectiva do piso e tábuas/mármore
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+            // Linhas de perspectiva do piso
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.26)';
             ctx.lineWidth = 2;
-            for (let px = -80; px <= W + 80; px += 52) {
+            for (let px = -90; px <= W + 90; px += 48) {
                 ctx.beginPath();
-                ctx.moveTo(W / 2 + (px - W / 2) * 0.55, 325);
+                ctx.moveTo(W / 2 + (px - W / 2) * 0.52, 325);
                 ctx.lineTo(px, H);
                 ctx.stroke();
             }
-            for (let py = 348; py < H; py += 28) {
+            for (let py = 345; py < H; py += 26) {
                 ctx.beginPath();
                 ctx.moveTo(0, py);
                 ctx.lineTo(W, py);
@@ -628,118 +644,69 @@
 
             // Rodapé Real
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 317, W, 10);
+            ctx.fillRect(0, 316, W, 10);
             ctx.fillStyle = '#fde047';
-            ctx.fillRect(0, 315, W, 3);
+            ctx.fillRect(0, 314, W, 3);
 
-            // 3. JANELA PANORÂMICA REAL COM CORTINAS DE VELUDO (Esquerda)
-            const wx = 32, wy = 58, ww = 122, wh = 168;
-            const skyGrad = ctx.createLinearGradient(wx, wy, wx, wy + wh);
-            skyGrad.addColorStop(0, room.window.sky1);
-            skyGrad.addColorStop(1, room.window.sky2);
-            ctx.fillStyle = skyGrad;
-            ctx.beginPath();
-            ctx.roundRect(wx, wy, ww, wh, [55, 55, 8, 8]);
-            ctx.fill();
+            // 3. JANELA PANORÂMICA REAL COM PAISAGEM DETALHADA (Esquerda)
+            drawWindowScene(28, 54, 118, 172);
 
-            // Paisagem lá fora (Castelo / Lua / Estrelas)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-            ctx.beginPath();
-            ctx.arc(wx + 35, wy + 45, 14, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.font = '32px serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(room.window.icon, wx + ww / 2, wy + 122);
+            // 4. QUADRO REAL & PRATELEIRA DE PAREDE (Direita Superior)
+            drawWallGallery(395, 56);
 
-            // Grade dourada da janela em arco
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.roundRect(wx, wy, ww, wh, [55, 55, 8, 8]);
-            ctx.stroke();
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(wx + ww / 2, wy);
-            ctx.lineTo(wx + ww / 2, wy + wh);
-            ctx.moveTo(wx, wy + 95);
-            ctx.lineTo(wx + ww, wy + 95);
-            ctx.stroke();
+            // 5. TAPETE DESIGNER NO CHÃO (Centro)
+            drawDesignerRug(W / 2 - 12, 422);
 
-            // Cortinas drapeadas laterais + Bandô
-            ctx.fillStyle = room.window.curtain;
-            ctx.beginPath();
-            ctx.moveTo(wx - 12, wy - 8);
-            ctx.quadraticCurveTo(wx + 22, wy + 80, wx - 16, wy + wh + 18);
-            ctx.lineTo(wx - 22, wy - 8);
-            ctx.closePath();
-            ctx.fill();
+            // 6. PLANTA MONSTERA / VASO DE CEREJEIRA NO CANTO ESQUERDO
+            drawCornerPlant(36, 338);
 
-            ctx.beginPath();
-            ctx.moveTo(wx + ww + 12, wy - 8);
-            ctx.quadraticCurveTo(wx + ww - 22, wy + 80, wx + ww + 16, wy + wh + 18);
-            ctx.lineTo(wx + ww + 22, wy - 8);
-            ctx.closePath();
-            ctx.fill();
+            // 7. MÓVEL LATERAL DETALHADO (Penteadeira / Setup Gamer / Harpa / Chá / Aquário)
+            drawDetailedSideFurniture(445, 250);
 
-            // Varão dourado da cortina
-            ctx.fillStyle = '#fde047';
-            ctx.fillRect(wx - 22, wy - 12, ww + 44, 7);
+            // 8. CRIADO-MUDO COM ABAJUR DE CRISTAL (Esquerda da Cama)
+            drawNightstand(164, 286);
 
-            // 4. TAPETE DESIGNER NO CHÃO (Centro)
-            const rx = W / 2 - 15, ry = 415;
-            ctx.save();
-            ctx.fillStyle = room.rug.color;
-            ctx.strokeStyle = room.rug.trim;
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.ellipse(rx, ry, 155, 44, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
+            // 9. CAMA DE PRINCESA ULTRA-DETALHADA (Centro)
+            drawLuxuryBed(W / 2 - 10, 246);
 
-            // Bordado interno do tapete
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.setLineDash([8, 6]);
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.ellipse(rx, ry, 132, 34, 0, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.restore();
-
-            // 5. PENTEADEIRA CAMARIM / MÓVEL LATERAL (Direita)
-            drawSideFurniture(425, 235);
-
-            // 6. CAMA DE PRINCESA ULTRA-DETALHADA (Centro)
-            drawLuxuryBed(W / 2 - 15, 245);
-
-            // 7. PET / PELÚCIA FOFA COM ANIMAÇÃO DE RESPIRAÇÃO
-            const petBounce = Math.sin(tick * 1.5) * 3;
-            const petX = W / 2 - 15;
+            // 10. PET / PELÚCIA FOFA COM RESPIRAÇÃO E SOMBRA
+            const petBounce = Math.sin(tick * 1.6) * 3;
+            const petX = W / 2 - 10;
             const petY = 278 + petBounce;
-            ctx.font = '50px serif';
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.beginPath();
+            ctx.ellipse(petX, 290, 24, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.font = '48px serif';
             ctx.textAlign = 'center';
             ctx.fillText(room.pet.emoji, petX, petY);
-            ctx.font = '24px serif';
-            ctx.fillText(room.pet.accessory, petX + 12, petY - 38);
+            ctx.font = '22px serif';
+            ctx.fillText(room.pet.accessory, petX + 12, petY - 36);
 
-            // 8. LUSTRE IMPERIAL & LUZES DE FADA NO TETO
-            drawCeilingLight(W / 2 - 15);
+            // 11. PRINCESA NO QUARTO (OPCIONAL)
+            if (room.showPrincess) {
+                drawPrincessCharacter(115, 365);
+            }
 
-            // 9. EFEITO DE ILUMINAÇÃO NOTURNA / LED GLOW
+            // 12. LUSTRE IMPERIAL & LUZES DE FADA NO TETO
+            drawCeilingLight(W / 2 - 10);
+
+            // 13. EFEITO DE ILUMINAÇÃO NOTURNA / LED GLOW
             if (room.nightMode) {
-                ctx.fillStyle = 'rgba(15, 4, 35, 0.42)';
+                ctx.fillStyle = 'rgba(12, 3, 28, 0.44)';
                 ctx.fillRect(0, 0, W, H);
 
-                // Halos luminosos quentes
                 const glowPositions = [
-                    [W / 2 - 15, 78, 125],
-                    [425, 200, 85],
-                    [wx + ww / 2, wy + 70, 90]
+                    [W / 2 - 10, 75, 135, 'rgba(254, 240, 138, 0.42)'],
+                    [445, 215, 95, 'rgba(244, 114, 182, 0.38)'],
+                    [164, 265, 65, 'rgba(254, 240, 138, 0.38)'],
+                    [87, 130, 88, 'rgba(192, 132, 252, 0.32)']
                 ];
-                glowPositions.forEach(([gx, gy, gr]) => {
-                    const g = ctx.createRadialGradient(gx, gy, 5, gx, gy, gr);
-                    g.addColorStop(0, 'rgba(254, 240, 138, 0.42)');
-                    g.addColorStop(1, 'rgba(254, 240, 138, 0)');
+                glowPositions.forEach(([gx, gy, gr, col]) => {
+                    const g = ctx.createRadialGradient(gx, gy, 4, gx, gy, gr);
+                    g.addColorStop(0, col);
+                    g.addColorStop(1, 'rgba(0,0,0,0)');
                     ctx.fillStyle = g;
                     ctx.beginPath();
                     ctx.arc(gx, gy, gr, 0, Math.PI * 2);
@@ -747,7 +714,7 @@
                 });
             }
 
-            // 10. PARTÍCULAS DE BRILHO FLUTUANTES
+            // 14. PARTÍCULAS DE BRILHO FLUTUANTES
             for (let i = room.particles.length - 1; i >= 0; i--) {
                 const p = room.particles[i];
                 p.x += p.vx;
@@ -761,68 +728,293 @@
             requestAnimationFrame(drawRoom);
         }
 
+        function drawWindowScene(wx, wy, ww, wh) {
+            const skyGrad = ctx.createLinearGradient(wx, wy, wx, wy + wh);
+            skyGrad.addColorStop(0, room.window.sky1);
+            skyGrad.addColorStop(1, room.window.sky2);
+            ctx.fillStyle = skyGrad;
+            ctx.beginPath();
+            ctx.roundRect(wx, wy, ww, wh, [58, 58, 8, 8]);
+            ctx.fill();
+
+            // Sol / Lua Brilhante e Nuvens suaves
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.beginPath();
+            ctx.arc(wx + 32, wy + 44, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Silhueta de montanhas / castelo distante na janela
+            ctx.fillStyle = 'rgba(46, 16, 101, 0.35)';
+            ctx.beginPath();
+            ctx.moveTo(wx, wy + wh);
+            ctx.lineTo(wx, wy + 135);
+            ctx.lineTo(wx + 35, wy + 108);
+            ctx.lineTo(wx + 65, wy + 128);
+            ctx.lineTo(wx + 95, wy + 102);
+            ctx.lineTo(wx + ww, wy + 130);
+            ctx.lineTo(wx + ww, wy + wh);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.font = '34px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(room.window.icon, wx + ww / 2, wy + 118);
+
+            // Moldura e vitral em arco
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.roundRect(wx, wy, ww, wh, [58, 58, 8, 8]);
+            ctx.stroke();
+
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(wx + ww / 2, wy);
+            ctx.lineTo(wx + ww / 2, wy + wh);
+            ctx.moveTo(wx, wy + 96);
+            ctx.lineTo(wx + ww, wy + 96);
+            ctx.stroke();
+
+            // Cortinas de renda translúcida interna
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+            ctx.beginPath();
+            ctx.moveTo(wx + 4, wy + 10);
+            ctx.quadraticCurveTo(wx + 36, wy + 95, wx + 8, wy + wh - 4);
+            ctx.lineTo(wx + 4, wy + wh - 4);
+            ctx.closePath();
+            ctx.fill();
+
+            // Cortinas de veludo drapeadas laterais com laço dourado
+            ctx.fillStyle = room.window.curtain;
+            ctx.beginPath();
+            ctx.moveTo(wx - 10, wy - 6);
+            ctx.quadraticCurveTo(wx + 26, wy + 80, wx - 16, wy + wh + 18);
+            ctx.lineTo(wx - 22, wy - 6);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(wx + ww + 10, wy - 6);
+            ctx.quadraticCurveTo(wx + ww - 26, wy + 80, wx + ww + 16, wy + wh + 18);
+            ctx.lineTo(wx + ww + 22, wy - 6);
+            ctx.closePath();
+            ctx.fill();
+
+            // Bandô real superior e varão dourado
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(wx - 22, wy - 12, ww + 44, 7);
+            ctx.fillStyle = room.window.curtain;
+            ctx.beginPath();
+            ctx.arc(wx + ww / 4, wy - 2, 22, 0, Math.PI);
+            ctx.arc(wx + (ww * 3) / 4, wy - 2, 22, 0, Math.PI);
+            ctx.fill();
+        }
+
+        function drawWallGallery(gx, gy) {
+            // Quadro principal emoldurado em ouro
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.roundRect(gx, gy, 68, 78, 10);
+            ctx.fill();
+            ctx.fillStyle = '#fff1f2';
+            ctx.beginPath();
+            ctx.roundRect(gx + 5, gy + 5, 58, 68, 7);
+            ctx.fill();
+            ctx.font = '32px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(room.pet.art, gx + 34, gy + 50);
+
+            // Prateleira flutuante com perfume e plantinha
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(gx + 62, gy + 45, 54, 7);
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(gx + 62, gy + 52, 54, 3);
+            ctx.font = '20px serif';
+            ctx.fillText('🌸', gx + 76, gy + 42);
+            ctx.fillText('💎', gx + 102, gy + 42);
+        }
+
+        function drawCornerPlant(px, py) {
+            // Vaso de cerâmica branco e ouro
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(px - 18, py - 26);
+            ctx.lineTo(px + 18, py - 26);
+            ctx.lineTo(px + 13, py + 8);
+            ctx.lineTo(px - 13, py + 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Folhas verdes e flores de cerejeira
+            ctx.fillStyle = '#10b981';
+            [-14, 0, 14].forEach((dx, i) => {
+                ctx.beginPath();
+                ctx.ellipse(px + dx, py - 42 - (i === 1 ? 10 : 0), 10, 20, dx * 0.03, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.font = '18px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🌸', px - 8, py - 48);
+            ctx.fillText('🌸', px + 10, py - 38);
+        }
+
+        function drawNightstand(nx, ny) {
+            // Criado-mudo estilo Luís XV
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.roundRect(nx - 24, ny, 48, 42, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Gavetinhas com puxador de cristal
+            ctx.strokeRect(nx - 18, ny + 7, 36, 12);
+            ctx.strokeRect(nx - 18, ny + 23, 36, 12);
+            ctx.fillStyle = '#ec4899';
+            ctx.beginPath();
+            ctx.arc(nx, ny + 13, 2.5, 0, Math.PI * 2);
+            ctx.arc(nx, ny + 29, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Abajur de princesa em cima
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(nx - 3, ny - 14, 6, 14);
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.moveTo(nx - 16, ny - 12);
+            ctx.lineTo(nx + 16, ny - 12);
+            ctx.lineTo(nx + 10, ny - 30);
+            ctx.lineTo(nx - 10, ny - 30);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawDesignerRug(rx, ry) {
+            const r = room.rug;
+            ctx.save();
+            ctx.fillStyle = r.color;
+            ctx.strokeStyle = r.trim;
+            ctx.lineWidth = 6;
+
+            if (r.shape === 'heart') {
+                ctx.beginPath();
+                ctx.moveTo(rx, ry + 42);
+                ctx.bezierCurveTo(rx - 175, ry + 10, rx - 145, ry - 48, rx, ry - 20);
+                ctx.bezierCurveTo(rx + 145, ry - 48, rx + 175, ry + 10, rx, ry + 42);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.ellipse(rx, ry, 152, 42, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // Franjas e bordado real no tapete
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.setLineDash([7, 5]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(rx, ry, 124, 30, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+
         function drawLuxuryBed(cx, cy) {
             const b = room.bed;
 
-            // Dossel translúcido de tule atrás da cama
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+            // Sombra da cama no piso
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
             ctx.beginPath();
-            ctx.moveTo(cx - 55, 82);
-            ctx.quadraticCurveTo(cx - 135, 195, cx - 115, 345);
-            ctx.lineTo(cx - 82, 345);
-            ctx.quadraticCurveTo(cx - 95, 200, cx, 95);
+            ctx.ellipse(cx, cy + 114, 114, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Dossel translúcido de renda real
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.24)';
+            ctx.beginPath();
+            ctx.moveTo(cx - 56, 82);
+            ctx.quadraticCurveTo(cx - 135, 195, cx - 112, 345);
+            ctx.lineTo(cx - 80, 345);
+            ctx.quadraticCurveTo(cx - 92, 200, cx, 95);
             ctx.fill();
 
             ctx.beginPath();
-            ctx.moveTo(cx + 55, 82);
-            ctx.quadraticCurveTo(cx + 135, 195, cx + 115, 345);
-            ctx.lineTo(cx + 82, 345);
-            ctx.quadraticCurveTo(cx + 95, 200, cx, 95);
+            ctx.moveTo(cx + 56, 82);
+            ctx.quadraticCurveTo(cx + 135, 195, cx + 112, 345);
+            ctx.lineTo(cx + 80, 345);
+            ctx.quadraticCurveTo(cx + 92, 200, cx, 95);
             ctx.fill();
 
-            // Cabeceira Real Capitonnê / Concha / Gamer
-            ctx.fillStyle = b.accent;
-            ctx.beginPath();
-            ctx.arc(cx, cy - 55, 92, Math.PI, 0);
-            ctx.fill();
-
-            ctx.fillStyle = b.color;
-            ctx.beginPath();
-            ctx.arc(cx, cy - 52, 82, Math.PI, 0);
-            ctx.fill();
-
-            // Botões de cristal do capitonnê na cabeceira
-            ctx.fillStyle = '#ffffff';
-            [-48, -24, 0, 24, 48].forEach((dx, i) => {
-                const dy = cy - 75 - (i % 2) * 16;
+            // Cabeceira personalizada por modelo (Concha / Nuvem / Capitonnê)
+            if (b.id === 'shell') {
+                // Cabeceira em Gomos de Concha Perolada
+                for (let i = -3; i <= 3; i++) {
+                    ctx.fillStyle = i % 2 === 0 ? b.color : b.accent;
+                    ctx.beginPath();
+                    ctx.ellipse(cx + i * 22, cy - 58 - (3 - Math.abs(i)) * 8, 18, 46, i * 0.12, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            } else if (b.id === 'cloud') {
+                // Cabeceira Nuvem Fofa
+                ctx.fillStyle = '#ffffff';
+                [[-55, -52, 34], [-25, -72, 40], [25, -72, 40], [55, -52, 34], [0, -82, 44]].forEach(([dx, dy, rad]) => {
+                    ctx.beginPath();
+                    ctx.arc(cx + dx, cy + dy, rad, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else {
+                // Cabeceira Imperial Capitonnê com Moldura Dourada
+                ctx.fillStyle = b.accent;
                 ctx.beginPath();
-                ctx.arc(cx + dx, dy, 4, 0, Math.PI * 2);
+                ctx.arc(cx, cy - 52, 92, Math.PI, 0);
                 ctx.fill();
-            });
 
-            // Coroa ou Emblema no topo do dossel
+                ctx.fillStyle = b.color;
+                ctx.beginPath();
+                ctx.arc(cx, cy - 49, 82, Math.PI, 0);
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                [-48, -24, 0, 24, 48].forEach((dx, i) => {
+                    const dy = cy - 74 - (i % 2) * 16;
+                    ctx.beginPath();
+                    ctx.arc(cx + dx, dy, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            // Coroa do Dossel
             ctx.fillStyle = '#fde047';
             ctx.beginPath();
             ctx.ellipse(cx, 84, 58, 14, 0, 0, Math.PI * 2);
             ctx.fill();
-            ctx.font = '28px serif';
+            ctx.font = '26px serif';
             ctx.textAlign = 'center';
             ctx.fillText(b.icon, cx, 88);
 
-            // Travesseiros de Renda e Almofadas
+            // Travesseiros Duplos + Almofadas de Coração
             ctx.fillStyle = '#ffffff';
             ctx.strokeStyle = b.accent;
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.roundRect(cx - 76, cy - 46, 68, 38, 12);
-            ctx.roundRect(cx + 8, cy - 46, 68, 38, 12);
+            ctx.roundRect(cx - 76, cy - 46, 68, 36, 12);
+            ctx.roundRect(cx + 8, cy - 46, 68, 36, 12);
             ctx.fill();
             ctx.stroke();
 
-            // Colchão & Edredom Matelassê Volumoso
+            // Edredom Matelassê Volumoso com Textura de Losangos
             const duvetGrad = ctx.createLinearGradient(cx, cy - 15, cx, cy + 108);
             duvetGrad.addColorStop(0, '#ffffff');
-            duvetGrad.addColorStop(0.22, b.color);
+            duvetGrad.addColorStop(0.2, b.color);
             duvetGrad.addColorStop(1, b.accent);
             ctx.fillStyle = duvetGrad;
             ctx.beginPath();
@@ -832,84 +1024,193 @@
             ctx.lineWidth = 4;
             ctx.stroke();
 
-            // Babado de renda e Peseira Dourada
+            // Costura Matelassê no Edredom
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.lineWidth = 1.5;
+            for (let qx = cx - 75; qx <= cx + 75; qx += 30) {
+                ctx.beginPath();
+                ctx.moveTo(qx, cy + 8);
+                ctx.lineTo(qx, cy + 84);
+                ctx.stroke();
+            }
+
+            // Babado e Peseira Real
             ctx.fillStyle = b.accent;
             ctx.beginPath();
             ctx.roundRect(cx - 104, cy + 84, 208, 22, 10);
             ctx.fill();
 
-            // Pés torneados estilo Luís XV
-            ctx.fillStyle = '#fde047';
-            ctx.fillRect(cx - 96, cy + 104, 14, 18);
-            ctx.fillRect(cx + 82, cy + 104, 14, 18);
+            // Rodas de Carruagem Douradas ou Pés Luís XV
+            if (b.id === 'carriage') {
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 5;
+                [-82, 82].forEach(wx => {
+                    ctx.beginPath();
+                    ctx.arc(cx + wx, cy + 108, 18, 0, Math.PI * 2);
+                    ctx.stroke();
+                });
+            } else {
+                ctx.fillStyle = '#fde047';
+                ctx.fillRect(cx - 94, cy + 104, 14, 18);
+                ctx.fillRect(cx + 80, cy + 104, 14, 18);
+            }
         }
 
-        function drawSideFurniture(fx, fy) {
+        function drawDetailedSideFurniture(fx, fy) {
             const v = room.vanity;
 
-            // Mesa da Penteadeira / Escrivaninha
+            // Mesa / Bancada Principal
             ctx.fillStyle = '#ffffff';
             ctx.strokeStyle = v.accent;
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.roundRect(fx - 52, fy + 15, 104, 42, 10);
+            ctx.roundRect(fx - 54, fy + 15, 108, 42, 10);
             ctx.fill();
             ctx.stroke();
 
-            // Pernas da penteadeira
+            // Pernas torneadas
             ctx.fillStyle = '#fde047';
             ctx.fillRect(fx - 46, fy + 57, 8, 52);
             ctx.fillRect(fx + 38, fy + 57, 8, 52);
 
-            // Pufe fofo embaixo
+            // Banqueta / Cadeira Gamer com Orelhas de Gatinho
             ctx.fillStyle = v.color;
             ctx.beginPath();
             ctx.roundRect(fx - 26, fy + 74, 52, 28, 12);
             ctx.fill();
 
-            // Moldura do Espelho Camarim / Monitor RGB
-            ctx.fillStyle = v.accent;
-            ctx.beginPath();
-            ctx.ellipse(fx, fy - 32, 42, 48, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            const mirrorGrad = ctx.createLinearGradient(fx - 30, fy - 70, fx + 30, fy + 10);
-            mirrorGrad.addColorStop(0, '#bae6fd');
-            mirrorGrad.addColorStop(1, '#fbcfe8');
-            ctx.fillStyle = mirrorGrad;
-            ctx.beginPath();
-            ctx.ellipse(fx, fy - 32, 34, 40, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Lâmpadas de Camarim LED ao redor do espelho
-            for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
-                const lx = fx + Math.cos(a) * 38;
-                const ly = fy - 32 + Math.sin(a) * 44;
-                ctx.fillStyle = '#fef08a';
+            if (v.id === 'gamer') {
+                // Dois Monitores Curvos RGB + Teclado Iluminado
+                ctx.fillStyle = '#1e1b4b';
+                ctx.strokeStyle = '#22d3ee';
+                ctx.lineWidth = 3;
+                ctx.fillRect(fx - 48, fy - 36, 44, 34);
+                ctx.strokeRect(fx - 48, fy - 36, 44, 34);
+                ctx.fillRect(fx + 4, fy - 36, 44, 34);
+                ctx.strokeRect(fx + 4, fy - 36, 44, 34);
+                ctx.font = '20px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🎮', fx - 26, fy - 12);
+                ctx.fillText('🎧', fx + 26, fy - 12);
+            } else if (v.id === 'aquarium') {
+                // Aquário de Cristal com Corais e Peixinhos
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.75)';
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 4;
                 ctx.beginPath();
-                ctx.arc(lx, ly, 4.5, 0, Math.PI * 2);
+                ctx.roundRect(fx - 44, fy - 48, 88, 60, 14);
                 ctx.fill();
-            }
+                ctx.stroke();
+                const fishX = fx + Math.sin(tick * 2) * 18;
+                ctx.font = '26px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🐠', fishX, fy - 12);
+            } else {
+                // Espelho Camarim Oval com Luzes de LED + Perfumes na Bancada
+                ctx.fillStyle = v.accent;
+                ctx.beginPath();
+                ctx.ellipse(fx, fy - 32, 42, 48, 0, 0, Math.PI * 2);
+                ctx.fill();
 
-            // Ícone temático em cima da penteadeira
-            ctx.font = '32px serif';
+                const mirrorGrad = ctx.createLinearGradient(fx - 30, fy - 70, fx + 30, fy + 10);
+                mirrorGrad.addColorStop(0, '#bae6fd');
+                mirrorGrad.addColorStop(1, '#fbcfe8');
+                ctx.fillStyle = mirrorGrad;
+                ctx.beginPath();
+                ctx.ellipse(fx, fy - 32, 34, 40, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+                    const lx = fx + Math.cos(a) * 38;
+                    const ly = fy - 32 + Math.sin(a) * 44;
+                    ctx.fillStyle = '#fef08a';
+                    ctx.beginPath();
+                    ctx.arc(lx, ly, 4.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.font = '28px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(v.icon, fx, fy + 10);
+                ctx.font = '18px serif';
+                ctx.fillText('💄', fx - 32, fy + 12);
+                ctx.fillText('🌸', fx + 32, fy + 12);
+            }
+        }
+
+        function drawPrincessCharacter(px, py) {
+            const sway = Math.sin(tick * 1.4) * 2;
+            ctx.save();
+            ctx.translate(px, py + sway);
+
+            // Sombra
+            ctx.fillStyle = 'rgba(0,0,0,0.22)';
+            ctx.beginPath();
+            ctx.ellipse(0, 52, 34, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Vestido de Gala Rodado em Camadas
+            const dressGrad = ctx.createLinearGradient(0, -10, 0, 50);
+            dressGrad.addColorStop(0, '#f472b6');
+            dressGrad.addColorStop(1, '#db2777');
+            ctx.fillStyle = dressGrad;
+            ctx.beginPath();
+            ctx.moveTo(-14, -12);
+            ctx.quadraticCurveTo(-44, 25, -38, 50);
+            ctx.lineTo(38, 50);
+            ctx.quadraticCurveTo(44, 25, 14, -12);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Cabelo Longo Dourado
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(0, -40, 22, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(-20, -40, 40, 34);
+
+            // Rosto fofo da Princesa
+            ctx.fillStyle = '#ffe4e6';
+            ctx.beginPath();
+            ctx.arc(0, -38, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Olhos expressivos e sorriso
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            ctx.arc(-6, -39, 2.8, 0, Math.PI * 2);
+            ctx.arc(6, -39, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#db2777';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, -34, 4, 0.2, Math.PI - 0.2);
+            ctx.stroke();
+
+            // Tiara Real
+            ctx.font = '22px serif';
             ctx.textAlign = 'center';
-            ctx.fillText(v.icon, fx, fy + 10);
+            ctx.fillText('👑', 0, -56);
+
+            ctx.restore();
         }
 
         function drawCeilingLight(cx) {
             const l = room.light;
 
-            // Cordão de luzes de fada de ponta a ponta
+            // Cordão de luzes de fada
             ctx.strokeStyle = '#fde047';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(0, 26);
-            ctx.quadraticCurveTo(W / 2, 74, W, 26);
+            ctx.quadraticCurveTo(W / 2, 72, W, 26);
             ctx.stroke();
 
             for (let lx = 28; lx < W; lx += 42) {
-                const ly = 26 + Math.sin((lx / W) * Math.PI) * 24;
+                const ly = 26 + Math.sin((lx / W) * Math.PI) * 23;
                 const pulse = 3 + Math.sin(tick * 2 + lx) * 2;
                 ctx.fillStyle = l.glow;
                 ctx.beginPath();
@@ -925,10 +1226,9 @@
             ctx.lineTo(cx, 54);
             ctx.stroke();
 
-            // Braços de cristal do lustre
             ctx.strokeStyle = l.color;
             ctx.lineWidth = 3;
-            [-42, -22, 22, 42].forEach(dx => {
+            [-44, -22, 22, 44].forEach(dx => {
                 ctx.beginPath();
                 ctx.moveTo(cx, 50);
                 ctx.quadraticCurveTo(cx + dx * 0.6, 72, cx + dx, 56);

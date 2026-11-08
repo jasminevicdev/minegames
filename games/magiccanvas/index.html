@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Magic Paint & Neon Brush Studio 🎨✨ — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b0764 0%, #0f051d 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #f472b6;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #f472b6;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .studio-grid {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 14px;
+        }
+        @media (max-width: 860px) {
+            .studio-grid { grid-template-columns: 1fr; }
+        }
+        .canvas-stage {
+            background: rgba(25, 8, 45, 0.9);
+            border: 3px solid #ec4899;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 36px rgba(236, 72, 153, 0.35);
+        }
+        canvas {
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 4 / 3;
+            border-radius: 18px;
+            background: #140524;
+            cursor: crosshair;
+            touch-action: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+        .tools-panel {
+            background: rgba(32, 9, 54, 0.94);
+            border: 3px solid #e879f9;
+            border-radius: 24px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+        .label {
+            font-family: 'Fredoka', sans-serif;
+            color: #fbcfe8;
+            font-size: 0.86rem;
+            margin-bottom: 5px;
+        }
+        .row-wrap { display: flex; gap: 7px; flex-wrap: wrap; }
+        .tool-btn {
+            padding: 8px 11px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .tool-btn.active, .tool-btn:hover {
+            border-color: #fde047;
+            background: linear-gradient(135deg, #ec4899, #9333ea);
+        }
+        .color-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .color-dot.active, .color-dot:hover {
+            transform: scale(1.16);
+            border-color: #fde047;
+            box-shadow: 0 0 10px #fde047;
+        }
+        .stamp-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        .stamp-btn.active { border-color: #fde047; background: rgba(236,72,153,0.35); }
+        .action-bar {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-act {
+            flex: 1;
+            background: rgba(255,255,255,0.12);
+            border: 2px solid #f9a8d4;
+            color: #fff;
+            padding: 8px 10px;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .btn-save-art {
+            margin-top: auto;
+            background: linear-gradient(135deg, #ec4899, #fde047, #38bdf8);
+            color: #1f0429;
+            border: none;
+            padding: 13px;
+            border-radius: 26px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">OBRAS CRIADAS: <strong id="hud-score">0 🎨</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🎨</strong></div>
+        </div>
+    </div>
+
+    <div class="studio-grid">
+        <div class="canvas-stage">
+            <canvas id="paint-canvas" width="640" height="480"></canvas>
+            <div class="action-bar">
+                <button class="btn-act" id="btn-undo">↩️ Desfazer</button>
+                <button class="btn-act" id="btn-bg-dark">🌌 Tela Escura</button>
+                <button class="btn-act" id="btn-bg-light">📄 Papel Branco</button>
+                <button class="btn-act" id="btn-clear">🗑️ Limpar Tudo</button>
+                <button class="btn-act" id="btn-download">💾 Baixar PNG</button>
+            </div>
+            <p id="paint-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Desenhe livremente com pincéis neon, arco-íris, glitter e carimbos mágicos! 🎨✨
+            </p>
+        </div>
+
+        <div class="tools-panel">
+            <div>
+                <div class="label">🖌️ TIPO DE PINCEL MÁGICO:</div>
+                <div class="row-wrap" id="brush-modes">
+                    <button class="tool-btn active" data-mode="neon">✨ Neon Glow</button>
+                    <button class="tool-btn" data-mode="smooth">🖌️ Pincel Liso</button>
+                    <button class="tool-btn" data-mode="rainbow">🌈 Arco-Íris</button>
+                    <button class="tool-btn" data-mode="glitter">🌟 Spray Glitter</button>
+                    <button class="tool-btn" data-mode="eraser">🧽 Borracha</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="label">🎨 PALETA DE CORES VIBRANTES:</div>
+                <div class="row-wrap" id="palette-row"></div>
+            </div>
+
+            <div>
+                <div class="label">📏 TAMANHO DO TRAÇO: <span id="size-val">10px</span></div>
+                <input type="range" id="brush-size" min="3" max="42" value="10" style="width:100%; accent-color:#ec4899;">
+            </div>
+
+            <div>
+                <div class="label">💖 CARIMBOS KAWAII (Toque na tela com carimbo ativo):</div>
+                <div class="row-wrap" id="stamps-row"></div>
+            </div>
+
+            <button class="btn-save-art" id="btn-finish">🏆 EXPOR OBRA NA GALERIA REAL! (+150 🎨)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('paint-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const paintMsg = document.getElementById('paint-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('magiccanvas', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🎨`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 680) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.12);
+            } catch (e) {}
+        }
+
+        const COLORS = [
+            '#ff2a85', '#f472b6', '#c084fc', '#818cf8',
+            '#38bdf8', '#2dd4bf', '#4ade80', '#fde047',
+            '#fb923c', '#ef4444', '#ffffff', '#1e1b4b'
+        ];
+        const STAMPS = ['💖', '⭐', '👑', '🦋', '🌸', '🐱', '🦄', '💎', '🎀', '🌈'];
+
+        let mode = 'neon';
+        let currentColor = '#ff2a85';
+        let brushSize = 10;
+        let currentStamp = '💖';
+        let bgColor = '#140524';
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let hue = 0;
+        let history = [];
+        let score = 0;
+
+        function saveState() {
+            if (history.length >= 12) history.shift();
+            history.push(canvas.toDataURL());
+        }
+
+        function fillBackground(col) {
+            bgColor = col;
+            ctx.fillStyle = col;
+            ctx.fillRect(0, 0, W, H);
+            saveState();
+        }
+
+        function initUI() {
+            const pal = document.getElementById('palette-row');
+            COLORS.forEach((c, idx) => {
+                const d = document.createElement('div');
+                d.className = 'color-dot' + (idx === 0 ? ' active' : '');
+                d.style.background = c;
+                d.onclick = () => {
+                    document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                    d.classList.add('active');
+                    currentColor = c;
+                    if (mode === 'eraser' || mode === 'stamp') setMode('neon');
+                    sfx(620);
+                };
+                pal.appendChild(d);
+            });
+
+            const stRow = document.getElementById('stamps-row');
+            STAMPS.forEach(s => {
+                const b = document.createElement('button');
+                b.className = 'stamp-btn';
+                b.innerText = s;
+                b.onclick = () => {
+                    document.querySelectorAll('.stamp-btn').forEach(el => el.classList.remove('active'));
+                    b.classList.add('active');
+                    currentStamp = s;
+                    setMode('stamp');
+                    sfx(740);
+                };
+                stRow.appendChild(b);
+            });
+        }
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('#brush-modes .tool-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.mode === m);
+            });
+            if (m !== 'stamp') {
+                document.querySelectorAll('.stamp-btn').forEach(el => el.classList.remove('active'));
+            }
+        }
+
+        document.querySelectorAll('#brush-modes .tool-btn').forEach(btn => {
+            btn.onclick = () => {
+                setMode(btn.dataset.mode);
+                sfx(580);
+            };
+        });
+
+        const sizeSlider = document.getElementById('brush-size');
+        sizeSlider.oninput = () => {
+            brushSize = Number(sizeSlider.value);
+            document.getElementById('size-val').innerText = `${brushSize}px`;
+        };
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: ((clientX - rect.left) / rect.width) * W,
+                y: ((clientY - rect.top) / rect.height) * H
+            };
+        }
+
+        function startDraw(e) {
+            e.preventDefault();
+            const pos = getPos(e);
+            if (mode === 'stamp') {
+                ctx.save();
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = currentColor;
+                ctx.font = `${brushSize * 3 + 18}px serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(currentStamp, pos.x, pos.y);
+                ctx.restore();
+                saveState();
+                sfx(820);
+                return;
+            }
+            isDrawing = true;
+            lastX = pos.x;
+            lastY = pos.y;
+            drawStroke(pos.x, pos.y);
+        }
+
+        function moveDraw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            drawStroke(pos.x, pos.y);
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function endDraw() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveState();
+            }
+        }
+
+        function drawStroke(x, y) {
+            ctx.save();
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            if (mode === 'eraser') {
+                ctx.strokeStyle = bgColor;
+                ctx.lineWidth = brushSize * 1.8;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            } else if (mode === 'glitter') {
+                for (let i = 0; i < 5; i++) {
+                    const gx = x + (Math.random() - 0.5) * brushSize * 3;
+                    const gy = y + (Math.random() - 0.5) * brushSize * 3;
+                    ctx.fillStyle = i % 2 === 0 ? '#fde047' : currentColor;
+                    ctx.beginPath();
+                    ctx.arc(gx, gy, Math.random() * 3.5 + 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else {
+                const col = mode === 'rainbow' ? `hsl(${(hue += 4) % 360}, 95%, 62%)` : currentColor;
+                ctx.strokeStyle = col;
+                ctx.lineWidth = brushSize;
+                if (mode === 'neon' || mode === 'rainbow') {
+                    ctx.shadowBlur = 16;
+                    ctx.shadowColor = col;
+                }
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', moveDraw);
+        window.addEventListener('mouseup', endDraw);
+        canvas.addEventListener('touchstart', startDraw, { passive: false });
+        canvas.addEventListener('touchmove', moveDraw, { passive: false });
+        window.addEventListener('touchend', endDraw);
+
+        document.getElementById('btn-undo').onclick = () => {
+            if (history.length > 1) {
+                history.pop();
+                const img = new Image();
+                img.onload = () => {
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = history[history.length - 1];
+                sfx(500);
+            }
+        };
+
+        document.getElementById('btn-bg-dark').onclick = () => fillBackground('#140524');
+        document.getElementById('btn-bg-light').onclick = () => fillBackground('#fffbfe');
+        document.getElementById('btn-clear').onclick = () => {
+            fillBackground(bgColor);
+            sfx(440);
+        };
+
+        document.getElementById('btn-download').onclick = () => {
+            const a = document.createElement('a');
+            a.download = 'minha-arte-jasdev.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+            sfx(880);
+        };
+
+        document.getElementById('btn-finish').onclick = () => {
+            score += 150;
+            sfx(960);
+            hudScore.innerText = `${score} 🎨`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🎨`;
+                SaveHub.updateGameSave('magiccanvas', { highScore: bestScore }, playerName);
+            }
+            paintMsg.innerText = '🏆 OBRA DE ARTE EXPOSTA COM SUCESSO! +150 🎨';
+        };
+
+        initUI();
+        fillBackground('#140524');
+    </script>
+</body>
+</html>

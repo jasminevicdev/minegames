@@ -72,6 +72,11 @@ class GameHub {
         this.statJewelryScore = document.getElementById('stat-jewelry-score');
         this.statMagicalteaScore = document.getElementById('stat-magicaltea-score');
         this.statPerfumeScore = document.getElementById('stat-perfume-score');
+        this.statMagiccanvasScore = document.getElementById('stat-magiccanvas-score');
+        this.statPixelartScore = document.getElementById('stat-pixelart-score');
+        this.statKaleidoscopeScore = document.getElementById('stat-kaleidoscope-score');
+        this.statColoringbookScore = document.getElementById('stat-coloringbook-score');
+        this.statQuickdrawScore = document.getElementById('stat-quickdraw-score');
 
         this.selectedAvatar = '🎪';
 
@@ -181,6 +186,11 @@ class GameHub {
         const jewelrySave = SaveHub.getGameSave('jewelry', player.name);
         const magicalteaSave = SaveHub.getGameSave('magicaltea', player.name);
         const perfumeSave = SaveHub.getGameSave('perfume', player.name);
+        const magiccanvasSave = SaveHub.getGameSave('magiccanvas', player.name);
+        const pixelartSave = SaveHub.getGameSave('pixelart', player.name);
+        const kaleidoscopeSave = SaveHub.getGameSave('kaleidoscope', player.name);
+        const coloringbookSave = SaveHub.getGameSave('coloringbook', player.name);
+        const quickdrawSave = SaveHub.getGameSave('quickdraw', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -212,6 +222,11 @@ class GameHub {
         if (this.statJewelryScore) this.statJewelryScore.innerText = `${jewelrySave.highScore || 0} 💎`;
         if (this.statMagicalteaScore) this.statMagicalteaScore.innerText = `${magicalteaSave.highScore || 0} 🧋`;
         if (this.statPerfumeScore) this.statPerfumeScore.innerText = `${perfumeSave.highScore || 0} 🌸`;
+        if (this.statMagiccanvasScore) this.statMagiccanvasScore.innerText = `${magiccanvasSave.highScore || 0} 🎨`;
+        if (this.statPixelartScore) this.statPixelartScore.innerText = `${pixelartSave.highScore || 0} 👾`;
+        if (this.statKaleidoscopeScore) this.statKaleidoscopeScore.innerText = `${kaleidoscopeSave.highScore || 0} 🌀`;
+        if (this.statColoringbookScore) this.statColoringbookScore.innerText = `${coloringbookSave.highScore || 0} 🖍️`;
+        if (this.statQuickdrawScore) this.statQuickdrawScore.innerText = `${quickdrawSave.highScore || 0} ✏️`;
     }
 
     renderPlayersList() {

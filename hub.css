@@ -522,6 +522,11 @@ body, html {
 .card-jewelry { border-color: #fde047; }
 .card-magicaltea { border-color: #f472b6; }
 .card-perfume { border-color: #e879f9; }
+.card-magiccanvas { border-color: #ec4899; }
+.card-pixelart { border-color: #38bdf8; }
+.card-kaleidoscope { border-color: #e879f9; }
+.card-coloringbook { border-color: #f472b6; }
+.card-quickdraw { border-color: #fde047; }
 
 .game-card-banner {
     font-size: 3.5rem;

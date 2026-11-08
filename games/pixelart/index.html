@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixel Art Studio Maker 👾🖌️ — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #1e1b4b 0%, #090514 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 1060px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #38bdf8;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #38bdf8;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .pixel-layout {
+            width: 100%;
+            max-width: 1060px;
+            display: grid;
+            grid-template-columns: 1fr 370px;
+            gap: 14px;
+        }
+        @media (max-width: 840px) {
+            .pixel-layout { grid-template-columns: 1fr; }
+        }
+        .canvas-box {
+            background: rgba(17, 12, 38, 0.92);
+            border: 3px solid #38bdf8;
+            border-radius: 24px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 34px rgba(56, 189, 248, 0.3);
+        }
+        canvas {
+            width: 100%;
+            max-width: 460px;
+            aspect-ratio: 1 / 1;
+            border-radius: 14px;
+            background: #0f172a;
+            cursor: pointer;
+            touch-action: none;
+            image-rendering: pixelated;
+        }
+        .controls-box {
+            background: rgba(24, 14, 48, 0.95);
+            border: 3px solid #a855f7;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #bae6fd; font-size: 0.86rem; margin-bottom: 5px; }
+        .row-wrap { display: flex; gap: 7px; flex-wrap: wrap; }
+        .btn-opt {
+            padding: 8px 11px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            border-color: #fde047;
+            background: linear-gradient(135deg, #38bdf8, #a855f7);
+        }
+        .swatch {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            border: 3px solid rgba(255,255,255,0.35);
+            cursor: pointer;
+        }
+        .swatch.active { border-color: #fde047; transform: scale(1.12); }
+        .btn-save {
+            margin-top: auto;
+            background: linear-gradient(135deg, #38bdf8, #ec4899, #fde047);
+            color: #0f172a;
+            border: none;
+            padding: 13px;
+            border-radius: 26px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">PIXEL ARTS: <strong id="hud-score">0 👾</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 👾</strong></div>
+        </div>
+    </div>
+
+    <div class="pixel-layout">
+        <div class="canvas-box">
+            <canvas id="pixel-canvas" width="480" height="480"></canvas>
+            <p id="pixel-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Clique ou arraste nos blocos para criar sua Pixel Art! Use Simetria Espelhada! 👾✨
+            </p>
+        </div>
+
+        <div class="controls-box">
+            <div>
+                <div class="label">🛠️ FERRAMENTA PIXEL:</div>
+                <div class="row-wrap">
+                    <button class="btn-opt active" id="tool-pen">✏️ Lápis</button>
+                    <button class="btn-opt" id="tool-bucket">🪣 Balde</button>
+                    <button class="btn-opt" id="tool-erase">🧽 Borracha</button>
+                    <button class="btn-opt" id="tool-mirror">🦋 Simetria: OFF</button>
+                    <button class="btn-opt" id="tool-grid">📏 Grade: ON</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="label">📐 TAMANHO DA GRADE:</div>
+                <div class="row-wrap">
+                    <button class="btn-opt" data-grid="8">8x8</button>
+                    <button class="btn-opt active" data-grid="12">12x12</button>
+                    <button class="btn-opt" data-grid="16">16x16</button>
+                    <button class="btn-opt" id="btn-clear">🗑️ Limpar</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="label">🎨 CORES PIXEL ART:</div>
+                <div class="row-wrap" id="palette-row"></div>
+            </div>
+
+            <div>
+                <div class="label">🌟 MODELOS PRONTOS PARA COLORIR / EDITAR:</div>
+                <div class="row-wrap">
+                    <button class="btn-opt" data-tpl="heart">💖 Coração</button>
+                    <button class="btn-opt" data-tpl="cat">🐱 Gatinha</button>
+                    <button class="btn-opt" data-tpl="crown">👑 Coroa</button>
+                    <button class="btn-opt" data-tpl="sword">⚔️ Espada</button>
+                </div>
+            </div>
+
+            <button class="btn-save" id="btn-finish">👾 FINALIZAR & SALVAR PIXEL ART! (+140 👾)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('pixel-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const pixelMsg = document.getElementById('pixel-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('pixelart', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 👾`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 660) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'square';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.09);
+            } catch (e) {}
+        }
+
+        const PALETTE = [
+            '#ff2a85', '#f472b6', '#fbcfe8', '#a855f7',
+            '#38bdf8', '#22d3ee', '#4ade80', '#fde047',
+            '#fb923c', '#ef4444', '#ffffff', '#1e293b'
+        ];
+
+        let gridSize = 12;
+        let pixels = [];
+        let currentColor = '#ff2a85';
+        let tool = 'pen';
+        let mirrorMode = false;
+        let showGrid = true;
+        let isDown = false;
+        let score = 0;
+
+        function initGrid(n) {
+            gridSize = n;
+            pixels = Array.from({ length: n }, () => Array(n).fill(null));
+            render();
+        }
+
+        function render() {
+            const cell = W / gridSize;
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, W, H);
+
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    if (pixels[r][c]) {
+                        ctx.fillStyle = pixels[r][c];
+                        ctx.fillRect(c * cell, r * cell, cell, cell);
+                    }
+                    if (showGrid) {
+                        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(c * cell, r * cell, cell, cell);
+                    }
+                }
+            }
+
+            if (mirrorMode && showGrid) {
+                ctx.strokeStyle = 'rgba(253, 224, 71, 0.55)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(W / 2, 0);
+                ctx.lineTo(W / 2, H);
+                ctx.stroke();
+            }
+        }
+
+        function floodFill(r, c, targetCol, newCol) {
+            if (targetCol === newCol) return;
+            if (r < 0 || r >= gridSize || c < 0 || c >= gridSize) return;
+            if (pixels[r][c] !== targetCol) return;
+            pixels[r][c] = newCol;
+            floodFill(r + 1, c, targetCol, newCol);
+            floodFill(r - 1, c, targetCol, newCol);
+            floodFill(r, c + 1, targetCol, newCol);
+            floodFill(r, c - 1, targetCol, newCol);
+        }
+
+        function paintAt(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const x = ((clientX - rect.left) / rect.width) * W;
+            const y = ((clientY - rect.top) / rect.height) * H;
+            const c = Math.floor(x / (W / gridSize));
+            const r = Math.floor(y / (H / gridSize));
+            if (r < 0 || r >= gridSize || c < 0 || c >= gridSize) return;
+
+            if (tool === 'bucket') {
+                floodFill(r, c, pixels[r][c], currentColor);
+                sfx(740);
+            } else {
+                const val = tool === 'erase' ? null : currentColor;
+                pixels[r][c] = val;
+                if (mirrorMode) {
+                    pixels[r][gridSize - 1 - c] = val;
+                }
+            }
+            render();
+        }
+
+        canvas.addEventListener('mousedown', (e) => { isDown = true; paintAt(e); sfx(580); });
+        canvas.addEventListener('mousemove', (e) => { if (isDown && tool !== 'bucket') paintAt(e); });
+        window.addEventListener('mouseup', () => { isDown = false; });
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDown = true; paintAt(e); sfx(580); }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDown && tool !== 'bucket') paintAt(e); }, { passive: false });
+        window.addEventListener('touchend', () => { isDown = false; });
+
+        const palRow = document.getElementById('palette-row');
+        PALETTE.forEach((col, i) => {
+            const s = document.createElement('div');
+            s.className = 'swatch' + (i === 0 ? ' active' : '');
+            s.style.background = col;
+            s.onclick = () => {
+                document.querySelectorAll('.swatch').forEach(el => el.classList.remove('active'));
+                s.classList.add('active');
+                currentColor = col;
+                if (tool === 'erase') setTool('pen');
+                sfx(640);
+            };
+            palRow.appendChild(s);
+        });
+
+        function setTool(t) {
+            tool = t;
+            ['pen', 'bucket', 'erase'].forEach(id => {
+                document.getElementById('tool-' + id).classList.toggle('active', id === t);
+            });
+        }
+        document.getElementById('tool-pen').onclick = () => setTool('pen');
+        document.getElementById('tool-bucket').onclick = () => setTool('bucket');
+        document.getElementById('tool-erase').onclick = () => setTool('erase');
+
+        document.getElementById('tool-mirror').onclick = (e) => {
+            mirrorMode = !mirrorMode;
+            e.target.innerText = `🦋 Simetria: ${mirrorMode ? 'ON' : 'OFF'}`;
+            e.target.classList.toggle('active', mirrorMode);
+            render();
+        };
+        document.getElementById('tool-grid').onclick = (e) => {
+            showGrid = !showGrid;
+            e.target.innerText = `📏 Grade: ${showGrid ? 'ON' : 'OFF'}`;
+            render();
+        };
+
+        document.querySelectorAll('[data-grid]').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('[data-grid]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                initGrid(Number(btn.dataset.grid));
+            };
+        });
+
+        document.getElementById('btn-clear').onclick = () => initGrid(gridSize);
+
+        function loadTemplate(type) {
+            initGrid(12);
+            const setSym = (r, c, col) => {
+                pixels[r][c] = col;
+                pixels[r][11 - c] = col;
+            };
+            if (type === 'heart') {
+                [[2,3],[2,4],[3,2],[3,3],[3,4],[3,5],[4,2],[4,3],[4,4],[4,5],[5,2],[5,3],[5,4],[5,5],[6,3],[6,4],[6,5],[7,4],[7,5],[8,5]].forEach(([r,c]) => setSym(r, c, '#ff2a85'));
+            } else if (type === 'crown') {
+                [[4,2],[5,2],[5,3],[4,5],[5,5],[6,2],[6,3],[6,4],[6,5],[7,2],[7,3],[7,4],[7,5]].forEach(([r,c]) => setSym(r, c, '#fde047'));
+                setSym(6, 3, '#ff2a85');
+                setSym(6, 5, '#38bdf8');
+            } else if (type === 'cat') {
+                [[2,2],[3,2],[3,3],[4,2],[4,3],[4,4],[4,5],[5,2],[5,3],[5,4],[5,5],[6,2],[6,3],[6,4],[6,5],[7,3],[7,4],[7,5]].forEach(([r,c]) => setSym(r, c, '#fbcfe8'));
+                setSym(5, 3, '#1e293b');
+                setSym(6, 5, '#ff2a85');
+            } else if (type === 'sword') {
+                for (let i = 2; i <= 8; i++) pixels[i][11 - i] = '#38bdf8';
+                pixels[8][2] = '#fde047';
+                pixels[7][2] = '#fde047';
+                pixels[9][3] = '#fde047';
+                pixels[9][2] = '#a855f7';
+            }
+            render();
+            sfx(780);
+        }
+
+        document.querySelectorAll('[data-tpl]').forEach(btn => {
+            btn.onclick = () => loadTemplate(btn.dataset.tpl);
+        });
+
+        document.getElementById('btn-finish').onclick = () => {
+            score += 140;
+            sfx(920);
+            hudScore.innerText = `${score} 👾`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 👾`;
+                SaveHub.updateGameSave('pixelart', { highScore: bestScore }, playerName);
+            }
+            pixelMsg.innerText = '👾 PIXEL ART SALVA COM SUCESSO! +140 👾';
+        };
+
+        initGrid(12);
+        loadTemplate('heart');
+    </script>
+</body>
+</html>
