@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Livro de Colorir Encantado 🖍️🦄 — JasDEV Hub</title>
+    <title>Livro de Colorir Encantado HD 🖍️🦄 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at top, #701a75 0%, #1e052b 100%);
+            background: radial-gradient(circle at top, #581c87 0%, #140321 100%);
             color: #fff;
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -21,7 +21,7 @@
         }
         .topbar {
             width: 100%;
-            max-width: 1040px;
+            max-width: 1140px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -33,144 +33,289 @@
             background: rgba(255, 255, 255, 0.12);
             border: 2px solid #f472b6;
             color: #fff;
-            padding: 7px 15px;
+            padding: 7px 16px;
             border-radius: 20px;
             text-decoration: none;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.86rem;
+            transition: 0.2s;
         }
+        .btn-back:hover { background: #f472b6; color: #160322; }
+        .hud-stats { display: flex; gap: 8px; flex-wrap: wrap; }
         .stat-pill {
             background: rgba(0, 0, 0, 0.55);
             border: 2px solid #f472b6;
             border-radius: 16px;
-            padding: 5px 12px;
-            font-size: 0.82rem;
+            padding: 5px 14px;
+            font-size: 0.84rem;
             font-weight: 700;
         }
         .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
-        .book-grid {
+
+        .studio-layout {
             width: 100%;
-            max-width: 1040px;
+            max-width: 1140px;
             display: grid;
-            grid-template-columns: 1fr 360px;
-            gap: 14px;
+            grid-template-columns: 540px 1fr;
+            gap: 16px;
+            align-items: stretch;
         }
-        @media (max-width: 820px) {
-            .book-grid { grid-template-columns: 1fr; }
+        @media (max-width: 940px) {
+            .studio-layout { grid-template-columns: 1fr; }
         }
+
         .page-stage {
-            background: rgba(34, 6, 48, 0.92);
+            background: linear-gradient(180deg, #3b0764, #190329);
             border: 3px solid #f472b6;
-            border-radius: 24px;
-            padding: 14px;
+            border-radius: 26px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 0 36px rgba(244, 114, 182, 0.35);
+            box-shadow: 0 0 42px rgba(244, 114, 182, 0.4);
         }
         canvas {
             width: 100%;
-            max-width: 480px;
+            max-width: 510px;
             aspect-ratio: 1 / 1;
-            border-radius: 18px;
+            border-radius: 20px;
             background: #fff9fc;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+            touch-action: none;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
         }
-        .crayon-box {
-            background: rgba(42, 8, 52, 0.95);
+        .progress-wrap {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(244, 114, 182, 0.45);
+            border-radius: 14px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .progress-bar-bg {
+            flex: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ec4899, #fde047);
+            transition: width 0.25s;
+        }
+        .stage-actions {
+            width: 100%;
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-quick {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #e879f9;
+            color: #fff;
+            padding: 8px 8px;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .btn-quick:hover { background: rgba(232, 121, 249, 0.32); transform: translateY(-2px); }
+
+        .crayon-panel {
+            background: rgba(28, 7, 46, 0.94);
             border: 3px solid #f9a8d4;
-            border-radius: 24px;
+            border-radius: 26px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.88rem; margin-bottom: 5px; }
-        .row-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+        .label {
+            font-family: 'Fredoka', sans-serif;
+            color: #fbcfe8;
+            font-size: 0.86rem;
+            margin-bottom: 5px;
+        }
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+        }
+        @media (max-width: 520px) {
+            .pages-grid { grid-template-columns: repeat(2, 1fr); }
+        }
         .page-btn {
-            padding: 8px 12px;
-            border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.25);
-            background: rgba(255,255,255,0.08);
+            padding: 8px 8px;
+            border-radius: 14px;
+            border: 2px solid rgba(244, 114, 182, 0.35);
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             cursor: pointer;
+            transition: 0.15s;
         }
         .page-btn.active, .page-btn:hover {
             border-color: #fde047;
-            background: linear-gradient(135deg, #ec4899, #a855f7);
+            background: linear-gradient(135deg, #ec4899, #9333ea);
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.45);
+        }
+
+        .modes-row {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 13px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .mode-btn.active {
+            border-color: #fde047;
+            background: linear-gradient(135deg, #f472b6, #a855f7);
+        }
+
+        .crayons-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 7px;
+        }
+        @media (max-width: 520px) {
+            .crayons-grid { grid-template-columns: repeat(6, 1fr); }
         }
         .crayon {
-            width: 38px;
-            height: 38px;
+            aspect-ratio: 1 / 1;
             border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.5);
+            border: 3px solid rgba(255, 255, 255, 0.5);
             cursor: pointer;
             transition: transform 0.15s;
+            position: relative;
         }
         .crayon.active, .crayon:hover {
-            transform: scale(1.16);
+            transform: scale(1.18);
             border-color: #fde047;
             box-shadow: 0 0 12px #fde047;
+            z-index: 2;
         }
+
+        .stickers-row {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+        .sticker-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+        .sticker-btn.active {
+            border-color: #fde047;
+            background: rgba(236, 72, 153, 0.35);
+            transform: scale(1.1);
+        }
+
         .btn-finish {
             margin-top: auto;
-            background: linear-gradient(135deg, #ec4899, #fde047);
-            color: #310719;
+            background: linear-gradient(135deg, #ec4899, #a855f7, #fde047);
+            color: #1f0429;
             border: none;
             padding: 14px;
-            border-radius: 28px;
+            border-radius: 30px;
             font-family: 'Fredoka', sans-serif;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 900;
             cursor: pointer;
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
         }
     </style>
 </head>
 <body>
     <div class="topbar">
         <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
-        <div style="display:flex; gap:8px;">
-            <div class="stat-pill">COLORIDOS: <strong id="hud-score">0 🖍️</strong></div>
-            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🖍️</strong></div>
+        <div class="hud-stats">
+            <div class="stat-pill">OBRAS COLORIDAS: <strong id="hud-score">0 🖍️</strong></div>
+            <div class="stat-pill">RECORDE REAL: <strong id="hud-best">0 🖍️</strong></div>
         </div>
     </div>
 
-    <div class="book-grid">
+    <div class="studio-layout">
+        <!-- PALCO DA ILUSTRAÇÃO HD -->
         <div class="page-stage">
-            <canvas id="color-canvas" width="480" height="480"></canvas>
-            <p id="color-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
-                Escolha uma cor e toque nas partes do desenho para colorir! 🖍️🦄
+            <canvas id="color-canvas" width="520" height="520"></canvas>
+            <div class="progress-wrap">
+                <span style="font-family:'Fredoka',sans-serif; font-size:0.8rem; color:#fbcfe8;">Progresso da Pintura:</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <strong id="progress-text" style="font-family:'Fredoka',sans-serif; font-size:0.84rem; color:#fde047;">0%</strong>
+            </div>
+            <div class="stage-actions">
+                <button class="btn-quick" id="btn-undo">↩️ DESFAZER</button>
+                <button class="btn-quick" id="btn-auto">🌈 COLORIR MÁGICO</button>
+                <button class="btn-quick" id="btn-reset">🔄 LIMPAR PÁGINA</button>
+                <button class="btn-quick" id="btn-download">💾 BAIXAR PNG</button>
+            </div>
+            <p id="color-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center; font-size:0.88rem;">
+                Toque em qualquer parte da ilustração para colorir com cores sólidas, degradê ou glitter! 🖍️✨
             </p>
         </div>
 
-        <div class="crayon-box">
+        <!-- PAINEL DE DESENHOS, CORES, TEXTURAS & ADESIVOS -->
+        <div class="crayon-panel">
             <div>
-                <div class="label">📖 ESCOLHA O DESENHO PARA COLORIR:</div>
-                <div class="row-wrap" id="pages-row">
-                    <button class="page-btn active" data-page="castle">🏰 Castelo Real</button>
-                    <button class="page-btn" data-page="butterfly">🦋 Borboleta</button>
-                    <button class="page-btn" data-page="unicorn">🦄 Unicórnio</button>
-                    <button class="page-btn" data-page="kitty">🐱 Gatinha</button>
+                <div class="label">📖 1. ESCOLHA A ILUSTRAÇÃO DETALHADA (6 DESENHOS HD):</div>
+                <div class="pages-grid" id="pages-row">
+                    <button class="page-btn active" data-page="castle">🏰 Castelo das Fadas</button>
+                    <button class="page-btn" data-page="unicorn">🦄 Unicórnio no Arco-Íris</button>
+                    <button class="page-btn" data-page="mermaid">🧜‍♀️ Princesa Sereia</button>
+                    <button class="page-btn" data-page="butterfly">🦋 Borboleta Imperial</button>
+                    <button class="page-btn" data-page="kitty">🐱 Gatinha & Cupcake</button>
+                    <button class="page-btn" data-page="princess">👗 Princesa Estelar</button>
                 </div>
             </div>
 
             <div>
-                <div class="label">🖍️ ESTOJO DE CORES MÁGICAS:</div>
-                <div class="row-wrap" id="crayons-row"></div>
-            </div>
-
-            <div>
-                <div class="label">✨ OPÇÕES EXTRAS:</div>
-                <div class="row-wrap">
-                    <button class="page-btn" id="btn-auto">🌈 Colorir Mágico</button>
-                    <button class="page-btn" id="btn-reset">🔄 Deixar em Branco</button>
+                <div class="label">✨ 2. ESTILO DE PINTURA & ACABAMENTO:</div>
+                <div class="modes-row">
+                    <button class="mode-btn active" data-fill="solid">🎨 Cor Pura</button>
+                    <button class="mode-btn" data-fill="gradient">🌅 Degradê Real</button>
+                    <button class="mode-btn" data-fill="glitter">✨ Purpurina Glitter</button>
                 </div>
             </div>
 
-            <button class="btn-finish" id="btn-finish">🌟 COMPLETAR PÁGINA DO LIVRO! (+150 🖍️)</button>
+            <div>
+                <div class="label">🖍️ 3. ESTOJO REAL DE 24 CORES + COR LIVRE:</div>
+                <div class="crayons-grid" id="crayons-row"></div>
+            </div>
+
+            <div>
+                <div class="label">🎀 4. COLAR ADESIVOS BRILHANTES (Clique em um e toque no desenho):</div>
+                <div class="stickers-row" id="stickers-row"></div>
+            </div>
+
+            <button class="btn-finish" id="btn-finish">
+                🏆 ASSINAR & EXPOR OBRA NO LIVRO REAL! (+PONTOS 🖍️)
+            </button>
         </div>
     </div>
 
@@ -185,6 +330,8 @@
         const hudScore = document.getElementById('hud-score');
         const hudBest = document.getElementById('hud-best');
         const colorMsg = document.getElementById('color-msg');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
 
         const activePlayer = SaveHub.getActivePlayer();
         const playerName = activePlayer ? activePlayer.name : null;
@@ -193,13 +340,14 @@
         hudBest.innerText = `${bestScore} 🖍️`;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sfx(freq = 680) {
+        function sfx(freq = 680, type = 'triangle') {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const o = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
-                o.type = 'triangle';
+                o.type = type;
                 o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(freq * 1.25, audioCtx.currentTime + 0.14);
                 g.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
                 o.connect(g);
@@ -210,173 +358,429 @@
         }
 
         const CRAYONS = [
-            '#ff2a85', '#f472b6', '#fbcfe8', '#c084fc',
-            '#818cf8', '#38bdf8', '#67e8f9', '#34d399',
-            '#fde047', '#fef08a', '#fb923c', '#ffffff'
+            '#ff2a85', '#ec4899', '#f472b6', '#fbcfe8', '#fda4af', '#ef4444', '#fb923c', '#f59e0b',
+            '#fde047', '#fef08a', '#84cc16', '#22c55e', '#10b981', '#2dd4bf', '#06b6d4', '#38bdf8',
+            '#bae6fd', '#6366f1', '#8b5cf6', '#a855f7', '#d8b4fe', '#ffe4e6', '#9a5840', '#ffffff'
         ];
+        const STICKERS = ['💖', '✨', '👑', '🦋', '🌸', '💎', '🎀', '⭐', '🌈', '🍓'];
 
         let currentCrayon = '#ff2a85';
+        let fillStyleMode = 'solid'; // 'solid' | 'gradient' | 'glitter'
+        let activeSticker = null;
         let currentPage = 'castle';
         let score = 0;
+        let undoStack = [];
+        let placedStickers = [];
+        let sparkles = [];
 
-        // Regions for each coloring page
-        const PAGES = {
-            castle: [
-                { id: 'sky', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
-                { id: 'sun', type: 'circle', x: 90, y: 90, r: 44, color: '#ffffff' },
-                { id: 'leftTower', type: 'rect', x: 85, y: 190, w: 70, h: 190, color: '#ffffff' },
-                { id: 'rightTower', type: 'rect', x: 325, y: 190, w: 70, h: 190, color: '#ffffff' },
-                { id: 'mainWall', type: 'rect', x: 155, y: 210, w: 170, h: 170, color: '#ffffff' },
-                { id: 'centerTower', type: 'rect', x: 200, y: 120, w: 80, h: 90, color: '#ffffff' },
-                { id: 'roofL', type: 'tri', x1: 75, y1: 190, x2: 120, y2: 110, x3: 165, y3: 190, color: '#ffffff' },
-                { id: 'roofR', type: 'tri', x1: 315, y1: 190, x2: 360, y2: 110, x3: 405, y3: 190, color: '#ffffff' },
-                { id: 'roofC', type: 'tri', x1: 190, y1: 120, x2: 240, y2: 45, x3: 290, y3: 120, color: '#ffffff' },
-                { id: 'door', type: 'circle', x: 240, y: 335, r: 42, color: '#ffffff' },
-                { id: 'lawn', type: 'rect', x: 0, y: 380, w: 480, h: 100, color: '#ffffff' }
-            ],
-            butterfly: [
-                { id: 'bg', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
-                { id: 'wingTL', type: 'circle', x: 155, y: 175, r: 92, color: '#ffffff' },
-                { id: 'wingTR', type: 'circle', x: 325, y: 175, r: 92, color: '#ffffff' },
-                { id: 'wingBL', type: 'circle', x: 170, y: 310, r: 72, color: '#ffffff' },
-                { id: 'wingBR', type: 'circle', x: 310, y: 310, r: 72, color: '#ffffff' },
-                { id: 'spotTL', type: 'circle', x: 145, y: 165, r: 38, color: '#ffffff' },
-                { id: 'spotTR', type: 'circle', x: 335, y: 165, r: 38, color: '#ffffff' },
-                { id: 'spotBL', type: 'circle', x: 165, y: 315, r: 28, color: '#ffffff' },
-                { id: 'spotBR', type: 'circle', x: 315, y: 315, r: 28, color: '#ffffff' },
-                { id: 'body', type: 'rect', x: 224, y: 130, w: 32, h: 220, color: '#ffffff' }
-            ],
-            unicorn: [
-                { id: 'bg', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
-                { id: 'rainbow1', type: 'circle', x: 240, y: 390, r: 210, color: '#ffffff' },
-                { id: 'rainbow2', type: 'circle', x: 240, y: 390, r: 175, color: '#ffffff' },
-                { id: 'body', type: 'circle', x: 240, y: 340, r: 95, color: '#ffffff' },
-                { id: 'mane', type: 'circle', x: 175, y: 220, r: 58, color: '#ffffff' },
-                { id: 'head', type: 'circle', x: 240, y: 215, r: 74, color: '#ffffff' },
-                { id: 'snout', type: 'circle', x: 240, y: 242, r: 36, color: '#ffffff' },
-                { id: 'horn', type: 'tri', x1: 215, y1: 150, x2: 240, y2: 52, x3: 265, y3: 150, color: '#ffffff' }
-            ],
-            kitty: [
-                { id: 'bg', type: 'rect', x: 0, y: 0, w: 480, h: 480, color: '#fdf2f8' },
-                { id: 'earL', type: 'tri', x1: 115, y1: 190, x2: 145, y2: 75, x3: 215, y3: 150, color: '#ffffff' },
-                { id: 'earR', type: 'tri', x1: 365, y1: 190, x2: 335, y2: 75, x3: 265, y3: 150, color: '#ffffff' },
-                { id: 'body', type: 'circle', x: 240, y: 360, r: 95, color: '#ffffff' },
-                { id: 'head', type: 'circle', x: 240, y: 225, r: 102, color: '#ffffff' },
-                { id: 'bowL', type: 'circle', x: 305, y: 135, r: 28, color: '#ffffff' },
-                { id: 'bowR', type: 'circle', x: 350, y: 155, r: 28, color: '#ffffff' },
-                { id: 'heart', type: 'circle', x: 240, y: 365, r: 42, color: '#ffffff' }
-            ]
-        };
-
-        function buildShapePath(reg) {
-            ctx.beginPath();
-            if (reg.type === 'rect') {
-                ctx.rect(reg.x, reg.y, reg.w, reg.h);
-            } else if (reg.type === 'circle') {
-                ctx.arc(reg.x, reg.y, reg.r, 0, Math.PI * 2);
-            } else if (reg.type === 'tri') {
-                ctx.moveTo(reg.x1, reg.y1);
-                ctx.lineTo(reg.x2, reg.y2);
-                ctx.lineTo(reg.x3, reg.y3);
-                ctx.closePath();
-            }
+        // ======== DEFINIÇÃO DAS 6 ILUSTRAÇÕES VETORIAIS ULTRA-DETALHADAS ========
+        function createPagesData() {
+            return {
+                castle: [
+                    { id: 'sky', name: 'Céu Encantado', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    { id: 'sun', name: 'Sol Dourado', color: '#ffffff', draw: (c) => { c.arc(92, 86, 44, 0, Math.PI * 2); } },
+                    { id: 'cloud1', name: 'Nuvem Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(145, 58, 95, 38, 19); } },
+                    { id: 'cloud2', name: 'Nuvem Direita', color: '#ffffff', draw: (c) => { c.roundRect(365, 72, 105, 40, 20); } },
+                    { id: 'hillL', name: 'Colina Esquerda', color: '#ffffff', draw: (c) => { c.arc(130, 510, 185, Math.PI, 0); } },
+                    { id: 'hillR', name: 'Colina Direita', color: '#ffffff', draw: (c) => { c.arc(390, 510, 185, Math.PI, 0); } },
+                    { id: 'river', name: 'Caminho Real', color: '#ffffff', draw: (c) => { c.moveTo(225, 400); c.lineTo(295, 400); c.lineTo(345, 520); c.lineTo(175, 520); c.closePath(); } },
+                    { id: 'towerL', name: 'Torre Esquerda', color: '#ffffff', draw: (c) => { c.rect(85, 200, 74, 200); } },
+                    { id: 'towerR', name: 'Torre Direita', color: '#ffffff', draw: (c) => { c.rect(361, 200, 74, 200); } },
+                    { id: 'towerC', name: 'Torre Imperial Central', color: '#ffffff', draw: (c) => { c.rect(205, 115, 110, 130); } },
+                    { id: 'wallM', name: 'Muralha do Palácio', color: '#ffffff', draw: (c) => { c.rect(159, 230, 202, 170); } },
+                    { id: 'roofL', name: 'Telhado Esquerdo', color: '#ffffff', draw: (c) => { c.moveTo(72, 200); c.lineTo(122, 105); c.lineTo(172, 200); c.closePath(); } },
+                    { id: 'roofR', name: 'Telhado Direito', color: '#ffffff', draw: (c) => { c.moveTo(348, 200); c.lineTo(398, 105); c.lineTo(448, 200); c.closePath(); } },
+                    { id: 'roofC', name: 'Cúpula Real Central', color: '#ffffff', draw: (c) => { c.moveTo(190, 115); c.lineTo(260, 28); c.lineTo(330, 115); c.closePath(); } },
+                    { id: 'flagC', name: 'Bandeira Real', color: '#ffffff', draw: (c) => { c.moveTo(260, 28); c.lineTo(308, 40); c.lineTo(260, 54); c.closePath(); } },
+                    { id: 'winL', name: 'Janela Gótica Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(104, 245, 36, 56, [18, 18, 4, 4]); } },
+                    { id: 'winR', name: 'Janela Gótica Direita', color: '#ffffff', draw: (c) => { c.roundRect(380, 245, 36, 56, [18, 18, 4, 4]); } },
+                    { id: 'winC', name: 'Rosácea Real', color: '#ffffff', draw: (c) => { c.arc(260, 172, 30, 0, Math.PI * 2); } },
+                    { id: 'gate', name: 'Portão do Castelo', color: '#ffffff', draw: (c) => { c.roundRect(216, 302, 88, 98, [44, 44, 0, 0]); } },
+                    { id: 'heartCrest', name: 'Brasão de Coração', color: '#ffffff', draw: (c) => { c.arc(260, 265, 18, 0, Math.PI * 2); } }
+                ],
+                unicorn: [
+                    { id: 'sky', name: 'Céu Mágico', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    { id: 'rb1', name: 'Arco-Íris Faixa 1', color: '#ffffff', draw: (c) => { c.arc(260, 440, 230, Math.PI, 0); } },
+                    { id: 'rb2', name: 'Arco-Íris Faixa 2', color: '#ffffff', draw: (c) => { c.arc(260, 440, 200, Math.PI, 0); } },
+                    { id: 'rb3', name: 'Arco-Íris Faixa 3', color: '#ffffff', draw: (c) => { c.arc(260, 440, 170, Math.PI, 0); } },
+                    { id: 'cloudL', name: 'Nuvem Fofa Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(24, 395, 150, 75, 36); } },
+                    { id: 'cloudR', name: 'Nuvem Fofa Direita', color: '#ffffff', draw: (c) => { c.roundRect(346, 395, 150, 75, 36); } },
+                    { id: 'tail1', name: 'Cauda Mecha Superior', color: '#ffffff', draw: (c) => { c.ellipse(382, 315, 55, 24, -0.3, 0, Math.PI * 2); } },
+                    { id: 'tail2', name: 'Cauda Mecha Inferior', color: '#ffffff', draw: (c) => { c.ellipse(390, 352, 52, 22, 0.2, 0, Math.PI * 2); } },
+                    { id: 'body', name: 'Corpo do Unicórnio', color: '#ffffff', draw: (c) => { c.roundRect(175, 280, 165, 112, 52); } },
+                    { id: 'leg1', name: 'Patas Dianteiras', color: '#ffffff', draw: (c) => { c.roundRect(190, 375, 38, 82, 16); } },
+                    { id: 'leg2', name: 'Patas Traseiras', color: '#ffffff', draw: (c) => { c.roundRect(285, 375, 38, 82, 16); } },
+                    { id: 'saddle', name: 'Manta Real de Estrela', color: '#ffffff', draw: (c) => { c.ellipse(265, 315, 48, 32, 0, 0, Math.PI * 2); } },
+                    { id: 'mane1', name: 'Crina Mágica Topo', color: '#ffffff', draw: (c) => { c.ellipse(235, 152, 46, 26, -0.2, 0, Math.PI * 2); } },
+                    { id: 'mane2', name: 'Crina Mágica Lateral', color: '#ffffff', draw: (c) => { c.ellipse(258, 225, 42, 30, 0.4, 0, Math.PI * 2); } },
+                    { id: 'head', name: 'Cabeça do Unicórnio', color: '#ffffff', draw: (c) => { c.arc(195, 205, 68, 0, Math.PI * 2); } },
+                    { id: 'snout', name: 'Focinho Doce', color: '#ffffff', draw: (c) => { c.ellipse(142, 222, 34, 28, 0, 0, Math.PI * 2); } },
+                    { id: 'ear', name: 'Orelhinha', color: '#ffffff', draw: (c) => { c.ellipse(222, 138, 16, 32, 0.2, 0, Math.PI * 2); } },
+                    { id: 'horn', name: 'Chifre de Cristal Dourado', color: '#ffffff', draw: (c) => { c.moveTo(165, 148); c.lineTo(135, 48); c.lineTo(202, 138); c.closePath(); } }
+                ],
+                mermaid: [
+                    { id: 'sea', name: 'Oceano de Cristal', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    { id: 'shellBg', name: 'Trono de Concha Real', color: '#ffffff', draw: (c) => { c.arc(260, 290, 175, Math.PI, 0); } },
+                    { id: 'hairBack', name: 'Cabelo Longo de Sereia', color: '#ffffff', draw: (c) => { c.ellipse(260, 210, 98, 88, 0, 0, Math.PI * 2); } },
+                    { id: 'tailFinL', name: 'Nadadeira Esquerda', color: '#ffffff', draw: (c) => { c.ellipse(215, 462, 52, 26, -0.4, 0, Math.PI * 2); } },
+                    { id: 'tailFinR', name: 'Nadadeira Direita', color: '#ffffff', draw: (c) => { c.ellipse(305, 462, 52, 26, 0.4, 0, Math.PI * 2); } },
+                    { id: 'tail', name: 'Cauda Escamada', color: '#ffffff', draw: (c) => { c.moveTo(205, 315); c.quadraticCurveTo(195, 410, 260, 455); c.quadraticCurveTo(325, 410, 315, 315); c.closePath(); } },
+                    { id: 'belt', name: 'Cinto de Pérolas', color: '#ffffff', draw: (c) => { c.roundRect(202, 302, 116, 24, 12); } },
+                    { id: 'torso', name: 'Corpo da Sereia', color: '#ffffff', draw: (c) => { c.roundRect(216, 218, 88, 90, 30); } },
+                    { id: 'shellTopL', name: 'Top Concha Esquerda', color: '#ffffff', draw: (c) => { c.arc(238, 258, 20, 0, Math.PI * 2); } },
+                    { id: 'shellTopR', name: 'Top Concha Direita', color: '#ffffff', draw: (c) => { c.arc(282, 258, 20, 0, Math.PI * 2); } },
+                    { id: 'head', name: 'Rosto da Sereia', color: '#ffffff', draw: (c) => { c.arc(260, 165, 54, 0, Math.PI * 2); } },
+                    { id: 'crown', name: 'Tiara Imperial dos Mares', color: '#ffffff', draw: (c) => { c.moveTo(215, 122); c.lineTo(260, 68); c.lineTo(305, 122); c.closePath(); } },
+                    { id: 'starfish', name: 'Estrela-do-Mar', color: '#ffffff', draw: (c) => { c.arc(105, 415, 36, 0, Math.PI * 2); } },
+                    { id: 'pearl', name: 'Pérola Brilhante', color: '#ffffff', draw: (c) => { c.arc(410, 415, 34, 0, Math.PI * 2); } }
+                ],
+                butterfly: [
+                    { id: 'bg', name: 'Jardim Encantado', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    { id: 'wingTL', name: 'Asa Superior Esquerda', color: '#ffffff', draw: (c) => { c.ellipse(155, 185, 112, 85, 0.35, 0, Math.PI * 2); } },
+                    { id: 'wingTR', name: 'Asa Superior Direita', color: '#ffffff', draw: (c) => { c.ellipse(365, 185, 112, 85, -0.35, 0, Math.PI * 2); } },
+                    { id: 'wingBL', name: 'Asa Inferior Esquerda', color: '#ffffff', draw: (c) => { c.ellipse(175, 335, 88, 72, -0.3, 0, Math.PI * 2); } },
+                    { id: 'wingBR', name: 'Asa Inferior Direita', color: '#ffffff', draw: (c) => { c.ellipse(345, 335, 88, 72, 0.3, 0, Math.PI * 2); } },
+                    { id: 'gemTL', name: 'Vitral Superior Esquerdo', color: '#ffffff', draw: (c) => { c.arc(140, 175, 45, 0, Math.PI * 2); } },
+                    { id: 'gemTR', name: 'Vitral Superior Direito', color: '#ffffff', draw: (c) => { c.arc(380, 175, 45, 0, Math.PI * 2); } },
+                    { id: 'dotTL', name: 'Pérola Esquerda', color: '#ffffff', draw: (c) => { c.arc(140, 175, 20, 0, Math.PI * 2); } },
+                    { id: 'dotTR', name: 'Pérola Direita', color: '#ffffff', draw: (c) => { c.arc(380, 175, 20, 0, Math.PI * 2); } },
+                    { id: 'gemBL', name: 'Gota Inferior Esquerda', color: '#ffffff', draw: (c) => { c.arc(170, 340, 34, 0, Math.PI * 2); } },
+                    { id: 'gemBR', name: 'Gota Inferior Direita', color: '#ffffff', draw: (c) => { c.arc(350, 340, 34, 0, Math.PI * 2); } },
+                    { id: 'body', name: 'Corpo da Borboleta', color: '#ffffff', draw: (c) => { c.roundRect(242, 135, 36, 235, 18); } },
+                    { id: 'crown', name: 'Coroa da Borboleta', color: '#ffffff', draw: (c) => { c.moveTo(235, 135); c.lineTo(260, 88); c.lineTo(285, 135); c.closePath(); } }
+                ],
+                kitty: [
+                    { id: 'bg', name: 'Fundo Pastel', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    { id: 'earL', name: 'Orelha Esquerda', color: '#ffffff', draw: (c) => { c.moveTo(118, 195); c.lineTo(142, 72); c.lineTo(225, 148); c.closePath(); } },
+                    { id: 'earR', name: 'Orelha Direita', color: '#ffffff', draw: (c) => { c.moveTo(402, 195); c.lineTo(378, 72); c.lineTo(295, 148); c.closePath(); } },
+                    { id: 'innerEarL', name: 'Interior Orelha Esq', color: '#ffffff', draw: (c) => { c.moveTo(138, 178); c.lineTo(152, 102); c.lineTo(205, 152); c.closePath(); } },
+                    { id: 'innerEarR', name: 'Interior Orelha Dir', color: '#ffffff', draw: (c) => { c.moveTo(382, 178); c.lineTo(368, 102); c.lineTo(315, 152); c.closePath(); } },
+                    { id: 'dress', name: 'Vestido da Gatinha', color: '#ffffff', draw: (c) => { c.moveTo(175, 295); c.lineTo(345, 295); c.lineTo(385, 455); c.lineTo(135, 455); c.closePath(); } },
+                    { id: 'head', name: 'Rosto da Gatinha', color: '#ffffff', draw: (c) => { c.ellipse(260, 215, 112, 92, 0, 0, Math.PI * 2); } },
+                    { id: 'bowL', name: 'Laço Esquerdo', color: '#ffffff', draw: (c) => { c.arc(325, 128, 28, 0, Math.PI * 2); } },
+                    { id: 'bowR', name: 'Laço Direito', color: '#ffffff', draw: (c) => { c.arc(375, 148, 28, 0, Math.PI * 2); } },
+                    { id: 'bowCenter', name: 'Nó do Laço', color: '#ffffff', draw: (c) => { c.arc(350, 138, 15, 0, Math.PI * 2); } },
+                    { id: 'cupBase', name: 'Forminha do Cupcake', color: '#ffffff', draw: (c) => { c.moveTo(210, 415); c.lineTo(310, 415); c.lineTo(295, 485); c.lineTo(225, 485); c.closePath(); } },
+                    { id: 'cupFrost', name: 'Chantilly do Cupcake', color: '#ffffff', draw: (c) => { c.ellipse(260, 405, 58, 28, 0, 0, Math.PI * 2); } },
+                    { id: 'cherry', name: 'Cereja Doce', color: '#ffffff', draw: (c) => { c.arc(260, 372, 16, 0, Math.PI * 2); } }
+                ],
+                princess: [
+                    { id: 'sky', name: 'Palácio Estelar', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    { id: 'wingL', name: 'Asa de Fada Esquerda', color: '#ffffff', draw: (c) => { c.ellipse(165, 245, 78, 48, 0.3, 0, Math.PI * 2); } },
+                    { id: 'wingR', name: 'Asa de Fada Direita', color: '#ffffff', draw: (c) => { c.ellipse(355, 245, 78, 48, -0.3, 0, Math.PI * 2); } },
+                    { id: 'hairBack', name: 'Cabelo Real Ondulado', color: '#ffffff', draw: (c) => { c.ellipse(260, 195, 86, 95, 0, 0, Math.PI * 2); } },
+                    { id: 'skirt3', name: 'Saia Imperial Base', color: '#ffffff', draw: (c) => { c.arc(260, 485, 155, Math.PI, 0); } },
+                    { id: 'skirt2', name: 'Saia Camada do Meio', color: '#ffffff', draw: (c) => { c.arc(260, 430, 122, Math.PI, 0); } },
+                    { id: 'skirt1', name: 'Sobressaia Real', color: '#ffffff', draw: (c) => { c.arc(260, 375, 88, Math.PI, 0); } },
+                    { id: 'bodice', name: 'Corpete de Gala', color: '#ffffff', draw: (c) => { c.roundRect(222, 222, 76, 86, 20); } },
+                    { id: 'puffL', name: 'Manga Bufante Esq', color: '#ffffff', draw: (c) => { c.arc(212, 242, 24, 0, Math.PI * 2); } },
+                    { id: 'puffR', name: 'Manga Bufante Dir', color: '#ffffff', draw: (c) => { c.arc(308, 242, 24, 0, Math.PI * 2); } },
+                    { id: 'head', name: 'Rosto da Princesa', color: '#ffffff', draw: (c) => { c.arc(260, 160, 52, 0, Math.PI * 2); } },
+                    { id: 'tiara', name: 'Coroa de Diamantes', color: '#ffffff', draw: (c) => { c.moveTo(218, 118); c.lineTo(260, 62); c.lineTo(302, 118); c.closePath(); } },
+                    { id: 'gem', name: 'Joia do Colar', color: '#ffffff', draw: (c) => { c.arc(260, 248, 16, 0, Math.PI * 2); } }
+                ]
+            };
         }
 
-        function drawPage() {
+        let PAGES = createPagesData();
+
+        function saveUndoState() {
+            const snap = {
+                colors: PAGES[currentPage].map(r => ({ color: r.color, mode: r.mode || 'solid' })),
+                stickers: [...placedStickers]
+            };
+            undoStack.push(JSON.stringify(snap));
+            if (undoStack.length > 15) undoStack.shift();
+        }
+
+        function updateProgress() {
+            const list = PAGES[currentPage];
+            let colored = 0;
+            for (let i = 1; i < list.length; i++) {
+                if (list[i].color !== '#ffffff') colored++;
+            }
+            const pct = Math.round((colored / (list.length - 1)) * 100);
+            progressFill.style.width = `${pct}%`;
+            progressText.innerText = `${pct}%`;
+        }
+
+        function drawIllustration() {
             ctx.clearRect(0, 0, W, H);
             const list = PAGES[currentPage];
-            list.forEach(reg => {
-                buildShapePath(reg);
-                ctx.fillStyle = reg.color;
+
+            list.forEach((reg, idx) => {
+                ctx.save();
+                ctx.beginPath();
+                reg.draw(ctx);
+
+                if (reg.mode === 'gradient' && reg.color !== '#ffffff') {
+                    const g = ctx.createLinearGradient(0, 80, W, H - 80);
+                    g.addColorStop(0, reg.color);
+                    g.addColorStop(1, '#fde047');
+                    ctx.fillStyle = g;
+                } else {
+                    ctx.fillStyle = reg.color;
+                }
                 ctx.fill();
-                if (reg.id !== 'bg' && reg.id !== 'sky') {
+
+                if (reg.mode === 'glitter' && reg.color !== '#ffffff') {
+                    ctx.clip();
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+                    for (let i = 0; i < 28; i++) {
+                        const gx = ((idx * 57 + i * 73) % (W - 40)) + 20;
+                        const gy = ((idx * 43 + i * 89) % (H - 40)) + 20;
+                        ctx.beginPath();
+                        ctx.arc(gx, gy, (i % 3) + 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.restore();
+
+                // Contorno artístico da ilustração
+                if (idx > 0) {
+                    ctx.save();
+                    ctx.beginPath();
+                    reg.draw(ctx);
                     ctx.strokeStyle = '#3b0764';
-                    ctx.lineWidth = 5;
+                    ctx.lineWidth = 4.5;
+                    ctx.lineJoin = 'round';
                     ctx.stroke();
+                    ctx.restore();
                 }
             });
 
-            // Cute facial details on top for unicorn/kitty
-            if (currentPage === 'unicorn' || currentPage === 'kitty') {
-                ctx.fillStyle = '#1e1b4b';
-                ctx.beginPath();
-                ctx.arc(210, 210, 9, 0, Math.PI * 2);
-                ctx.arc(270, 210, 9, 0, Math.PI * 2);
-                ctx.fill();
+            // Detalhes faciais kawaii (olhos brilhantes, cílios e sorriso)
+            drawFacialDetails(currentPage);
+
+            // Adesivos colados pelo jogador
+            placedStickers.forEach(st => {
+                ctx.font = '38px serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(st.emoji, st.x, st.y);
+            });
+
+            // Partículas de brilho ao tocar
+            for (let i = sparkles.length - 1; i >= 0; i--) {
+                const sp = sparkles[i];
+                sp.x += sp.vx;
+                sp.y += sp.vy;
+                sp.life--;
+                ctx.font = '20px serif';
+                ctx.fillText('✨', sp.x, sp.y);
+                if (sp.life <= 0) sparkles.splice(i, 1);
             }
+
+            requestAnimationFrame(drawIllustration);
         }
 
-        canvas.addEventListener('click', (e) => {
+        function drawFacialDetails(page) {
+            ctx.save();
+            ctx.fillStyle = '#1e1b4b';
+            ctx.strokeStyle = '#1e1b4b';
+            ctx.lineWidth = 3;
+
+            if (page === 'unicorn') {
+                ctx.beginPath();
+                ctx.arc(178, 195, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(175, 192, 3, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (page === 'mermaid' || page === 'princess') {
+                const ey = page === 'mermaid' ? 162 : 158;
+                ctx.beginPath();
+                ctx.arc(242, ey, 7, 0, Math.PI * 2);
+                ctx.arc(278, ey, 7, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(240, ey - 2, 2.5, 0, Math.PI * 2);
+                ctx.arc(276, ey - 2, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(260, ey + 15, 8, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+            } else if (page === 'kitty') {
+                ctx.beginPath();
+                ctx.arc(220, 215, 10, 0, Math.PI * 2);
+                ctx.arc(300, 215, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ec4899';
+                ctx.beginPath();
+                ctx.arc(260, 228, 7, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
             const rect = canvas.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * W;
             const y = ((e.clientY - rect.top) / rect.height) * H;
 
+            saveUndoState();
+
+            if (activeSticker) {
+                placedStickers.push({ emoji: activeSticker, x, y });
+                sfx(840);
+                colorMsg.innerText = `🎀 Adesivo ${activeSticker} colado no desenho!`;
+                return;
+            }
+
             const list = PAGES[currentPage];
             for (let i = list.length - 1; i >= 0; i--) {
                 const reg = list[i];
-                buildShapePath(reg);
+                ctx.beginPath();
+                reg.draw(ctx);
                 if (ctx.isPointInPath(x, y)) {
                     reg.color = currentCrayon;
-                    sfx(660 + i * 25);
-                    drawPage();
+                    reg.mode = fillStyleMode;
+                    sfx(600 + i * 22);
+                    colorMsg.innerText = `🖍️ Colorido: ${reg.name}!`;
+                    for (let k = 0; k < 6; k++) {
+                        sparkles.push({
+                            x, y,
+                            vx: (Math.random() - 0.5) * 3,
+                            vy: -1 - Math.random() * 2,
+                            life: 32
+                        });
+                    }
+                    updateProgress();
                     break;
                 }
             }
         });
 
+        // Inicializa Estojo de Cores
         const cRow = document.getElementById('crayons-row');
         CRAYONS.forEach((c, idx) => {
             const d = document.createElement('div');
             d.className = 'crayon' + (idx === 0 ? ' active' : '');
             d.style.background = c;
             d.onclick = () => {
+                activeSticker = null;
+                document.querySelectorAll('.sticker-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.crayon').forEach(el => el.classList.remove('active'));
                 d.classList.add('active');
                 currentCrayon = c;
-                sfx(600);
+                sfx(620);
             };
             cRow.appendChild(d);
         });
 
+        // Inicializa Adesivos
+        const sRow = document.getElementById('stickers-row');
+        STICKERS.forEach(st => {
+            const b = document.createElement('button');
+            b.className = 'sticker-btn';
+            b.innerText = st;
+            b.onclick = () => {
+                if (activeSticker === st) {
+                    activeSticker = null;
+                    b.classList.remove('active');
+                } else {
+                    document.querySelectorAll('.sticker-btn').forEach(el => el.classList.remove('active'));
+                    b.classList.add('active');
+                    activeSticker = st;
+                    colorMsg.innerText = `Toque no desenho para colar o adesivo ${st}!`;
+                }
+                sfx(760);
+            };
+            sRow.appendChild(b);
+        });
+
+        // Troca de Estilo de Preenchimento (Cor Pura / Degradê / Glitter)
+        document.querySelectorAll('[data-fill]').forEach(btn => {
+            btn.onclick = () => {
+                activeSticker = null;
+                document.querySelectorAll('.sticker-btn').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('[data-fill]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                fillStyleMode = btn.dataset.fill;
+                sfx(700);
+            };
+        });
+
+        // Troca de Ilustração
         document.querySelectorAll('[data-page]').forEach(btn => {
             btn.onclick = () => {
                 document.querySelectorAll('[data-page]').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentPage = btn.dataset.page;
-                sfx(700);
-                drawPage();
+                placedStickers = [];
+                undoStack = [];
+                updateProgress();
+                sfx(720);
             };
         });
 
+        document.getElementById('btn-undo').onclick = () => {
+            if (undoStack.length > 0) {
+                const snap = JSON.parse(undoStack.pop());
+                PAGES[currentPage].forEach((r, idx) => {
+                    if (snap.colors[idx]) {
+                        r.color = snap.colors[idx].color;
+                        r.mode = snap.colors[idx].mode;
+                    }
+                });
+                placedStickers = snap.stickers || [];
+                updateProgress();
+                sfx(520);
+            }
+        };
+
         document.getElementById('btn-auto').onclick = () => {
+            saveUndoState();
             PAGES[currentPage].forEach((reg, idx) => {
-                reg.color = CRAYONS[(idx * 2) % (CRAYONS.length - 1)];
+                reg.color = idx === 0 ? '#fce7f3' : CRAYONS[(idx * 3) % (CRAYONS.length - 1)];
+                reg.mode = idx % 3 === 0 ? 'glitter' : (idx % 2 === 0 ? 'gradient' : 'solid');
             });
-            sfx(840);
-            drawPage();
+            updateProgress();
+            sfx(860);
+            colorMsg.innerText = '🌈 Pintura Mágica com Degradê e Glitter aplicada!';
         };
 
         document.getElementById('btn-reset').onclick = () => {
+            saveUndoState();
             PAGES[currentPage].forEach((reg, idx) => {
                 reg.color = idx === 0 ? '#fdf2f8' : '#ffffff';
+                reg.mode = 'solid';
             });
-            sfx(500);
-            drawPage();
+            placedStickers = [];
+            updateProgress();
+            sfx(480);
+        };
+
+        document.getElementById('btn-download').onclick = () => {
+            const a = document.createElement('a');
+            a.download = `livro-colorir-${currentPage}.png`;
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+            sfx(880);
         };
 
         document.getElementById('btn-finish').onclick = () => {
-            score += 150;
-            sfx(950);
+            const list = PAGES[currentPage];
+            let colored = 0;
+            for (let i = 1; i < list.length; i++) {
+                if (list[i].color !== '#ffffff') colored++;
+            }
+            const bonus = 150 + colored * 10 + placedStickers.length * 15;
+            score += bonus;
             hudScore.innerText = `${score} 🖍️`;
             if (score > bestScore) {
                 bestScore = score;
                 hudBest.innerText = `${bestScore} 🖍️`;
                 SaveHub.updateGameSave('coloringbook', { highScore: bestScore }, playerName);
             }
-            colorMsg.innerText = '🌟 DESENHO COLORIDO COM PERFEIÇÃO! +150 🖍️';
+            sfx(980);
+            colorMsg.innerText = `🏆 OBRA-PRIMA ASSINADA! +${bonus} 🖍️ adicionados ao seu recorde!`;
         };
 
-        drawPage();
+        updateProgress();
+        drawIllustration();
     </script>
 </body>
 </html>
