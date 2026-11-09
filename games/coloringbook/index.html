@@ -705,19 +705,269 @@
                 ],
                 mermaid: [
                     { id: 'sea', name: 'Oceano de Cristal', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
-                    { id: 'shellBg', name: 'Trono de Concha Real', color: '#ffffff', draw: (c) => { c.arc(260, 290, 175, Math.PI, 0); } },
-                    { id: 'hairBack', name: 'Cabelo Longo de Sereia', color: '#ffffff', draw: (c) => { c.ellipse(260, 210, 98, 88, 0, 0, Math.PI * 2); } },
-                    { id: 'tailFinL', name: 'Nadadeira Esquerda', color: '#ffffff', draw: (c) => { c.ellipse(215, 462, 52, 26, -0.4, 0, Math.PI * 2); } },
-                    { id: 'tailFinR', name: 'Nadadeira Direita', color: '#ffffff', draw: (c) => { c.ellipse(305, 462, 52, 26, 0.4, 0, Math.PI * 2); } },
-                    { id: 'tail', name: 'Cauda Escamada', color: '#ffffff', draw: (c) => { c.moveTo(205, 315); c.quadraticCurveTo(195, 410, 260, 455); c.quadraticCurveTo(325, 410, 315, 315); c.closePath(); } },
-                    { id: 'belt', name: 'Cinto de Pérolas', color: '#ffffff', draw: (c) => { c.roundRect(202, 302, 116, 24, 12); } },
-                    { id: 'torso', name: 'Corpo da Sereia', color: '#ffffff', draw: (c) => { c.roundRect(216, 218, 88, 90, 30); } },
-                    { id: 'shellTopL', name: 'Top Concha Esquerda', color: '#ffffff', draw: (c) => { c.arc(238, 258, 20, 0, Math.PI * 2); } },
-                    { id: 'shellTopR', name: 'Top Concha Direita', color: '#ffffff', draw: (c) => { c.arc(282, 258, 20, 0, Math.PI * 2); } },
-                    { id: 'head', name: 'Rosto da Sereia', color: '#ffffff', draw: (c) => { c.arc(260, 165, 54, 0, Math.PI * 2); } },
-                    { id: 'crown', name: 'Tiara Imperial dos Mares', color: '#ffffff', draw: (c) => { c.moveTo(215, 122); c.lineTo(260, 68); c.lineTo(305, 122); c.closePath(); } },
-                    { id: 'starfish', name: 'Estrela-do-Mar', color: '#ffffff', draw: (c) => { c.arc(105, 415, 36, 0, Math.PI * 2); } },
-                    { id: 'pearl', name: 'Pérola Brilhante', color: '#ffffff', draw: (c) => { c.arc(410, 415, 34, 0, Math.PI * 2); } }
+                    // Recife e Areia Dourada no Fundo do Mar
+                    {
+                        id: 'sand', name: 'Areia Dourada do Mar', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(0, 445);
+                            c.quadraticCurveTo(140, 420, 260, 440);
+                            c.quadraticCurveTo(390, 460, W, 430);
+                            c.lineTo(W, H);
+                            c.lineTo(0, H);
+                            c.closePath();
+                        }
+                    },
+                    // Coral Mágico Esquerdo e Alga Direita
+                    {
+                        id: 'coralL', name: 'Coral Mágico Rosa', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(42, 448);
+                            c.quadraticCurveTo(18, 390, 28, 345);
+                            c.quadraticCurveTo(44, 345, 48, 385);
+                            c.quadraticCurveTo(58, 330, 74, 335);
+                            c.quadraticCurveTo(84, 342, 68, 392);
+                            c.quadraticCurveTo(92, 365, 102, 378);
+                            c.quadraticCurveTo(96, 415, 72, 448);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'seaweedR', name: 'Alga Marinha Encantada', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(452, 445);
+                            c.bezierCurveTo(430, 395, 475, 355, 448, 305);
+                            c.bezierCurveTo(478, 315, 495, 365, 476, 445);
+                            c.closePath();
+                        }
+                    },
+                    // Trono de Concha Real em 5 Gomos Esculpidos
+                    {
+                        id: 'shellRib1', name: 'Concha Real Gomo Esq', color: '#ffffff',
+                        draw: (c) => { c.ellipse(148, 282, 32, 92, -0.48, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'shellRib5', name: 'Concha Real Gomo Dir', color: '#ffffff',
+                        draw: (c) => { c.ellipse(372, 282, 32, 92, 0.48, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'shellRib2', name: 'Concha Real Gomo Meio-Esq', color: '#ffffff',
+                        draw: (c) => { c.ellipse(198, 255, 36, 108, -0.24, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'shellRib4', name: 'Concha Real Gomo Meio-Dir', color: '#ffffff',
+                        draw: (c) => { c.ellipse(322, 255, 36, 108, 0.24, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'shellRib3', name: 'Concha Real Gomo Central', color: '#ffffff',
+                        draw: (c) => { c.ellipse(260, 245, 42, 116, 0, 0, Math.PI * 2); }
+                    },
+                    // Cabelo Longo Ondulado Fluindo na Água
+                    {
+                        id: 'hairBackL', name: 'Cabelo Ondulado Esquerdo', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(220, 118);
+                            c.bezierCurveTo(145, 135, 125, 225, 152, 302);
+                            c.bezierCurveTo(182, 295, 205, 265, 225, 225);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'hairBackR', name: 'Cabelo Ondulado Direito', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(300, 118);
+                            c.bezierCurveTo(375, 135, 398, 225, 368, 302);
+                            c.bezierCurveTo(338, 295, 315, 265, 295, 225);
+                            c.closePath();
+                        }
+                    },
+                    // Braços Graciosos da Sereia
+                    {
+                        id: 'armL', name: 'Braço Esquerdo da Sereia', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(218, 222);
+                            c.quadraticCurveTo(168, 255, 158, 308);
+                            c.lineTo(178, 314);
+                            c.quadraticCurveTo(192, 268, 226, 242);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'armR', name: 'Braço Direito da Sereia', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(302, 222);
+                            c.quadraticCurveTo(352, 255, 362, 308);
+                            c.lineTo(342, 314);
+                            c.quadraticCurveTo(328, 268, 294, 242);
+                            c.closePath();
+                        }
+                    },
+                    // Torso, Ombros & Cintura Esculpidos
+                    {
+                        id: 'torso', name: 'Corpo & Ombros da Sereia', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(246, 195);
+                            c.lineTo(274, 195);
+                            c.lineTo(276, 214);
+                            c.bezierCurveTo(312, 218, 314, 252, 298, 282);
+                            c.lineTo(294, 316);
+                            c.lineTo(226, 316);
+                            c.lineTo(222, 282);
+                            c.bezierCurveTo(206, 252, 208, 218, 244, 214);
+                            c.closePath();
+                        }
+                    },
+                    // Colar Real de Pérolas
+                    {
+                        id: 'necklace', name: 'Colar de Pérolas do Mar', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(260, 222, 26, 11, 0, 0, Math.PI);
+                            c.closePath();
+                        }
+                    },
+                    // Top de Conchas Esculpidas + Joia Estrela
+                    {
+                        id: 'shellTopL', name: 'Top Concha Esquerda', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(238, 258, 22, 17, 0.2, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'shellTopR', name: 'Top Concha Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(282, 258, 22, 17, -0.2, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'shellBrooch', name: 'Joia Central do Top', color: '#ffffff',
+                        draw: (c) => { c.arc(260, 260, 9, 0, Math.PI * 2); }
+                    },
+                    // Nadadeiras Caudais em Véu (Esquerda e Direita)
+                    {
+                        id: 'tailFinL', name: 'Nadadeira Real Esquerda', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(255, 448);
+                            c.bezierCurveTo(215, 425, 155, 445, 145, 488);
+                            c.bezierCurveTo(188, 502, 232, 482, 258, 456);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'tailFinR', name: 'Nadadeira Real Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(265, 448);
+                            c.bezierCurveTo(305, 425, 365, 445, 375, 488);
+                            c.bezierCurveTo(332, 502, 288, 482, 262, 456);
+                            c.closePath();
+                        }
+                    },
+                    // Cauda Sinuosa Escamada
+                    {
+                        id: 'tail', name: 'Cauda Escamada de Sereia', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(214, 316);
+                            c.bezierCurveTo(196, 368, 218, 422, 252, 454);
+                            c.lineTo(268, 454);
+                            c.bezierCurveTo(302, 422, 324, 368, 306, 316);
+                            c.closePath();
+                        }
+                    },
+                    // Babado Real da Cintura (Peplum Fin) & Joia do Cinto
+                    {
+                        id: 'peplumL', name: 'Babado da Cintura Esq', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(234, 318, 28, 13, 0.25, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'peplumR', name: 'Babado da Cintura Dir', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(286, 318, 28, 13, -0.25, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'belt', name: 'Joia Imperial da Cintura', color: '#ffffff',
+                        draw: (c) => { c.arc(260, 316, 14, 0, Math.PI * 2); }
+                    },
+                    // Rosto Delicado da Princesa Sereia
+                    {
+                        id: 'head', name: 'Rosto da Princesa Sereia', color: '#ffffff',
+                        draw: (c) => { c.arc(260, 156, 48, 0, Math.PI * 2); }
+                    },
+                    // Franja Ondulada Dividida
+                    {
+                        id: 'hairBangsL', name: 'Franja Ondulada Esq', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(260, 106);
+                            c.quadraticCurveTo(212, 108, 210, 152);
+                            c.quadraticCurveTo(235, 132, 260, 122);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'hairBangsR', name: 'Franja Ondulada Dir', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(260, 106);
+                            c.quadraticCurveTo(308, 108, 310, 152);
+                            c.quadraticCurveTo(285, 132, 260, 122);
+                            c.closePath();
+                        }
+                    },
+                    // Tiara Imperial dos Mares + Joia Central
+                    {
+                        id: 'crown', name: 'Tiara Imperial dos Mares', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(216, 114);
+                            c.lineTo(232, 82);
+                            c.lineTo(246, 98);
+                            c.lineTo(260, 58);
+                            c.lineTo(274, 98);
+                            c.lineTo(288, 82);
+                            c.lineTo(304, 114);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'crownGem', name: 'Pérola da Tiara', color: '#ffffff',
+                        draw: (c) => { c.arc(260, 94, 10, 0, Math.PI * 2); }
+                    },
+                    // Peixinho Tropical Amigo
+                    {
+                        id: 'fishBody', name: 'Peixinho Tropical Amigo', color: '#ffffff',
+                        draw: (c) => { c.ellipse(95, 195, 30, 22, -0.1, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'fishFin', name: 'Cauda do Peixinho', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(68, 195);
+                            c.lineTo(42, 175);
+                            c.lineTo(46, 218);
+                            c.closePath();
+                        }
+                    },
+                    // Estrela-do-Mar de 5 Pontas e Pérola Real na Concha
+                    {
+                        id: 'starfish', name: 'Estrela-do-Mar Real', color: '#ffffff',
+                        draw: (c) => {
+                            const cx = 98, cy = 468;
+                            for (let i = 0; i < 10; i++) {
+                                const r = i % 2 === 0 ? 32 : 14;
+                                const a = (i * Math.PI) / 5 - Math.PI / 2;
+                                const px = cx + Math.cos(a) * r;
+                                const py = cy + Math.sin(a) * r;
+                                if (i === 0) c.moveTo(px, py);
+                                else c.lineTo(px, py);
+                            }
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'clamBase', name: 'Ostra de Cristal', color: '#ffffff',
+                        draw: (c) => { c.ellipse(418, 472, 42, 22, 0, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'pearl', name: 'Pérola Mágica Brilhante', color: '#ffffff',
+                        draw: (c) => { c.arc(418, 462, 18, 0, Math.PI * 2); }
+                    }
                 ],
                 butterfly: [
                     { id: 'bg', name: 'Jardim Encantado', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
@@ -922,8 +1172,94 @@
                 ctx.beginPath();
                 ctx.arc(120, 188, 8, 0.15, Math.PI * 0.85);
                 ctx.stroke();
-            } else if (page === 'mermaid' || page === 'princess') {
-                const ey = page === 'mermaid' ? 162 : 158;
+            } else if (page === 'mermaid') {
+                // Escamas delicadas na cauda da sereia
+                ctx.strokeStyle = 'rgba(59, 7, 100, 0.55)';
+                ctx.lineWidth = 2.2;
+                const scaleRows = [
+                    [232, 345], [260, 345], [288, 345],
+                    [242, 372], [274, 372],
+                    [236, 398], [262, 398], [284, 398],
+                    [250, 424], [272, 424]
+                ];
+                scaleRows.forEach(([sx, sy]) => {
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, 12, 0.15, Math.PI - 0.15);
+                    ctx.stroke();
+                });
+
+                // Nervuras elegantes nas nadadeiras e nas conchas do top
+                ctx.beginPath();
+                ctx.moveTo(255, 452); ctx.quadraticCurveTo(205, 455, 168, 478);
+                ctx.moveTo(255, 452); ctx.quadraticCurveTo(215, 472, 188, 488);
+                ctx.moveTo(265, 452); ctx.quadraticCurveTo(315, 455, 352, 478);
+                ctx.moveTo(265, 452); ctx.quadraticCurveTo(305, 472, 332, 488);
+                ctx.stroke();
+
+                // Olhinho e sorriso do Peixinho Tropical Amigo
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.arc(108, 190, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(107, 188, 1.8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bolhas de cristal flutuando no mar
+                ctx.strokeStyle = 'rgba(59, 7, 100, 0.45)';
+                ctx.lineWidth = 2;
+                [[125, 145, 8], [135, 122, 5], [395, 165, 9], [408, 138, 6]].forEach(([bx, by, br]) => {
+                    ctx.beginPath();
+                    ctx.arc(bx, by, br, 0, Math.PI * 2);
+                    ctx.stroke();
+                });
+
+                // Olhos grandes estilo Princesa Anime da Sereia
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.ellipse(242, 156, 8, 10, 0, 0, Math.PI * 2);
+                ctx.ellipse(278, 156, 8, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Íris turquesa oceano
+                ctx.fillStyle = '#06b6d4';
+                ctx.beginPath();
+                ctx.ellipse(242, 157, 5, 6.5, 0, 0, Math.PI * 2);
+                ctx.ellipse(278, 157, 5, 6.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Brilhos estelares nos olhos
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(239, 152, 3, 0, Math.PI * 2);
+                ctx.arc(275, 152, 3, 0, Math.PI * 2);
+                ctx.arc(245, 160, 1.5, 0, Math.PI * 2);
+                ctx.arc(281, 160, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cílios curvados e Bochechas rosadas
+                ctx.strokeStyle = '#1e1b4b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(234, 148); ctx.lineTo(227, 143);
+                ctx.moveTo(286, 148); ctx.lineTo(293, 143);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(244, 114, 182, 0.5)';
+                ctx.beginPath();
+                ctx.ellipse(230, 168, 8, 4.5, 0, 0, Math.PI * 2);
+                ctx.ellipse(290, 168, 8, 4.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Sorriso doce de Princesa
+                ctx.strokeStyle = '#db2777';
+                ctx.lineWidth = 2.8;
+                ctx.beginPath();
+                ctx.arc(260, 169, 8, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+            } else if (page === 'princess') {
+                const ey = 158;
                 ctx.beginPath();
                 ctx.arc(242, ey, 7, 0, Math.PI * 2);
                 ctx.arc(278, ey, 7, 0, Math.PI * 2);
@@ -1205,21 +1541,80 @@
             ],
             mermaid: [
                 {
-                    name: 'Princesa Sereia Esmeralda & Ruiva 🧜‍♀️🐚',
+                    name: 'Princesa Sereia Esmeralda & Cabelo Ruivo Real 🧜‍♀️🐚',
                     regions: {
                         sea: { c: '#bae6fd', m: 'solid' },
-                        shellBg: { c: '#fbcfe8', m: 'gradient' },
-                        hairBack: { c: '#ef4444', m: 'solid' },
+                        sand: { c: '#fef08a', m: 'solid' },
+                        coralL: { c: '#f472b6', m: 'solid' },
+                        seaweedR: { c: '#22c55e', m: 'solid' },
+                        shellRib1: { c: '#fbcfe8', m: 'gradient' },
+                        shellRib2: { c: '#f9a8d4', m: 'gradient' },
+                        shellRib3: { c: '#fbcfe8', m: 'gradient' },
+                        shellRib4: { c: '#f9a8d4', m: 'gradient' },
+                        shellRib5: { c: '#fbcfe8', m: 'gradient' },
+                        hairBackL: { c: '#ef4444', m: 'solid' },
+                        hairBackR: { c: '#ef4444', m: 'solid' },
+                        hairBangsL: { c: '#ef4444', m: 'solid' },
+                        hairBangsR: { c: '#ef4444', m: 'solid' },
                         torso: { c: '#ffe4e6', m: 'solid' },
+                        armL: { c: '#ffe4e6', m: 'solid' },
+                        armR: { c: '#ffe4e6', m: 'solid' },
                         head: { c: '#ffe4e6', m: 'solid' },
+                        necklace: { c: '#ffffff', m: 'glitter' },
                         shellTopL: { c: '#a855f7', m: 'glitter' },
                         shellTopR: { c: '#a855f7', m: 'glitter' },
+                        shellBrooch: { c: '#fde047', m: 'glitter' },
+                        peplumL: { c: '#2dd4bf', m: 'glitter' },
+                        peplumR: { c: '#2dd4bf', m: 'glitter' },
                         belt: { c: '#fde047', m: 'glitter' },
                         tail: { c: '#10b981', m: 'glitter' },
                         tailFinL: { c: '#2dd4bf', m: 'gradient' },
                         tailFinR: { c: '#2dd4bf', m: 'gradient' },
                         crown: { c: '#fde047', m: 'glitter' },
-                        starfish: { c: '#fb923c', m: 'solid' },
+                        crownGem: { c: '#ff2a85', m: 'glitter' },
+                        fishBody: { c: '#fde047', m: 'solid' },
+                        fishFin: { c: '#38bdf8', m: 'solid' },
+                        starfish: { c: '#fb923c', m: 'glitter' },
+                        clamBase: { c: '#d8b4fe', m: 'solid' },
+                        pearl: { c: '#ffffff', m: 'glitter' }
+                    }
+                },
+                {
+                    name: 'Princesa Sereia das Pérolas Rosa & Turquesa 🧜‍♀️💎',
+                    regions: {
+                        sea: { c: '#d8b4fe', m: 'solid' },
+                        sand: { c: '#fbcfe8', m: 'solid' },
+                        coralL: { c: '#38bdf8', m: 'solid' },
+                        seaweedR: { c: '#2dd4bf', m: 'solid' },
+                        shellRib1: { c: '#bae6fd', m: 'gradient' },
+                        shellRib2: { c: '#67e8f9', m: 'gradient' },
+                        shellRib3: { c: '#bae6fd', m: 'gradient' },
+                        shellRib4: { c: '#67e8f9', m: 'gradient' },
+                        shellRib5: { c: '#bae6fd', m: 'gradient' },
+                        hairBackL: { c: '#fde047', m: 'solid' },
+                        hairBackR: { c: '#fde047', m: 'solid' },
+                        hairBangsL: { c: '#fde047', m: 'solid' },
+                        hairBangsR: { c: '#fde047', m: 'solid' },
+                        torso: { c: '#ffe4e6', m: 'solid' },
+                        armL: { c: '#ffe4e6', m: 'solid' },
+                        armR: { c: '#ffe4e6', m: 'solid' },
+                        head: { c: '#ffe4e6', m: 'solid' },
+                        necklace: { c: '#fde047', m: 'glitter' },
+                        shellTopL: { c: '#ec4899', m: 'glitter' },
+                        shellTopR: { c: '#ec4899', m: 'glitter' },
+                        shellBrooch: { c: '#38bdf8', m: 'glitter' },
+                        peplumL: { c: '#f472b6', m: 'glitter' },
+                        peplumR: { c: '#f472b6', m: 'glitter' },
+                        belt: { c: '#fde047', m: 'glitter' },
+                        tail: { c: '#ec4899', m: 'glitter' },
+                        tailFinL: { c: '#f472b6', m: 'gradient' },
+                        tailFinR: { c: '#f472b6', m: 'gradient' },
+                        crown: { c: '#fde047', m: 'glitter' },
+                        crownGem: { c: '#38bdf8', m: 'glitter' },
+                        fishBody: { c: '#ff2a85', m: 'solid' },
+                        fishFin: { c: '#fde047', m: 'solid' },
+                        starfish: { c: '#fde047', m: 'glitter' },
+                        clamBase: { c: '#fbcfe8', m: 'solid' },
                         pearl: { c: '#ffffff', m: 'glitter' }
                     }
                 }
