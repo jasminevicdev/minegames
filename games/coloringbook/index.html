@@ -378,25 +378,196 @@
             return {
                 castle: [
                     { id: 'sky', name: 'Céu Encantado', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
-                    { id: 'sun', name: 'Sol Dourado', color: '#ffffff', draw: (c) => { c.arc(92, 86, 44, 0, Math.PI * 2); } },
-                    { id: 'cloud1', name: 'Nuvem Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(145, 58, 95, 38, 19); } },
-                    { id: 'cloud2', name: 'Nuvem Direita', color: '#ffffff', draw: (c) => { c.roundRect(365, 72, 105, 40, 20); } },
-                    { id: 'hillL', name: 'Colina Esquerda', color: '#ffffff', draw: (c) => { c.arc(130, 510, 185, Math.PI, 0); } },
-                    { id: 'hillR', name: 'Colina Direita', color: '#ffffff', draw: (c) => { c.arc(390, 510, 185, Math.PI, 0); } },
-                    { id: 'river', name: 'Caminho Real', color: '#ffffff', draw: (c) => { c.moveTo(225, 400); c.lineTo(295, 400); c.lineTo(345, 520); c.lineTo(175, 520); c.closePath(); } },
-                    { id: 'towerL', name: 'Torre Esquerda', color: '#ffffff', draw: (c) => { c.rect(85, 200, 74, 200); } },
-                    { id: 'towerR', name: 'Torre Direita', color: '#ffffff', draw: (c) => { c.rect(361, 200, 74, 200); } },
-                    { id: 'towerC', name: 'Torre Imperial Central', color: '#ffffff', draw: (c) => { c.rect(205, 115, 110, 130); } },
-                    { id: 'wallM', name: 'Muralha do Palácio', color: '#ffffff', draw: (c) => { c.rect(159, 230, 202, 170); } },
-                    { id: 'roofL', name: 'Telhado Esquerdo', color: '#ffffff', draw: (c) => { c.moveTo(72, 200); c.lineTo(122, 105); c.lineTo(172, 200); c.closePath(); } },
-                    { id: 'roofR', name: 'Telhado Direito', color: '#ffffff', draw: (c) => { c.moveTo(348, 200); c.lineTo(398, 105); c.lineTo(448, 200); c.closePath(); } },
-                    { id: 'roofC', name: 'Cúpula Real Central', color: '#ffffff', draw: (c) => { c.moveTo(190, 115); c.lineTo(260, 28); c.lineTo(330, 115); c.closePath(); } },
-                    { id: 'flagC', name: 'Bandeira Real', color: '#ffffff', draw: (c) => { c.moveTo(260, 28); c.lineTo(308, 40); c.lineTo(260, 54); c.closePath(); } },
-                    { id: 'winL', name: 'Janela Gótica Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(104, 245, 36, 56, [18, 18, 4, 4]); } },
-                    { id: 'winR', name: 'Janela Gótica Direita', color: '#ffffff', draw: (c) => { c.roundRect(380, 245, 36, 56, [18, 18, 4, 4]); } },
-                    { id: 'winC', name: 'Rosácea Real', color: '#ffffff', draw: (c) => { c.arc(260, 172, 30, 0, Math.PI * 2); } },
-                    { id: 'gate', name: 'Portão do Castelo', color: '#ffffff', draw: (c) => { c.roundRect(216, 302, 88, 98, [44, 44, 0, 0]); } },
-                    { id: 'heartCrest', name: 'Brasão de Coração', color: '#ffffff', draw: (c) => { c.arc(260, 265, 18, 0, Math.PI * 2); } }
+                    // Arco-Íris Suave atrás das Torres
+                    {
+                        id: 'rainbow1', name: 'Arco-Íris Real Externo', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(260, 310, 225, Math.PI * 1.08, Math.PI * 1.92, false);
+                            c.arc(260, 310, 205, Math.PI * 1.92, Math.PI * 1.08, true);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'rainbow2', name: 'Arco-Íris Real Interno', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(260, 310, 205, Math.PI * 1.08, Math.PI * 1.92, false);
+                            c.arc(260, 310, 185, Math.PI * 1.92, Math.PI * 1.08, true);
+                            c.closePath();
+                        }
+                    },
+                    { id: 'sun', name: 'Sol Dourado', color: '#ffffff', draw: (c) => { c.arc(76, 78, 38, 0, Math.PI * 2); } },
+                    // Nuvens Fofas Esculpidas em Gomos
+                    {
+                        id: 'cloud1', name: 'Nuvem Fofa Esquerda', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(125, 92);
+                            c.arc(145, 76, 18, Math.PI * 0.7, Math.PI * 1.8);
+                            c.arc(172, 68, 22, Math.PI, Math.PI * 1.9);
+                            c.arc(198, 78, 17, Math.PI * 1.2, Math.PI * 0.3);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'cloud2', name: 'Nuvem Fofa Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(352, 96);
+                            c.arc(374, 78, 19, Math.PI * 0.7, Math.PI * 1.8);
+                            c.arc(405, 70, 24, Math.PI, Math.PI * 1.9);
+                            c.arc(435, 80, 18, Math.PI * 1.2, Math.PI * 0.3);
+                            c.closePath();
+                        }
+                    },
+                    // Colinas Verdes do Reino
+                    { id: 'hillL', name: 'Colina Esquerda', color: '#ffffff', draw: (c) => { c.arc(130, 515, 195, Math.PI, 0); } },
+                    { id: 'hillR', name: 'Colina Direita', color: '#ffffff', draw: (c) => { c.arc(390, 515, 195, Math.PI, 0); } },
+                    // Fosso de Água Cristalina e Caminho Real
+                    {
+                        id: 'moat', name: 'Lago de Cristal do Castelo', color: '#ffffff',
+                        draw: (c) => { c.ellipse(260, 412, 195, 24, 0, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'river', name: 'Ponte & Caminho Real', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(224, 398);
+                            c.lineTo(296, 398);
+                            c.quadraticCurveTo(318, 460, 355, 520);
+                            c.lineTo(165, 520);
+                            c.quadraticCurveTo(202, 460, 224, 398);
+                            c.closePath();
+                        }
+                    },
+                    // Torres Internas Altas (Esquerda e Direita)
+                    { id: 'towerInnerL', name: 'Torre Alta Meio-Esquerda', color: '#ffffff', draw: (c) => { c.rect(142, 148, 54, 245); } },
+                    { id: 'towerInnerR', name: 'Torre Alta Meio-Direita', color: '#ffffff', draw: (c) => { c.rect(324, 148, 54, 245); } },
+                    {
+                        id: 'roofInnerL', name: 'Telhado Meio-Esquerdo', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(134, 148);
+                            c.quadraticCurveTo(160, 105, 169, 68);
+                            c.quadraticCurveTo(178, 105, 204, 148);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'roofInnerR', name: 'Telhado Meio-Direito', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(316, 148);
+                            c.quadraticCurveTo(342, 105, 351, 68);
+                            c.quadraticCurveTo(360, 105, 386, 148);
+                            c.closePath();
+                        }
+                    },
+                    // Torre Imperial Central Suprema + Grande Cúpula
+                    { id: 'towerC', name: 'Torre Imperial Central', color: '#ffffff', draw: (c) => { c.rect(206, 108, 108, 145); } },
+                    {
+                        id: 'roofC', name: 'Grande Cúpula Real Central', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(192, 108);
+                            c.quadraticCurveTo(240, 62, 260, 18);
+                            c.quadraticCurveTo(280, 62, 328, 108);
+                            c.closePath();
+                        }
+                    },
+                    // Muralha Principal do Palácio com Ameias Reais
+                    {
+                        id: 'wallM', name: 'Muralha Real com Ameias', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(148, 400);
+                            c.lineTo(148, 226);
+                            // Ameias do castelo
+                            for (let x = 148; x < 360; x += 28) {
+                                c.lineTo(x, 214);
+                                c.lineTo(x + 16, 214);
+                                c.lineTo(x + 16, 226);
+                                c.lineTo(x + 28, 226);
+                            }
+                            c.lineTo(372, 400);
+                            c.closePath();
+                        }
+                    },
+                    // Torres Externas com Varandas (Esquerda e Direita)
+                    { id: 'towerL', name: 'Torre Externa Esquerda', color: '#ffffff', draw: (c) => { c.rect(74, 195, 74, 205); } },
+                    { id: 'towerR', name: 'Torre Externa Direita', color: '#ffffff', draw: (c) => { c.rect(372, 195, 74, 205); } },
+                    { id: 'balconyL', name: 'Varanda Real Esquerda', color: '#ffffff', draw: (c) => { c.roundRect(66, 192, 90, 16, 6); } },
+                    { id: 'balconyR', name: 'Varanda Real Direita', color: '#ffffff', draw: (c) => { c.roundRect(364, 192, 90, 16, 6); } },
+                    {
+                        id: 'roofL', name: 'Telhado Esquerdo', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(64, 192);
+                            c.quadraticCurveTo(98, 145, 111, 95);
+                            c.quadraticCurveTo(124, 145, 158, 192);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'roofR', name: 'Telhado Direito', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(362, 192);
+                            c.quadraticCurveTo(396, 145, 409, 95);
+                            c.quadraticCurveTo(422, 145, 456, 192);
+                            c.closePath();
+                        }
+                    },
+                    // 3 Bandeiras Reais Tremulando no Topo
+                    {
+                        id: 'flagC', name: 'Bandeira Imperial Central', color: '#ffffff',
+                        draw: (c) => { c.moveTo(260, 18); c.lineTo(312, 30); c.lineTo(260, 44); c.closePath(); }
+                    },
+                    {
+                        id: 'flagL', name: 'Bandeira Esquerda', color: '#ffffff',
+                        draw: (c) => { c.moveTo(111, 95); c.lineTo(148, 104); c.lineTo(111, 115); c.closePath(); }
+                    },
+                    {
+                        id: 'flagR', name: 'Bandeira Direita', color: '#ffffff',
+                        draw: (c) => { c.moveTo(409, 95); c.lineTo(446, 104); c.lineTo(409, 115); c.closePath(); }
+                    },
+                    // Vitrais Góticos e Rosácea Imperial
+                    { id: 'winL', name: 'Vitral Gótico Esquerdo', color: '#ffffff', draw: (c) => { c.roundRect(93, 242, 36, 58, [18, 18, 4, 4]); } },
+                    { id: 'winR', name: 'Vitral Gótico Direito', color: '#ffffff', draw: (c) => { c.roundRect(391, 242, 36, 58, [18, 18, 4, 4]); } },
+                    { id: 'winInnerL', name: 'Janela Alta Meio-Esq', color: '#ffffff', draw: (c) => { c.roundRect(156, 166, 26, 40, [13, 13, 3, 3]); } },
+                    { id: 'winInnerR', name: 'Janela Alta Meio-Dir', color: '#ffffff', draw: (c) => { c.roundRect(338, 166, 26, 40, [13, 13, 3, 3]); } },
+                    { id: 'winC', name: 'Grande Rosácea de Cristal', color: '#ffffff', draw: (c) => { c.arc(260, 162, 32, 0, Math.PI * 2); } },
+                    // Moldura do Portão + Portão Duplo Real
+                    {
+                        id: 'gateArch', name: 'Arco Imperial do Portão', color: '#ffffff',
+                        draw: (c) => { c.roundRect(204, 290, 112, 110, [56, 56, 0, 0]); }
+                    },
+                    {
+                        id: 'gate', name: 'Portão Duplo do Castelo', color: '#ffffff',
+                        draw: (c) => { c.roundRect(218, 304, 84, 96, [42, 42, 0, 0]); }
+                    },
+                    // Brasão Real em Formato de Coração Verdadeiro
+                    {
+                        id: 'heartCrest', name: 'Brasão Real de Coração', color: '#ffffff',
+                        draw: (c) => {
+                            const cx = 260, cy = 258;
+                            c.moveTo(cx, cy + 20);
+                            c.bezierCurveTo(cx - 28, cy + 4, cx - 26, cy - 20, cx, cy - 8);
+                            c.bezierCurveTo(cx + 26, cy - 20, cx + 28, cy + 4, cx, cy + 20);
+                            c.closePath();
+                        }
+                    },
+                    // Arbustos Floridos do Jardim Real
+                    {
+                        id: 'bushL', name: 'Jardim Real Esquerdo', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(52, 412);
+                            c.arc(72, 396, 22, Math.PI * 0.8, Math.PI * 1.9);
+                            c.arc(105, 392, 25, Math.PI, Math.PI * 1.95);
+                            c.arc(135, 400, 20, Math.PI * 1.2, Math.PI * 0.2);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'bushR', name: 'Jardim Real Direito', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(368, 412);
+                            c.arc(388, 400, 20, Math.PI * 0.8, Math.PI * 1.9);
+                            c.arc(418, 392, 25, Math.PI, Math.PI * 1.95);
+                            c.arc(450, 396, 22, Math.PI * 1.2, Math.PI * 0.2);
+                            c.closePath();
+                        }
+                    }
                 ],
                 unicorn: [
                     { id: 'sky', name: 'Céu Mágico Estelar', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
@@ -1115,7 +1286,53 @@
             ctx.strokeStyle = '#1e1b4b';
             ctx.lineWidth = 3;
 
-            if (page === 'unicorn') {
+            if (page === 'castle') {
+                // Divisórias da Grande Rosácea Central
+                ctx.strokeStyle = 'rgba(59, 7, 100, 0.65)';
+                ctx.lineWidth = 2.2;
+                for (let a = 0; a < Math.PI; a += Math.PI / 4) {
+                    ctx.beginPath();
+                    ctx.moveTo(260 + Math.cos(a) * 30, 162 + Math.sin(a) * 30);
+                    ctx.lineTo(260 - Math.cos(a) * 30, 162 - Math.sin(a) * 30);
+                    ctx.stroke();
+                }
+
+                // Grades das Janelas Góticas Laterais
+                ctx.beginPath();
+                ctx.moveTo(111, 242); ctx.lineTo(111, 300);
+                ctx.moveTo(93, 272); ctx.lineTo(129, 272);
+                ctx.moveTo(409, 242); ctx.lineTo(409, 300);
+                ctx.moveTo(391, 272); ctx.lineTo(427, 272);
+                ctx.stroke();
+
+                // Divisória central do Portão Duplo + Argolas Douradas
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(260, 304);
+                ctx.lineTo(260, 400);
+                ctx.stroke();
+
+                ctx.fillStyle = '#fde047';
+                ctx.beginPath();
+                ctx.arc(248, 356, 5, 0, Math.PI * 2);
+                ctx.arc(272, 356, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Telhas em escama na Grande Cúpula Central
+                ctx.lineWidth = 2;
+                [[-18, 62], [0, 62], [18, 62], [-32, 86], [-10, 86], [10, 86], [32, 86]].forEach(([dx, ry]) => {
+                    ctx.beginPath();
+                    ctx.arc(260 + dx, ry, 10, 0.1, Math.PI - 0.1);
+                    ctx.stroke();
+                });
+
+                // Tijolinhos decorativos nas torres
+                ctx.strokeRect(86, 332, 22, 10);
+                ctx.strokeRect(114, 348, 22, 10);
+                ctx.strokeRect(384, 332, 22, 10);
+                ctx.strokeRect(412, 348, 22, 10);
+            } else if (page === 'unicorn') {
                 // Anéis espirais no chifre do unicórnio
                 ctx.strokeStyle = '#3b0764';
                 ctx.lineWidth = 3;
@@ -1407,53 +1624,85 @@
         const LOGICAL_PALETTES = {
             castle: [
                 {
-                    name: 'Dia Real no Palácio Rosa 🏰☀️',
+                    name: 'Dia Real no Palácio Rosa & Arco-Íris 🏰🌈',
                     regions: {
                         sky: { c: '#bae6fd', m: 'solid' },
+                        rainbow1: { c: '#ff2a85', m: 'solid' },
+                        rainbow2: { c: '#fde047', m: 'solid' },
                         sun: { c: '#fde047', m: 'glitter' },
                         cloud1: { c: '#ffffff', m: 'solid' },
                         cloud2: { c: '#ffffff', m: 'solid' },
                         hillL: { c: '#4ade80', m: 'solid' },
                         hillR: { c: '#22c55e', m: 'solid' },
-                        river: { c: '#38bdf8', m: 'glitter' },
+                        moat: { c: '#38bdf8', m: 'glitter' },
+                        river: { c: '#fef08a', m: 'solid' },
+                        towerInnerL: { c: '#f3e8ff', m: 'solid' },
+                        towerInnerR: { c: '#f3e8ff', m: 'solid' },
+                        roofInnerL: { c: '#a855f7', m: 'gradient' },
+                        roofInnerR: { c: '#a855f7', m: 'gradient' },
                         towerL: { c: '#fce7f3', m: 'solid' },
                         towerR: { c: '#fce7f3', m: 'solid' },
+                        balconyL: { c: '#fde047', m: 'glitter' },
+                        balconyR: { c: '#fde047', m: 'glitter' },
                         towerC: { c: '#fbcfe8', m: 'solid' },
                         wallM: { c: '#fdf2f8', m: 'solid' },
                         roofL: { c: '#ec4899', m: 'gradient' },
                         roofR: { c: '#ec4899', m: 'gradient' },
-                        roofC: { c: '#a855f7', m: 'gradient' },
+                        roofC: { c: '#ff2a85', m: 'gradient' },
                         flagC: { c: '#fde047', m: 'glitter' },
+                        flagL: { c: '#38bdf8', m: 'glitter' },
+                        flagR: { c: '#38bdf8', m: 'glitter' },
                         winL: { c: '#fef08a', m: 'glitter' },
                         winR: { c: '#fef08a', m: 'glitter' },
+                        winInnerL: { c: '#67e8f9', m: 'glitter' },
+                        winInnerR: { c: '#67e8f9', m: 'glitter' },
                         winC: { c: '#67e8f9', m: 'glitter' },
+                        gateArch: { c: '#fde047', m: 'glitter' },
                         gate: { c: '#9a5840', m: 'solid' },
-                        heartCrest: { c: '#ff2a85', m: 'glitter' }
+                        heartCrest: { c: '#ff2a85', m: 'glitter' },
+                        bushL: { c: '#10b981', m: 'solid' },
+                        bushR: { c: '#10b981', m: 'solid' }
                     }
                 },
                 {
-                    name: 'Pôr do Sol Imperial Dourado 🏰🌅',
+                    name: 'Pôr do Sol Imperial Dourado & Lavanda 🏰🌅',
                     regions: {
                         sky: { c: '#fbcfe8', m: 'gradient' },
+                        rainbow1: { c: '#a855f7', m: 'solid' },
+                        rainbow2: { c: '#38bdf8', m: 'solid' },
                         sun: { c: '#fb923c', m: 'glitter' },
                         cloud1: { c: '#ffe4e6', m: 'solid' },
                         cloud2: { c: '#ffe4e6', m: 'solid' },
                         hillL: { c: '#10b981', m: 'solid' },
                         hillR: { c: '#2dd4bf', m: 'solid' },
+                        moat: { c: '#06b6d4', m: 'glitter' },
                         river: { c: '#fde047', m: 'glitter' },
+                        towerInnerL: { c: '#fbcfe8', m: 'solid' },
+                        towerInnerR: { c: '#fbcfe8', m: 'solid' },
+                        roofInnerL: { c: '#ec4899', m: 'gradient' },
+                        roofInnerR: { c: '#ec4899', m: 'gradient' },
                         towerL: { c: '#e9d5ff', m: 'solid' },
                         towerR: { c: '#e9d5ff', m: 'solid' },
+                        balconyL: { c: '#fde047', m: 'glitter' },
+                        balconyR: { c: '#fde047', m: 'glitter' },
                         towerC: { c: '#d8b4fe', m: 'solid' },
                         wallM: { c: '#f3e8ff', m: 'solid' },
                         roofL: { c: '#8b5cf6', m: 'gradient' },
                         roofR: { c: '#8b5cf6', m: 'gradient' },
                         roofC: { c: '#ff2a85', m: 'gradient' },
                         flagC: { c: '#fde047', m: 'glitter' },
+                        flagL: { c: '#ff2a85', m: 'glitter' },
+                        flagR: { c: '#ff2a85', m: 'glitter' },
                         winL: { c: '#fde047', m: 'glitter' },
                         winR: { c: '#fde047', m: 'glitter' },
+                        winInnerL: { c: '#fef08a', m: 'glitter' },
+                        winInnerR: { c: '#fef08a', m: 'glitter' },
                         winC: { c: '#fbcfe8', m: 'glitter' },
+                        gateArch: { c: '#fde047', m: 'glitter' },
                         gate: { c: '#f59e0b', m: 'solid' },
-                        heartCrest: { c: '#ff2a85', m: 'glitter' }
+                        heartCrest: { c: '#ff2a85', m: 'glitter' },
+                        bushL: { c: '#22c55e', m: 'solid' },
+                        bushR: { c: '#22c55e', m: 'solid' }
                     }
                 }
             ],
