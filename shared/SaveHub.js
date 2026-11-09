@@ -84,7 +84,12 @@ export class SaveHub {
                     pixelart: { highScore: 0 },
                     kaleidoscope: { highScore: 0 },
                     coloringbook: { highScore: 0 },
-                    quickdraw: { highScore: 0 }
+                    quickdraw: { highScore: 0 },
+                    spirograph: { highScore: 0 },
+                    sandart: { highScore: 0 },
+                    scratchart: { highScore: 0 },
+                    stickerbook: { highScore: 0 },
+                    fashiondesign: { highScore: 0 }
                 }
             };
         }

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê de Estampas & Vestidos — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #4a044e, #16031b);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.07); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(236,72,153,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(236,72,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f472b6; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 300px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(42, 10, 48, 0.9); border: 2px solid rgba(236,72,153,0.35);
+            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.95rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.82rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
+        }
+        .palette { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+        .sw {
+            height: 28px; border-radius: 8px; cursor: pointer; border: 2px solid rgba(255,255,255,0.4);
+        }
+        .sw.active { transform: scale(1.14); border-color: #fff; box-shadow: 0 0 8px #fff; }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+        }
+        .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+        .canvas-wrap {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(20, 4, 24, 0.85); border-radius: 24px;
+            border: 3px solid rgba(236,72,153,0.4); padding: 16px;
+        }
+        canvas {
+            background: radial-gradient(circle, #2e1035, #140519);
+            border-radius: 18px; max-width: 100%; height: auto;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.5); cursor: crosshair; touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>✂️ Ateliê de Estampas & Desenho de Vestidos</h1>
+        <div class="score-pill">Coleções: <span id="scoreVal">0</span> ✂️</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>👗 Molde de Alta-Costura</h3>
+            <div class="grid-2" id="dressBtns">
+                <button class="btn-opt active" data-dress="ballgown">👑 Vestido Baile</button>
+                <button class="btn-opt" data-dress="mermaid">🧜‍♀️ Sereia Gala</button>
+                <button class="btn-opt" data-dress="popstar">🌟 Popstar Mini</button>
+                <button class="btn-opt" data-dress="kimono">🌸 Quimono Real</button>
+            </div>
+
+            <h3>🎨 Cor do Tecido Base</h3>
+            <div class="palette" id="basePalette">
+                <div class="sw active" style="background:#f472b6" data-c="#f472b6"></div>
+                <div class="sw" style="background:#a855f7" data-c="#a855f7"></div>
+                <div class="sw" style="background:#38bdf8" data-c="#38bdf8"></div>
+                <div class="sw" style="background:#fde047" data-c="#fde047"></div>
+                <div class="sw" style="background:#4ade80" data-c="#4ade80"></div>
+                <div class="sw" style="background:#1e1b4b" data-c="#1e1b4b"></div>
+            </div>
+
+            <h3>✨ Estampa Automática</h3>
+            <div class="grid-2" id="patternBtns">
+                <button class="btn-opt" data-pat="stars">⭐ Estrelas</button>
+                <button class="btn-opt" data-pat="dots">⚪ Poá Retrô</button>
+                <button class="btn-opt" data-pat="stripes">🌈 Listras</button>
+                <button class="btn-opt" data-pat="hearts">💖 Corações</button>
+            </div>
+
+            <h3>🖌️ Pincel de Costura Livre & Cor</h3>
+            <div class="palette" id="brushPalette">
+                <div class="sw active" style="background:#ffffff" data-c="#ffffff"></div>
+                <div class="sw" style="background:#fde047" data-c="#fde047"></div>
+                <div class="sw" style="background:#ff2e93" data-c="#ff2e93"></div>
+                <div class="sw" style="background:#00f5d4" data-c="#00f5d4"></div>
+                <div class="sw" style="background:#c084fc" data-c="#c084fc"></div>
+                <div class="sw" style="background:#ff9f1c" data-c="#ff9f1c"></div>
+            </div>
+            <input type="range" id="brushSize" min="4" max="36" value="14">
+
+            <button class="btn-action btn-save" id="saveBtn">🏆 Desfilar & Salvar Look (+1 ✂️)</button>
+            <button class="btn-action btn-clear" id="clearBtn">🧼 Limpar Estampa</button>
+        </aside>
+
+        <section class="canvas-wrap">
+            <canvas id="fashionCanvas" width="540" height="540"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('fashiondesign', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('fashionCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Offscreen fabric canvas painted by user
+        const fabricCanvas = document.createElement('canvas');
+        fabricCanvas.width = 540;
+        fabricCanvas.height = 540;
+        const fctx = fabricCanvas.getContext('2d');
+
+        let currentDress = 'ballgown';
+        let baseColor = '#f472b6';
+        let brushColor = '#ffffff';
+        let brushSize = 14;
+        let isDrawing = false;
+        let lastPos = null;
+
+        function resetFabric(color = baseColor) {
+            fctx.fillStyle = color;
+            fctx.fillRect(0, 0, 540, 540);
+            render();
+        }
+
+        function traceDress(c, type) {
+            c.beginPath();
+            if (type === 'ballgown') {
+                c.moveTo(220, 120); c.lineTo(320, 120);
+                c.lineTo(305, 225);
+                c.bezierCurveTo(410, 270, 445, 410, 455, 475);
+                c.quadraticCurveTo(270, 505, 85, 475);
+                c.bezierCurveTo(95, 410, 130, 270, 235, 225);
+                c.closePath();
+            } else if (type === 'mermaid') {
+                c.moveTo(225, 120); c.lineTo(315, 120);
+                c.lineTo(305, 230); c.lineTo(318, 355);
+                c.lineTo(415, 480);
+                c.quadraticCurveTo(270, 505, 125, 480);
+                c.lineTo(222, 355); c.lineTo(235, 230);
+                c.closePath();
+            } else if (type === 'popstar') {
+                c.moveTo(215, 120); c.lineTo(325, 120);
+                c.lineTo(300, 225); c.lineTo(375, 360);
+                c.lineTo(165, 360); c.lineTo(240, 225);
+                c.closePath();
+            } else {
+                // Kimono
+                c.moveTo(190, 115); c.lineTo(350, 115);
+                c.lineTo(420, 240); c.lineTo(370, 285);
+                c.lineTo(335, 220); c.lineTo(350, 475);
+                c.lineTo(190, 475); c.lineTo(205, 220);
+                c.lineTo(170, 285); c.lineTo(120, 240);
+                c.closePath();
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, 540, 540);
+            // Mannequin stand
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(270, 65); ctx.lineTo(270, 515);
+            ctx.moveTo(210, 515); ctx.lineTo(330, 515);
+            ctx.stroke();
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath(); ctx.arc(270, 65, 14, 0, Math.PI * 2); ctx.fill();
+
+            // Clip to dress silhouette and draw custom fabric
+            ctx.save();
+            traceDress(ctx, currentDress);
+            ctx.clip();
+            ctx.drawImage(fabricCanvas, 0, 0);
+
+            // Subtle dress folds shading
+            const shade = ctx.createLinearGradient(120, 0, 420, 0);
+            shade.addColorStop(0, 'rgba(0,0,0,0.22)');
+            shade.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+            shade.addColorStop(1, 'rgba(0,0,0,0.22)');
+            ctx.fillStyle = shade;
+            ctx.fillRect(0, 0, 540, 540);
+            ctx.restore();
+
+            // Golden stitching outline
+            ctx.save();
+            traceDress(ctx, currentDress);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.restore();
+
+            // Waist ribbon
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            ctx.fillRect(233, 218, 74, 12);
+        }
+
+        function getPos(e) {
+            const r = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - r.left) * (540 / r.width),
+                y: (e.clientY - r.top) * (540 / r.height)
+            };
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            isDrawing = true;
+            lastPos = getPos(e);
+        });
+        window.addEventListener('pointermove', (e) => {
+            if (!isDrawing) return;
+            const p = getPos(e);
+            fctx.strokeStyle = brushColor;
+            fctx.lineWidth = brushSize;
+            fctx.lineCap = 'round';
+            fctx.lineJoin = 'round';
+            fctx.beginPath();
+            fctx.moveTo(lastPos.x, lastPos.y);
+            fctx.lineTo(p.x, p.y);
+            fctx.stroke();
+            lastPos = p;
+            render();
+        });
+        window.addEventListener('pointerup', () => { isDrawing = false; });
+
+        document.querySelectorAll('#dressBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#dressBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentDress = btn.dataset.dress;
+                render();
+            });
+        });
+
+        document.querySelectorAll('#basePalette .sw').forEach(sw => {
+            sw.addEventListener('click', () => {
+                document.querySelectorAll('#basePalette .sw').forEach(s => s.classList.remove('active'));
+                sw.classList.add('active');
+                baseColor = sw.dataset.c;
+                resetFabric(baseColor);
+            });
+        });
+
+        document.querySelectorAll('#brushPalette .sw').forEach(sw => {
+            sw.addEventListener('click', () => {
+                document.querySelectorAll('#brushPalette .sw').forEach(s => s.classList.remove('active'));
+                sw.classList.add('active');
+                brushColor = sw.dataset.c;
+            });
+        });
+
+        document.getElementById('brushSize').addEventListener('input', (e) => {
+            brushSize = Number(e.target.value);
+        });
+
+        document.querySelectorAll('#patternBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const pat = btn.dataset.pat;
+                fctx.fillStyle = brushColor;
+                for (let y = 110; y < 500; y += 38) {
+                    for (let x = 90; x < 460; x += 38) {
+                        if (pat === 'dots') {
+                            fctx.beginPath();
+                            fctx.arc(x + (y % 76 === 0 ? 15 : 0), y, 7, 0, Math.PI * 2);
+                            fctx.fill();
+                        } else if (pat === 'stars') {
+                            fctx.font = '20px sans-serif';
+                            fctx.fillText('⭐', x, y);
+                        } else if (pat === 'hearts') {
+                            fctx.font = '18px sans-serif';
+                            fctx.fillText('💖', x, y);
+                        }
+                    }
+                    if (pat === 'stripes') {
+                        fctx.fillRect(80, y, 400, 12);
+                    }
+                }
+                render();
+            });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => resetFabric(baseColor));
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('fashiondesign', { highScore: bestScore }, activePlayer);
+        });
+
+        resetFabric(baseColor);
+    </script>
+</body>
+</html>

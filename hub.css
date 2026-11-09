@@ -527,6 +527,11 @@ body, html {
 .card-kaleidoscope { border-color: #e879f9; }
 .card-coloringbook { border-color: #f472b6; }
 .card-quickdraw { border-color: #fde047; }
+.card-spirograph { border-color: #38bdf8; }
+.card-sandart { border-color: #fde047; }
+.card-scratchart { border-color: #c084fc; }
+.card-stickerbook { border-color: #f9a8d4; }
+.card-fashiondesign { border-color: #ec4899; }
 
 .game-card-banner {
     font-size: 3.5rem;

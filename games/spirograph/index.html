@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Espirógrafo Mágico & Arte Geométrica 🎡✨ — JasDEV Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b0764 0%, #090214 100%);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .topbar {
+            width: 100%;
+            max-width: 1060px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid #38bdf8;
+            color: #fff;
+            padding: 7px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.85rem;
+        }
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid #38bdf8;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
+        .spiro-grid {
+            width: 100%;
+            max-width: 1060px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 14px;
+        }
+        @media (max-width: 840px) {
+            .spiro-grid { grid-template-columns: 1fr; }
+        }
+        .stage-box {
+            background: rgba(15, 4, 30, 0.94);
+            border: 3px solid #38bdf8;
+            border-radius: 24px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 38px rgba(56, 189, 248, 0.3);
+        }
+        canvas {
+            width: 100%;
+            max-width: 470px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            background: #070210;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.65);
+        }
+        .controls-box {
+            background: rgba(26, 8, 48, 0.95);
+            border: 3px solid #e879f9;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #bae6fd; font-size: 0.86rem; margin-bottom: 4px; }
+        .row-wrap { display: flex; gap: 7px; flex-wrap: wrap; }
+        .preset-btn {
+            padding: 8px 11px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .preset-btn.active, .preset-btn:hover {
+            border-color: #fde047;
+            background: linear-gradient(135deg, #38bdf8, #a855f7);
+        }
+        input[type="range"] { width: 100%; accent-color: #ec4899; }
+        .color-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.4);
+            cursor: pointer;
+        }
+        .color-dot.active { border-color: #fde047; transform: scale(1.15); }
+        .btn-finish {
+            margin-top: auto;
+            background: linear-gradient(135deg, #38bdf8, #ec4899, #fde047);
+            color: #140326;
+            border: none;
+            padding: 14px;
+            border-radius: 28px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-pill">ESPIRAIS: <strong id="hud-score">0 🎡</strong></div>
+            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🎡</strong></div>
+        </div>
+    </div>
+
+    <div class="spiro-grid">
+        <div class="stage-box">
+            <canvas id="spiro-canvas" width="480" height="480"></canvas>
+            <p id="spiro-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
+                Ajuste as engrenagens mágicas ou escolha um modelo para desenhar espirais neon! 🎡✨
+            </p>
+        </div>
+
+        <div class="controls-box">
+            <div>
+                <div class="label">🌟 FORMAS DE ENGRENAGEM PRONTAS:</div>
+                <div class="row-wrap">
+                    <button class="preset-btn active" data-r1="150" data-r2="52" data-d="85">🌸 Flor Lótus</button>
+                    <button class="preset-btn" data-r1="160" data-r2="105" data-d="75">⭐ Estrela Real</button>
+                    <button class="preset-btn" data-r1="145" data-r2="38" data-d="68">💎 Coroa Cristal</button>
+                    <button class="preset-btn" data-r1="155" data-r2="64" data-d="110">🦋 Galáxia</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="label">⚙️ ENGRENAGEM EXTERNA (R): <span id="v-r1">150</span></div>
+                <input type="range" id="sl-r1" min="90" max="180" value="150">
+            </div>
+            <div>
+                <div class="label">⚙️ ENGRENAGEM INTERNA (r): <span id="v-r2">52</span></div>
+                <input type="range" id="sl-r2" min="20" max="120" value="52">
+            </div>
+            <div>
+                <div class="label">✏️ PONTA DA CANETA (d): <span id="v-d">85</span></div>
+                <input type="range" id="sl-d" min="20" max="130" value="85">
+            </div>
+
+            <div>
+                <div class="label">🎨 COR DA CANETA ESPIRÓGRAFO:</div>
+                <div class="row-wrap" id="palette-row">
+                    <button class="preset-btn active" id="btn-rainbow">🌈 Arco-Íris</button>
+                </div>
+            </div>
+
+            <div class="row-wrap">
+                <button class="preset-btn" id="btn-turbo" style="flex:1;">⚡ Desenhar Turbo</button>
+                <button class="preset-btn" id="btn-clear" style="flex:1;">🗑️ Limpar Tela</button>
+            </div>
+
+            <button class="btn-finish" id="btn-finish">🏆 SALVAR ARTE ESPIRÓGRAFO! (+150 🎡)</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+
+        const canvas = document.getElementById('spiro-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const CX = W / 2;
+        const CY = H / 2;
+
+        const hudScore = document.getElementById('hud-score');
+        const hudBest = document.getElementById('hud-best');
+        const spiroMsg = document.getElementById('spiro-msg');
+
+        const activePlayer = SaveHub.getActivePlayer();
+        const playerName = activePlayer ? activePlayer.name : null;
+        let save = SaveHub.getGameSave('spirograph', playerName);
+        let bestScore = save.highScore || 0;
+        hudBest.innerText = `${bestScore} 🎡`;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(freq = 720) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start();
+                o.stop(audioCtx.currentTime + 0.14);
+            } catch (e) {}
+        }
+
+        const COLORS = ['#ff2a85', '#38bdf8', '#fde047', '#a855f7', '#4ade80', '#ffffff'];
+        let R = 150, r = 52, d = 85;
+        let t = 0;
+        let prevX = null, prevY = null;
+        let rainbow = true;
+        let penColor = '#ff2a85';
+        let hue = 0;
+        let score = 0;
+
+        const palRow = document.getElementById('palette-row');
+        COLORS.forEach(c => {
+            const dot = document.createElement('div');
+            dot.className = 'color-dot';
+            dot.style.background = c;
+            dot.onclick = () => {
+                rainbow = false;
+                document.getElementById('btn-rainbow').classList.remove('active');
+                document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+                dot.classList.add('active');
+                penColor = c;
+                sfx(640);
+            };
+            palRow.appendChild(dot);
+        });
+
+        document.getElementById('btn-rainbow').onclick = (e) => {
+            rainbow = true;
+            e.target.classList.add('active');
+            document.querySelectorAll('.color-dot').forEach(el => el.classList.remove('active'));
+        };
+
+        function resetTrace(clearBg = false) {
+            if (clearBg) {
+                ctx.fillStyle = '#070210';
+                ctx.fillRect(0, 0, W, H);
+            }
+            t = 0;
+            prevX = null;
+            prevY = null;
+        }
+
+        function stepSpiro(steps = 12) {
+            for (let i = 0; i < steps; i++) {
+                const k = (R - r) / r;
+                const x = CX + (R - r) * Math.cos(t) + d * Math.cos(k * t);
+                const y = CY + (R - r) * Math.sin(t) - d * Math.sin(k * t);
+
+                if (prevX !== null) {
+                    const col = rainbow ? `hsl(${(hue += 0.35) % 360}, 95%, 64%)` : penColor;
+                    ctx.strokeStyle = col;
+                    ctx.lineWidth = 2.2;
+                    ctx.beginPath();
+                    ctx.moveTo(prevX, prevY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+                prevX = x;
+                prevY = y;
+                t += 0.035;
+            }
+        }
+
+        function loop() {
+            stepSpiro(8);
+            requestAnimationFrame(loop);
+        }
+
+        ['r1', 'r2', 'd'].forEach(key => {
+            const sl = document.getElementById('sl-' + key);
+            const vl = document.getElementById('v-' + key);
+            sl.oninput = () => {
+                if (key === 'r1') R = Number(sl.value);
+                if (key === 'r2') r = Number(sl.value);
+                if (key === 'd') d = Number(sl.value);
+                vl.innerText = sl.value;
+                resetTrace(false);
+            };
+        });
+
+        document.querySelectorAll('[data-r1]').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('[data-r1]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                R = Number(btn.dataset.r1);
+                r = Number(btn.dataset.r2);
+                d = Number(btn.dataset.d);
+                document.getElementById('sl-r1').value = R;
+                document.getElementById('sl-r2').value = r;
+                document.getElementById('sl-d').value = d;
+                document.getElementById('v-r1').innerText = R;
+                document.getElementById('v-r2').innerText = r;
+                document.getElementById('v-d').innerText = d;
+                resetTrace(false);
+                sfx(760);
+            };
+        });
+
+        document.getElementById('btn-turbo').onclick = () => {
+            stepSpiro(450);
+            sfx(840);
+        };
+
+        document.getElementById('btn-clear').onclick = () => {
+            resetTrace(true);
+            sfx(480);
+        };
+
+        document.getElementById('btn-finish').onclick = () => {
+            score += 150;
+            sfx(960);
+            hudScore.innerText = `${score} 🎡`;
+            if (score > bestScore) {
+                bestScore = score;
+                hudBest.innerText = `${bestScore} 🎡`;
+                SaveHub.updateGameSave('spirograph', { highScore: bestScore }, playerName);
+            }
+            spiroMsg.innerText = '🏆 ESPIRAL GEOMÉTRICA SALVA COM SUCESSO! +150 🎡';
+        };
+
+        resetTrace(true);
+        loop();
+    </script>
+</body>
+</html>

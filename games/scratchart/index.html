@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspadinha Mágica Arco-Íris — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #1b0a33, #07030f);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(168,85,247,0.35);
+        }
+        .back-btn {
+            text-decoration: none; color: #e9d5ff; font-weight: 700;
+            background: rgba(168,85,247,0.2); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(168,85,247,0.5); transition: 0.2s;
+        }
+        .back-btn:hover { background: #a855f7; color: #fff; }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f0abfc; text-shadow: 0 2px 10px rgba(240,171,252,0.5); }
+        .score-pill {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 280px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(25, 12, 48, 0.88); border: 2px solid rgba(168,85,247,0.35);
+            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #e9d5ff; font-size: 0.98rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-opt {
+            padding: 9px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.84rem; transition: 0.15s;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #a855f7, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 14px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+            transition: transform 0.15s;
+        }
+        .btn-action:hover { transform: translateY(-2px); }
+        .btn-magic { background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; }
+        .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+        .canvas-wrap {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(10, 5, 22, 0.85); border-radius: 24px;
+            border: 3px solid rgba(240,171,252,0.4); padding: 16px; position: relative;
+        }
+        .stack {
+            position: relative; width: 540px; height: 540px; max-width: 100%; aspect-ratio: 1/1;
+            border-radius: 18px; overflow: hidden; box-shadow: 0 0 38px rgba(168,85,247,0.35);
+            cursor: crosshair; touch-action: none;
+        }
+        .stack canvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+        }
+        #guideCanvas { pointer-events: none; }
+        .progress-bar {
+            width: 100%; max-width: 540px; margin-top: 12px; display: flex; justify-content: space-between;
+            align-items: center; font-size: 0.9rem; color: #e9d5ff;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🪄 Raspadinha Mágica Arco-Íris</h1>
+        <div class="score-pill">Revelados: <span id="scoreVal">0</span> 🪄</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🌈 Fundo Holográfico</h3>
+            <div class="grid-2" id="foilBtns">
+                <button class="btn-opt active" data-foil="rainbow">🌈 Arco-Íris</button>
+                <button class="btn-opt" data-foil="galaxy">🌌 Galáxia</button>
+                <button class="btn-opt" data-foil="gold">✨ Ouro Real</button>
+                <button class="btn-opt" data-foil="cyber">💖 Neon Cyber</button>
+            </div>
+
+            <h3>🦄 Molde Guia (Stencil)</h3>
+            <div class="grid-2" id="stencilBtns">
+                <button class="btn-opt active" data-stencil="unicorn">🦄 Unicórnio</button>
+                <button class="btn-opt" data-stencil="crown">👑 Coroa Real</button>
+                <button class="btn-opt" data-stencil="butterfly">🦋 Borboleta</button>
+                <button class="btn-opt" data-stencil="kitty">🐱 Gatinha</button>
+                <button class="btn-opt" data-stencil="heart">💖 Coração</button>
+                <button class="btn-opt" data-stencil="free">✨ Livre</button>
+            </div>
+
+            <h3>🖊️ Ponta do Raspador: <span id="brushVal">24px</span></h3>
+            <input type="range" id="brushSize" min="8" max="55" value="24">
+
+            <h3>✨ Carimbos Raspadores</h3>
+            <div class="grid-2">
+                <button class="btn-opt" id="stampStar">⭐ Raspar Estrela</button>
+                <button class="btn-opt" id="stampHeart">💖 Raspar Coração</button>
+            </div>
+
+            <button class="btn-action btn-magic" id="revealStencilBtn">🪄 Raspar Molde Mágico</button>
+            <button class="btn-action btn-save" id="saveBtn">🏆 Finalizar & Salvar (+1 🪄)</button>
+            <button class="btn-action btn-clear" id="resetBtn">🖤 Nova Folha Preta</button>
+        </aside>
+
+        <section class="canvas-wrap">
+            <div class="stack">
+                <canvas id="foilCanvas" width="540" height="540"></canvas>
+                <canvas id="scratchCanvas" width="540" height="540"></canvas>
+                <canvas id="guideCanvas" width="540" height="540"></canvas>
+            </div>
+            <div class="progress-bar">
+                <span>Raspe a camada preta com o mouse ou dedo para revelar o brilho!</span>
+                <strong id="pctText">0% revelado</strong>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('scratchart', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const foilCanvas = document.getElementById('foilCanvas');
+        const fctx = foilCanvas.getContext('2d');
+        const scratchCanvas = document.getElementById('scratchCanvas');
+        const sctx = scratchCanvas.getContext('2d');
+        const guideCanvas = document.getElementById('guideCanvas');
+        const gctx = guideCanvas.getContext('2d');
+
+        let currentFoil = 'rainbow';
+        let currentStencil = 'unicorn';
+        let brush = 24;
+        let isDrawing = false;
+        let lastPos = null;
+
+        function drawFoil() {
+            const w = 540, h = 540;
+            if (currentFoil === 'rainbow') {
+                const grad = fctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, '#ff3b9a');
+                grad.addColorStop(0.2, '#ff9233');
+                grad.addColorStop(0.4, '#ffe63b');
+                grad.addColorStop(0.6, '#33f399');
+                grad.addColorStop(0.8, '#38bdf8');
+                grad.addColorStop(1, '#c084fc');
+                fctx.fillStyle = grad;
+                fctx.fillRect(0, 0, w, h);
+            } else if (currentFoil === 'galaxy') {
+                const grad = fctx.createRadialGradient(270, 270, 30, 270, 270, 360);
+                grad.addColorStop(0, '#f472b6');
+                grad.addColorStop(0.4, '#7c3aed');
+                grad.addColorStop(0.75, '#1d4ed8');
+                grad.addColorStop(1, '#090d26');
+                fctx.fillStyle = grad;
+                fctx.fillRect(0, 0, w, h);
+            } else if (currentFoil === 'gold') {
+                const grad = fctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, '#fef08a');
+                grad.addColorStop(0.3, '#f59e0b');
+                grad.addColorStop(0.6, '#fde047');
+                grad.addColorStop(1, '#b45309');
+                fctx.fillStyle = grad;
+                fctx.fillRect(0, 0, w, h);
+            } else {
+                const grad = fctx.createLinearGradient(0, h, w, 0);
+                grad.addColorStop(0, '#06b6d4');
+                grad.addColorStop(0.5, '#ec4899');
+                grad.addColorStop(1, '#a855f7');
+                fctx.fillStyle = grad;
+                fctx.fillRect(0, 0, w, h);
+            }
+            // Add holographic sparkles
+            for (let i = 0; i < 160; i++) {
+                fctx.fillStyle = i % 3 === 0 ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.35)';
+                fctx.beginPath();
+                fctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2.5 + 0.5, 0, Math.PI * 2);
+                fctx.fill();
+            }
+        }
+
+        function resetBlackLayer() {
+            sctx.globalCompositeOperation = 'source-over';
+            const g = sctx.createLinearGradient(0, 0, 540, 540);
+            g.addColorStop(0, '#140f1d');
+            g.addColorStop(1, '#09060e');
+            sctx.fillStyle = g;
+            sctx.fillRect(0, 0, 540, 540);
+            drawGuide();
+            updatePercent();
+        }
+
+        function traceStencilPath(ctx, type) {
+            ctx.beginPath();
+            if (type === 'unicorn') {
+                ctx.arc(270, 290, 110, 0, Math.PI * 2);
+                ctx.moveTo(270, 180); ctx.lineTo(250, 75); ctx.lineTo(295, 180);
+                ctx.moveTo(200, 210); ctx.arc(170, 250, 45, 0, Math.PI * 2);
+                ctx.moveTo(240, 270); ctx.arc(230, 270, 14, 0, Math.PI * 2);
+                ctx.moveTo(320, 270); ctx.arc(310, 270, 14, 0, Math.PI * 2);
+            } else if (type === 'crown') {
+                ctx.moveTo(120, 380);
+                ctx.lineTo(100, 210); ctx.lineTo(190, 280);
+                ctx.lineTo(270, 150);
+                ctx.lineTo(350, 280); ctx.lineTo(440, 210);
+                ctx.lineTo(420, 380); ctx.closePath();
+                ctx.moveTo(290, 310); ctx.arc(270, 310, 25, 0, Math.PI * 2);
+            } else if (type === 'butterfly') {
+                ctx.ellipse(190, 220, 95, 70, -0.4, 0, Math.PI * 2);
+                ctx.moveTo(350, 220);
+                ctx.ellipse(350, 220, 95, 70, 0.4, 0, Math.PI * 2);
+                ctx.moveTo(205, 340);
+                ctx.ellipse(205, 340, 70, 55, 0.4, 0, Math.PI * 2);
+                ctx.moveTo(335, 340);
+                ctx.ellipse(335, 340, 70, 55, -0.4, 0, Math.PI * 2);
+                ctx.moveTo(270, 150); ctx.lineTo(270, 410);
+            } else if (type === 'kitty') {
+                ctx.arc(270, 300, 125, 0, Math.PI * 2);
+                ctx.moveTo(170, 215); ctx.lineTo(155, 115); ctx.lineTo(235, 180);
+                ctx.moveTo(370, 215); ctx.lineTo(385, 115); ctx.lineTo(305, 180);
+                ctx.moveTo(235, 285); ctx.arc(220, 285, 15, 0, Math.PI * 2);
+                ctx.moveTo(335, 285); ctx.arc(320, 285, 15, 0, Math.PI * 2);
+            } else if (type === 'heart') {
+                ctx.moveTo(270, 420);
+                ctx.bezierCurveTo(90, 300, 95, 130, 270, 205);
+                ctx.bezierCurveTo(445, 130, 450, 300, 270, 420);
+            }
+        }
+
+        function drawGuide() {
+            gctx.clearRect(0, 0, 540, 540);
+            if (currentStencil === 'free') return;
+            gctx.save();
+            gctx.strokeStyle = 'rgba(255,255,255,0.24)';
+            gctx.lineWidth = 2.5;
+            gctx.setLineDash([8, 8]);
+            traceStencilPath(gctx, currentStencil);
+            gctx.stroke();
+            gctx.restore();
+        }
+
+        function getPos(e) {
+            const r = scratchCanvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            return {
+                x: (touch.clientX - r.left) * (540 / r.width),
+                y: (touch.clientY - r.top) * (540 / r.height)
+            };
+        }
+
+        function scratchLine(p1, p2) {
+            sctx.save();
+            sctx.globalCompositeOperation = 'destination-out';
+            sctx.lineCap = 'round';
+            sctx.lineJoin = 'round';
+            sctx.lineWidth = brush;
+            sctx.beginPath();
+            sctx.moveTo(p1.x, p1.y);
+            sctx.lineTo(p2.x, p2.y);
+            sctx.stroke();
+            sctx.restore();
+        }
+
+        function updatePercent() {
+            const data = sctx.getImageData(0, 0, 540, 540).data;
+            let clear = 0;
+            const total = 540 * 540;
+            for (let i = 3; i < data.length; i += 16) {
+                if (data[i] < 128) clear++;
+            }
+            const pct = Math.min(100, Math.round((clear / (total / 4)) * 100));
+            document.getElementById('pctText').textContent = `${pct}% revelado`;
+        }
+
+        scratchCanvas.addEventListener('pointerdown', (e) => {
+            isDrawing = true;
+            lastPos = getPos(e);
+            scratchLine(lastPos, lastPos);
+        });
+        window.addEventListener('pointermove', (e) => {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            scratchLine(lastPos, pos);
+            lastPos = pos;
+        });
+        window.addEventListener('pointerup', () => {
+            if (isDrawing) {
+                isDrawing = false;
+                updatePercent();
+            }
+        });
+
+        document.getElementById('brushSize').addEventListener('input', (e) => {
+            brush = Number(e.target.value);
+            document.getElementById('brushVal').textContent = brush + 'px';
+        });
+
+        document.querySelectorAll('#foilBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#foilBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFoil = btn.dataset.foil;
+                drawFoil();
+            });
+        });
+
+        document.querySelectorAll('#stencilBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#stencilBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentStencil = btn.dataset.stencil;
+                drawGuide();
+            });
+        });
+
+        document.getElementById('stampStar').addEventListener('click', () => {
+            sctx.save();
+            sctx.globalCompositeOperation = 'destination-out';
+            for (let i = 0; i < 8; i++) {
+                const cx = 70 + Math.random() * 400;
+                const cy = 70 + Math.random() * 400;
+                sctx.beginPath();
+                for (let j = 0; j < 5; j++) {
+                    const a = (j * 4 * Math.PI) / 5 - Math.PI / 2;
+                    const x = cx + Math.cos(a) * 28;
+                    const y = cy + Math.sin(a) * 28;
+                    j === 0 ? sctx.moveTo(x, y) : sctx.lineTo(x, y);
+                }
+                sctx.closePath();
+                sctx.fill();
+            }
+            sctx.restore();
+            updatePercent();
+        });
+
+        document.getElementById('stampHeart').addEventListener('click', () => {
+            sctx.save();
+            sctx.globalCompositeOperation = 'destination-out';
+            for (let i = 0; i < 8; i++) {
+                const cx = 70 + Math.random() * 400;
+                const cy = 70 + Math.random() * 400;
+                sctx.beginPath();
+                sctx.arc(cx - 10, cy, 12, 0, Math.PI * 2);
+                sctx.arc(cx + 10, cy, 12, 0, Math.PI * 2);
+                sctx.moveTo(cx - 21, cy + 4);
+                sctx.lineTo(cx, cy + 28);
+                sctx.lineTo(cx + 21, cy + 4);
+                sctx.fill();
+            }
+            sctx.restore();
+            updatePercent();
+        });
+
+        document.getElementById('revealStencilBtn').addEventListener('click', () => {
+            sctx.save();
+            sctx.globalCompositeOperation = 'destination-out';
+            sctx.lineWidth = 22;
+            sctx.lineCap = 'round';
+            sctx.lineJoin = 'round';
+            if (currentStencil === 'free') {
+                currentStencil = 'unicorn';
+            }
+            traceStencilPath(sctx, currentStencil);
+            sctx.stroke();
+            sctx.restore();
+            updatePercent();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetBlackLayer);
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('scratchart', { highScore: bestScore }, activePlayer);
+        });
+
+        drawFoil();
+        resetBlackLayer();
+    </script>
+</body>
+</html>

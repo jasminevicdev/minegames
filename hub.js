@@ -77,6 +77,11 @@ class GameHub {
         this.statKaleidoscopeScore = document.getElementById('stat-kaleidoscope-score');
         this.statColoringbookScore = document.getElementById('stat-coloringbook-score');
         this.statQuickdrawScore = document.getElementById('stat-quickdraw-score');
+        this.statSpirographScore = document.getElementById('stat-spirograph-score');
+        this.statSandartScore = document.getElementById('stat-sandart-score');
+        this.statScratchartScore = document.getElementById('stat-scratchart-score');
+        this.statStickerbookScore = document.getElementById('stat-stickerbook-score');
+        this.statFashiondesignScore = document.getElementById('stat-fashiondesign-score');
 
         this.selectedAvatar = '🎪';
 
@@ -191,6 +196,11 @@ class GameHub {
         const kaleidoscopeSave = SaveHub.getGameSave('kaleidoscope', player.name);
         const coloringbookSave = SaveHub.getGameSave('coloringbook', player.name);
         const quickdrawSave = SaveHub.getGameSave('quickdraw', player.name);
+        const spirographSave = SaveHub.getGameSave('spirograph', player.name);
+        const sandartSave = SaveHub.getGameSave('sandart', player.name);
+        const scratchartSave = SaveHub.getGameSave('scratchart', player.name);
+        const stickerbookSave = SaveHub.getGameSave('stickerbook', player.name);
+        const fashiondesignSave = SaveHub.getGameSave('fashiondesign', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -227,6 +237,11 @@ class GameHub {
         if (this.statKaleidoscopeScore) this.statKaleidoscopeScore.innerText = `${kaleidoscopeSave.highScore || 0} 🌀`;
         if (this.statColoringbookScore) this.statColoringbookScore.innerText = `${coloringbookSave.highScore || 0} 🖍️`;
         if (this.statQuickdrawScore) this.statQuickdrawScore.innerText = `${quickdrawSave.highScore || 0} ✏️`;
+        if (this.statSpirographScore) this.statSpirographScore.innerText = `${spirographSave.highScore || 0} 🎡`;
+        if (this.statSandartScore) this.statSandartScore.innerText = `${sandartSave.highScore || 0} ⏳`;
+        if (this.statScratchartScore) this.statScratchartScore.innerText = `${scratchartSave.highScore || 0} 🪄`;
+        if (this.statStickerbookScore) this.statStickerbookScore.innerText = `${stickerbookSave.highScore || 0} 📒`;
+        if (this.statFashiondesignScore) this.statFashiondesignScore.innerText = `${fashiondesignSave.highScore || 0} ✂️`;
     }
 
     renderPlayersList() {
