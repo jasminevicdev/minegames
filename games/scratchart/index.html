@@ -3,132 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raspadinha Mágica Arco-Íris — JasDEV Game Hub</title>
+    <title>Raspadinha Mágica Arco-Íris HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #1b0a33, #07030f);
+            background: radial-gradient(circle at top, #270c47, #090314 75%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1120px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
-            border-bottom: 2px solid rgba(168,85,247,0.35);
+            width: 100%; max-width: 1280px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(14px);
+            border-bottom: 2px solid rgba(232,121,249,0.35);
         }
         .back-btn {
-            text-decoration: none; color: #e9d5ff; font-weight: 700;
-            background: rgba(168,85,247,0.2); padding: 8px 16px; border-radius: 999px;
-            border: 1px solid rgba(168,85,247,0.5); transition: 0.2s;
+            text-decoration: none; color: #f5d0fe; font-weight: 700;
+            background: rgba(168,85,247,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(217,70,239,0.5); transition: 0.2s;
         }
-        .back-btn:hover { background: #a855f7; color: #fff; }
-        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f0abfc; text-shadow: 0 2px 10px rgba(240,171,252,0.5); }
+        .back-btn:hover { background: #d946ef; color: #fff; }
+        h1 {
+            font-family: 'Fredoka', sans-serif; font-size: 1.45rem;
+            background: linear-gradient(90deg, #f472b6, #fde047, #38bdf8, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 10px rgba(236,72,153,0.35));
+        }
+        .top-right { display: flex; align-items: center; gap: 10px; }
         .score-pill {
             background: linear-gradient(135deg, #a855f7, #ec4899);
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
+            box-shadow: 0 4px 14px rgba(236,72,153,0.4);
         }
+        .icon-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
+            color: #fff; padding: 7px 12px; border-radius: 999px; cursor: pointer; font-weight: 700;
+        }
+
         .studio {
-            display: grid; grid-template-columns: 280px 1fr; gap: 18px;
-            width: 100%; max-width: 1120px; padding: 16px; flex: 1;
+            display: grid; grid-template-columns: 320px 1fr 290px; gap: 16px;
+            width: 100%; max-width: 1280px; padding: 14px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 1080px) { .studio { grid-template-columns: 1fr; } }
+
         .panel {
-            background: rgba(25, 12, 48, 0.88); border: 2px solid rgba(168,85,247,0.35);
-            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+            background: rgba(24, 10, 46, 0.92); border: 2px solid rgba(217,70,239,0.32);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.45);
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #e9d5ff; font-size: 0.98rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .panel h3 {
+            font-family: 'Fredoka', sans-serif; color: #f5d0fe; font-size: 0.94rem;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 5px;
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
         .btn-opt {
-            padding: 9px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.84rem; transition: 0.15s;
+            padding: 8px 9px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem; transition: 0.16s; text-align: center;
         }
-        .btn-opt.active, .btn-opt:hover {
-            background: linear-gradient(135deg, #a855f7, #ec4899); border-color: #fff;
+        .btn-opt:hover { background: rgba(236,72,153,0.25); border-color: #f472b6; transform: translateY(-1px); }
+        .btn-opt.active {
+            background: linear-gradient(135deg, #d946ef, #ec4899);
+            border-color: #fff; box-shadow: 0 0 12px rgba(236,72,153,0.55);
         }
+
+        .coat-swatch {
+            height: 32px; border-radius: 10px; cursor: pointer; border: 2px solid rgba(255,255,255,0.25);
+            display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;
+        }
+        .coat-swatch.active { border-color: #fde047; box-shadow: 0 0 10px rgba(253,224,71,0.6); transform: scale(1.05); }
+
         .btn-action {
-            padding: 11px; border-radius: 14px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
-            transition: transform 0.15s;
+            padding: 10px 12px; border-radius: 13px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
         .btn-action:hover { transform: translateY(-2px); }
-        .btn-magic { background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; }
-        .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
-        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+        .btn-magic { background: linear-gradient(135deg, #f472b6, #a855f7, #38bdf8); color: #fff; box-shadow: 0 4px 15px rgba(168,85,247,0.45); }
+        .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 4px 15px rgba(16,185,129,0.4); }
+        .btn-download { background: linear-gradient(135deg, #38bdf8, #6366f1); color: #fff; }
+        .btn-clear { background: rgba(239,68,68,0.2); color: #fca5a5; border: 1px solid rgba(239,68,68,0.45); }
+
         .canvas-wrap {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(10, 5, 22, 0.85); border-radius: 24px;
-            border: 3px solid rgba(240,171,252,0.4); padding: 16px; position: relative;
+            background: rgba(12, 5, 25, 0.9); border-radius: 26px;
+            border: 3px solid rgba(240,171,252,0.42); padding: 16px;
+            box-shadow: 0 16px 45px rgba(0,0,0,0.6), inset 0 0 30px rgba(168,85,247,0.18);
         }
         .stack {
-            position: relative; width: 540px; height: 540px; max-width: 100%; aspect-ratio: 1/1;
-            border-radius: 18px; overflow: hidden; box-shadow: 0 0 38px rgba(168,85,247,0.35);
+            position: relative; width: 580px; height: 580px; max-width: 100%; aspect-ratio: 1/1;
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 0 42px rgba(217,70,239,0.35), 0 0 0 3px rgba(255,255,255,0.15);
             cursor: crosshair; touch-action: none;
         }
         .stack canvas {
             position: absolute; inset: 0; width: 100%; height: 100%;
         }
-        #guideCanvas { pointer-events: none; }
-        .progress-bar {
-            width: 100%; max-width: 540px; margin-top: 12px; display: flex; justify-content: space-between;
-            align-items: center; font-size: 0.9rem; color: #e9d5ff;
+        #guideCanvas, #fxCanvas { pointer-events: none; }
+
+        .status-bar {
+            width: 100%; max-width: 580px; margin-top: 12px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .status-top {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.88rem; color: #f5d0fe;
+        }
+        .meter-bg {
+            width: 100%; height: 10px; background: rgba(255,255,255,0.1);
+            border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .meter-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #f472b6, #fde047, #38bdf8);
+            transition: width 0.2s;
+        }
+        input[type="range"] { width: 100%; accent-color: #ec4899; cursor: pointer; }
+        .toggle-row {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.84rem; color: #e9d5ff; background: rgba(255,255,255,0.05);
+            padding: 8px 10px; border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🪄 Raspadinha Mágica Arco-Íris</h1>
-        <div class="score-pill">Revelados: <span id="scoreVal">0</span> 🪄</div>
+        <h1>🪄 Raspadinha Mágica Arco-Íris — Edição Real HD</h1>
+        <div class="top-right">
+            <button class="icon-btn" id="soundToggle" title="Som de Raspar">🔊 Som</button>
+            <div class="score-pill">Obras Reveladas: <span id="scoreVal">0</span> 🪄</div>
+        </div>
     </header>
 
     <main class="studio">
+        <!-- Painel Esquerdo: Fundos Holográficos, Camada e Moldes HD -->
         <aside class="panel">
-            <h3>🌈 Fundo Holográfico</h3>
+            <h3>🌈 1. Folha Holográfica (8 Efeitos)</h3>
             <div class="grid-2" id="foilBtns">
-                <button class="btn-opt active" data-foil="rainbow">🌈 Arco-Íris</button>
-                <button class="btn-opt" data-foil="galaxy">🌌 Galáxia</button>
-                <button class="btn-opt" data-foil="gold">✨ Ouro Real</button>
-                <button class="btn-opt" data-foil="cyber">💖 Neon Cyber</button>
+                <button class="btn-opt active" data-foil="rainbow">🌈 Arco-Íris Prisma</button>
+                <button class="btn-opt" data-foil="galaxy">🌌 Galáxia Nebulosa</button>
+                <button class="btn-opt" data-foil="gold">✨ Ouro Imperial 24K</button>
+                <button class="btn-opt" data-foil="rose">💖 Quartzo Rosa</button>
+                <button class="btn-opt" data-foil="mermaid">🧜‍♀️ Escamas Sereia</button>
+                <button class="btn-opt" data-foil="phoenix">🔥 Fênix Solar</button>
+                <button class="btn-opt" data-foil="aurora">❄️ Cristal Aurora</button>
+                <button class="btn-opt" data-foil="cyber">⚡ Neon Matrix</button>
             </div>
 
-            <h3>🦄 Molde Guia (Stencil)</h3>
+            <h3>🖤 2. Cor da Tinta de Raspar</h3>
+            <div class="grid-4" id="coatBtns">
+                <div class="coat-swatch active" data-coat="black" style="background:linear-gradient(135deg,#1c1629,#09060f)">🖤 Preto</div>
+                <div class="coat-swatch" data-coat="violet" style="background:linear-gradient(135deg,#3b0764,#1e0536)">💜 Violeta</div>
+                <div class="coat-swatch" data-coat="navy" style="background:linear-gradient(135deg,#0f2942,#06101e)">💙 Noite</div>
+                <div class="coat-swatch" data-coat="bronze" style="background:linear-gradient(135deg,#451a03,#1c0a00)">🤎 Bronze</div>
+            </div>
+
+            <h3>🦄 3. Desenho Guia Detalhado (8 Moldes)</h3>
             <div class="grid-2" id="stencilBtns">
-                <button class="btn-opt active" data-stencil="unicorn">🦄 Unicórnio</button>
-                <button class="btn-opt" data-stencil="crown">👑 Coroa Real</button>
-                <button class="btn-opt" data-stencil="butterfly">🦋 Borboleta</button>
-                <button class="btn-opt" data-stencil="kitty">🐱 Gatinha</button>
-                <button class="btn-opt" data-stencil="heart">💖 Coração</button>
-                <button class="btn-opt" data-stencil="free">✨ Livre</button>
+                <button class="btn-opt active" data-stencil="unicorn">🦄 Unicórnio Alado</button>
+                <button class="btn-opt" data-stencil="mermaid">🧜‍♀️ Sereia Princesa</button>
+                <button class="btn-opt" data-stencil="castle">🏰 Castelo das Fadas</button>
+                <button class="btn-opt" data-stencil="butterfly">🦋 Borboleta Real</button>
+                <button class="btn-opt" data-stencil="kitty">🐱 Gatinha & Doce</button>
+                <button class="btn-opt" data-stencil="crown">👑 Coroa & Cetro</button>
+                <button class="btn-opt" data-stencil="dragon">🐉 Dragãozinho Fofo</button>
+                <button class="btn-opt" data-stencil="free">✨ Livre (Sem Guia)</button>
             </div>
 
-            <h3>🖊️ Ponta do Raspador: <span id="brushVal">24px</span></h3>
-            <input type="range" id="brushSize" min="8" max="55" value="24">
-
-            <h3>✨ Carimbos Raspadores</h3>
-            <div class="grid-2">
-                <button class="btn-opt" id="stampStar">⭐ Raspar Estrela</button>
-                <button class="btn-opt" id="stampHeart">💖 Raspar Coração</button>
+            <div class="toggle-row">
+                <span>Mostrar Linhas Guia Pontilhadas</span>
+                <input type="checkbox" id="toggleGuide" checked>
             </div>
-
-            <button class="btn-action btn-magic" id="revealStencilBtn">🪄 Raspar Molde Mágico</button>
-            <button class="btn-action btn-save" id="saveBtn">🏆 Finalizar & Salvar (+1 🪄)</button>
-            <button class="btn-action btn-clear" id="resetBtn">🖤 Nova Folha Preta</button>
         </aside>
 
+        <!-- Centro: Tela tripla interativa (Foil + Cobertura + Guia + Partículas) -->
         <section class="canvas-wrap">
             <div class="stack">
-                <canvas id="foilCanvas" width="540" height="540"></canvas>
-                <canvas id="scratchCanvas" width="540" height="540"></canvas>
-                <canvas id="guideCanvas" width="540" height="540"></canvas>
+                <canvas id="foilCanvas" width="600" height="600"></canvas>
+                <canvas id="scratchCanvas" width="600" height="600"></canvas>
+                <canvas id="guideCanvas" width="600" height="600"></canvas>
+                <canvas id="fxCanvas" width="600" height="600"></canvas>
             </div>
-            <div class="progress-bar">
-                <span>Raspe a camada preta com o mouse ou dedo para revelar o brilho!</span>
-                <strong id="pctText">0% revelado</strong>
+            <div class="status-bar">
+                <div class="status-top">
+                    <span>✨ Dica: Raspe seguindo o molde ou use a <strong>Varinha Mágica</strong>!</span>
+                    <strong id="pctText">0% revelado</strong>
+                </div>
+                <div class="meter-bg"><div class="meter-fill" id="meterFill"></div></div>
             </div>
         </section>
+
+        <!-- Painel Direito: Ferramentas de Raspar, Carimbos e Ações -->
+        <aside class="panel">
+            <h3>🖊️ 4. Ferramenta Raspadora</h3>
+            <div class="grid-2" id="toolBtns">
+                <button class="btn-opt active" data-tool="stylus">🖊️ Palito Fino</button>
+                <button class="btn-opt" data-tool="chisel">🖌️ Espátula Larga</button>
+                <button class="btn-opt" data-tool="spray">✨ Spray Estelar</button>
+                <button class="btn-opt" data-tool="mirror">🌀 Simetria 4x</button>
+                <button class="btn-opt" data-tool="rake">🔱 Pente Triplo</button>
+                <button class="btn-opt" data-tool="restore">🖤 Cobrir de Volta</button>
+            </div>
+
+            <h3>📏 Espessura da Ponta: <span id="brushVal">20px</span></h3>
+            <input type="range" id="brushSize" min="5" max="60" value="20">
+
+            <h3>⭐ 5. Carimbos Raspadores (Toque na Tela ou Clique)</h3>
+            <div class="grid-3" id="stampBtns">
+                <button class="btn-opt" data-stamp="star">⭐ Estrelas</button>
+                <button class="btn-opt" data-stamp="heart">💖 Corações</button>
+                <button class="btn-opt" data-stamp="butterfly">🦋 Borboletas</button>
+                <button class="btn-opt" data-stamp="flower">🌸 Flores</button>
+                <button class="btn-opt" data-stamp="crown">👑 Coroas</button>
+                <button class="btn-opt" data-stamp="paw">🐾 Patinhas</button>
+            </div>
+
+            <h3>🪄 6. Ações Mágicas</h3>
+            <div class="grid-2">
+                <button class="btn-opt" id="undoBtn">↩️ Desfazer</button>
+                <button class="btn-opt" id="borderBtn">🖼️ Raspar Moldura</button>
+            </div>
+            <button class="btn-action btn-magic" id="revealStencilBtn">🪄 Raspar Desenho Detalhado</button>
+            <button class="btn-action btn-save" id="saveBtn">🏆 Finalizar & Salvar (+1 🪄)</button>
+            <button class="btn-action btn-download" id="downloadBtn">💾 Baixar Minha Arte (PNG)</button>
+            <button class="btn-action btn-clear" id="resetBtn">🖤 Nova Folha Intacta</button>
+        </aside>
     </main>
 
     <script type="module">
@@ -139,166 +244,658 @@
         const scoreEl = document.getElementById('scoreVal');
         scoreEl.textContent = bestScore;
 
+        const W = 600, H = 600;
         const foilCanvas = document.getElementById('foilCanvas');
         const fctx = foilCanvas.getContext('2d');
         const scratchCanvas = document.getElementById('scratchCanvas');
         const sctx = scratchCanvas.getContext('2d');
         const guideCanvas = document.getElementById('guideCanvas');
         const gctx = guideCanvas.getContext('2d');
+        const fxCanvas = document.getElementById('fxCanvas');
+        const fxctx = fxCanvas.getContext('2d');
 
         let currentFoil = 'rainbow';
+        let currentCoat = 'black';
         let currentStencil = 'unicorn';
-        let brush = 24;
+        let currentTool = 'stylus';
+        let brush = 20;
+        let showGuide = true;
+        let soundOn = true;
         let isDrawing = false;
         let lastPos = null;
+        let history = [];
+        let particles = [];
 
+        // Web Audio API subtle crystalline scratch sound
+        let audioCtx = null;
+        function playChime(freq = 880) {
+            if (!soundOn) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(freq * 1.35, audioCtx.currentTime + 0.09);
+                gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.09);
+            } catch (_) {}
+        }
+
+        function saveHistory() {
+            if (history.length >= 12) history.shift();
+            history.push(sctx.getImageData(0, 0, W, H));
+        }
+
+        // ==================== 1. HOLOGRAPHIC FOILS ====================
         function drawFoil() {
-            const w = 540, h = 540;
+            fctx.clearRect(0, 0, W, H);
             if (currentFoil === 'rainbow') {
-                const grad = fctx.createLinearGradient(0, 0, w, h);
-                grad.addColorStop(0, '#ff3b9a');
-                grad.addColorStop(0.2, '#ff9233');
-                grad.addColorStop(0.4, '#ffe63b');
-                grad.addColorStop(0.6, '#33f399');
-                grad.addColorStop(0.8, '#38bdf8');
-                grad.addColorStop(1, '#c084fc');
-                fctx.fillStyle = grad;
-                fctx.fillRect(0, 0, w, h);
+                const g = fctx.createLinearGradient(0, 0, W, H);
+                g.addColorStop(0, '#ff2e93');
+                g.addColorStop(0.18, '#ff8a00');
+                g.addColorStop(0.36, '#ffe600');
+                g.addColorStop(0.54, '#10f59c');
+                g.addColorStop(0.72, '#00d2ff');
+                g.addColorStop(0.88, '#a855f7');
+                g.addColorStop(1, '#ff2e93');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+                // Prismatic diagonal sheen waves
+                for (let i = -W; i < W * 2; i += 45) {
+                    fctx.strokeStyle = 'rgba(255,255,255,0.22)';
+                    fctx.lineWidth = 14;
+                    fctx.beginPath();
+                    fctx.moveTo(i, 0);
+                    fctx.quadraticCurveTo(i + 150, H / 2, i + 300, H);
+                    fctx.stroke();
+                }
             } else if (currentFoil === 'galaxy') {
-                const grad = fctx.createRadialGradient(270, 270, 30, 270, 270, 360);
-                grad.addColorStop(0, '#f472b6');
-                grad.addColorStop(0.4, '#7c3aed');
-                grad.addColorStop(0.75, '#1d4ed8');
-                grad.addColorStop(1, '#090d26');
-                fctx.fillStyle = grad;
-                fctx.fillRect(0, 0, w, h);
+                const g = fctx.createRadialGradient(300, 300, 20, 300, 300, 420);
+                g.addColorStop(0, '#f472b6');
+                g.addColorStop(0.3, '#9333ea');
+                g.addColorStop(0.6, '#2563eb');
+                g.addColorStop(0.85, '#1e1b4b');
+                g.addColorStop(1, '#09071a');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+                // Nebula clouds
+                [['#f43f5e', 160, 170, 140], ['#38bdf8', 430, 410, 160], ['#fde047', 440, 150, 95], ['#c084fc', 180, 430, 130]].forEach(([col, x, y, r]) => {
+                    const rg = fctx.createRadialGradient(x, y, 5, x, y, r);
+                    rg.addColorStop(0, col + '99');
+                    rg.addColorStop(1, 'transparent');
+                    fctx.fillStyle = rg;
+                    fctx.fillRect(0, 0, W, H);
+                });
             } else if (currentFoil === 'gold') {
-                const grad = fctx.createLinearGradient(0, 0, w, h);
-                grad.addColorStop(0, '#fef08a');
-                grad.addColorStop(0.3, '#f59e0b');
-                grad.addColorStop(0.6, '#fde047');
-                grad.addColorStop(1, '#b45309');
-                fctx.fillStyle = grad;
-                fctx.fillRect(0, 0, w, h);
+                const g = fctx.createLinearGradient(0, 0, W, H);
+                g.addColorStop(0, '#fef08a');
+                g.addColorStop(0.25, '#f59e0b');
+                g.addColorStop(0.5, '#fffbeb');
+                g.addColorStop(0.75, '#d97706');
+                g.addColorStop(1, '#fef08a');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+            } else if (currentFoil === 'rose') {
+                const g = fctx.createLinearGradient(0, 0, W, H);
+                g.addColorStop(0, '#fbcfe8');
+                g.addColorStop(0.3, '#f472b6');
+                g.addColorStop(0.6, '#e879f9');
+                g.addColorStop(0.85, '#fda4af');
+                g.addColorStop(1, '#fdf2f8');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+            } else if (currentFoil === 'mermaid') {
+                const g = fctx.createLinearGradient(0, 0, 0, H);
+                g.addColorStop(0, '#2dd4bf');
+                g.addColorStop(0.35, '#06b6d4');
+                g.addColorStop(0.7, '#3b82f6');
+                g.addColorStop(1, '#a855f7');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+                // Iridescent mermaid scale pattern
+                fctx.strokeStyle = 'rgba(255,255,255,0.28)';
+                fctx.lineWidth = 2;
+                for (let y = 0; y < H + 30; y += 26) {
+                    for (let x = -20; x < W + 30; x += 36) {
+                        const ox = (y / 26) % 2 === 0 ? 0 : 18;
+                        fctx.beginPath();
+                        fctx.arc(x + ox, y, 18, 0, Math.PI);
+                        fctx.stroke();
+                    }
+                }
+            } else if (currentFoil === 'phoenix') {
+                const g = fctx.createRadialGradient(300, 300, 10, 300, 300, 420);
+                g.addColorStop(0, '#fef08a');
+                g.addColorStop(0.35, '#f97316');
+                g.addColorStop(0.7, '#e11d48');
+                g.addColorStop(1, '#881337');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+            } else if (currentFoil === 'aurora') {
+                const g = fctx.createLinearGradient(0, 0, W, H);
+                g.addColorStop(0, '#cffafe');
+                g.addColorStop(0.35, '#38bdf8');
+                g.addColorStop(0.7, '#818cf8');
+                g.addColorStop(1, '#f0abfc');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
             } else {
-                const grad = fctx.createLinearGradient(0, h, w, 0);
-                grad.addColorStop(0, '#06b6d4');
-                grad.addColorStop(0.5, '#ec4899');
-                grad.addColorStop(1, '#a855f7');
-                fctx.fillStyle = grad;
-                fctx.fillRect(0, 0, w, h);
+                // Cyber Neon Matrix
+                fctx.fillStyle = '#0f0524';
+                fctx.fillRect(0, 0, W, H);
+                const g = fctx.createLinearGradient(0, 0, W, H);
+                g.addColorStop(0, '#00f5d4');
+                g.addColorStop(0.5, '#ff2a85');
+                g.addColorStop(1, '#fde047');
+                fctx.fillStyle = g;
+                fctx.fillRect(0, 0, W, H);
+                fctx.strokeStyle = 'rgba(255,255,255,0.35)';
+                fctx.lineWidth = 1.5;
+                for (let i = 0; i < W; i += 30) {
+                    fctx.beginPath(); fctx.moveTo(i, 0); fctx.lineTo(i, H); fctx.stroke();
+                    fctx.beginPath(); fctx.moveTo(0, i); fctx.lineTo(W, i); fctx.stroke();
+                }
             }
-            // Add holographic sparkles
-            for (let i = 0; i < 160; i++) {
-                fctx.fillStyle = i % 3 === 0 ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.35)';
+
+            // Holographic 4-point star sparkles & glitter across the foil
+            for (let i = 0; i < 200; i++) {
+                const x = Math.random() * W;
+                const y = Math.random() * H;
+                const r = Math.random() * 2.6 + 0.6;
+                fctx.fillStyle = i % 4 === 0 ? '#ffffff' : 'rgba(255,255,255,0.45)';
                 fctx.beginPath();
-                fctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2.5 + 0.5, 0, Math.PI * 2);
+                fctx.arc(x, y, r, 0, Math.PI * 2);
                 fctx.fill();
+                if (i % 12 === 0) {
+                    fctx.strokeStyle = 'rgba(255,255,255,0.85)';
+                    fctx.lineWidth = 1.4;
+                    fctx.beginPath();
+                    fctx.moveTo(x - 7, y); fctx.lineTo(x + 7, y);
+                    fctx.moveTo(x, y - 7); fctx.lineTo(x, y + 7);
+                    fctx.stroke();
+                }
+            }
+        }
+
+        // ==================== 2. VELVET COAT LAYER ====================
+        function paintCoatLayer(ctx, w = W, h = H) {
+            const g = ctx.createLinearGradient(0, 0, w, h);
+            if (currentCoat === 'black') {
+                g.addColorStop(0, '#181326'); g.addColorStop(1, '#090610');
+            } else if (currentCoat === 'violet') {
+                g.addColorStop(0, '#2e084f'); g.addColorStop(1, '#140326');
+            } else if (currentCoat === 'navy') {
+                g.addColorStop(0, '#0c2340'); g.addColorStop(1, '#050e1c');
+            } else {
+                g.addColorStop(0, '#361808'); g.addColorStop(1, '#180902');
+            }
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, w, h);
+
+            // Subtle matte velvet micro-texture
+            ctx.fillStyle = 'rgba(255,255,255,0.03)';
+            for (let i = 0; i < 400; i++) {
+                ctx.fillRect((i * 73) % w, (i * 137) % h, 2, 2);
             }
         }
 
         function resetBlackLayer() {
+            saveHistory();
             sctx.globalCompositeOperation = 'source-over';
-            const g = sctx.createLinearGradient(0, 0, 540, 540);
-            g.addColorStop(0, '#140f1d');
-            g.addColorStop(1, '#09060e');
-            sctx.fillStyle = g;
-            sctx.fillRect(0, 0, 540, 540);
+            paintCoatLayer(sctx);
             drawGuide();
             updatePercent();
         }
 
+        // ==================== 3. ULTRA-DETAILED STENCILS ====================
         function traceStencilPath(ctx, type) {
             ctx.beginPath();
             if (type === 'unicorn') {
-                ctx.arc(270, 290, 110, 0, Math.PI * 2);
-                ctx.moveTo(270, 180); ctx.lineTo(250, 75); ctx.lineTo(295, 180);
-                ctx.moveTo(200, 210); ctx.arc(170, 250, 45, 0, Math.PI * 2);
-                ctx.moveTo(240, 270); ctx.arc(230, 270, 14, 0, Math.PI * 2);
-                ctx.moveTo(320, 270); ctx.arc(310, 270, 14, 0, Math.PI * 2);
-            } else if (type === 'crown') {
-                ctx.moveTo(120, 380);
-                ctx.lineTo(100, 210); ctx.lineTo(190, 280);
-                ctx.lineTo(270, 150);
-                ctx.lineTo(350, 280); ctx.lineTo(440, 210);
-                ctx.lineTo(420, 380); ctx.closePath();
-                ctx.moveTo(290, 310); ctx.arc(270, 310, 25, 0, Math.PI * 2);
+                // Head & snout
+                ctx.arc(285, 290, 95, 0, Math.PI * 2);
+                ctx.moveTo(410, 315);
+                ctx.ellipse(365, 315, 52, 40, 0.15, 0, Math.PI * 2);
+                // Spiral Magical Horn with ridges
+                ctx.moveTo(295, 198); ctx.lineTo(345, 58); ctx.lineTo(340, 212);
+                ctx.moveTo(306, 170); ctx.lineTo(341, 182);
+                ctx.moveTo(318, 135); ctx.lineTo(342, 148);
+                ctx.moveTo(330, 100); ctx.lineTo(344, 112);
+                // Ears
+                ctx.moveTo(240, 206); ctx.quadraticCurveTo(215, 140, 272, 196);
+                ctx.moveTo(246, 198); ctx.quadraticCurveTo(230, 158, 265, 194);
+                // Crown of 3 roses at base of horn
+                [265, 298, 330].forEach(rx => {
+                    ctx.moveTo(rx + 16, 204); ctx.arc(rx, 204, 16, 0, Math.PI * 2);
+                    ctx.moveTo(rx + 7, 204); ctx.arc(rx, 204, 7, 0, Math.PI * 2);
+                });
+                // Kawaii Starry Eye & Eyelashes
+                ctx.moveTo(335, 275); ctx.arc(315, 275, 20, 0, Math.PI * 2);
+                ctx.moveTo(322, 269); ctx.arc(315, 269, 7, 0, Math.PI * 2);
+                ctx.moveTo(332, 262); ctx.lineTo(348, 252);
+                ctx.moveTo(335, 272); ctx.lineTo(352, 268);
+                // Nostril & sweet smile
+                ctx.moveTo(392, 305); ctx.arc(387, 305, 5, 0, Math.PI * 2);
+                ctx.moveTo(355, 332); ctx.quadraticCurveTo(378, 348, 398, 330);
+                // Flowing 5-lock curls mane
+                for (let i = 0; i < 5; i++) {
+                    const my = 215 + i * 42;
+                    ctx.moveTo(205, my);
+                    ctx.bezierCurveTo(110, my - 20, 95, my + 35, 185, my + 38);
+                }
+                // Graceful Neck & Pegasus Feathered Wing
+                ctx.moveTo(225, 365); ctx.lineTo(195, 505);
+                ctx.moveTo(335, 375); ctx.lineTo(355, 505);
+                // Wing feathers
+                for (let f = 0; f < 4; f++) {
+                    ctx.moveTo(230, 415 + f * 22);
+                    ctx.quadraticCurveTo(100 - f * 12, 380 + f * 28, 130, 435 + f * 22);
+                }
+                // Fluffy Clouds at bottom
+                [[160, 520, 45], [230, 515, 55], [310, 518, 55], [385, 522, 45]].forEach(([cx, cy, cr]) => {
+                    ctx.moveTo(cx + cr, cy); ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+                });
+                // Surrounding Stars
+                [[120, 120, 22], [475, 130, 24], [485, 260, 18], [105, 310, 18], [465, 420, 22]].forEach(([sx, sy, sr]) => {
+                    traceStar(ctx, sx, sy, sr);
+                });
+            } else if (type === 'mermaid') {
+                // Mermaid Head & Royal Shell Tiara
+                ctx.moveTo(355, 175); ctx.arc(300, 175, 55, 0, Math.PI * 2);
+                ctx.moveTo(255, 130); ctx.lineTo(270, 82); ctx.lineTo(285, 120);
+                ctx.lineTo(300, 70); ctx.lineTo(315, 120); ctx.lineTo(330, 82); ctx.lineTo(345, 130);
+                ctx.moveTo(308, 112); ctx.arc(300, 112, 8, 0, Math.PI * 2);
+                // Eyes & Smile
+                ctx.moveTo(286, 172); ctx.arc(278, 172, 8, 0, Math.PI * 2);
+                ctx.moveTo(330, 172); ctx.arc(322, 172, 8, 0, Math.PI * 2);
+                ctx.moveTo(288, 196); ctx.quadraticCurveTo(300, 208, 312, 196);
+                // Long Wavy Mermaid Hair
+                ctx.moveTo(248, 160); ctx.bezierCurveTo(140, 210, 150, 350, 210, 410);
+                ctx.moveTo(235, 185); ctx.bezierCurveTo(165, 240, 175, 340, 225, 390);
+                ctx.moveTo(352, 160); ctx.bezierCurveTo(460, 210, 450, 350, 390, 410);
+                ctx.moveTo(365, 185); ctx.bezierCurveTo(435, 240, 425, 340, 375, 390);
+                // Torso, Arms & Seashell Top
+                ctx.moveTo(260, 230); ctx.lineTo(252, 335);
+                ctx.moveTo(340, 230); ctx.lineTo(348, 335);
+                ctx.moveTo(295, 268); ctx.arc(276, 268, 19, 0, Math.PI * 2);
+                ctx.moveTo(343, 268); ctx.arc(324, 268, 19, 0, Math.PI * 2);
+                ctx.moveTo(260, 235); ctx.quadraticCurveTo(185, 275, 145, 235);
+                ctx.moveTo(340, 235); ctx.quadraticCurveTo(415, 275, 455, 235);
+                // Pearl Waist Belt
+                for (let px = 256; px <= 344; px += 14) {
+                    ctx.moveTo(px + 6, 335); ctx.arc(px, 335, 6, 0, Math.PI * 2);
+                }
+                // Scalloped Mermaid Tail & Double Fin
+                ctx.moveTo(250, 340);
+                ctx.bezierCurveTo(230, 430, 265, 495, 310, 515);
+                ctx.moveTo(350, 340);
+                ctx.bezierCurveTo(370, 430, 345, 485, 310, 515);
+                // Scales inside tail
+                for (let row = 0; row < 5; row++) {
+                    const sy = 362 + row * 26;
+                    for (let col = -2; col <= 2; col++) {
+                        const sx = 300 + col * 18;
+                        ctx.moveTo(sx - 9, sy);
+                        ctx.arc(sx, sy, 9, 0, Math.PI);
+                    }
+                }
+                // Tail Fins
+                ctx.moveTo(310, 515); ctx.bezierCurveTo(230, 510, 210, 565, 275, 575); ctx.lineTo(310, 530);
+                ctx.moveTo(310, 515); ctx.bezierCurveTo(390, 510, 410, 565, 345, 575); ctx.lineTo(310, 530);
+                // Bubbles & Starfish
+                [[125, 150, 14], [140, 115, 9], [475, 155, 15], [460, 115, 10], [130, 470, 18], [475, 465, 16]].forEach(([bx, by, br]) => {
+                    ctx.moveTo(bx + br, by); ctx.arc(bx, by, br, 0, Math.PI * 2);
+                });
+                traceStar(ctx, 145, 225, 20);
+                traceStar(ctx, 455, 225, 20);
+            } else if (type === 'castle') {
+                // Grand Royal Castle with 5 Towers
+                // Main central keep
+                ctx.rect(210, 250, 180, 260);
+                // Central high spire
+                ctx.rect(260, 135, 80, 115);
+                ctx.moveTo(250, 135); ctx.lineTo(300, 48); ctx.lineTo(350, 135); ctx.closePath();
+                // Side inner towers
+                ctx.rect(145, 210, 65, 300);
+                ctx.moveTo(135, 210); ctx.lineTo(177, 115); ctx.lineTo(220, 210); ctx.closePath();
+                ctx.rect(390, 210, 65, 300);
+                ctx.moveTo(380, 210); ctx.lineTo(422, 115); ctx.lineTo(465, 210); ctx.closePath();
+                // Outer turrets
+                ctx.rect(85, 290, 60, 220);
+                ctx.moveTo(78, 290); ctx.lineTo(115, 210); ctx.lineTo(152, 290); ctx.closePath();
+                ctx.rect(455, 290, 60, 220);
+                ctx.moveTo(448, 290); ctx.lineTo(485, 210); ctx.lineTo(522, 290); ctx.closePath();
+                // Royal Flags
+                [[300, 48], [177, 115], [422, 115], [115, 210], [485, 210]].forEach(([fx, fy]) => {
+                    ctx.moveTo(fx, fy); ctx.lineTo(fx, fy - 28);
+                    ctx.lineTo(fx + 26, fy - 19); ctx.lineTo(fx, fy - 10);
+                });
+                // Arched Royal Gate & Rose Window
+                ctx.moveTo(255, 510); ctx.lineTo(255, 415);
+                ctx.arc(300, 415, 45, Math.PI, 0);
+                ctx.lineTo(345, 510);
+                ctx.moveTo(300, 370); ctx.lineTo(300, 510);
+                // Rose stained window
+                ctx.moveTo(332, 310); ctx.arc(300, 310, 32, 0, Math.PI * 2);
+                ctx.moveTo(315, 310); ctx.arc(300, 310, 15, 0, Math.PI * 2);
+                // Windows on towers
+                [[300, 185], [177, 265], [177, 355], [422, 265], [422, 355], [115, 355], [485, 355]].forEach(([wx, wy]) => {
+                    ctx.moveTo(wx - 14, wy + 22); ctx.lineTo(wx - 14, wy);
+                    ctx.arc(wx, wy, 14, Math.PI, 0);
+                    ctx.lineTo(wx + 14, wy + 22); ctx.closePath();
+                });
+                // Stars & Crescent Moon in sky
+                ctx.moveTo(115, 95); ctx.arc(100, 105, 32, -0.8, 2.2);
+                traceStar(ctx, 490, 95, 22);
+                traceStar(ctx, 225, 80, 16);
+                traceStar(ctx, 380, 75, 16);
+                // Stone pathway at bottom
+                ctx.moveTo(255, 510); ctx.lineTo(210, 580);
+                ctx.moveTo(345, 510); ctx.lineTo(390, 580);
             } else if (type === 'butterfly') {
-                ctx.ellipse(190, 220, 95, 70, -0.4, 0, Math.PI * 2);
-                ctx.moveTo(350, 220);
-                ctx.ellipse(350, 220, 95, 70, 0.4, 0, Math.PI * 2);
-                ctx.moveTo(205, 340);
-                ctx.ellipse(205, 340, 70, 55, 0.4, 0, Math.PI * 2);
-                ctx.moveTo(335, 340);
-                ctx.ellipse(335, 340, 70, 55, -0.4, 0, Math.PI * 2);
-                ctx.moveTo(270, 150); ctx.lineTo(270, 410);
+                // Ornate Mandala Butterfly
+                // Body & Crowned Head
+                ctx.moveTo(316, 175); ctx.arc(300, 175, 16, 0, Math.PI * 2);
+                ctx.ellipse(300, 305, 14, 110, 0, 0, Math.PI * 2);
+                // Spiral Antennae
+                ctx.moveTo(292, 160); ctx.bezierCurveTo(265, 100, 215, 95, 225, 125);
+                ctx.moveTo(308, 160); ctx.bezierCurveTo(335, 100, 385, 95, 375, 125);
+                // Upper Wings (Left & Right)
+                ctx.moveTo(286, 235);
+                ctx.bezierCurveTo(120, 95, 45, 210, 115, 310);
+                ctx.bezierCurveTo(155, 350, 235, 330, 286, 305);
+                ctx.moveTo(314, 235);
+                ctx.bezierCurveTo(480, 95, 555, 210, 485, 310);
+                ctx.bezierCurveTo(445, 350, 365, 330, 314, 305);
+                // Lower Wings (Left & Right)
+                ctx.moveTo(286, 315);
+                ctx.bezierCurveTo(125, 335, 95, 485, 205, 510);
+                ctx.bezierCurveTo(255, 520, 280, 445, 288, 385);
+                ctx.moveTo(314, 315);
+                ctx.bezierCurveTo(475, 335, 505, 485, 395, 510);
+                ctx.bezierCurveTo(345, 520, 320, 445, 312, 385);
+                // Inner Mandala Filigree Circles & Teardrops on Wings
+                [[-1, 185, 235, 45], [-1, 130, 255, 22], [1, 415, 235, 45], [1, 470, 255, 22],
+                 [-1, 200, 415, 35], [-1, 175, 465, 16], [1, 400, 415, 35], [1, 425, 465, 16]].forEach(([_, cx, cy, cr]) => {
+                    ctx.moveTo(cx + cr, cy); ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+                    ctx.moveTo(cx + cr * 0.5, cy); ctx.arc(cx, cy, cr * 0.5, 0, Math.PI * 2);
+                });
+                // Surrounding Stars & Flowers
+                traceStar(ctx, 300, 85, 22);
+                traceStar(ctx, 95, 125, 18);
+                traceStar(ctx, 505, 125, 18);
+                traceStar(ctx, 300, 525, 22);
             } else if (type === 'kitty') {
-                ctx.arc(270, 300, 125, 0, Math.PI * 2);
-                ctx.moveTo(170, 215); ctx.lineTo(155, 115); ctx.lineTo(235, 180);
-                ctx.moveTo(370, 215); ctx.lineTo(385, 115); ctx.lineTo(305, 180);
-                ctx.moveTo(235, 285); ctx.arc(220, 285, 15, 0, Math.PI * 2);
-                ctx.moveTo(335, 285); ctx.arc(320, 285, 15, 0, Math.PI * 2);
-            } else if (type === 'heart') {
-                ctx.moveTo(270, 420);
-                ctx.bezierCurveTo(90, 300, 95, 130, 270, 205);
-                ctx.bezierCurveTo(445, 130, 450, 300, 270, 420);
+                // Princess Kitty holding a Royal Cupcake
+                // Head
+                ctx.arc(300, 240, 110, 0, Math.PI * 2);
+                // Ears & inner ears
+                ctx.moveTo(205, 182); ctx.lineTo(175, 78); ctx.lineTo(265, 135);
+                ctx.moveTo(212, 168); ctx.lineTo(192, 102); ctx.lineTo(252, 142);
+                ctx.moveTo(395, 182); ctx.lineTo(425, 78); ctx.lineTo(335, 135);
+                ctx.moveTo(388, 168); ctx.lineTo(408, 102); ctx.lineTo(348, 142);
+                // Princess Tiara between ears
+                ctx.moveTo(262, 133); ctx.lineTo(275, 88); ctx.lineTo(300, 112);
+                ctx.lineTo(325, 88); ctx.lineTo(338, 133);
+                // Cute Bow on right ear
+                ctx.moveTo(390, 135); ctx.arc(370, 135, 18, 0, Math.PI * 2);
+                ctx.moveTo(426, 135); ctx.arc(408, 135, 18, 0, Math.PI * 2);
+                // Big Kawaii Eyes
+                ctx.moveTo(268, 235); ctx.arc(248, 235, 20, 0, Math.PI * 2);
+                ctx.moveTo(255, 228); ctx.arc(248, 228, 7, 0, Math.PI * 2);
+                ctx.moveTo(372, 235); ctx.arc(352, 235, 20, 0, Math.PI * 2);
+                ctx.moveTo(359, 228); ctx.arc(352, 228, 7, 0, Math.PI * 2);
+                // Nose, Whiskers & Smile
+                ctx.moveTo(308, 260); ctx.arc(300, 260, 8, 0, Math.PI * 2);
+                ctx.moveTo(282, 275); ctx.quadraticCurveTo(300, 290, 318, 275);
+                // Whiskers
+                ctx.moveTo(195, 245); ctx.lineTo(140, 235);
+                ctx.moveTo(195, 265); ctx.lineTo(138, 268);
+                ctx.moveTo(405, 245); ctx.lineTo(460, 235);
+                ctx.moveTo(405, 265); ctx.lineTo(462, 268);
+                // Cupcake in front of kitty
+                ctx.moveTo(245, 450); ctx.lineTo(260, 535); ctx.lineTo(340, 535); ctx.lineTo(355, 450); ctx.closePath();
+                // Cupcake stripes
+                ctx.moveTo(275, 450); ctx.lineTo(282, 535);
+                ctx.moveTo(300, 450); ctx.lineTo(300, 535);
+                ctx.moveTo(325, 450); ctx.lineTo(318, 535);
+                // Swirl Frosting & Cherry on top
+                ctx.moveTo(360, 450);
+                ctx.arc(265, 440, 25, 0, Math.PI * 2);
+                ctx.moveTo(328, 430); ctx.arc(300, 430, 28, 0, Math.PI * 2);
+                ctx.moveTo(360, 440); ctx.arc(335, 440, 25, 0, Math.PI * 2);
+                ctx.moveTo(316, 392); ctx.arc(300, 392, 16, 0, Math.PI * 2);
+                // Kitty Paws holding cupcake
+                ctx.moveTo(245, 440); ctx.arc(220, 440, 25, 0, Math.PI * 2);
+                ctx.moveTo(405, 440); ctx.arc(380, 440, 25, 0, Math.PI * 2);
+            } else if (type === 'crown') {
+                // Imperial Crown + Jewels + Star Scepter
+                ctx.moveTo(110, 410);
+                ctx.lineTo(85, 205); ctx.lineTo(185, 290);
+                ctx.lineTo(240, 165); ctx.lineTo(300, 275);
+                ctx.lineTo(360, 165);
+                ctx.lineTo(415, 290); ctx.lineTo(515, 205);
+                ctx.lineTo(490, 410); ctx.closePath();
+                // Base band of crown
+                ctx.rect(110, 410, 380, 52);
+                // Crown tip pearls
+                [[85, 190, 14], [240, 150, 16], [300, 115, 22], [360, 150, 16], [515, 190, 14]].forEach(([px, py, pr]) => {
+                    ctx.moveTo(px + pr, py); ctx.arc(px, py, pr, 0, Math.PI * 2);
+                });
+                // Center Heart Diamond inside crown
+                ctx.moveTo(300, 375);
+                ctx.bezierCurveTo(245, 330, 250, 275, 300, 305);
+                ctx.bezierCurveTo(350, 275, 355, 330, 300, 375);
+                // Side Diamonds
+                [[190, 345], [410, 345]].forEach(([dx, dy]) => {
+                    ctx.moveTo(dx, dy - 28); ctx.lineTo(dx + 22, dy);
+                    ctx.lineTo(dx, dy + 28); ctx.lineTo(dx - 22, dy); ctx.closePath();
+                });
+                // Jewels on base band
+                for (let jx = 150; jx <= 450; jx += 50) {
+                    ctx.moveTo(jx + 12, 436); ctx.arc(jx, 436, 12, 0, Math.PI * 2);
+                }
+                traceStar(ctx, 300, 525, 28);
+            } else if (type === 'dragon') {
+                // Cute Baby Dragon
+                // Head & horns
+                ctx.arc(300, 235, 85, 0, Math.PI * 2);
+                ctx.moveTo(245, 162); ctx.quadraticCurveTo(210, 95, 265, 148);
+                ctx.moveTo(355, 162); ctx.quadraticCurveTo(390, 95, 335, 148);
+                // Cute Eyes & Nostrils
+                ctx.moveTo(282, 225); ctx.arc(266, 225, 16, 0, Math.PI * 2);
+                ctx.moveTo(350, 225); ctx.arc(334, 225, 16, 0, Math.PI * 2);
+                ctx.moveTo(292, 262); ctx.arc(286, 262, 5, 0, Math.PI * 2);
+                ctx.moveTo(320, 262); ctx.arc(314, 262, 5, 0, Math.PI * 2);
+                // Chubby Belly with horizontal scales
+                ctx.moveTo(395, 415); ctx.ellipse(300, 415, 95, 110, 0, 0, Math.PI * 2);
+                ctx.moveTo(360, 420); ctx.ellipse(300, 420, 60, 80, 0, 0, Math.PI * 2);
+                for (let sy = 365; sy <= 475; sy += 26) {
+                    ctx.moveTo(248, sy); ctx.lineTo(352, sy);
+                }
+                // Dragon Wings
+                ctx.moveTo(215, 355);
+                ctx.lineTo(95, 275); ctx.lineTo(130, 355); ctx.lineTo(85, 395); ctx.lineTo(205, 415);
+                ctx.moveTo(385, 355);
+                ctx.lineTo(505, 275); ctx.lineTo(470, 355); ctx.lineTo(515, 395); ctx.lineTo(395, 415);
+                // Tail with spade tip
+                ctx.moveTo(385, 480); ctx.quadraticCurveTo(490, 515, 505, 445);
+                traceStar(ctx, 510, 435, 20);
+                traceStar(ctx, 145, 165, 22);
+                traceStar(ctx, 455, 165, 22);
             }
         }
 
+        function traceStar(ctx, cx, cy, r) {
+            for (let i = 0; i < 5; i++) {
+                const a1 = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+                const a2 = a1 + Math.PI / 5;
+                const x1 = cx + Math.cos(a1) * r;
+                const y1 = cy + Math.sin(a1) * r;
+                const x2 = cx + Math.cos(a2) * (r * 0.42);
+                const y2 = cy + Math.sin(a2) * (r * 0.42);
+                if (i === 0) ctx.moveTo(x1, y1);
+                else ctx.lineTo(x1, y1);
+                ctx.lineTo(x2, y2);
+            }
+            ctx.closePath();
+        }
+
         function drawGuide() {
-            gctx.clearRect(0, 0, 540, 540);
-            if (currentStencil === 'free') return;
+            gctx.clearRect(0, 0, W, H);
+            if (!showGuide || currentStencil === 'free') return;
             gctx.save();
-            gctx.strokeStyle = 'rgba(255,255,255,0.24)';
-            gctx.lineWidth = 2.5;
-            gctx.setLineDash([8, 8]);
+            // Subtle glowing guide line on top of velvet
+            gctx.strokeStyle = 'rgba(255, 235, 255, 0.34)';
+            gctx.lineWidth = 2.2;
+            gctx.setLineDash([6, 6]);
             traceStencilPath(gctx, currentStencil);
             gctx.stroke();
             gctx.restore();
         }
 
+        // ==================== 4. SCRATCHING & SPARKLE PARTICLES ====================
+        function spawnParticles(x, y, count = 4) {
+            const colors = ['#fde047', '#f472b6', '#38bdf8', '#c084fc', '#ffffff'];
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3.2 + 0.8;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 0.6,
+                    size: Math.random() * 3.5 + 1.5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 1
+                });
+            }
+        }
+
+        function animateParticles() {
+            fxctx.clearRect(0, 0, W, H);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.08;
+                p.life -= 0.04;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                fxctx.save();
+                fxctx.globalAlpha = p.life;
+                fxctx.fillStyle = p.color;
+                fxctx.shadowColor = p.color;
+                fxctx.shadowBlur = 6;
+                fxctx.beginPath();
+                fxctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                fxctx.fill();
+                fxctx.restore();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        requestAnimationFrame(animateParticles);
+
         function getPos(e) {
             const r = scratchCanvas.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
             return {
-                x: (touch.clientX - r.left) * (540 / r.width),
-                y: (touch.clientY - r.top) * (540 / r.height)
+                x: (touch.clientX - r.left) * (W / r.width),
+                y: (touch.clientY - r.top) * (H / r.height)
             };
         }
 
-        function scratchLine(p1, p2) {
+        function applyStrokeSegment(p1, p2) {
             sctx.save();
+            if (currentTool === 'restore') {
+                sctx.globalCompositeOperation = 'source-over';
+                sctx.strokeStyle = currentCoat === 'violet' ? '#240640' : currentCoat === 'navy' ? '#091930' : currentCoat === 'bronze' ? '#291105' : '#120e1c';
+                sctx.lineWidth = brush;
+                sctx.lineCap = 'round';
+                sctx.beginPath();
+                sctx.moveTo(p1.x, p1.y);
+                sctx.lineTo(p2.x, p2.y);
+                sctx.stroke();
+                sctx.restore();
+                return;
+            }
+
             sctx.globalCompositeOperation = 'destination-out';
-            sctx.lineCap = 'round';
+            sctx.lineCap = currentTool === 'chisel' ? 'square' : 'round';
             sctx.lineJoin = 'round';
-            sctx.lineWidth = brush;
-            sctx.beginPath();
-            sctx.moveTo(p1.x, p1.y);
-            sctx.lineTo(p2.x, p2.y);
-            sctx.stroke();
+
+            if (currentTool === 'stylus' || currentTool === 'chisel') {
+                sctx.lineWidth = currentTool === 'chisel' ? brush * 1.4 : brush;
+                sctx.beginPath();
+                sctx.moveTo(p1.x, p1.y);
+                sctx.lineTo(p2.x, p2.y);
+                sctx.stroke();
+            } else if (currentTool === 'spray') {
+                for (let i = 0; i < 14; i++) {
+                    const a = Math.random() * Math.PI * 2;
+                    const d = Math.random() * brush * 1.2;
+                    sctx.beginPath();
+                    sctx.arc(p2.x + Math.cos(a) * d, p2.y + Math.sin(a) * d, Math.random() * 3.2 + 1, 0, Math.PI * 2);
+                    sctx.fill();
+                }
+            } else if (currentTool === 'rake') {
+                const offsets = [-brush * 0.65, 0, brush * 0.65];
+                sctx.lineWidth = Math.max(3, brush * 0.28);
+                offsets.forEach(off => {
+                    sctx.beginPath();
+                    sctx.moveTo(p1.x + off, p1.y + off);
+                    sctx.lineTo(p2.x + off, p2.y + off);
+                    sctx.stroke();
+                });
+            } else if (currentTool === 'mirror') {
+                sctx.lineWidth = brush * 0.75;
+                const pts1 = [
+                    [p1.x, p1.y], [W - p1.x, p1.y],
+                    [p1.x, H - p1.y], [W - p1.x, H - p1.y]
+                ];
+                const pts2 = [
+                    [p2.x, p2.y], [W - p2.x, p2.y],
+                    [p2.x, H - p2.y], [W - p2.x, H - p2.y]
+                ];
+                for (let m = 0; m < 4; m++) {
+                    sctx.beginPath();
+                    sctx.moveTo(pts1[m][0], pts1[m][1]);
+                    sctx.lineTo(pts2[m][0], pts2[m][1]);
+                    sctx.stroke();
+                }
+            }
             sctx.restore();
+            spawnParticles(p2.x, p2.y, 3);
         }
 
         function updatePercent() {
-            const data = sctx.getImageData(0, 0, 540, 540).data;
+            const data = sctx.getImageData(0, 0, W, H).data;
             let clear = 0;
-            const total = 540 * 540;
+            const samples = (W * H) / 4;
             for (let i = 3; i < data.length; i += 16) {
                 if (data[i] < 128) clear++;
             }
-            const pct = Math.min(100, Math.round((clear / (total / 4)) * 100));
+            const pct = Math.min(100, Math.round((clear / samples) * 100));
             document.getElementById('pctText').textContent = `${pct}% revelado`;
+            document.getElementById('meterFill').style.width = `${pct}%`;
         }
 
         scratchCanvas.addEventListener('pointerdown', (e) => {
+            saveHistory();
             isDrawing = true;
             lastPos = getPos(e);
-            scratchLine(lastPos, lastPos);
+            applyStrokeSegment(lastPos, lastPos);
+            playChime(620 + Math.random() * 280);
         });
         window.addEventListener('pointermove', (e) => {
             if (!isDrawing) return;
             const pos = getPos(e);
-            scratchLine(lastPos, pos);
+            applyStrokeSegment(lastPos, pos);
             lastPos = pos;
         });
         window.addEventListener('pointerup', () => {
@@ -308,6 +905,98 @@
             }
         });
 
+        // ==================== 5. STAMPS & MAGIC REVEAL ====================
+        function stampShape(type, cx, cy, r = 28) {
+            sctx.save();
+            sctx.globalCompositeOperation = 'destination-out';
+            sctx.beginPath();
+            if (type === 'star') {
+                traceStar(sctx, cx, cy, r);
+            } else if (type === 'heart') {
+                sctx.moveTo(cx, cy + r * 0.85);
+                sctx.bezierCurveTo(cx - r * 1.2, cy + r * 0.1, cx - r * 1.1, cy - r * 0.85, cx, cy - r * 0.3);
+                sctx.bezierCurveTo(cx + r * 1.1, cy - r * 0.85, cx + r * 1.2, cy + r * 0.1, cx, cy + r * 0.85);
+            } else if (type === 'butterfly') {
+                sctx.ellipse(cx - r * 0.45, cy - r * 0.25, r * 0.55, r * 0.4, -0.4, 0, Math.PI * 2);
+                sctx.ellipse(cx + r * 0.45, cy - r * 0.25, r * 0.55, r * 0.4, 0.4, 0, Math.PI * 2);
+                sctx.ellipse(cx - r * 0.35, cy + r * 0.35, r * 0.4, r * 0.3, 0.4, 0, Math.PI * 2);
+                sctx.ellipse(cx + r * 0.35, cy + r * 0.35, r * 0.4, r * 0.3, -0.4, 0, Math.PI * 2);
+            } else if (type === 'flower') {
+                for (let a = 0; a < 5; a++) {
+                    const ang = (a * 2 * Math.PI) / 5;
+                    sctx.moveTo(cx, cy);
+                    sctx.arc(cx + Math.cos(ang) * (r * 0.55), cy + Math.sin(ang) * (r * 0.55), r * 0.42, 0, Math.PI * 2);
+                }
+            } else if (type === 'crown') {
+                sctx.moveTo(cx - r, cy + r * 0.6);
+                sctx.lineTo(cx - r, cy - r * 0.4);
+                sctx.lineTo(cx - r * 0.4, cy + r * 0.1);
+                sctx.lineTo(cx, cy - r * 0.65);
+                sctx.lineTo(cx + r * 0.4, cy + r * 0.1);
+                sctx.lineTo(cx + r, cy - r * 0.4);
+                sctx.lineTo(cx + r, cy + r * 0.6);
+                sctx.closePath();
+            } else if (type === 'paw') {
+                sctx.arc(cx, cy + r * 0.2, r * 0.48, 0, Math.PI * 2);
+                [[-0.55, -0.35], [-0.2, -0.6], [0.2, -0.6], [0.55, -0.35]].forEach(([ox, oy]) => {
+                    sctx.moveTo(cx + ox * r + r * 0.2, cy + oy * r);
+                    sctx.arc(cx + ox * r, cy + oy * r, r * 0.2, 0, Math.PI * 2);
+                });
+            }
+            sctx.fill();
+            sctx.restore();
+            spawnParticles(cx, cy, 8);
+        }
+
+        document.querySelectorAll('#stampBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                saveHistory();
+                const st = btn.dataset.stamp;
+                for (let i = 0; i < 7; i++) {
+                    stampShape(st, 75 + Math.random() * (W - 150), 75 + Math.random() * (H - 150), 22 + Math.random() * 14);
+                }
+                playChime(980);
+                updatePercent();
+            });
+        });
+
+        document.getElementById('borderBtn').addEventListener('click', () => {
+            saveHistory();
+            for (let i = 36; i <= W - 36; i += 48) {
+                stampShape('star', i, 32, 16);
+                stampShape('star', i, H - 32, 16);
+                stampShape('heart', 32, i, 15);
+                stampShape('heart', W - 32, i, 15);
+            }
+            playChime(1040);
+            updatePercent();
+        });
+
+        document.getElementById('revealStencilBtn').addEventListener('click', () => {
+            saveHistory();
+            if (currentStencil === 'free') currentStencil = 'unicorn';
+            sctx.save();
+            sctx.globalCompositeOperation = 'destination-out';
+            sctx.lineWidth = 14;
+            sctx.lineCap = 'round';
+            sctx.lineJoin = 'round';
+            traceStencilPath(sctx, currentStencil);
+            sctx.stroke();
+            sctx.restore();
+            for (let i = 0; i < 16; i++) {
+                spawnParticles(150 + Math.random() * 300, 150 + Math.random() * 300, 5);
+            }
+            playChime(1180);
+            updatePercent();
+        });
+
+        document.getElementById('undoBtn').addEventListener('click', () => {
+            if (!history.length) return;
+            sctx.putImageData(history.pop(), 0, 0);
+            updatePercent();
+        });
+
+        // ==================== 6. UI CONTROLS ====================
         document.getElementById('brushSize').addEventListener('input', (e) => {
             brush = Number(e.target.value);
             document.getElementById('brushVal').textContent = brush + 'px';
@@ -319,6 +1008,16 @@
                 btn.classList.add('active');
                 currentFoil = btn.dataset.foil;
                 drawFoil();
+                playChime(740);
+            });
+        });
+
+        document.querySelectorAll('#coatBtns .coat-swatch').forEach(sw => {
+            sw.addEventListener('click', () => {
+                document.querySelectorAll('#coatBtns .coat-swatch').forEach(b => b.classList.remove('active'));
+                sw.classList.add('active');
+                currentCoat = sw.dataset.coat;
+                resetBlackLayer();
             });
         });
 
@@ -331,57 +1030,22 @@
             });
         });
 
-        document.getElementById('stampStar').addEventListener('click', () => {
-            sctx.save();
-            sctx.globalCompositeOperation = 'destination-out';
-            for (let i = 0; i < 8; i++) {
-                const cx = 70 + Math.random() * 400;
-                const cy = 70 + Math.random() * 400;
-                sctx.beginPath();
-                for (let j = 0; j < 5; j++) {
-                    const a = (j * 4 * Math.PI) / 5 - Math.PI / 2;
-                    const x = cx + Math.cos(a) * 28;
-                    const y = cy + Math.sin(a) * 28;
-                    j === 0 ? sctx.moveTo(x, y) : sctx.lineTo(x, y);
-                }
-                sctx.closePath();
-                sctx.fill();
-            }
-            sctx.restore();
-            updatePercent();
+        document.querySelectorAll('#toolBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#toolBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTool = btn.dataset.tool;
+            });
         });
 
-        document.getElementById('stampHeart').addEventListener('click', () => {
-            sctx.save();
-            sctx.globalCompositeOperation = 'destination-out';
-            for (let i = 0; i < 8; i++) {
-                const cx = 70 + Math.random() * 400;
-                const cy = 70 + Math.random() * 400;
-                sctx.beginPath();
-                sctx.arc(cx - 10, cy, 12, 0, Math.PI * 2);
-                sctx.arc(cx + 10, cy, 12, 0, Math.PI * 2);
-                sctx.moveTo(cx - 21, cy + 4);
-                sctx.lineTo(cx, cy + 28);
-                sctx.lineTo(cx + 21, cy + 4);
-                sctx.fill();
-            }
-            sctx.restore();
-            updatePercent();
+        document.getElementById('toggleGuide').addEventListener('change', (e) => {
+            showGuide = e.target.checked;
+            drawGuide();
         });
 
-        document.getElementById('revealStencilBtn').addEventListener('click', () => {
-            sctx.save();
-            sctx.globalCompositeOperation = 'destination-out';
-            sctx.lineWidth = 22;
-            sctx.lineCap = 'round';
-            sctx.lineJoin = 'round';
-            if (currentStencil === 'free') {
-                currentStencil = 'unicorn';
-            }
-            traceStencilPath(sctx, currentStencil);
-            sctx.stroke();
-            sctx.restore();
-            updatePercent();
+        document.getElementById('soundToggle').addEventListener('click', (e) => {
+            soundOn = !soundOn;
+            e.target.textContent = soundOn ? '🔊 Som' : '🔇 Mudo';
         });
 
         document.getElementById('resetBtn').addEventListener('click', resetBlackLayer);
@@ -390,6 +1054,19 @@
             bestScore += 1;
             scoreEl.textContent = bestScore;
             SaveHub.updateGameSave('scratchart', { highScore: bestScore }, activePlayer);
+            playChime(1320);
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const out = document.createElement('canvas');
+            out.width = W; out.height = H;
+            const octx = out.getContext('2d');
+            octx.drawImage(foilCanvas, 0, 0);
+            octx.drawImage(scratchCanvas, 0, 0);
+            const a = document.createElement('a');
+            a.download = `raspadinha-magica-${currentStencil}.png`;
+            a.href = out.toDataURL('image/png');
+            a.click();
         });
 
         drawFoil();
