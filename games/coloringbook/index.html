@@ -1156,19 +1156,246 @@
                     { id: 'crown', name: 'Coroa da Borboleta', color: '#ffffff', draw: (c) => { c.moveTo(235, 135); c.lineTo(260, 88); c.lineTo(285, 135); c.closePath(); } }
                 ],
                 kitty: [
-                    { id: 'bg', name: 'Fundo Pastel', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
-                    { id: 'earL', name: 'Orelha Esquerda', color: '#ffffff', draw: (c) => { c.moveTo(118, 195); c.lineTo(142, 72); c.lineTo(225, 148); c.closePath(); } },
-                    { id: 'earR', name: 'Orelha Direita', color: '#ffffff', draw: (c) => { c.moveTo(402, 195); c.lineTo(378, 72); c.lineTo(295, 148); c.closePath(); } },
-                    { id: 'innerEarL', name: 'Interior Orelha Esq', color: '#ffffff', draw: (c) => { c.moveTo(138, 178); c.lineTo(152, 102); c.lineTo(205, 152); c.closePath(); } },
-                    { id: 'innerEarR', name: 'Interior Orelha Dir', color: '#ffffff', draw: (c) => { c.moveTo(382, 178); c.lineTo(368, 102); c.lineTo(315, 152); c.closePath(); } },
-                    { id: 'dress', name: 'Vestido da Gatinha', color: '#ffffff', draw: (c) => { c.moveTo(175, 295); c.lineTo(345, 295); c.lineTo(385, 455); c.lineTo(135, 455); c.closePath(); } },
-                    { id: 'head', name: 'Rosto da Gatinha', color: '#ffffff', draw: (c) => { c.ellipse(260, 215, 112, 92, 0, 0, Math.PI * 2); } },
-                    { id: 'bowL', name: 'Laço Esquerdo', color: '#ffffff', draw: (c) => { c.arc(325, 128, 28, 0, Math.PI * 2); } },
-                    { id: 'bowR', name: 'Laço Direito', color: '#ffffff', draw: (c) => { c.arc(375, 148, 28, 0, Math.PI * 2); } },
-                    { id: 'bowCenter', name: 'Nó do Laço', color: '#ffffff', draw: (c) => { c.arc(350, 138, 15, 0, Math.PI * 2); } },
-                    { id: 'cupBase', name: 'Forminha do Cupcake', color: '#ffffff', draw: (c) => { c.moveTo(210, 415); c.lineTo(310, 415); c.lineTo(295, 485); c.lineTo(225, 485); c.closePath(); } },
-                    { id: 'cupFrost', name: 'Chantilly do Cupcake', color: '#ffffff', draw: (c) => { c.ellipse(260, 405, 58, 28, 0, 0, Math.PI * 2); } },
-                    { id: 'cherry', name: 'Cereja Doce', color: '#ffffff', draw: (c) => { c.arc(260, 372, 16, 0, Math.PI * 2); } }
+                    { id: 'bg', name: 'Parede da Confeitaria', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
+                    // Corações Flutuantes no Fundo
+                    {
+                        id: 'heartL', name: 'Coração Doce Esquerdo', color: '#ffffff',
+                        draw: (c) => {
+                            const cx = 68, cy = 115;
+                            c.moveTo(cx, cy + 20);
+                            c.bezierCurveTo(cx - 28, cy + 4, cx - 26, cy - 20, cx, cy - 8);
+                            c.bezierCurveTo(cx + 26, cy - 20, cx + 28, cy + 4, cx, cy + 20);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'heartR', name: 'Coração Doce Direito', color: '#ffffff',
+                        draw: (c) => {
+                            const cx = 452, cy = 115;
+                            c.moveTo(cx, cy + 20);
+                            c.bezierCurveTo(cx - 28, cy + 4, cx - 26, cy - 20, cx, cy - 8);
+                            c.bezierCurveTo(cx + 26, cy - 20, cx + 28, cy + 4, cx, cy + 20);
+                            c.closePath();
+                        }
+                    },
+                    // Mesa com Toalha Rendada da Confeitaria
+                    {
+                        id: 'tableCloth', name: 'Toalha Rendada da Mesa', color: '#ffffff',
+                        draw: (c) => {
+                            c.rect(0, 442, W, H - 442);
+                        }
+                    },
+                    // Rabinho Peludo Curvado em "S" + Ponta do Rabinho
+                    {
+                        id: 'tail', name: 'Rabinho Fofo da Gatinha', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(352, 395);
+                            c.bezierCurveTo(425, 392, 468, 325, 442, 275);
+                            c.bezierCurveTo(418, 255, 395, 285, 405, 315);
+                            c.bezierCurveTo(412, 342, 385, 368, 345, 372);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'tailTip', name: 'Pontinha do Rabo', color: '#ffffff',
+                        draw: (c) => {
+                            c.arc(425, 282, 22, 0, Math.PI * 2);
+                        }
+                    },
+                    // Orelhas Esculpidas da Gatinha (Externa e Interna)
+                    {
+                        id: 'earL', name: 'Orelhinha Esquerda', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(132, 178);
+                            c.quadraticCurveTo(122, 92, 152, 66);
+                            c.quadraticCurveTo(198, 86, 224, 134);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'earR', name: 'Orelhinha Direita', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(388, 178);
+                            c.quadraticCurveTo(398, 92, 368, 66);
+                            c.quadraticCurveTo(322, 86, 296, 134);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'innerEarL', name: 'Interior da Orelha Esq', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(148, 165);
+                            c.quadraticCurveTo(142, 108, 160, 88);
+                            c.quadraticCurveTo(190, 104, 206, 138);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'innerEarR', name: 'Interior da Orelha Dir', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(372, 165);
+                            c.quadraticCurveTo(378, 108, 360, 88);
+                            c.quadraticCurveTo(330, 104, 314, 138);
+                            c.closePath();
+                        }
+                    },
+                    // Vestido Rodado de Princesa + Babado + Avental Doce
+                    {
+                        id: 'dress', name: 'Vestido de Princesa da Gatinha', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(178, 278);
+                            c.lineTo(342, 278);
+                            c.quadraticCurveTo(382, 365, 392, 438);
+                            c.lineTo(128, 438);
+                            c.quadraticCurveTo(138, 365, 178, 278);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'dressRuffle', name: 'Babado de Renda do Vestido', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(124, 424, 272, 22, 11);
+                        }
+                    },
+                    {
+                        id: 'apron', name: 'Avental de Confeiteira Real', color: '#ffffff',
+                        draw: (c) => {
+                            c.roundRect(192, 288, 136, 98, [12, 12, 48, 48]);
+                        }
+                    },
+                    // Cabeça Fofa Esculpida com Bochechas Peludinhas
+                    {
+                        id: 'head', name: 'Rosto Fofo da Gatinha', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(260, 114);
+                            c.bezierCurveTo(335, 114, 378, 162, 378, 212);
+                            c.bezierCurveTo(378, 258, 332, 286, 260, 286);
+                            c.bezierCurveTo(188, 286, 142, 258, 142, 212);
+                            c.bezierCurveTo(142, 162, 185, 114, 260, 114);
+                            c.closePath();
+                        }
+                    },
+                    // Coleira Real + Guizo Dourado (Sininho)
+                    {
+                        id: 'collar', name: 'Coleira de Cetim', color: '#ffffff',
+                        draw: (c) => { c.roundRect(196, 276, 128, 18, 9); }
+                    },
+                    {
+                        id: 'bell', name: 'Guizo Dourado (Sininho)', color: '#ffffff',
+                        draw: (c) => { c.arc(260, 294, 15, 0, Math.PI * 2); }
+                    },
+                    // Tiara Real no Topo da Cabeça
+                    {
+                        id: 'tiara', name: 'Tiara Real da Gatinha', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(222, 118);
+                            c.lineTo(238, 86);
+                            c.lineTo(260, 64);
+                            c.lineTo(282, 86);
+                            c.lineTo(298, 118);
+                            c.closePath();
+                        }
+                    },
+                    // Laço Duplo com Fitas na Orelha Direita
+                    {
+                        id: 'bowRibbon', name: 'Fitas do Laço', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(338, 136);
+                            c.lineTo(324, 178);
+                            c.lineTo(348, 168);
+                            c.lineTo(368, 182);
+                            c.lineTo(362, 136);
+                            c.closePath();
+                        }
+                    },
+                    {
+                        id: 'bowL', name: 'Laço Aba Esquerda', color: '#ffffff',
+                        draw: (c) => { c.ellipse(324, 124, 28, 20, -0.25, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'bowR', name: 'Laço Aba Direita', color: '#ffffff',
+                        draw: (c) => { c.ellipse(376, 138, 28, 20, 0.25, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'bowCenter', name: 'Coração Central do Laço', color: '#ffffff',
+                        draw: (c) => { c.arc(350, 131, 14, 0, Math.PI * 2); }
+                    },
+                    // ======== BOLINHO GOURMET (CUPCAKE DE 3 ANDARES) ========
+                    // Pratinho Real de Porcelana
+                    {
+                        id: 'plate', name: 'Pratinho de Porcelana Real', color: '#ffffff',
+                        draw: (c) => { c.ellipse(260, 492, 108, 20, 0, 0, Math.PI * 2); }
+                    },
+                    // Forminha Plissada com Topo Ondulado
+                    {
+                        id: 'cupBase', name: 'Forminha Plissada do Bolinho', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(196, 412);
+                            c.quadraticCurveTo(212, 404, 228, 412);
+                            c.quadraticCurveTo(244, 404, 260, 412);
+                            c.quadraticCurveTo(276, 404, 292, 412);
+                            c.quadraticCurveTo(308, 404, 324, 412);
+                            c.lineTo(304, 488);
+                            c.lineTo(216, 488);
+                            c.closePath();
+                        }
+                    },
+                    // Massa Fofinha Assada + Calda Escorrendo (Drip)
+                    {
+                        id: 'cakeSponge', name: 'Massa Baunilha do Bolinho', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(260, 406, 64, 22, 0, Math.PI, 0);
+                            c.closePath();
+                        }
+                    },
+                    // Canudinho Wafer Crocante
+                    {
+                        id: 'waferRoll', name: 'Canudinho Wafer Doce', color: '#ffffff',
+                        draw: (c) => {
+                            c.moveTo(292, 355);
+                            c.lineTo(322, 305);
+                            c.lineTo(338, 314);
+                            c.lineTo(308, 364);
+                            c.closePath();
+                        }
+                    },
+                    // Chantilly Cremoso em 3 Andares Esculpidos
+                    {
+                        id: 'cupFrost', name: 'Chantilly Camada Base', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(260, 392, 62, 22, 0, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'frostMid', name: 'Chantilly Camada do Meio', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(260, 368, 48, 20, 0, 0, Math.PI * 2);
+                        }
+                    },
+                    {
+                        id: 'frostTop', name: 'Chantilly Topo Cremoso', color: '#ffffff',
+                        draw: (c) => {
+                            c.ellipse(260, 346, 32, 17, 0, 0, Math.PI * 2);
+                        }
+                    },
+                    // Cereja Brilhante + Folhinha de Hortelã no Topo
+                    {
+                        id: 'cherryLeaf', name: 'Folhinha Doce da Cereja', color: '#ffffff',
+                        draw: (c) => { c.ellipse(278, 316, 14, 8, -0.4, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'cherry', name: 'Cereja Real no Topo', color: '#ffffff',
+                        draw: (c) => { c.arc(260, 322, 16, 0, Math.PI * 2); }
+                    },
+                    // Patinhas Fofas da Gatinha Segurando o Bolinho
+                    {
+                        id: 'pawL', name: 'Patinha Fofa Esquerda', color: '#ffffff',
+                        draw: (c) => { c.ellipse(182, 412, 26, 20, 0.25, 0, Math.PI * 2); }
+                    },
+                    {
+                        id: 'pawR', name: 'Patinha Fofa Direita', color: '#ffffff',
+                        draw: (c) => { c.ellipse(338, 412, 26, 20, -0.25, 0, Math.PI * 2); }
+                    }
                 ],
                 princess: [
                     { id: 'sky', name: 'Palácio Estelar', color: '#fdf2f8', draw: (c) => { c.rect(0, 0, W, H); } },
@@ -1490,14 +1717,100 @@
                 ctx.arc(260, ey + 15, 8, 0.2, Math.PI - 0.2);
                 ctx.stroke();
             } else if (page === 'kitty') {
+                // Olhos grandes estilo Anime Kawaii da Gatinha
+                ctx.fillStyle = '#1e1b4b';
                 ctx.beginPath();
-                ctx.arc(220, 215, 10, 0, Math.PI * 2);
-                ctx.arc(300, 215, 10, 0, Math.PI * 2);
+                ctx.ellipse(216, 206, 13, 15, 0, 0, Math.PI * 2);
+                ctx.ellipse(304, 206, 13, 15, 0, 0, Math.PI * 2);
                 ctx.fill();
+
+                // Íris violeta brilhante
+                ctx.fillStyle = '#9333ea';
+                ctx.beginPath();
+                ctx.ellipse(216, 208, 8, 9.5, 0, 0, Math.PI * 2);
+                ctx.ellipse(304, 208, 8, 9.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Brilhos estelares duplos nos olhos
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(211, 200, 4.5, 0, Math.PI * 2);
+                ctx.arc(299, 200, 4.5, 0, Math.PI * 2);
+                ctx.arc(220, 212, 2.2, 0, Math.PI * 2);
+                ctx.arc(308, 212, 2.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cílios curvados da Gatinha
+                ctx.strokeStyle = '#1e1b4b';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(203, 195); ctx.lineTo(192, 188);
+                ctx.moveTo(317, 195); ctx.lineTo(328, 188);
+                ctx.stroke();
+
+                // Bochechas coradas fofas
+                ctx.fillStyle = 'rgba(244, 114, 182, 0.55)';
+                ctx.beginPath();
+                ctx.ellipse(192, 226, 13, 7, 0, 0, Math.PI * 2);
+                ctx.ellipse(328, 226, 13, 7, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Narizinho rosa de coração/triângulo e Boquinha "ω" de Gatinha
                 ctx.fillStyle = '#ec4899';
                 ctx.beginPath();
-                ctx.arc(260, 228, 7, 0, Math.PI * 2);
+                ctx.arc(260, 218, 6.5, 0, Math.PI * 2);
                 ctx.fill();
+
+                ctx.strokeStyle = '#3b0764';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(252, 226, 8, 0, Math.PI);
+                ctx.arc(268, 226, 8, 0, Math.PI);
+                ctx.stroke();
+
+                // Bigodinhos delicados nas laterais
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(165, 208); ctx.lineTo(126, 200);
+                ctx.moveTo(165, 220); ctx.lineTo(122, 220);
+                ctx.moveTo(165, 232); ctx.lineTo(128, 238);
+                ctx.moveTo(355, 208); ctx.lineTo(394, 200);
+                ctx.moveTo(355, 220); ctx.lineTo(398, 220);
+                ctx.moveTo(355, 232); ctx.lineTo(392, 238);
+                ctx.stroke();
+
+                // Dobras plissadas na forminha do Cupcake + Cabinho da Cereja
+                ctx.strokeStyle = 'rgba(59, 7, 100, 0.6)';
+                ctx.lineWidth = 2.5;
+                [[228, 412, 234, 488], [260, 412, 260, 488], [292, 412, 286, 488]].forEach(([x1, y1, x2, y2]) => {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                });
+
+                // Cabinho curvado da cereja
+                ctx.beginPath();
+                ctx.moveTo(260, 308);
+                ctx.quadraticCurveTo(268, 282, 288, 288);
+                ctx.stroke();
+
+                // Granulados coloridos (Sprinkles) no Chantilly do Bolinho
+                const spCols = ['#ff2a85', '#fde047', '#38bdf8', '#22c55e', '#a855f7'];
+                [[232, 388], [255, 394], [282, 386], [244, 366], [274, 368], [258, 344]].forEach(([sx, sy], i) => {
+                    ctx.fillStyle = spCols[i % spCols.length];
+                    ctx.beginPath();
+                    ctx.roundRect(sx - 5, sy - 2.5, 10, 5, 3);
+                    ctx.fill();
+                });
+
+                // Almofadinhas fofas nas patinhas
+                ctx.fillStyle = '#f472b6';
+                [182, 338].forEach(px => {
+                    ctx.beginPath();
+                    ctx.arc(px, 414, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                });
             }
             ctx.restore();
         }
@@ -1890,21 +2203,77 @@
             ],
             kitty: [
                 {
-                    name: 'Gatinha Branca Real com Cupcake de Morango 🐱🧁',
+                    name: 'Gatinha Persa Branca Real & Cupcake de Morango 🐱🧁',
                     regions: {
                         bg: { c: '#fce7f3', m: 'solid' },
+                        heartL: { c: '#ff2a85', m: 'glitter' },
+                        heartR: { c: '#ff2a85', m: 'glitter' },
+                        tableCloth: { c: '#fbcfe8', m: 'solid' },
+                        tail: { c: '#ffffff', m: 'solid' },
+                        tailTip: { c: '#fbcfe8', m: 'solid' },
                         earL: { c: '#ffffff', m: 'solid' },
                         earR: { c: '#ffffff', m: 'solid' },
                         innerEarL: { c: '#fda4af', m: 'solid' },
                         innerEarR: { c: '#fda4af', m: 'solid' },
                         head: { c: '#ffffff', m: 'solid' },
+                        pawL: { c: '#ffffff', m: 'solid' },
+                        pawR: { c: '#ffffff', m: 'solid' },
                         dress: { c: '#c084fc', m: 'gradient' },
+                        dressRuffle: { c: '#f472b6', m: 'glitter' },
+                        apron: { c: '#fff5f8', m: 'solid' },
+                        collar: { c: '#ec4899', m: 'solid' },
+                        bell: { c: '#fde047', m: 'glitter' },
+                        tiara: { c: '#fde047', m: 'glitter' },
+                        bowRibbon: { c: '#ec4899', m: 'solid' },
                         bowL: { c: '#ff2a85', m: 'glitter' },
                         bowR: { c: '#ff2a85', m: 'glitter' },
                         bowCenter: { c: '#fde047', m: 'glitter' },
-                        cupBase: { c: '#38bdf8', m: 'solid' },
-                        cupFrost: { c: '#fbcfe8', m: 'glitter' },
-                        cherry: { c: '#ef4444', m: 'solid' }
+                        plate: { c: '#bae6fd', m: 'solid' },
+                        cupBase: { c: '#38bdf8', m: 'gradient' },
+                        cakeSponge: { c: '#fde047', m: 'solid' },
+                        waferRoll: { c: '#fb923c', m: 'solid' },
+                        cupFrost: { c: '#f472b6', m: 'glitter' },
+                        frostMid: { c: '#fbcfe8', m: 'glitter' },
+                        frostTop: { c: '#fff5f8', m: 'glitter' },
+                        cherryLeaf: { c: '#22c55e', m: 'solid' },
+                        cherry: { c: '#ef4444', m: 'glitter' }
+                    }
+                },
+                {
+                    name: 'Gatinha Rosa Sakura & Cupcake de Mirtilo Dourado 🐱🌸',
+                    regions: {
+                        bg: { c: '#e9d5ff', m: 'solid' },
+                        heartL: { c: '#fde047', m: 'glitter' },
+                        heartR: { c: '#fde047', m: 'glitter' },
+                        tableCloth: { c: '#d8b4fe', m: 'solid' },
+                        tail: { c: '#fce7f3', m: 'solid' },
+                        tailTip: { c: '#f472b6', m: 'solid' },
+                        earL: { c: '#fce7f3', m: 'solid' },
+                        earR: { c: '#fce7f3', m: 'solid' },
+                        innerEarL: { c: '#ec4899', m: 'solid' },
+                        innerEarR: { c: '#ec4899', m: 'solid' },
+                        head: { c: '#fce7f3', m: 'solid' },
+                        pawL: { c: '#fce7f3', m: 'solid' },
+                        pawR: { c: '#fce7f3', m: 'solid' },
+                        dress: { c: '#ec4899', m: 'gradient' },
+                        dressRuffle: { c: '#fde047', m: 'glitter' },
+                        apron: { c: '#ffffff', m: 'solid' },
+                        collar: { c: '#8b5cf6', m: 'solid' },
+                        bell: { c: '#fde047', m: 'glitter' },
+                        tiara: { c: '#fde047', m: 'glitter' },
+                        bowRibbon: { c: '#38bdf8', m: 'solid' },
+                        bowL: { c: '#67e8f9', m: 'glitter' },
+                        bowR: { c: '#67e8f9', m: 'glitter' },
+                        bowCenter: { c: '#fde047', m: 'glitter' },
+                        plate: { c: '#fef08a', m: 'solid' },
+                        cupBase: { c: '#ec4899', m: 'gradient' },
+                        cakeSponge: { c: '#fef08a', m: 'solid' },
+                        waferRoll: { c: '#9a5840', m: 'solid' },
+                        cupFrost: { c: '#67e8f9', m: 'glitter' },
+                        frostMid: { c: '#d8b4fe', m: 'glitter' },
+                        frostTop: { c: '#fbcfe8', m: 'glitter' },
+                        cherryLeaf: { c: '#10b981', m: 'solid' },
+                        cherry: { c: '#ff2a85', m: 'glitter' }
                     }
                 }
             ],
