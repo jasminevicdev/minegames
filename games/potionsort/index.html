@@ -3,81 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alquimia das Poções: Sort Puzzle — JasDEV Game Hub</title>
+    <title>Alquimia das Poções: Sort Puzzle HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #2e1065, #090418);
+            background: radial-gradient(circle at top, #3b0764, #090314 75%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 960px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(168,85,247,0.4);
+            width: 100%; max-width: 1080px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(192,132,252,0.4);
         }
         .back-btn {
             text-decoration: none; color: #e9d5ff; font-weight: 700;
             background: rgba(168,85,247,0.22); padding: 8px 16px; border-radius: 999px;
             border: 1px solid rgba(168,85,247,0.5);
         }
-        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #d8b4fe; }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f0abfc; }
         .score-pill {
             background: linear-gradient(135deg, #a855f7, #ec4899);
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .board {
-            display: flex; flex-direction: column; align-items: center; padding: 24px 16px; gap: 22px;
+            display: flex; flex-direction: column; align-items: center; padding: 20px 16px; gap: 18px;
+            width: 100%; max-width: 1080px;
+        }
+        .toolbar {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+        }
+        .btn-mode, .btn-tool {
+            padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.08); color: #fff; font-weight: 700; cursor: pointer;
+            font-family: 'Fredoka', sans-serif; font-size: 0.9rem; transition: 0.15s;
+        }
+        .btn-mode.active, .btn-tool:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
+            box-shadow: 0 0 14px rgba(236,72,153,0.45);
         }
         .tubes-row {
-            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
-            padding: 28px; background: rgba(255,255,255,0.04); border-radius: 26px;
-            border: 2px solid rgba(192,132,252,0.35);
+            display: flex; gap: 22px; flex-wrap: wrap; justify-content: center;
+            padding: 34px 28px 26px; background: rgba(20, 8, 38, 0.85); border-radius: 28px;
+            border: 3px solid rgba(217,70,239,0.38); box-shadow: 0 16px 40px rgba(0,0,0,0.55);
         }
+        .tube-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
         .tube {
-            width: 72px; height: 220px; border: 4px solid rgba(255,255,255,0.75);
-            border-top: none; border-radius: 0 0 36px 36px; padding: 6px;
+            width: 78px; height: 236px; border: 4px solid rgba(255,255,255,0.82);
+            border-top: none; border-radius: 0 0 40px 40px; padding: 6px;
             display: flex; flex-direction: column-reverse; gap: 4px;
-            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-            background: rgba(255,255,255,0.06); position: relative;
+            cursor: pointer; transition: transform 0.22s, box-shadow 0.22s;
+            background: linear-gradient(90deg, rgba(255,255,255,0.14), rgba(255,255,255,0.03), rgba(255,255,255,0.18));
+            position: relative;
         }
         .tube::before {
-            content: ''; position: absolute; top: -8px; left: -8px; right: -8px; height: 8px;
-            border: 3px solid rgba(255,255,255,0.75); border-radius: 999px;
+            content: ''; position: absolute; top: -10px; left: -9px; right: -9px; height: 10px;
+            border: 3px solid rgba(255,255,255,0.85); border-radius: 999px;
+            background: rgba(255,255,255,0.15);
+        }
+        .tube.complete::after {
+            content: '👑'; position: absolute; top: -36px; left: 50%; transform: translateX(-50%);
+            font-size: 1.5rem; filter: drop-shadow(0 0 8px #fde047);
         }
         .tube.selected {
-            transform: translateY(-20px);
-            box-shadow: 0 14px 28px rgba(236,72,153,0.55);
+            transform: translateY(-22px);
+            box-shadow: 0 16px 30px rgba(236,72,153,0.6);
             border-color: #fde047;
         }
+        .tube.hint {
+            border-color: #38bdf8;
+            box-shadow: 0 0 22px #38bdf8;
+        }
         .layer {
-            width: 100%; height: 46px; border-radius: 8px;
-            transition: 0.2s; box-shadow: inset 0 0 10px rgba(255,255,255,0.35);
+            width: 100%; height: 50px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.35rem; position: relative; overflow: hidden;
+            box-shadow: inset 0 4px 10px rgba(255,255,255,0.45), inset 0 -4px 8px rgba(0,0,0,0.25);
         }
-        .layer:first-child { border-radius: 8px 8px 28px 28px; }
-        .controls { display: flex; gap: 12px; align-items: center; }
-        .btn {
-            padding: 11px 22px; border-radius: 999px; border: none; font-weight: 700;
-            background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; cursor: pointer;
-            font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
-        }
-        #msg { font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.2rem; min-height: 1.6rem; }
+        .layer:first-child { border-radius: 10px 10px 32px 32px; }
+        #msg { font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.25rem; min-height: 1.7rem; text-align: center; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🧪 Alquimia das Poções: Sort Puzzle</h1>
-        <div class="score-pill">Níveis Vencidos: <span id="scoreVal">0</span> 🧪</div>
+        <h1>🧪 Alquimia das Poções: Sort Puzzle — Edição HD</h1>
+        <div class="score-pill">Poções Purificadas: <span id="scoreVal">0</span> 🧪</div>
     </header>
 
     <main class="board">
-        <p style="color:#e9d5ff;">Clique em um frasco para colher a poção do topo e despeje sobre a mesma cor ou em um frasco vazio!</p>
-        <div id="msg"></div>
+        <div class="toolbar" id="diffBtns">
+            <button class="btn-mode active" data-colors="4">🌸 Aprendiz (4 Poções)</button>
+            <button class="btn-mode" data-colors="5">🔮 Mestre (5 Poções)</button>
+            <button class="btn-mode" data-colors="6">👑 Arcano Real (6 Poções)</button>
+        </div>
+
+        <div id="msg">✨ Toque em um frasco de cristal para colher o elixir do topo e despeje sobre a mesma poção!</div>
+
         <div class="tubes-row" id="tubesWrap"></div>
-        <div class="controls">
-            <button class="btn" id="newBtn">🔄 Embaralhar Novo Desafio</button>
+
+        <div class="toolbar">
+            <button class="btn-tool" id="undoBtn">↩️ Desfazer Jogada</button>
+            <button class="btn-tool" id="hintBtn">💡 Dica da Fada</button>
+            <button class="btn-tool" id="extraTubeBtn">➕ Adicionar Frasco Extra</button>
+            <button class="btn-tool" id="newBtn">🔄 Novo Desafio</button>
         </div>
     </main>
 
@@ -89,56 +119,75 @@
         const scoreEl = document.getElementById('scoreVal');
         scoreEl.textContent = bestScore;
 
-        const COLORS = ['#ff2e93', '#00f5d4', '#fde047', '#a855f7'];
+        const POTIONS = [
+            { id: 'love', bg: 'linear-gradient(135deg,#ff2e93,#f472b6)', icon: '💖', name: 'Amor' },
+            { id: 'mana', bg: 'linear-gradient(135deg,#0284c7,#38bdf8)', icon: '❄️', name: 'Gelo' },
+            { id: 'solar', bg: 'linear-gradient(135deg,#eab308,#fde047)', icon: '⭐', name: 'Estelar' },
+            { id: 'magic', bg: 'linear-gradient(135deg,#7c3aed,#c084fc)', icon: '🔮', name: 'Arcano' },
+            { id: 'emerald', bg: 'linear-gradient(135deg,#059669,#34d399)', icon: '🍀', name: 'Sorte' },
+            { id: 'phoenix', bg: 'linear-gradient(135deg,#ea580c,#fb923c)', icon: '🔥', name: 'Fênix' }
+        ];
+
+        let numColors = 4;
         let tubes = [];
+        let history = [];
         let selected = null;
+        let hintPair = [];
         let solved = false;
+        let extraUsed = false;
 
         function initPuzzle() {
             solved = false;
+            extraUsed = false;
             selected = null;
-            document.getElementById('msg').textContent = '';
+            hintPair = [];
+            history = [];
+            document.getElementById('msg').textContent = '✨ Purifique cada frasco com 4 doses do mesmo elixir!';
+            const activePotions = POTIONS.slice(0, numColors);
             const pool = [];
-            COLORS.forEach(c => { for (let i = 0; i < 4; i++) pool.push(c); });
+            activePotions.forEach(p => { for (let i = 0; i < 4; i++) pool.push(p); });
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [pool[i], pool[j]] = [pool[j], pool[i]];
             }
-            tubes = [
-                pool.slice(0, 4),
-                pool.slice(4, 8),
-                pool.slice(8, 12),
-                pool.slice(12, 16),
-                [],
-                []
-            ];
+            tubes = [];
+            for (let i = 0; i < numColors; i++) {
+                tubes.push(pool.slice(i * 4, (i + 1) * 4));
+            }
+            tubes.push([], []);
             render();
         }
 
+        function isTubeComplete(t) {
+            return t.length === 4 && t.every(p => p.id === t[0].id);
+        }
+
         function checkWin() {
-            const win = tubes.every(t => t.length === 0 || (t.length === 4 && t.every(c => c === t[0])));
+            const win = tubes.every(t => t.length === 0 || isTubeComplete(t));
             if (win && !solved) {
                 solved = true;
                 bestScore += 1;
                 scoreEl.textContent = bestScore;
                 SaveHub.updateGameSave('potionsort', { highScore: bestScore }, activePlayer);
-                document.getElementById('msg').textContent = '✨ POÇÕES PURIFICADAS! +1 Nível Alquímico! ✨';
+                document.getElementById('msg').textContent = '👑 PARABÉNS! Todas as Poções Reais foram purificadas e lacradas! (+1 🧪)';
             }
         }
 
         function clickTube(idx) {
             if (solved) return;
+            hintPair = [];
             if (selected === null) {
-                if (tubes[idx].length > 0) selected = idx;
+                if (tubes[idx].length > 0 && !isTubeComplete(tubes[idx])) selected = idx;
             } else if (selected === idx) {
                 selected = null;
             } else {
                 const from = tubes[selected];
                 const to = tubes[idx];
                 if (from.length > 0 && to.length < 4) {
-                    const topColor = from[from.length - 1];
-                    if (to.length === 0 || to[to.length - 1] === topColor) {
-                        while (from.length > 0 && to.length < 4 && from[from.length - 1] === topColor) {
+                    const topP = from[from.length - 1];
+                    if (to.length === 0 || to[to.length - 1].id === topP.id) {
+                        history.push(JSON.parse(JSON.stringify(tubes)));
+                        while (from.length > 0 && to.length < 4 && from[from.length - 1].id === topP.id) {
                             to.push(from.pop());
                         }
                         selected = null;
@@ -157,18 +206,65 @@
             const wrap = document.getElementById('tubesWrap');
             wrap.innerHTML = '';
             tubes.forEach((t, i) => {
+                const complete = isTubeComplete(t);
                 const div = document.createElement('div');
-                div.className = 'tube' + (selected === i ? ' selected' : '');
-                t.forEach(c => {
+                div.className = 'tube'
+                    + (selected === i ? ' selected' : '')
+                    + (complete ? ' complete' : '')
+                    + (hintPair.includes(i) ? ' hint' : '');
+                t.forEach(p => {
                     const l = document.createElement('div');
                     l.className = 'layer';
-                    l.style.background = c;
+                    l.style.background = p.bg;
+                    l.textContent = p.icon;
                     div.appendChild(l);
                 });
                 div.addEventListener('click', () => clickTube(i));
                 wrap.appendChild(div);
             });
         }
+
+        document.querySelectorAll('#diffBtns .btn-mode').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#diffBtns .btn-mode').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                numColors = Number(btn.dataset.colors);
+                initPuzzle();
+            });
+        });
+
+        document.getElementById('undoBtn').addEventListener('click', () => {
+            if (!history.length) return;
+            tubes = history.pop();
+            selected = null;
+            render();
+        });
+
+        document.getElementById('extraTubeBtn').addEventListener('click', () => {
+            if (extraUsed) return;
+            extraUsed = true;
+            tubes.push([]);
+            render();
+        });
+
+        document.getElementById('hintBtn').addEventListener('click', () => {
+            hintPair = [];
+            for (let i = 0; i < tubes.length; i++) {
+                const from = tubes[i];
+                if (!from.length || isTubeComplete(from)) continue;
+                const topP = from[from.length - 1];
+                for (let j = 0; j < tubes.length; j++) {
+                    if (i === j) continue;
+                    const to = tubes[j];
+                    if (to.length < 4 && (to.length === 0 || to[to.length - 1].id === topP.id)) {
+                        if (to.length === 0 && from.every(x => x.id === topP.id)) continue;
+                        hintPair = [i, j];
+                        render();
+                        return;
+                    }
+                }
+            }
+        });
 
         document.getElementById('newBtn').addEventListener('click', initPuzzle);
         initPuzzle();

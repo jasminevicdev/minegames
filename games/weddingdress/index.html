@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boutique de Noiva & Buquê Real — JasDEV Game Hub</title>
+    <title>Boutique de Noiva & Casamento Real HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #4a0e2e, #170410);
+            background: radial-gradient(circle at top, #4a0e2e, #15030d 75%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1120px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1260px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.07); backdrop-filter: blur(12px);
             border-bottom: 2px solid rgba(244,114,182,0.4);
         }
@@ -29,87 +29,129 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .studio {
-            display: grid; grid-template-columns: 320px 1fr; gap: 18px;
-            width: 100%; max-width: 1120px; padding: 16px; flex: 1;
+            display: grid; grid-template-columns: 310px 1fr 290px; gap: 16px;
+            width: 100%; max-width: 1260px; padding: 14px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 1050px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(45, 10, 32, 0.9); border: 2px solid rgba(244,114,182,0.35);
-            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+            background: rgba(45, 10, 32, 0.92); border: 2px solid rgba(244,114,182,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.45);
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.95rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 {
+            font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.92rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 4px;
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
-            padding: 9px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.82rem;
+            font-size: 0.79rem; transition: 0.15s;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
         }
         .btn-action {
-            padding: 12px; border-radius: 14px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+            padding: 11px; border-radius: 13px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
             background: linear-gradient(135deg, #f472b6, #fde047); color: #2d061b;
+            transition: transform 0.15s;
         }
+        .btn-action:hover { transform: translateY(-2px); }
+        .btn-dl { background: linear-gradient(135deg, #38bdf8, #6366f1); color: #fff; }
         .stage {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(25, 5, 18, 0.85); border-radius: 24px;
-            border: 3px solid rgba(244,114,182,0.4); padding: 16px;
+            background: rgba(25, 5, 18, 0.88); border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.4); padding: 14px;
         }
         canvas {
             border-radius: 18px; max-width: 100%; height: auto;
             box-shadow: 0 12px 38px rgba(0,0,0,0.55);
+        }
+        .judges-bar {
+            margin-top: 10px; width: 100%; background: rgba(255,255,255,0.06);
+            padding: 10px 14px; border-radius: 14px; text-align: center;
+            color: #fde047; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
         }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>👰 Boutique de Noiva & Casamento Real</h1>
-        <div class="score-pill">Casamentos: <span id="scoreVal">0</span> 👰</div>
+        <h1>👰 Boutique de Noiva & Casamento Real — Edição HD</h1>
+        <div class="score-pill">Casamentos Reais: <span id="scoreVal">0</span> 👰</div>
     </header>
 
     <main class="studio">
         <aside class="panel">
-            <h3>👗 1. Vestido de Noiva Imperial</h3>
+            <h3>👗 1. Corte & Cor do Vestido</h3>
             <div class="grid-2" id="gownBtns">
-                <button class="btn-opt active" data-v="pearl">🤍 Pérola Real</button>
-                <button class="btn-opt" data-v="blush">🌸 Rosa Blush</button>
-                <button class="btn-opt" data-v="champagne">✨ Champagne Ouro</button>
-                <button class="btn-opt" data-v="crystal">❄️ Azul Cristal</button>
+                <button class="btn-opt active" data-v="pearl">🤍 Princesa Pérola</button>
+                <button class="btn-opt" data-v="blush">🌸 Sereia Blush</button>
+                <button class="btn-opt" data-v="champagne">✨ Imperial Ouro</button>
+                <button class="btn-opt" data-v="crystal">❄️ Cinderela Azul</button>
+                <button class="btn-opt" data-v="lavender">💜 Fada Lavanda</button>
+                <button class="btn-opt" data-v="ruby">🌹 Rainha Rubi</button>
             </div>
 
-            <h3>👸 2. Véu & Tiara de Diamantes</h3>
+            <h3>💇‍♀️ 2. Penteado & Cor do Cabelo</h3>
+            <div class="grid-2" id="hairBtns">
+                <button class="btn-opt active" data-v="brown">🤎 Cachos Castanhos</button>
+                <button class="btn-opt" data-v="blonde">💛 Loiro Dourado</button>
+                <button class="btn-opt" data-v="pink">🩷 Rosa Princesa</button>
+                <button class="btn-opt" data-v="black">🖤 Coque Real Preto</button>
+            </div>
+
+            <h3>👸 3. Tiara Imperial & Véu</h3>
             <div class="grid-2" id="veilBtns">
-                <button class="btn-opt active" data-v="crown">👑 Tiara Imperial</button>
+                <button class="btn-opt active" data-v="crown">👑 Coroa Diamantes</button>
                 <button class="btn-opt" data-v="roses">🌹 Grinalda Rosas</button>
-                <button class="btn-opt" data-v="stars">⭐ Estrelas Cristal</button>
+                <button class="btn-opt" data-v="stars">🌟 Tiara Estelar</button>
                 <button class="btn-opt" data-v="pearls">🤍 Arco de Pérolas</button>
             </div>
 
-            <h3>💐 3. Buquê da Noiva</h3>
-            <div class="grid-2" id="bouquetBtns">
-                <button class="btn-opt active" data-v="roses">💐 Rosas Vermelhas</button>
-                <button class="btn-opt" data-v="sakura">🌸 Flores Sakura</button>
-                <button class="btn-opt" data-v="tulips">🌷 Tulipas Douradas</button>
-                <button class="btn-opt" data-v="lilies">🌺 Lírios Reais</button>
+            <h3>💎 4. Joias & Rendas Reais</h3>
+            <div class="grid-2" id="jewelBtns">
+                <button class="btn-opt active" data-v="diamond">💎 Colar Diamante</button>
+                <button class="btn-opt" data-v="ruby">❤️ Pingente Rubi</button>
+                <button class="btn-opt" data-v="pearl">🤍 Colar Pérolas</button>
+                <button class="btn-opt" data-v="gold">✨ Gargantilha Ouro</button>
             </div>
-
-            <h3>🏛️ 4. Cenário do Altar</h3>
-            <div class="grid-2" id="sceneBtns">
-                <button class="btn-opt active" data-v="palace">🏰 Salão do Palácio</button>
-                <button class="btn-opt" data-v="garden">🌸 Jardim de Rosas</button>
-                <button class="btn-opt" data-v="beach">🌅 Pôr do Sol</button>
-                <button class="btn-opt" data-v="starlight">🌌 Noite Estrelada</button>
-            </div>
-
-            <button class="btn-action" id="marryBtn">🔔 Celebrar Casamento Real (+1 👰)</button>
         </aside>
 
         <section class="stage">
-            <canvas id="brideCanvas" width="540" height="540"></canvas>
+            <canvas id="brideCanvas" width="580" height="560"></canvas>
+            <div class="judges-bar" id="judgeMsg">✨ Combine vestido, joias, buquê e bolo real para celebrar o casamento!</div>
         </section>
+
+        <aside class="panel">
+            <h3>💐 5. Buquê Floral da Noiva</h3>
+            <div class="grid-2" id="bouquetBtns">
+                <button class="btn-opt active" data-v="roses">🌹 Rosas Reais</button>
+                <button class="btn-opt" data-v="sakura">🌸 Sakura Imperial</button>
+                <button class="btn-opt" data-v="tulips">🌷 Tulipas Ouro</button>
+                <button class="btn-opt" data-v="lilies">🌺 Lírios Celestes</button>
+            </div>
+
+            <h3>🎂 6. Bolo de Casamento (3 Andares)</h3>
+            <div class="grid-2" id="cakeBtns">
+                <button class="btn-opt active" data-v="white">🎂 Clássico Pérola</button>
+                <button class="btn-opt" data-v="strawberry">🍓 Morango & Rosa</button>
+                <button class="btn-opt" data-v="gold">👑 Dourado Real</button>
+                <button class="btn-opt" data-v="galaxy">🌌 Cristal Azul</button>
+            </div>
+
+            <h3>🏛️ 7. Salão & Altar do Casamento</h3>
+            <div class="grid-2" id="sceneBtns">
+                <button class="btn-opt active" data-v="palace">🏰 Catedral Real</button>
+                <button class="btn-opt" data-v="garden">🌸 Jardim Secreto</button>
+                <button class="btn-opt" data-v="beach">🌅 Praia Dourada</button>
+                <button class="btn-opt" data-v="starlight">🌌 Noite Estrelada</button>
+            </div>
+
+            <button class="btn-action" id="marryBtn">🔔 Celebrar Casamento & Nota (+1 👰)</button>
+            <button class="btn-action btn-dl" id="dlBtn">📸 Salvar Foto do Casamento (PNG)</button>
+        </aside>
     </main>
 
     <script type="module">
@@ -123,110 +165,214 @@
         const canvas = document.getElementById('brideCanvas');
         const ctx = canvas.getContext('2d');
 
-        let state = { gown: 'pearl', veil: 'crown', bouquet: 'roses', scene: 'palace' };
-        let petals = Array.from({ length: 28 }, () => ({
-            x: Math.random() * 540, y: Math.random() * 540,
-            s: Math.random() * 4 + 3, vy: Math.random() * 1.2 + 0.5
-        }));
-
-        const gownColors = {
-            pearl: ['#ffffff', '#f1f5f9', '#cbd5e1'],
-            blush: ['#fff1f2', '#fbcfe8', '#f472b6'],
-            champagne: ['#fefce8', '#fef08a', '#f59e0b'],
-            crystal: ['#f0f9ff', '#bae6fd', '#38bdf8']
+        let state = {
+            gown: 'pearl', hair: 'brown', veil: 'crown',
+            jewel: 'diamond', bouquet: 'roses', cake: 'white', scene: 'palace'
         };
 
+        let petals = Array.from({ length: 34 }, () => ({
+            x: Math.random() * 580, y: Math.random() * 560,
+            s: Math.random() * 4 + 3, vy: Math.random() * 1.2 + 0.5, vx: (Math.random() - 0.5) * 0.6
+        }));
+
+        const gownThemes = {
+            pearl: ['#ffffff', '#f1f5f9', '#cbd5e1', 'ballgown'],
+            blush: ['#fff1f2', '#fbcfe8', '#f472b6', 'mermaid'],
+            champagne: ['#fefce8', '#fef08a', '#eab308', 'ballgown'],
+            crystal: ['#f0f9ff', '#bae6fd', '#38bdf8', 'ballgown'],
+            lavender: ['#faf5ff', '#e9d5ff', '#a855f7', 'mermaid'],
+            ruby: ['#ffe4e6', '#fb7185', '#e11d48', 'ballgown']
+        };
+
+        const hairColors = {
+            brown: '#451a03', blonde: '#facc15', pink: '#f472b6', black: '#0f172a'
+        };
+
+        function drawCake(cx, cy) {
+            const cakeCols = {
+                white: ['#ffffff', '#fbcfe8'],
+                strawberry: ['#fbcfe8', '#f43f5e'],
+                gold: ['#fef08a', '#d97706'],
+                galaxy: ['#bae6fd', '#6366f1']
+            }[state.cake];
+
+            // Cake stand
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(cx - 55, cy + 5, 110, 8);
+            ctx.fillRect(cx - 12, cy + 13, 24, 30);
+            ctx.fillRect(cx - 40, cy + 40, 80, 7);
+
+            // 3 Tiers
+            [[92, 38, 0], [68, 34, -38], [44, 28, -72]].forEach(([w, h, oy]) => {
+                ctx.fillStyle = cakeCols[0];
+                ctx.fillRect(cx - w / 2, cy - h + oy + 5, w, h);
+                ctx.strokeStyle = cakeCols[1];
+                ctx.lineWidth = 2;
+                ctx.strokeRect(cx - w / 2, cy - h + oy + 5, w, h);
+                // Frosting pearls
+                ctx.fillStyle = cakeCols[1];
+                for (let px = cx - w / 2 + 6; px <= cx + w / 2 - 6; px += 10) {
+                    ctx.beginPath(); ctx.arc(px, cy - h + oy + 9, 3, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+            ctx.font = '22px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('👑', cx, cy - 102);
+        }
+
         function draw() {
-            // Scene background
-            const g = ctx.createLinearGradient(0, 0, 0, 540);
+            // 1. Scene Background
+            const g = ctx.createLinearGradient(0, 0, 0, 560);
             if (state.scene === 'palace') {
-                g.addColorStop(0, '#581c87'); g.addColorStop(1, '#fbcfe8');
+                g.addColorStop(0, '#4c1d95'); g.addColorStop(0.7, '#fbcfe8'); g.addColorStop(1, '#f9a8d4');
             } else if (state.scene === 'garden') {
                 g.addColorStop(0, '#38bdf8'); g.addColorStop(0.65, '#fce7f3'); g.addColorStop(1, '#4ade80');
             } else if (state.scene === 'beach') {
-                g.addColorStop(0, '#f43f5e'); g.addColorStop(0.5, '#fbbf24'); g.addColorStop(1, '#0284c7');
+                g.addColorStop(0, '#f43f5e'); g.addColorStop(0.55, '#fbbf24'); g.addColorStop(1, '#0284c7');
             } else {
-                g.addColorStop(0, '#0f172a'); g.addColorStop(1, '#4c1d95');
+                g.addColorStop(0, '#090d16'); g.addColorStop(0.7, '#31105a'); g.addColorStop(1, '#581c87');
             }
             ctx.fillStyle = g;
-            ctx.fillRect(0, 0, 540, 540);
+            ctx.fillRect(0, 0, 580, 560);
 
-            // Floral wedding arch
-            ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+            // Red carpet floor
+            ctx.fillStyle = 'rgba(225, 29, 72, 0.35)';
+            ctx.beginPath();
+            ctx.moveTo(210, 420); ctx.lineTo(370, 420);
+            ctx.lineTo(480, 560); ctx.lineTo(100, 560);
+            ctx.closePath(); ctx.fill();
+
+            // 2. Floral Wedding Arch
+            ctx.strokeStyle = 'rgba(255,255,255,0.82)';
             ctx.lineWidth = 12;
             ctx.beginPath();
-            ctx.arc(270, 290, 210, Math.PI, 0);
+            ctx.arc(290, 290, 220, Math.PI, 0);
             ctx.stroke();
-            for (let a = Math.PI; a <= Math.PI * 2; a += 0.25) {
-                const ax = 270 + Math.cos(a) * 210;
-                const ay = 290 + Math.sin(a) * 210;
+            for (let a = Math.PI; a <= Math.PI * 2 + 0.05; a += 0.22) {
+                const ax = 290 + Math.cos(a) * 220;
+                const ay = 290 + Math.sin(a) * 220;
                 ctx.font = '24px sans-serif';
-                ctx.fillText('🌸', ax - 12, ay + 8);
+                ctx.textAlign = 'center';
+                ctx.fillText('🌸', ax, ay + 8);
             }
 
-            // Long translucent bridal veil behind bride
+            // 3. 3-Tier Wedding Cake on the left pedestal
+            drawCake(100, 480);
+
+            // 4. Translucent Cathedral Veil with Lace Sparkles
             ctx.fillStyle = 'rgba(255,255,255,0.38)';
             ctx.beginPath();
-            ctx.moveTo(230, 125);
-            ctx.quadraticCurveTo(100, 320, 115, 495);
-            ctx.quadraticCurveTo(270, 525, 425, 495);
-            ctx.quadraticCurveTo(440, 320, 310, 125);
+            ctx.moveTo(255, 118);
+            ctx.quadraticCurveTo(130, 315, 145, 515);
+            ctx.quadraticCurveTo(290, 545, 435, 515);
+            ctx.quadraticCurveTo(450, 315, 325, 118);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6, 6]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 5. Bride Hair (Back curls)
+            const hCol = hairColors[state.hair];
+            ctx.fillStyle = hCol;
+            ctx.beginPath();
+            ctx.arc(290, 160, 50, 0, Math.PI * 2);
+            if (state.hair !== 'black') {
+                ctx.arc(245, 200, 28, 0, Math.PI * 2);
+                ctx.arc(335, 200, 28, 0, Math.PI * 2);
+            }
             ctx.fill();
 
-            // Bride hair & face
-            ctx.fillStyle = '#451a03';
-            ctx.beginPath(); ctx.arc(270, 165, 46, 0, Math.PI * 2); ctx.fill();
+            // Neck, Shoulders & Arms
             ctx.fillStyle = '#fde6d8';
-            ctx.beginPath(); ctx.arc(270, 170, 36, 0, Math.PI * 2); ctx.fill();
-            // Eyes & smile
-            ctx.fillStyle = '#1e1b4b';
-            ctx.beginPath(); ctx.arc(257, 168, 4.5, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(283, 168, 4.5, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 2.5;
-            ctx.beginPath(); ctx.arc(270, 178, 10, 0.2, Math.PI - 0.2); ctx.stroke();
+            ctx.fillRect(276, 195, 28, 32);
+            ctx.beginPath();
+            ctx.ellipse(290, 232, 48, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
 
-            // Bridal Gown
-            const cols = gownColors[state.gown];
-            const dg = ctx.createLinearGradient(140, 220, 400, 500);
-            dg.addColorStop(0, cols[0]); dg.addColorStop(0.6, cols[1]); dg.addColorStop(1, cols[2]);
+            // Bride Head & Kawaii Eyes
+            ctx.fillStyle = '#fde6d8';
+            ctx.beginPath(); ctx.arc(290, 165, 38, 0, Math.PI * 2); ctx.fill();
+            // Blush
+            ctx.fillStyle = 'rgba(244,114,182,0.45)';
+            ctx.beginPath(); ctx.arc(268, 174, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(312, 174, 8, 0, Math.PI * 2); ctx.fill();
+            // Eyes
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath(); ctx.arc(275, 162, 5.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(305, 162, 5.5, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(273, 160, 2, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(303, 160, 2, 0, Math.PI * 2); ctx.fill();
+            // Smile
+            ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.arc(290, 173, 9, 0.2, Math.PI - 0.2); ctx.stroke();
+
+            // 6. Royal Necklace & Earrings
+            ctx.strokeStyle = state.jewel === 'gold' ? '#fbbf24' : '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(290, 210, 20, 0.2, Math.PI - 0.2); ctx.stroke();
+            ctx.fillStyle = state.jewel === 'ruby' ? '#e11d48' : state.jewel === 'diamond' ? '#38bdf8' : '#fef08a';
+            ctx.beginPath(); ctx.arc(290, 232, 6, 0, Math.PI * 2); ctx.fill();
+
+            // 7. Couture Wedding Gown
+            const [c1, c2, c3, cut] = gownThemes[state.gown];
+            const dg = ctx.createLinearGradient(160, 225, 420, 520);
+            dg.addColorStop(0, c1); dg.addColorStop(0.55, c2); dg.addColorStop(1, c3);
             ctx.fillStyle = dg;
             ctx.beginPath();
-            ctx.moveTo(242, 215); ctx.lineTo(298, 215);
-            ctx.lineTo(292, 285);
-            ctx.bezierCurveTo(395, 325, 435, 440, 445, 500);
-            ctx.quadraticCurveTo(270, 525, 95, 500);
-            ctx.bezierCurveTo(105, 440, 145, 325, 248, 285);
+            if (cut === 'ballgown') {
+                ctx.moveTo(256, 228); ctx.lineTo(324, 228);
+                ctx.lineTo(316, 298);
+                ctx.bezierCurveTo(425, 338, 460, 455, 468, 520);
+                ctx.quadraticCurveTo(290, 545, 112, 520);
+                ctx.bezierCurveTo(120, 455, 155, 338, 264, 298);
+            } else {
+                // Mermaid silhouette
+                ctx.moveTo(258, 228); ctx.lineTo(322, 228);
+                ctx.lineTo(314, 300); ctx.lineTo(326, 405);
+                ctx.lineTo(430, 520);
+                ctx.quadraticCurveTo(290, 545, 150, 520);
+                ctx.lineTo(254, 405); ctx.lineTo(266, 300);
+            }
             ctx.closePath();
             ctx.fill();
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
 
-            // Lace scallops at bottom of dress
+            // Lace scallops & corset embroidery
             ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-            for (let lx = 110; lx <= 430; lx += 26) {
-                ctx.beginPath(); ctx.arc(lx, 495, 13, 0, Math.PI); ctx.stroke();
+            ctx.lineWidth = 2;
+            for (let lx = 135; lx <= 445; lx += 26) {
+                ctx.beginPath(); ctx.arc(lx, 514, 13, 0, Math.PI); ctx.stroke();
             }
+            // Waist belt with bow
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(264, 294, 52, 8);
 
-            // Tiara / Headpiece
+            // 8. Tiara / Crown
             ctx.font = '34px sans-serif';
             ctx.textAlign = 'center';
             const headIcon = state.veil === 'crown' ? '👑' : state.veil === 'roses' ? '🌹' : state.veil === 'stars' ? '🌟' : '🤍';
-            ctx.fillText(headIcon, 270, 130);
+            ctx.fillText(headIcon, 290, 122);
 
-            // Bridal Bouquet held at waist
-            ctx.fillStyle = '#86efac';
-            ctx.beginPath(); ctx.arc(270, 310, 32, 0, Math.PI * 2); ctx.fill();
+            // 9. Detailed Bridal Bouquet with Ribbon
+            ctx.fillStyle = '#4ade80';
+            ctx.beginPath(); ctx.arc(290, 325, 34, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
             const bIcon = state.bouquet === 'roses' ? '🌹' : state.bouquet === 'sakura' ? '🌸' : state.bouquet === 'tulips' ? '🌷' : '🌺';
-            ctx.font = '26px sans-serif';
-            [[255, 305], [285, 305], [270, 292], [270, 320]].forEach(([bx, by]) => {
+            ctx.font = '24px sans-serif';
+            [[274, 318], [306, 318], [290, 304], [290, 334], [290, 320]].forEach(([bx, by]) => {
                 ctx.fillText(bIcon, bx, by);
             });
+            ctx.fillText('🎀', 290, 355);
 
-            // Falling flower petals
+            // 10. Falling Flower Petals & Gold Sparkles
             petals.forEach(p => {
-                p.y += p.vy;
-                if (p.y > 540) p.y = -10;
-                ctx.fillStyle = 'rgba(255,192,203,0.8)';
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2); ctx.fill();
+                p.y += p.vy; p.x += p.vx;
+                if (p.y > 560) { p.y = -10; p.x = Math.random() * 580; }
+                ctx.fillStyle = 'rgba(255, 192, 203, 0.85)';
+                ctx.beginPath(); ctx.ellipse(p.x, p.y, p.s, p.s * 0.65, 0.4, 0, Math.PI * 2); ctx.fill();
             });
 
             requestAnimationFrame(draw);
@@ -242,14 +388,25 @@
             });
         }
         bindGroup('gownBtns', 'gown');
+        bindGroup('hairBtns', 'hair');
         bindGroup('veilBtns', 'veil');
+        bindGroup('jewelBtns', 'jewel');
         bindGroup('bouquetBtns', 'bouquet');
+        bindGroup('cakeBtns', 'cake');
         bindGroup('sceneBtns', 'scene');
 
         document.getElementById('marryBtn').addEventListener('click', () => {
             bestScore += 1;
             scoreEl.textContent = bestScore;
             SaveHub.updateGameSave('weddingdress', { highScore: bestScore }, activePlayer);
+            document.getElementById('judgeMsg').textContent = '👑 NOTA 100/100! As Madrinhas Reais aplaudiram de pé o Casamento Imperial! 💖🔔';
+        });
+
+        document.getElementById('dlBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'casamento-real-jasdev.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
         });
 
         requestAnimationFrame(draw);

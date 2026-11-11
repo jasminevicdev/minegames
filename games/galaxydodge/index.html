@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Guardian: Boss Arena — JasDEV Game Hub</title>
+    <title>Star Guardian: Boss Arena HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at center, #0f172a, #020617);
+            background: radial-gradient(circle at top, #171038, #030612 75%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 960px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.05); border-bottom: 2px solid rgba(56,189,248,0.4);
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(56,189,248,0.4);
         }
         .back-btn {
             text-decoration: none; color: #bae6fd; font-weight: 700;
@@ -27,39 +27,82 @@
             background: linear-gradient(135deg, #0284c7, #6366f1);
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
+        .layout {
+            display: grid; grid-template-columns: 280px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 14px; align-items: start;
+        }
+        @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(15, 23, 42, 0.92); border: 2px solid rgba(56,189,248,0.35);
+            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #7dd3fc; font-size: 0.95rem; }
+        .ship-btn {
+            padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; cursor: pointer;
+            text-align: left; font-size: 0.84rem;
+        }
+        .ship-btn.active {
+            background: linear-gradient(135deg, #0284c7, #7c3aed); border-color: #fff;
+            box-shadow: 0 0 12px rgba(56,189,248,0.45);
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+        }
+        .btn-bomb { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; }
+        .btn-restart { background: linear-gradient(135deg, #38bdf8, #a855f7); color: #fff; }
         .arena {
-            display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 12px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .hud {
+            width: 100%; max-width: 640px; display: flex; justify-content: space-between;
+            background: rgba(255,255,255,0.06); padding: 10px 16px; border-radius: 14px;
+            border: 1px solid rgba(56,189,248,0.3); font-size: 0.92rem; flex-wrap: wrap; gap: 8px;
         }
         canvas {
             background: #030712; border: 3px solid #38bdf8; border-radius: 20px;
-            box-shadow: 0 0 35px rgba(56,189,248,0.35); max-width: 100%; height: auto;
+            box-shadow: 0 0 40px rgba(56,189,248,0.35); max-width: 100%; height: auto;
             touch-action: none; cursor: crosshair;
-        }
-        .hud {
-            display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center;
-        }
-        .btn {
-            padding: 10px 20px; border-radius: 999px; border: none; font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #a855f7); color: #fff; cursor: pointer;
         }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🛸 Star Guardian: Boss Arena</h1>
+        <h1>🛸 Star Guardian: Boss Arena — Edição HD</h1>
         <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
     </header>
 
-    <main class="arena">
-        <div class="hud">
-            <span>Pontos: <strong id="scoreVal">0</strong></span>
-            <span>Escudo: <strong id="hpVal">❤️❤️❤️</strong></span>
-            <span>Chefão Nível: <strong id="lvlVal">1</strong></span>
-            <button class="btn" id="restartBtn">🔄 Reiniciar Missão</button>
-        </div>
-        <canvas id="gameCanvas" width="600" height="520"></canvas>
-        <p style="color:#94a3b8; font-size:0.88rem;">Mova a nave com o Mouse, Dedo ou Setas (⬅️➡️) — Tiro Laser Triplo Automático!</p>
+    <main class="layout">
+        <aside class="panel">
+            <h3>🚀 1. Escolha sua Caça Estelar</h3>
+            <button class="ship-btn active" data-ship="valkyrie">🌸 <strong>Valkyrie Neon</strong><br><small>Laser Triplo Rápido</small></button>
+            <button class="ship-btn" data-ship="phoenix">🔥 <strong>Fênix Dourada</strong><br><small>Canhão Solar + Escudo</small></button>
+            <button class="ship-btn" data-ship="cyber">⚡ <strong>Cyber Interceptor</strong><br><small>Plasma Quádruplo Veloz</small></button>
+
+            <h3>💣 2. Armas Especiais</h3>
+            <button class="btn-action btn-bomb" id="bombBtn">💥 Supernova Bomba (<span id="bombCount">3</span>) [Espaço]</button>
+            <button class="btn-action btn-restart" id="restartBtn">🔄 Reiniciar Missão</button>
+
+            <h3>🎁 Power-Ups na Arena</h3>
+            <p style="font-size:0.82rem; color:#cbd5e1; line-height:1.45;">
+                🛡️ <strong>Escudo:</strong> Bloqueia dano<br>
+                ⚡ <strong>Overdrive:</strong> Dobro de tiros<br>
+                ❤️ <strong>Cristal Vida:</strong> +1 Coração<br>
+                💣 <strong>Carga Nova:</strong> +1 Supernova
+            </p>
+        </aside>
+
+        <section class="arena">
+            <div class="hud">
+                <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+                <span>Vida: <strong id="hpVal">❤️❤️❤️❤️❤️</strong></span>
+                <span>Escudo: <strong id="shieldVal" style="color:#38bdf8;">ATIVO 🛡️</strong></span>
+                <span>Chefão: <strong id="bossName" style="color:#f472b6;">Imperatriz Medusa #1</strong></span>
+            </div>
+            <canvas id="gameCanvas" width="640" height="540"></canvas>
+        </section>
     </main>
 
     <script type="module">
@@ -73,28 +116,67 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let player = { x: 300, y: 460, hp: 3 };
-        let boss = { x: 300, y: 95, vx: 3.2, hp: 100, maxHp: 100, level: 1 };
+        const BOSS_ROSTER = [
+            { name: 'Imperatriz Medusa #1', color: '#ec4899', core: '#fde047' },
+            { name: 'Mecha Octo-Core #2', color: '#38bdf8', core: '#f43f5e' },
+            { name: 'Dragão Quântico #3', color: '#a855f7', core: '#10b981' },
+            { name: 'Titã Supernova #4', color: '#f97316', core: '#38bdf8' }
+        ];
+
+        let shipType = 'valkyrie';
+        let player = { x: 320, y: 475, hp: 5, shield: 1, bombs: 3, overdrive: 0 };
+        let boss = { x: 320, y: 105, vx: 3.2, hp: 140, maxHp: 140, level: 1 };
         let bullets = [];
         let enemyOrbs = [];
-        let stars = Array.from({ length: 60 }, () => ({ x: Math.random() * 600, y: Math.random() * 520, s: Math.random() * 2 + 1 }));
+        let powerups = [];
+        let particles = [];
+        let stars = Array.from({ length: 75 }, () => ({
+            x: Math.random() * 640, y: Math.random() * 540,
+            s: Math.random() * 2.5 + 0.8, c: Math.random() > 0.7 ? '#38bdf8' : '#ffffff'
+        }));
         let score = 0;
         let tick = 0;
+        let flashAlpha = 0;
         let keys = {};
 
+        function spawnExplosion(x, y, color, count = 16) {
+            for (let i = 0; i < count; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const sp = Math.random() * 4.5 + 1;
+                particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, c: color, life: 1 });
+            }
+        }
+
         function resetGame() {
-            player = { x: 300, y: 460, hp: 3 };
-            boss = { x: 300, y: 95, vx: 3.2, hp: 100, maxHp: 100, level: 1 };
+            player = { x: 320, y: 475, hp: 5, shield: 1, bombs: 3, overdrive: 0 };
+            boss = { x: 320, y: 105, vx: 3.2, hp: 140, maxHp: 140, level: 1 };
             bullets = [];
             enemyOrbs = [];
+            powerups = [];
+            particles = [];
             score = 0;
+            updateHud();
+        }
+
+        function triggerSupernova() {
+            if (player.bombs <= 0 || player.hp <= 0) return;
+            player.bombs--;
+            flashAlpha = 0.85;
+            enemyOrbs.forEach(o => spawnExplosion(o.x, o.y, '#fde047', 6));
+            enemyOrbs = [];
+            boss.hp = Math.max(1, boss.hp - 45);
+            score += 120;
+            spawnExplosion(boss.x, boss.y, '#f472b6', 32);
             updateHud();
         }
 
         function updateHud() {
             document.getElementById('scoreVal').textContent = score;
             document.getElementById('hpVal').textContent = '❤️'.repeat(Math.max(0, player.hp)) || '💥';
-            document.getElementById('lvlVal').textContent = boss.level;
+            document.getElementById('shieldVal').textContent = player.shield > 0 ? 'ATIVO 🛡️' : 'OFF';
+            document.getElementById('bombCount').textContent = player.bombs;
+            const info = BOSS_ROSTER[(boss.level - 1) % BOSS_ROSTER.length];
+            document.getElementById('bossName').textContent = `${info.name} (Nv.${boss.level})`;
             if (score > bestScore) {
                 bestScore = score;
                 hiEl.textContent = bestScore;
@@ -102,105 +184,265 @@
             }
         }
 
-        window.addEventListener('keydown', e => keys[e.key] = true);
+        function drawShip(x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+            // Engine thruster flame
+            ctx.fillStyle = tick % 4 < 2 ? '#38bdf8' : '#fde047';
+            ctx.beginPath();
+            ctx.moveTo(-8, 18); ctx.lineTo(0, 34 + (tick % 6)); ctx.lineTo(8, 18);
+            ctx.fill();
+
+            // Ship Wings & Fuselage
+            const col = shipType === 'valkyrie' ? '#ec4899' : shipType === 'phoenix' ? '#f59e0b' : '#06b6d4';
+            ctx.fillStyle = col;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, -26);
+            ctx.lineTo(26, 16);
+            ctx.lineTo(10, 12);
+            ctx.lineTo(0, 20);
+            ctx.lineTo(-10, 12);
+            ctx.lineTo(-26, 16);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Cockpit Crystal
+            ctx.fillStyle = '#bae6fd';
+            ctx.beginPath();
+            ctx.ellipse(0, -4, 6, 11, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Energy Shield Bubble
+            if (player.shield > 0) {
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(0, 0, 34, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function drawBoss(b) {
+            const info = BOSS_ROSTER[(b.level - 1) % BOSS_ROSTER.length];
+            ctx.save();
+            ctx.translate(b.x, b.y);
+
+            // Rotating energy ring & tentacles/wings
+            ctx.strokeStyle = info.color;
+            ctx.lineWidth = 4;
+            for (let i = 0; i < 6; i++) {
+                const ang = (tick * 0.03) + (i * Math.PI) / 3;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(ang) * 62, Math.sin(ang) * 62);
+                ctx.stroke();
+                ctx.fillStyle = info.core;
+                ctx.beginPath();
+                ctx.arc(Math.cos(ang) * 62, Math.sin(ang) * 62, 7, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Armored Boss Hull
+            ctx.fillStyle = info.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, 44, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Glowing Core & Cyber Eyes
+            ctx.fillStyle = info.core;
+            ctx.beginPath();
+            ctx.arc(0, 0, 22, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#090418';
+            ctx.beginPath(); ctx.arc(-10, -4, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(10, -4, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+
+            // Boss Health Bar at top
+            ctx.fillStyle = 'rgba(255,255,255,0.18)';
+            ctx.fillRect(140, 16, 360, 12);
+            const g = ctx.createLinearGradient(140, 0, 500, 0);
+            g.addColorStop(0, '#f43f5e'); g.addColorStop(1, '#fde047');
+            ctx.fillStyle = g;
+            ctx.fillRect(140, 16, 360 * (b.hp / b.maxHp), 12);
+        }
+
+        window.addEventListener('keydown', e => {
+            keys[e.key] = true;
+            if (e.code === 'Space') { e.preventDefault(); triggerSupernova(); }
+        });
         window.addEventListener('keyup', e => keys[e.key] = false);
         canvas.addEventListener('pointermove', e => {
             const r = canvas.getBoundingClientRect();
-            player.x = Math.max(30, Math.min(570, (e.clientX - r.left) * (600 / r.width)));
+            player.x = Math.max(35, Math.min(605, (e.clientX - r.left) * (640 / r.width)));
         });
+        document.getElementById('bombBtn').addEventListener('click', triggerSupernova);
         document.getElementById('restartBtn').addEventListener('click', resetGame);
+
+        document.querySelectorAll('.ship-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                shipType = btn.dataset.ship;
+            });
+        });
 
         function loop() {
             tick++;
             ctx.fillStyle = '#030712';
-            ctx.fillRect(0, 0, 600, 520);
+            ctx.fillRect(0, 0, 640, 540);
 
             // Starfield
-            ctx.fillStyle = '#fff';
             stars.forEach(st => {
                 st.y += st.s;
-                if (st.y > 520) st.y = 0;
+                if (st.y > 540) st.y = 0;
+                ctx.fillStyle = st.c;
                 ctx.fillRect(st.x, st.y, st.s, st.s);
             });
 
             if (player.hp > 0) {
-                if (keys['ArrowLeft'] || keys['a']) player.x = Math.max(30, player.x - 6);
-                if (keys['ArrowRight'] || keys['d']) player.x = Math.min(570, player.x + 6);
+                const spd = shipType === 'cyber' ? 7.5 : 6;
+                if (keys['ArrowLeft'] || keys['a']) player.x = Math.max(35, player.x - spd);
+                if (keys['ArrowRight'] || keys['d']) player.x = Math.min(605, player.x + spd);
+                if (player.overdrive > 0) player.overdrive--;
 
-                // Auto fire triple laser
-                if (tick % 10 === 0) {
-                    bullets.push({ x: player.x, y: player.y - 20, vx: 0, vy: -9 });
-                    bullets.push({ x: player.x - 14, y: player.y - 12, vx: -1.2, vy: -8.5 });
-                    bullets.push({ x: player.x + 14, y: player.y - 12, vx: 1.2, vy: -8.5 });
+                // Auto-fire weapons by ship type
+                if (tick % 9 === 0) {
+                    const col = shipType === 'valkyrie' ? '#f472b6' : shipType === 'phoenix' ? '#fde047' : '#38bdf8';
+                    bullets.push({ x: player.x, y: player.y - 24, vx: 0, vy: -10, c: col, dmg: shipType === 'phoenix' ? 3 : 2 });
+                    bullets.push({ x: player.x - 16, y: player.y - 14, vx: -1.3, vy: -9.5, c: col, dmg: 2 });
+                    bullets.push({ x: player.x + 16, y: player.y - 14, vx: 1.3, vy: -9.5, c: col, dmg: 2 });
+                    if (player.overdrive > 0 || shipType === 'cyber') {
+                        bullets.push({ x: player.x - 28, y: player.y - 6, vx: -2.4, vy: -9, c: '#00f5d4', dmg: 2 });
+                        bullets.push({ x: player.x + 28, y: player.y - 6, vx: 2.4, vy: -9, c: '#00f5d4', dmg: 2 });
+                    }
                 }
 
-                // Boss movement & attacks
+                // Boss movement & bullet patterns
                 boss.x += boss.vx;
-                if (boss.x < 75 || boss.x > 525) boss.vx *= -1;
-                if (tick % Math.max(18, 42 - boss.level * 4) === 0) {
-                    for (let a = -1; a <= 1; a++) {
-                        enemyOrbs.push({ x: boss.x, y: boss.y + 35, vx: a * 2.2, vy: 4 + boss.level * 0.4 });
+                if (boss.x < 85 || boss.x > 555) boss.vx *= -1;
+                if (tick % Math.max(16, 40 - boss.level * 3) === 0) {
+                    const count = Math.min(5, 2 + Math.floor(boss.level / 2));
+                    for (let i = -count; i <= count; i++) {
+                        enemyOrbs.push({
+                            x: boss.x, y: boss.y + 40,
+                            vx: i * 1.4, vy: 3.6 + boss.level * 0.35
+                        });
                     }
+                }
+
+                // Spawn floating power-ups
+                if (tick % 240 === 0) {
+                    const types = ['shield', 'overdrive', 'heal', 'bomb'];
+                    powerups.push({
+                        x: 60 + Math.random() * 520, y: -20,
+                        type: types[Math.floor(Math.random() * types.length)]
+                    });
                 }
             }
 
-            // Draw Boss & HP Bar
-            ctx.fillStyle = '#ec4899';
-            ctx.beginPath(); ctx.arc(boss.x, boss.y, 44, 0, Math.PI * 2); ctx.fill();
-            ctx.font = '46px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText('👾', boss.x, boss.y);
-            ctx.fillStyle = 'rgba(255,255,255,0.2)';
-            ctx.fillRect(150, 18, 300, 10);
-            ctx.fillStyle = '#f43f5e';
-            ctx.fillRect(150, 18, 300 * (boss.hp / boss.maxHp), 10);
+            drawBoss(boss);
 
-            // Player bullets
-            ctx.fillStyle = '#38bdf8';
+            // Update & draw player lasers
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const b = bullets[i];
                 b.x += b.vx; b.y += b.vy;
-                ctx.fillRect(b.x - 3, b.y - 8, 6, 14);
-                if (Math.hypot(b.x - boss.x, b.y - boss.y) < 46) {
+                ctx.fillStyle = b.c;
+                ctx.fillRect(b.x - 3, b.y - 10, 6, 16);
+                if (Math.hypot(b.x - boss.x, b.y - boss.y) < 48) {
                     bullets.splice(i, 1);
-                    boss.hp -= 2;
+                    boss.hp -= b.dmg;
                     score += 10;
+                    spawnExplosion(b.x, b.y, b.c, 3);
                     if (boss.hp <= 0) {
-                        score += 250;
+                        score += 300;
+                        spawnExplosion(boss.x, boss.y, '#fde047', 35);
                         boss.level++;
-                        boss.maxHp = 100 + boss.level * 40;
+                        boss.maxHp = 140 + boss.level * 45;
                         boss.hp = boss.maxHp;
                     }
                     updateHud();
-                } else if (b.y < 0) {
+                } else if (b.y < -20) {
                     bullets.splice(i, 1);
+                }
+            }
+
+            // Powerups
+            for (let i = powerups.length - 1; i >= 0; i--) {
+                const p = powerups[i];
+                p.y += 2.2;
+                ctx.font = '26px sans-serif';
+                ctx.textAlign = 'center';
+                const icon = p.type === 'shield' ? '🛡️' : p.type === 'overdrive' ? '⚡' : p.type === 'heal' ? '❤️' : '💣';
+                ctx.fillText(icon, p.x, p.y);
+                if (Math.hypot(p.x - player.x, p.y - player.y) < 34) {
+                    if (p.type === 'shield') player.shield = 1;
+                    else if (p.type === 'overdrive') player.overdrive = 300;
+                    else if (p.type === 'heal') player.hp = Math.min(5, player.hp + 1);
+                    else player.bombs = Math.min(5, player.bombs + 1);
+                    score += 50;
+                    powerups.splice(i, 1);
+                    updateHud();
+                } else if (p.y > 560) {
+                    powerups.splice(i, 1);
                 }
             }
 
             // Enemy plasma orbs
-            ctx.fillStyle = '#fde047';
             for (let i = enemyOrbs.length - 1; i >= 0; i--) {
                 const o = enemyOrbs[i];
                 o.x += o.vx; o.y += o.vy;
-                ctx.beginPath(); ctx.arc(o.x, o.y, 8, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#fde047';
+                ctx.beginPath(); ctx.arc(o.x, o.y, 7, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 2; ctx.stroke();
                 if (player.hp > 0 && Math.hypot(o.x - player.x, o.y - player.y) < 26) {
                     enemyOrbs.splice(i, 1);
-                    player.hp--;
+                    if (player.shield > 0) {
+                        player.shield = 0;
+                        spawnExplosion(player.x, player.y, '#38bdf8', 15);
+                    } else {
+                        player.hp--;
+                        spawnExplosion(player.x, player.y, '#f43f5e', 18);
+                    }
                     updateHud();
-                } else if (o.y > 530) {
+                } else if (o.y > 550 || o.x < -10 || o.x > 650) {
                     enemyOrbs.splice(i, 1);
                 }
             }
 
-            // Draw Player Ship
-            ctx.font = '38px sans-serif';
-            ctx.fillText(player.hp > 0 ? '🛸' : '💥', player.x, player.y);
+            // Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const pt = particles[i];
+                pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.04;
+                if (pt.life <= 0) { particles.splice(i, 1); continue; }
+                ctx.globalAlpha = pt.life;
+                ctx.fillStyle = pt.c;
+                ctx.beginPath(); ctx.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2); ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+
+            if (player.hp > 0) drawShip(player.x, player.y);
+
+            if (flashAlpha > 0) {
+                ctx.fillStyle = `rgba(255,255,255,${flashAlpha})`;
+                ctx.fillRect(0, 0, 640, 540);
+                flashAlpha = Math.max(0, flashAlpha - 0.06);
+            }
 
             if (player.hp <= 0) {
-                ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, 600, 520);
+                ctx.fillStyle = 'rgba(0,0,0,0.72)';
+                ctx.fillRect(0, 0, 640, 540);
                 ctx.fillStyle = '#38bdf8';
                 ctx.font = 'bold 30px Fredoka, sans-serif';
-                ctx.fillText('FIM DE MISSÃO! Clique em Reiniciar', 300, 260);
+                ctx.textAlign = 'center';
+                ctx.fillText('FIM DE MISSÃO! Clique em Reiniciar 🔄', 320, 270);
             }
 
             requestAnimationFrame(loop);

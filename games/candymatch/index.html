@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Royal Candy Match-3 — JasDEV Game Hub</title>
+    <title>Royal Candy Match-3 HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #500724, #19030d);
+            background: radial-gradient(circle at top, #500724, #17020b 75%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 920px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1020px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.07); border-bottom: 2px solid rgba(244,114,182,0.4);
         }
         .back-btn {
@@ -22,59 +22,90 @@
             background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
             border: 1px solid rgba(236,72,153,0.5);
         }
-        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f472b6; }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f472b6; }
         .score-pill {
             background: linear-gradient(135deg, #ec4899, #eab308);
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
         .wrap {
-            display: flex; flex-direction: column; align-items: center; padding: 18px; gap: 14px;
+            display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 14px;
+            width: 100%; max-width: 720px;
         }
-        .hud {
-            display: flex; gap: 20px; align-items: center; font-size: 1.05rem;
+        .level-box {
+            width: 100%; background: rgba(255,255,255,0.07); padding: 12px 18px;
+            border-radius: 18px; border: 2px solid rgba(244,114,182,0.35);
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .level-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .bar-bg { width: 100%; height: 12px; background: rgba(0,0,0,0.4); border-radius: 999px; overflow: hidden; }
+        .bar-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #f472b6, #fde047, #38bdf8);
+            transition: width 0.25s;
+        }
+        .boosters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .boost-btn {
+            padding: 9px 15px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08); color: #fff; font-weight: 700; cursor: pointer;
+            font-family: 'Fredoka', sans-serif; font-size: 0.88rem; transition: 0.15s;
+        }
+        .boost-btn.active, .boost-btn:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fde047;
+            transform: translateY(-2px);
         }
         .grid {
-            display: grid; grid-template-columns: repeat(7, 58px); gap: 6px;
-            background: rgba(255,255,255,0.08); padding: 12px; border-radius: 22px;
-            border: 3px solid rgba(244,114,182,0.45);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+            display: grid; grid-template-columns: repeat(7, 62px); gap: 7px;
+            background: rgba(35, 6, 22, 0.88); padding: 14px; border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.5);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.55);
         }
-        @media (max-width: 500px) {
+        @media (max-width: 520px) {
             .grid { grid-template-columns: repeat(7, 44px); gap: 4px; }
             .cell { height: 44px !important; font-size: 1.5rem !important; }
         }
         .cell {
-            height: 58px; border-radius: 14px; background: rgba(0,0,0,0.35);
+            height: 62px; border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; cursor: pointer; transition: transform 0.15s, background 0.15s;
-            border: 2px solid rgba(255,255,255,0.12);
+            font-size: 2.05rem; cursor: pointer; transition: transform 0.16s, box-shadow 0.16s;
+            border: 2px solid rgba(255,255,255,0.22);
+            box-shadow: inset 0 3px 8px rgba(255,255,255,0.28);
         }
-        .cell:hover { transform: scale(1.06); }
+        .cell:hover { transform: scale(1.07); }
         .cell.selected {
-            background: rgba(236,72,153,0.45); border-color: #fde047;
-            transform: scale(1.12); box-shadow: 0 0 14px #fde047;
+            border-color: #fde047; transform: scale(1.14);
+            box-shadow: 0 0 18px #fde047;
         }
-        .btn {
-            padding: 10px 22px; border-radius: 999px; border: none; font-weight: 700;
-            background: linear-gradient(135deg, #f472b6, #fde047); color: #2b0618;
-            cursor: pointer; font-family: 'Fredoka', sans-serif;
+        #comboBanner {
+            font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.2rem; min-height: 1.5rem;
         }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🍬 Royal Candy Match: Doces & Joias</h1>
+        <h1>🍬 Royal Candy Match: Doces & Joias — Edição HD</h1>
         <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
     </header>
 
     <main class="wrap">
-        <div class="hud">
-            <span>Pontos Atuais: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
-            <button class="btn" id="shuffleBtn">🔄 Novo Tabuleiro</button>
+        <div class="level-box">
+            <div class="level-top">
+                <span>👑 Nível Real <strong id="lvlNum">1</strong></span>
+                <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong> / Meta: <strong id="goalVal">500</strong></span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill" id="barFill"></div></div>
         </div>
+
+        <div class="boosters">
+            <button class="boost-btn" id="hammerBtn">🔨 Martelo Doce (Quebrar 1)</button>
+            <button class="boost-btn" id="bombBtn">💣 Bomba Real 3x3</button>
+            <button class="boost-btn" id="rainbowBtn">🌈 Raio Arco-Íris (Cor)</button>
+            <button class="boost-btn" id="shuffleBtn">🔀 Embaralhar</button>
+        </div>
+
+        <div id="comboBanner">✨ Alinhe 3, 4 ou 5 doces reais ou use os Boosters Mágicos acima!</div>
+
         <div class="grid" id="board"></div>
-        <p style="color:#fbcfe8; font-size:0.88rem;">Troque dois doces vizinhos para alinhar 3 ou mais iguais e fazer super combos!</p>
     </main>
 
     <script type="module">
@@ -86,26 +117,48 @@
         hiEl.textContent = bestScore;
 
         const N = 7;
-        const CANDIES = ['🍬', '🧁', '🍓', '💎', '👑', '🍩'];
+        const CANDIES = [
+            { icon: '🍬', bg: 'linear-gradient(135deg,#ec4899,#be185d)' },
+            { icon: '🧁', bg: 'linear-gradient(135deg,#a855f7,#6b21a8)' },
+            { icon: '🍓', bg: 'linear-gradient(135deg,#f43f5e,#9f1239)' },
+            { icon: '💎', bg: 'linear-gradient(135deg,#38bdf8,#0369a1)' },
+            { icon: '👑', bg: 'linear-gradient(135deg,#eab308,#a16207)' },
+            { icon: '🍩', bg: 'linear-gradient(135deg,#10b981,#047857)' }
+        ];
+
         let board = [];
         let selected = null;
+        let activeBooster = null; // 'hammer' | 'bomb' | 'rainbow'
         let score = 0;
+        let level = 1;
+        let goal = 500;
 
         function randCandy() {
             return CANDIES[Math.floor(Math.random() * CANDIES.length)];
         }
 
-        function initBoard() {
+        function initBoard(resetScore = false) {
             board = Array.from({ length: N * N }, () => randCandy());
-            score = 0;
+            if (resetScore) { score = 0; level = 1; goal = 500; }
             resolveMatches(false);
-            updateScore(0);
+            updateUI();
             render();
         }
 
-        function updateScore(pts) {
-            score += pts;
+        function updateUI(msg = '') {
             document.getElementById('scoreVal').textContent = score;
+            document.getElementById('lvlNum').textContent = level;
+            document.getElementById('goalVal').textContent = goal;
+            const pct = Math.min(100, Math.round((score / goal) * 100));
+            document.getElementById('barFill').style.width = `${pct}%`;
+            if (msg) document.getElementById('comboBanner').textContent = msg;
+
+            if (score >= goal) {
+                level++;
+                goal += level * 450;
+                document.getElementById('comboBanner').textContent = `🎉 NÍVEL ${level} ALCANÇADO! Bônus Real +100 PTS! 👑`;
+                score += 100;
+            }
             if (score > bestScore) {
                 bestScore = score;
                 hiEl.textContent = bestScore;
@@ -115,20 +168,20 @@
 
         function findMatches() {
             const matched = new Set();
-            // Horizontal
             for (let r = 0; r < N; r++) {
                 for (let c = 0; c < N - 2; c++) {
                     const i = r * N + c;
-                    if (board[i] && board[i] === board[i + 1] && board[i] === board[i + 2]) {
+                    if (board[i] && board[i + 1] && board[i + 2] &&
+                        board[i].icon === board[i + 1].icon && board[i].icon === board[i + 2].icon) {
                         matched.add(i); matched.add(i + 1); matched.add(i + 2);
                     }
                 }
             }
-            // Vertical
             for (let c = 0; c < N; c++) {
                 for (let r = 0; r < N - 2; r++) {
                     const i = r * N + c;
-                    if (board[i] && board[i] === board[i + N] && board[i] === board[i + N * 2]) {
+                    if (board[i] && board[i + N] && board[i + N * 2] &&
+                        board[i].icon === board[i + N].icon && board[i].icon === board[i + N * 2].icon) {
                         matched.add(i); matched.add(i + N); matched.add(i + N * 2);
                     }
                 }
@@ -136,36 +189,95 @@
             return matched;
         }
 
+        function applyGravity() {
+            for (let c = 0; c < N; c++) {
+                let writeRow = N - 1;
+                for (let r = N - 1; r >= 0; r--) {
+                    const val = board[r * N + c];
+                    if (val !== null) {
+                        board[writeRow * N + c] = val;
+                        writeRow--;
+                    }
+                }
+                while (writeRow >= 0) {
+                    board[writeRow * N + c] = randCandy();
+                    writeRow--;
+                }
+            }
+        }
+
         function resolveMatches(countPoints = true) {
+            let cascades = 0;
             let totalCleared = 0;
             while (true) {
                 const m = findMatches();
                 if (m.size === 0) break;
+                cascades++;
                 totalCleared += m.size;
                 m.forEach(idx => { board[idx] = null; });
-                // Gravity drop
-                for (let c = 0; c < N; c++) {
-                    let writeRow = N - 1;
-                    for (let r = N - 1; r >= 0; r--) {
-                        const val = board[r * N + c];
-                        if (val !== null) {
-                            board[writeRow * N + c] = val;
-                            writeRow--;
-                        }
-                    }
-                    while (writeRow >= 0) {
-                        board[writeRow * N + c] = randCandy();
-                        writeRow--;
-                    }
-                }
+                applyGravity();
             }
             if (countPoints && totalCleared > 0) {
-                updateScore(totalCleared * 25);
+                const pts = totalCleared * 30 * cascades;
+                score += pts;
+                updateUI(`✨ COMBO x${cascades}! +${pts} PONTOS REAIS! 🍬`);
             }
             return totalCleared > 0;
         }
 
+        function setBooster(type, btnId) {
+            activeBooster = activeBooster === type ? null : type;
+            document.querySelectorAll('.boost-btn').forEach(b => b.classList.remove('active'));
+            if (activeBooster) document.getElementById(btnId).classList.add('active');
+        }
+
+        document.getElementById('hammerBtn').addEventListener('click', () => setBooster('hammer', 'hammerBtn'));
+        document.getElementById('bombBtn').addEventListener('click', () => setBooster('bomb', 'bombBtn'));
+        document.getElementById('rainbowBtn').addEventListener('click', () => setBooster('rainbow', 'rainbowBtn'));
+        document.getElementById('shuffleBtn').addEventListener('click', () => initBoard(false));
+
         function clickCell(idx) {
+            if (activeBooster === 'hammer') {
+                board[idx] = null;
+                applyGravity();
+                score += 60;
+                resolveMatches(true);
+                setBooster(null);
+                updateUI('🔨 Martelo Doce ativado! +60 PTS!');
+                render();
+                return;
+            }
+            if (activeBooster === 'bomb') {
+                const r0 = Math.floor(idx / N), c0 = idx % N;
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        const nr = r0 + dr, nc = c0 + dc;
+                        if (nr >= 0 && nr < N && nc >= 0 && nc < N) board[nr * N + nc] = null;
+                    }
+                }
+                applyGravity();
+                score += 180;
+                resolveMatches(true);
+                setBooster(null);
+                updateUI('💣 EXPLOSÃO REAL 3x3! +180 PTS!');
+                render();
+                return;
+            }
+            if (activeBooster === 'rainbow') {
+                const targetIcon = board[idx].icon;
+                let count = 0;
+                board.forEach((cell, i) => {
+                    if (cell && cell.icon === targetIcon) { board[i] = null; count++; }
+                });
+                applyGravity();
+                score += count * 35;
+                resolveMatches(true);
+                setBooster(null);
+                updateUI(`🌈 Raio Arco-Íris limpou todos os ${targetIcon}! +${count * 35} PTS!`);
+                render();
+                return;
+            }
+
             if (selected === null) {
                 selected = idx;
                 render();
@@ -181,7 +293,6 @@
             if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
                 [board[selected], board[idx]] = [board[idx], board[selected]];
                 if (!resolveMatches(true)) {
-                    // Swap back if no match
                     [board[selected], board[idx]] = [board[idx], board[selected]];
                 }
                 selected = null;
@@ -197,14 +308,14 @@
             board.forEach((candy, i) => {
                 const d = document.createElement('div');
                 d.className = 'cell' + (selected === i ? ' selected' : '');
-                d.textContent = candy;
+                d.style.background = candy.bg;
+                d.textContent = candy.icon;
                 d.addEventListener('click', () => clickCell(i));
                 el.appendChild(d);
             });
         }
 
-        document.getElementById('shuffleBtn').addEventListener('click', initBoard);
-        initBoard();
+        initBoard(true);
     </script>
 </body>
 </html>
