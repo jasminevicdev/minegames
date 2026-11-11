@@ -89,7 +89,12 @@ export class SaveHub {
                     sandart: { highScore: 0 },
                     scratchart: { highScore: 0 },
                     stickerbook: { highScore: 0 },
-                    fashiondesign: { highScore: 0 }
+                    fashiondesign: { highScore: 0 },
+                    potteryart: { highScore: 0 },
+                    weddingdress: { highScore: 0 },
+                    galaxydodge: { highScore: 0 },
+                    potionsort: { highScore: 0 },
+                    candymatch: { highScore: 0 }
                 }
             };
         }

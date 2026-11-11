@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Guardian: Boss Arena — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at center, #0f172a, #020617);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 960px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.05); border-bottom: 2px solid rgba(56,189,248,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #bae6fd; font-weight: 700;
+            background: rgba(56,189,248,0.2); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(56,189,248,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #38bdf8; }
+        .score-pill {
+            background: linear-gradient(135deg, #0284c7, #6366f1);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .arena {
+            display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 12px;
+        }
+        canvas {
+            background: #030712; border: 3px solid #38bdf8; border-radius: 20px;
+            box-shadow: 0 0 35px rgba(56,189,248,0.35); max-width: 100%; height: auto;
+            touch-action: none; cursor: crosshair;
+        }
+        .hud {
+            display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center;
+        }
+        .btn {
+            padding: 10px 20px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #a855f7); color: #fff; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🛸 Star Guardian: Boss Arena</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <span>Pontos: <strong id="scoreVal">0</strong></span>
+            <span>Escudo: <strong id="hpVal">❤️❤️❤️</strong></span>
+            <span>Chefão Nível: <strong id="lvlVal">1</strong></span>
+            <button class="btn" id="restartBtn">🔄 Reiniciar Missão</button>
+        </div>
+        <canvas id="gameCanvas" width="600" height="520"></canvas>
+        <p style="color:#94a3b8; font-size:0.88rem;">Mova a nave com o Mouse, Dedo ou Setas (⬅️➡️) — Tiro Laser Triplo Automático!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('galaxydodge', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let player = { x: 300, y: 460, hp: 3 };
+        let boss = { x: 300, y: 95, vx: 3.2, hp: 100, maxHp: 100, level: 1 };
+        let bullets = [];
+        let enemyOrbs = [];
+        let stars = Array.from({ length: 60 }, () => ({ x: Math.random() * 600, y: Math.random() * 520, s: Math.random() * 2 + 1 }));
+        let score = 0;
+        let tick = 0;
+        let keys = {};
+
+        function resetGame() {
+            player = { x: 300, y: 460, hp: 3 };
+            boss = { x: 300, y: 95, vx: 3.2, hp: 100, maxHp: 100, level: 1 };
+            bullets = [];
+            enemyOrbs = [];
+            score = 0;
+            updateHud();
+        }
+
+        function updateHud() {
+            document.getElementById('scoreVal').textContent = score;
+            document.getElementById('hpVal').textContent = '❤️'.repeat(Math.max(0, player.hp)) || '💥';
+            document.getElementById('lvlVal').textContent = boss.level;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('galaxydodge', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        window.addEventListener('keydown', e => keys[e.key] = true);
+        window.addEventListener('keyup', e => keys[e.key] = false);
+        canvas.addEventListener('pointermove', e => {
+            const r = canvas.getBoundingClientRect();
+            player.x = Math.max(30, Math.min(570, (e.clientX - r.left) * (600 / r.width)));
+        });
+        document.getElementById('restartBtn').addEventListener('click', resetGame);
+
+        function loop() {
+            tick++;
+            ctx.fillStyle = '#030712';
+            ctx.fillRect(0, 0, 600, 520);
+
+            // Starfield
+            ctx.fillStyle = '#fff';
+            stars.forEach(st => {
+                st.y += st.s;
+                if (st.y > 520) st.y = 0;
+                ctx.fillRect(st.x, st.y, st.s, st.s);
+            });
+
+            if (player.hp > 0) {
+                if (keys['ArrowLeft'] || keys['a']) player.x = Math.max(30, player.x - 6);
+                if (keys['ArrowRight'] || keys['d']) player.x = Math.min(570, player.x + 6);
+
+                // Auto fire triple laser
+                if (tick % 10 === 0) {
+                    bullets.push({ x: player.x, y: player.y - 20, vx: 0, vy: -9 });
+                    bullets.push({ x: player.x - 14, y: player.y - 12, vx: -1.2, vy: -8.5 });
+                    bullets.push({ x: player.x + 14, y: player.y - 12, vx: 1.2, vy: -8.5 });
+                }
+
+                // Boss movement & attacks
+                boss.x += boss.vx;
+                if (boss.x < 75 || boss.x > 525) boss.vx *= -1;
+                if (tick % Math.max(18, 42 - boss.level * 4) === 0) {
+                    for (let a = -1; a <= 1; a++) {
+                        enemyOrbs.push({ x: boss.x, y: boss.y + 35, vx: a * 2.2, vy: 4 + boss.level * 0.4 });
+                    }
+                }
+            }
+
+            // Draw Boss & HP Bar
+            ctx.fillStyle = '#ec4899';
+            ctx.beginPath(); ctx.arc(boss.x, boss.y, 44, 0, Math.PI * 2); ctx.fill();
+            ctx.font = '46px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('👾', boss.x, boss.y);
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.fillRect(150, 18, 300, 10);
+            ctx.fillStyle = '#f43f5e';
+            ctx.fillRect(150, 18, 300 * (boss.hp / boss.maxHp), 10);
+
+            // Player bullets
+            ctx.fillStyle = '#38bdf8';
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const b = bullets[i];
+                b.x += b.vx; b.y += b.vy;
+                ctx.fillRect(b.x - 3, b.y - 8, 6, 14);
+                if (Math.hypot(b.x - boss.x, b.y - boss.y) < 46) {
+                    bullets.splice(i, 1);
+                    boss.hp -= 2;
+                    score += 10;
+                    if (boss.hp <= 0) {
+                        score += 250;
+                        boss.level++;
+                        boss.maxHp = 100 + boss.level * 40;
+                        boss.hp = boss.maxHp;
+                    }
+                    updateHud();
+                } else if (b.y < 0) {
+                    bullets.splice(i, 1);
+                }
+            }
+
+            // Enemy plasma orbs
+            ctx.fillStyle = '#fde047';
+            for (let i = enemyOrbs.length - 1; i >= 0; i--) {
+                const o = enemyOrbs[i];
+                o.x += o.vx; o.y += o.vy;
+                ctx.beginPath(); ctx.arc(o.x, o.y, 8, 0, Math.PI * 2); ctx.fill();
+                if (player.hp > 0 && Math.hypot(o.x - player.x, o.y - player.y) < 26) {
+                    enemyOrbs.splice(i, 1);
+                    player.hp--;
+                    updateHud();
+                } else if (o.y > 530) {
+                    enemyOrbs.splice(i, 1);
+                }
+            }
+
+            // Draw Player Ship
+            ctx.font = '38px sans-serif';
+            ctx.fillText(player.hp > 0 ? '🛸' : '💥', player.x, player.y);
+
+            if (player.hp <= 0) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, 600, 520);
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 30px Fredoka, sans-serif';
+                ctx.fillText('FIM DE MISSÃO! Clique em Reiniciar', 300, 260);
+            }
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

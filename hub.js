@@ -82,6 +82,11 @@ class GameHub {
         this.statScratchartScore = document.getElementById('stat-scratchart-score');
         this.statStickerbookScore = document.getElementById('stat-stickerbook-score');
         this.statFashiondesignScore = document.getElementById('stat-fashiondesign-score');
+        this.statPotteryartScore = document.getElementById('stat-potteryart-score');
+        this.statWeddingdressScore = document.getElementById('stat-weddingdress-score');
+        this.statGalaxydodgeScore = document.getElementById('stat-galaxydodge-score');
+        this.statPotionsortScore = document.getElementById('stat-potionsort-score');
+        this.statCandymatchScore = document.getElementById('stat-candymatch-score');
 
         this.selectedAvatar = '🎪';
 
@@ -201,6 +206,11 @@ class GameHub {
         const scratchartSave = SaveHub.getGameSave('scratchart', player.name);
         const stickerbookSave = SaveHub.getGameSave('stickerbook', player.name);
         const fashiondesignSave = SaveHub.getGameSave('fashiondesign', player.name);
+        const potteryartSave = SaveHub.getGameSave('potteryart', player.name);
+        const weddingdressSave = SaveHub.getGameSave('weddingdress', player.name);
+        const galaxydodgeSave = SaveHub.getGameSave('galaxydodge', player.name);
+        const potionsortSave = SaveHub.getGameSave('potionsort', player.name);
+        const candymatchSave = SaveHub.getGameSave('candymatch', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -242,6 +252,11 @@ class GameHub {
         if (this.statScratchartScore) this.statScratchartScore.innerText = `${scratchartSave.highScore || 0} 🪄`;
         if (this.statStickerbookScore) this.statStickerbookScore.innerText = `${stickerbookSave.highScore || 0} 📒`;
         if (this.statFashiondesignScore) this.statFashiondesignScore.innerText = `${fashiondesignSave.highScore || 0} ✂️`;
+        if (this.statPotteryartScore) this.statPotteryartScore.innerText = `${potteryartSave.highScore || 0} 🏺`;
+        if (this.statWeddingdressScore) this.statWeddingdressScore.innerText = `${weddingdressSave.highScore || 0} 👰`;
+        if (this.statGalaxydodgeScore) this.statGalaxydodgeScore.innerText = `${galaxydodgeSave.highScore || 0} PTS`;
+        if (this.statPotionsortScore) this.statPotionsortScore.innerText = `${potionsortSave.highScore || 0} 🧪`;
+        if (this.statCandymatchScore) this.statCandymatchScore.innerText = `${candymatchSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {

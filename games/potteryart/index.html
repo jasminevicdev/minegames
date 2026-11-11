@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê de Cerâmica & Pintura Real — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b173c, #130718);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(244,114,182,0.35);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(236,72,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f9a8d4; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #f59e0b);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(38, 14, 42, 0.92); border: 2px solid rgba(244,114,182,0.35);
+            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.95rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.82rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #f59e0b); border-color: #fff;
+        }
+        .palette { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+        .sw {
+            height: 28px; border-radius: 8px; cursor: pointer; border: 2px solid rgba(255,255,255,0.4);
+        }
+        .sw.active { transform: scale(1.15); border-color: #fff; box-shadow: 0 0 8px #fff; }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+        }
+        .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+        .canvas-wrap {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(18, 6, 22, 0.88); border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.4); padding: 16px;
+        }
+        canvas {
+            background: radial-gradient(circle, #2d1233, #110514);
+            border-radius: 18px; max-width: 100%; height: auto;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.55); cursor: pointer; touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🏺 Ateliê de Cerâmica & Pintura Real</h1>
+        <div class="score-pill">Vasos Criados: <span id="scoreVal">0</span> 🏺</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🏺 1. Molde de Porcelana</h3>
+            <div class="grid-2" id="shapeBtns">
+                <button class="btn-opt active" data-shape="amphora">🏺 Ânfora Real</button>
+                <button class="btn-opt" data-shape="heart">💖 Vaso Coração</button>
+                <button class="btn-opt" data-shape="gourd">✨ Jarro Imperial</button>
+                <button class="btn-opt" data-shape="teacup">🍵 Vaso Tulipa</button>
+            </div>
+
+            <h3>🎨 2. Esmalte Base da Cerâmica</h3>
+            <div class="palette" id="clayPalette">
+                <div class="sw active" style="background:#fbcfe8" data-c="#fbcfe8"></div>
+                <div class="sw" style="background:#bae6fd" data-c="#bae6fd"></div>
+                <div class="sw" style="background:#fef08a" data-c="#fef08a"></div>
+                <div class="sw" style="background:#e9d5ff" data-c="#e9d5ff"></div>
+                <div class="sw" style="background:#d97706" data-c="#d97706"></div>
+                <div class="sw" style="background:#1e1b4b" data-c="#1e1b4b"></div>
+            </div>
+
+            <h3>🖌️ 3. Cor do Pincel Giratório (Torno)</h3>
+            <div class="palette" id="paintPalette">
+                <div class="sw active" style="background:#ec4899" data-c="#ec4899"></div>
+                <div class="sw" style="background:#fbbf24" data-c="#fbbf24"></div>
+                <div class="sw" style="background:#06b6d4" data-c="#06b6d4"></div>
+                <div class="sw" style="background:#a855f7" data-c="#a855f7"></div>
+                <div class="sw" style="background:#ffffff" data-c="#ffffff"></div>
+                <div class="sw" style="background:#10b981" data-c="#10b981"></div>
+            </div>
+
+            <h3>🌸 4. Frisos Ornamentais no Torno</h3>
+            <div class="grid-2" id="ornBtns">
+                <button class="btn-opt" data-orn="flowers">🌸 Flores Sakura</button>
+                <button class="btn-opt" data-orn="gold">👑 Filete de Ouro</button>
+                <button class="btn-opt" data-orn="hearts">💖 Corações</button>
+                <button class="btn-opt" data-orn="waves">🌊 Ondas Gregas</button>
+            </div>
+
+            <button class="btn-action btn-save" id="saveBtn">🔥 Queimar no Forno & Salvar (+1 🏺)</button>
+            <button class="btn-action btn-clear" id="clearBtn">🧼 Limpar Pintura</button>
+        </aside>
+
+        <section class="canvas-wrap">
+            <canvas id="potCanvas" width="540" height="540"></canvas>
+            <p style="margin-top:10px; font-size:0.88rem; color:#fbcfe8;">Passe o pincel no vaso girando para criar faixas perfeitas ou sculpte as bordas!</p>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('potteryart', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('potCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentShape = 'amphora';
+        let clayColor = '#fbcfe8';
+        let paintColor = '#ec4899';
+        let bands = [
+            { y: 230, h: 18, color: '#fbbf24', type: 'gold' },
+            { y: 310, h: 24, color: '#ec4899', type: 'flowers' },
+            { y: 390, h: 18, color: '#fbbf24', type: 'gold' }
+        ];
+        let painting = false;
+        let spinOffset = 0;
+
+        function getRadiusAtY(y) {
+            const t = (y - 110) / 340; // 0 to 1
+            if (currentShape === 'amphora') {
+                return 65 + Math.sin(t * Math.PI * 1.35) * 95 - (t < 0.2 ? (0.2 - t) * 140 : 0);
+            } else if (currentShape === 'heart') {
+                return 45 + Math.sin(t * Math.PI) * 125 * (1 - t * 0.35);
+            } else if (currentShape === 'gourd') {
+                return 75 + Math.sin(t * Math.PI * 2.2) * 55 + t * 40;
+            } else {
+                return 85 + Math.cos(t * Math.PI * 1.2) * 55;
+            }
+        }
+
+        function tracePot(c) {
+            c.beginPath();
+            c.moveTo(270 - getRadiusAtY(110), 110);
+            for (let y = 110; y <= 450; y += 5) {
+                c.lineTo(270 - getRadiusAtY(y), y);
+            }
+            for (let y = 450; y >= 110; y -= 5) {
+                c.lineTo(270 + getRadiusAtY(y), y);
+            }
+            c.closePath();
+        }
+
+        function render() {
+            spinOffset = (spinOffset + 1.5) % 40;
+            ctx.clearRect(0, 0, 540, 540);
+
+            // Spinning Potter's wheel base
+            ctx.fillStyle = '#64748b';
+            ctx.beginPath(); ctx.ellipse(270, 465, 160, 26, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#94a3b8';
+            ctx.beginPath(); ctx.ellipse(270, 456, 145, 20, 0, 0, Math.PI * 2); ctx.fill();
+
+            ctx.save();
+            tracePot(ctx);
+            ctx.clip();
+
+            // Base ceramic color
+            ctx.fillStyle = clayColor;
+            ctx.fillRect(0, 0, 540, 540);
+
+            // Painted horizontal bands & ornaments
+            bands.forEach(b => {
+                ctx.fillStyle = b.color;
+                ctx.fillRect(70, b.y - b.h / 2, 400, b.h);
+                if (b.type === 'flowers') {
+                    ctx.font = '20px sans-serif';
+                    for (let x = 80 + (spinOffset % 36); x < 460; x += 36) {
+                        ctx.fillText('🌸', x - 10, b.y + 7);
+                    }
+                } else if (b.type === 'hearts') {
+                    ctx.font = '18px sans-serif';
+                    for (let x = 80 + (spinOffset % 36); x < 460; x += 36) {
+                        ctx.fillText('💖', x - 10, b.y + 6);
+                    }
+                } else if (b.type === 'waves') {
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    for (let x = 70; x < 460; x += 10) {
+                        const wy = b.y + Math.sin((x + spinOffset) * 0.18) * 7;
+                        x === 70 ? ctx.moveTo(x, wy) : ctx.lineTo(x, wy);
+                    }
+                    ctx.stroke();
+                }
+            });
+
+            // 3D Glossy Ceramic Shading & Specular Highlight
+            const sh = ctx.createLinearGradient(110, 0, 430, 0);
+            sh.addColorStop(0, 'rgba(0,0,0,0.42)');
+            sh.addColorStop(0.28, 'rgba(255,255,255,0.45)');
+            sh.addColorStop(0.55, 'rgba(255,255,255,0.05)');
+            sh.addColorStop(1, 'rgba(0,0,0,0.5)');
+            ctx.fillStyle = sh;
+            ctx.fillRect(0, 0, 540, 540);
+            ctx.restore();
+
+            // Gold rim & outline
+            ctx.save();
+            tracePot(ctx);
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+
+            // Top rim opening ellipse
+            const topR = getRadiusAtY(110);
+            ctx.fillStyle = '#331832';
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.ellipse(270, 110, topR, 14, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            requestAnimationFrame(render);
+        }
+
+        function addPaintAt(e) {
+            const r = canvas.getBoundingClientRect();
+            const y = (e.clientY - r.top) * (540 / r.height);
+            if (y >= 115 && y <= 445) {
+                bands.push({ y, h: 16, color: paintColor, type: 'solid' });
+            }
+        }
+
+        canvas.addEventListener('pointerdown', (e) => { painting = true; addPaintAt(e); });
+        window.addEventListener('pointermove', (e) => { if (painting) addPaintAt(e); });
+        window.addEventListener('pointerup', () => { painting = false; });
+
+        document.querySelectorAll('#shapeBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#shapeBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentShape = btn.dataset.shape;
+            });
+        });
+
+        document.querySelectorAll('#clayPalette .sw').forEach(sw => {
+            sw.addEventListener('click', () => {
+                document.querySelectorAll('#clayPalette .sw').forEach(s => s.classList.remove('active'));
+                sw.classList.add('active');
+                clayColor = sw.dataset.c;
+            });
+        });
+
+        document.querySelectorAll('#paintPalette .sw').forEach(sw => {
+            sw.addEventListener('click', () => {
+                document.querySelectorAll('#paintPalette .sw').forEach(s => s.classList.remove('active'));
+                sw.classList.add('active');
+                paintColor = sw.dataset.c;
+            });
+        });
+
+        document.querySelectorAll('#ornBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const t = btn.dataset.orn;
+                const y = 160 + Math.random() * 240;
+                bands.push({
+                    y,
+                    h: t === 'gold' ? 14 : 26,
+                    color: t === 'gold' ? '#fbbf24' : paintColor,
+                    type: t
+                });
+            });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => { bands = []; });
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('potteryart', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

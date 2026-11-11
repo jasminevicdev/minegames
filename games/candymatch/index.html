@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Candy Match-3 — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #500724, #19030d);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 920px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.07); border-bottom: 2px solid rgba(244,114,182,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(236,72,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f472b6; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .wrap {
+            display: flex; flex-direction: column; align-items: center; padding: 18px; gap: 14px;
+        }
+        .hud {
+            display: flex; gap: 20px; align-items: center; font-size: 1.05rem;
+        }
+        .grid {
+            display: grid; grid-template-columns: repeat(7, 58px); gap: 6px;
+            background: rgba(255,255,255,0.08); padding: 12px; border-radius: 22px;
+            border: 3px solid rgba(244,114,182,0.45);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+        }
+        @media (max-width: 500px) {
+            .grid { grid-template-columns: repeat(7, 44px); gap: 4px; }
+            .cell { height: 44px !important; font-size: 1.5rem !important; }
+        }
+        .cell {
+            height: 58px; border-radius: 14px; background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; cursor: pointer; transition: transform 0.15s, background 0.15s;
+            border: 2px solid rgba(255,255,255,0.12);
+        }
+        .cell:hover { transform: scale(1.06); }
+        .cell.selected {
+            background: rgba(236,72,153,0.45); border-color: #fde047;
+            transform: scale(1.12); box-shadow: 0 0 14px #fde047;
+        }
+        .btn {
+            padding: 10px 22px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #f472b6, #fde047); color: #2b0618;
+            cursor: pointer; font-family: 'Fredoka', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🍬 Royal Candy Match: Doces & Joias</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="wrap">
+        <div class="hud">
+            <span>Pontos Atuais: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="shuffleBtn">🔄 Novo Tabuleiro</button>
+        </div>
+        <div class="grid" id="board"></div>
+        <p style="color:#fbcfe8; font-size:0.88rem;">Troque dois doces vizinhos para alinhar 3 ou mais iguais e fazer super combos!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('candymatch', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const N = 7;
+        const CANDIES = ['🍬', '🧁', '🍓', '💎', '👑', '🍩'];
+        let board = [];
+        let selected = null;
+        let score = 0;
+
+        function randCandy() {
+            return CANDIES[Math.floor(Math.random() * CANDIES.length)];
+        }
+
+        function initBoard() {
+            board = Array.from({ length: N * N }, () => randCandy());
+            score = 0;
+            resolveMatches(false);
+            updateScore(0);
+            render();
+        }
+
+        function updateScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('candymatch', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        function findMatches() {
+            const matched = new Set();
+            // Horizontal
+            for (let r = 0; r < N; r++) {
+                for (let c = 0; c < N - 2; c++) {
+                    const i = r * N + c;
+                    if (board[i] && board[i] === board[i + 1] && board[i] === board[i + 2]) {
+                        matched.add(i); matched.add(i + 1); matched.add(i + 2);
+                    }
+                }
+            }
+            // Vertical
+            for (let c = 0; c < N; c++) {
+                for (let r = 0; r < N - 2; r++) {
+                    const i = r * N + c;
+                    if (board[i] && board[i] === board[i + N] && board[i] === board[i + N * 2]) {
+                        matched.add(i); matched.add(i + N); matched.add(i + N * 2);
+                    }
+                }
+            }
+            return matched;
+        }
+
+        function resolveMatches(countPoints = true) {
+            let totalCleared = 0;
+            while (true) {
+                const m = findMatches();
+                if (m.size === 0) break;
+                totalCleared += m.size;
+                m.forEach(idx => { board[idx] = null; });
+                // Gravity drop
+                for (let c = 0; c < N; c++) {
+                    let writeRow = N - 1;
+                    for (let r = N - 1; r >= 0; r--) {
+                        const val = board[r * N + c];
+                        if (val !== null) {
+                            board[writeRow * N + c] = val;
+                            writeRow--;
+                        }
+                    }
+                    while (writeRow >= 0) {
+                        board[writeRow * N + c] = randCandy();
+                        writeRow--;
+                    }
+                }
+            }
+            if (countPoints && totalCleared > 0) {
+                updateScore(totalCleared * 25);
+            }
+            return totalCleared > 0;
+        }
+
+        function clickCell(idx) {
+            if (selected === null) {
+                selected = idx;
+                render();
+                return;
+            }
+            if (selected === idx) {
+                selected = null;
+                render();
+                return;
+            }
+            const r1 = Math.floor(selected / N), c1 = selected % N;
+            const r2 = Math.floor(idx / N), c2 = idx % N;
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                [board[selected], board[idx]] = [board[idx], board[selected]];
+                if (!resolveMatches(true)) {
+                    // Swap back if no match
+                    [board[selected], board[idx]] = [board[idx], board[selected]];
+                }
+                selected = null;
+            } else {
+                selected = idx;
+            }
+            render();
+        }
+
+        function render() {
+            const el = document.getElementById('board');
+            el.innerHTML = '';
+            board.forEach((candy, i) => {
+                const d = document.createElement('div');
+                d.className = 'cell' + (selected === i ? ' selected' : '');
+                d.textContent = candy;
+                d.addEventListener('click', () => clickCell(i));
+                el.appendChild(d);
+            });
+        }
+
+        document.getElementById('shuffleBtn').addEventListener('click', initBoard);
+        initBoard();
+    </script>
+</body>
+</html>

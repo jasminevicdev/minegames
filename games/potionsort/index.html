@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alquimia das Poções: Sort Puzzle — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #2e1065, #090418);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 960px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(168,85,247,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #e9d5ff; font-weight: 700;
+            background: rgba(168,85,247,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(168,85,247,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #d8b4fe; }
+        .score-pill {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .board {
+            display: flex; flex-direction: column; align-items: center; padding: 24px 16px; gap: 22px;
+        }
+        .tubes-row {
+            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+            padding: 28px; background: rgba(255,255,255,0.04); border-radius: 26px;
+            border: 2px solid rgba(192,132,252,0.35);
+        }
+        .tube {
+            width: 72px; height: 220px; border: 4px solid rgba(255,255,255,0.75);
+            border-top: none; border-radius: 0 0 36px 36px; padding: 6px;
+            display: flex; flex-direction: column-reverse; gap: 4px;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(255,255,255,0.06); position: relative;
+        }
+        .tube::before {
+            content: ''; position: absolute; top: -8px; left: -8px; right: -8px; height: 8px;
+            border: 3px solid rgba(255,255,255,0.75); border-radius: 999px;
+        }
+        .tube.selected {
+            transform: translateY(-20px);
+            box-shadow: 0 14px 28px rgba(236,72,153,0.55);
+            border-color: #fde047;
+        }
+        .layer {
+            width: 100%; height: 46px; border-radius: 8px;
+            transition: 0.2s; box-shadow: inset 0 0 10px rgba(255,255,255,0.35);
+        }
+        .layer:first-child { border-radius: 8px 8px 28px 28px; }
+        .controls { display: flex; gap: 12px; align-items: center; }
+        .btn {
+            padding: 11px 22px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; cursor: pointer;
+            font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+        }
+        #msg { font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.2rem; min-height: 1.6rem; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🧪 Alquimia das Poções: Sort Puzzle</h1>
+        <div class="score-pill">Níveis Vencidos: <span id="scoreVal">0</span> 🧪</div>
+    </header>
+
+    <main class="board">
+        <p style="color:#e9d5ff;">Clique em um frasco para colher a poção do topo e despeje sobre a mesma cor ou em um frasco vazio!</p>
+        <div id="msg"></div>
+        <div class="tubes-row" id="tubesWrap"></div>
+        <div class="controls">
+            <button class="btn" id="newBtn">🔄 Embaralhar Novo Desafio</button>
+        </div>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('potionsort', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const COLORS = ['#ff2e93', '#00f5d4', '#fde047', '#a855f7'];
+        let tubes = [];
+        let selected = null;
+        let solved = false;
+
+        function initPuzzle() {
+            solved = false;
+            selected = null;
+            document.getElementById('msg').textContent = '';
+            const pool = [];
+            COLORS.forEach(c => { for (let i = 0; i < 4; i++) pool.push(c); });
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            tubes = [
+                pool.slice(0, 4),
+                pool.slice(4, 8),
+                pool.slice(8, 12),
+                pool.slice(12, 16),
+                [],
+                []
+            ];
+            render();
+        }
+
+        function checkWin() {
+            const win = tubes.every(t => t.length === 0 || (t.length === 4 && t.every(c => c === t[0])));
+            if (win && !solved) {
+                solved = true;
+                bestScore += 1;
+                scoreEl.textContent = bestScore;
+                SaveHub.updateGameSave('potionsort', { highScore: bestScore }, activePlayer);
+                document.getElementById('msg').textContent = '✨ POÇÕES PURIFICADAS! +1 Nível Alquímico! ✨';
+            }
+        }
+
+        function clickTube(idx) {
+            if (solved) return;
+            if (selected === null) {
+                if (tubes[idx].length > 0) selected = idx;
+            } else if (selected === idx) {
+                selected = null;
+            } else {
+                const from = tubes[selected];
+                const to = tubes[idx];
+                if (from.length > 0 && to.length < 4) {
+                    const topColor = from[from.length - 1];
+                    if (to.length === 0 || to[to.length - 1] === topColor) {
+                        while (from.length > 0 && to.length < 4 && from[from.length - 1] === topColor) {
+                            to.push(from.pop());
+                        }
+                        selected = null;
+                        checkWin();
+                    } else {
+                        selected = idx;
+                    }
+                } else {
+                    selected = idx;
+                }
+            }
+            render();
+        }
+
+        function render() {
+            const wrap = document.getElementById('tubesWrap');
+            wrap.innerHTML = '';
+            tubes.forEach((t, i) => {
+                const div = document.createElement('div');
+                div.className = 'tube' + (selected === i ? ' selected' : '');
+                t.forEach(c => {
+                    const l = document.createElement('div');
+                    l.className = 'layer';
+                    l.style.background = c;
+                    div.appendChild(l);
+                });
+                div.addEventListener('click', () => clickTube(i));
+                wrap.appendChild(div);
+            });
+        }
+
+        document.getElementById('newBtn').addEventListener('click', initPuzzle);
+        initPuzzle();
+    </script>
+</body>
+</html>

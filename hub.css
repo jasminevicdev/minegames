@@ -532,6 +532,11 @@ body, html {
 .card-scratchart { border-color: #c084fc; }
 .card-stickerbook { border-color: #f9a8d4; }
 .card-fashiondesign { border-color: #ec4899; }
+.card-potteryart { border-color: #f59e0b; }
+.card-weddingdress { border-color: #fbcfe8; }
+.card-galaxydodge { border-color: #38bdf8; }
+.card-potionsort { border-color: #a855f7; }
+.card-candymatch { border-color: #f43f5e; }
 
 .game-card-banner {
     font-size: 3.5rem;

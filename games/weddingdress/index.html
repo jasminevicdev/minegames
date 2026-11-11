@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique de Noiva & Buquê Real — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #4a0e2e, #170410);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.07); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(244,114,182,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #fce7f3; font-weight: 700;
+            background: rgba(236,72,153,0.25); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,114,182,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #fbcfe8; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 320px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(45, 10, 32, 0.9); border: 2px solid rgba(244,114,182,0.35);
+            border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.95rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 9px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.82rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
+        }
+        .btn-action {
+            padding: 12px; border-radius: 14px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+            background: linear-gradient(135deg, #f472b6, #fde047); color: #2d061b;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(25, 5, 18, 0.85); border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.4); padding: 16px;
+        }
+        canvas {
+            border-radius: 18px; max-width: 100%; height: auto;
+            box-shadow: 0 12px 38px rgba(0,0,0,0.55);
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>👰 Boutique de Noiva & Casamento Real</h1>
+        <div class="score-pill">Casamentos: <span id="scoreVal">0</span> 👰</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>👗 1. Vestido de Noiva Imperial</h3>
+            <div class="grid-2" id="gownBtns">
+                <button class="btn-opt active" data-v="pearl">🤍 Pérola Real</button>
+                <button class="btn-opt" data-v="blush">🌸 Rosa Blush</button>
+                <button class="btn-opt" data-v="champagne">✨ Champagne Ouro</button>
+                <button class="btn-opt" data-v="crystal">❄️ Azul Cristal</button>
+            </div>
+
+            <h3>👸 2. Véu & Tiara de Diamantes</h3>
+            <div class="grid-2" id="veilBtns">
+                <button class="btn-opt active" data-v="crown">👑 Tiara Imperial</button>
+                <button class="btn-opt" data-v="roses">🌹 Grinalda Rosas</button>
+                <button class="btn-opt" data-v="stars">⭐ Estrelas Cristal</button>
+                <button class="btn-opt" data-v="pearls">🤍 Arco de Pérolas</button>
+            </div>
+
+            <h3>💐 3. Buquê da Noiva</h3>
+            <div class="grid-2" id="bouquetBtns">
+                <button class="btn-opt active" data-v="roses">💐 Rosas Vermelhas</button>
+                <button class="btn-opt" data-v="sakura">🌸 Flores Sakura</button>
+                <button class="btn-opt" data-v="tulips">🌷 Tulipas Douradas</button>
+                <button class="btn-opt" data-v="lilies">🌺 Lírios Reais</button>
+            </div>
+
+            <h3>🏛️ 4. Cenário do Altar</h3>
+            <div class="grid-2" id="sceneBtns">
+                <button class="btn-opt active" data-v="palace">🏰 Salão do Palácio</button>
+                <button class="btn-opt" data-v="garden">🌸 Jardim de Rosas</button>
+                <button class="btn-opt" data-v="beach">🌅 Pôr do Sol</button>
+                <button class="btn-opt" data-v="starlight">🌌 Noite Estrelada</button>
+            </div>
+
+            <button class="btn-action" id="marryBtn">🔔 Celebrar Casamento Real (+1 👰)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="brideCanvas" width="540" height="540"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('weddingdress', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('brideCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let state = { gown: 'pearl', veil: 'crown', bouquet: 'roses', scene: 'palace' };
+        let petals = Array.from({ length: 28 }, () => ({
+            x: Math.random() * 540, y: Math.random() * 540,
+            s: Math.random() * 4 + 3, vy: Math.random() * 1.2 + 0.5
+        }));
+
+        const gownColors = {
+            pearl: ['#ffffff', '#f1f5f9', '#cbd5e1'],
+            blush: ['#fff1f2', '#fbcfe8', '#f472b6'],
+            champagne: ['#fefce8', '#fef08a', '#f59e0b'],
+            crystal: ['#f0f9ff', '#bae6fd', '#38bdf8']
+        };
+
+        function draw() {
+            // Scene background
+            const g = ctx.createLinearGradient(0, 0, 0, 540);
+            if (state.scene === 'palace') {
+                g.addColorStop(0, '#581c87'); g.addColorStop(1, '#fbcfe8');
+            } else if (state.scene === 'garden') {
+                g.addColorStop(0, '#38bdf8'); g.addColorStop(0.65, '#fce7f3'); g.addColorStop(1, '#4ade80');
+            } else if (state.scene === 'beach') {
+                g.addColorStop(0, '#f43f5e'); g.addColorStop(0.5, '#fbbf24'); g.addColorStop(1, '#0284c7');
+            } else {
+                g.addColorStop(0, '#0f172a'); g.addColorStop(1, '#4c1d95');
+            }
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 540, 540);
+
+            // Floral wedding arch
+            ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+            ctx.lineWidth = 12;
+            ctx.beginPath();
+            ctx.arc(270, 290, 210, Math.PI, 0);
+            ctx.stroke();
+            for (let a = Math.PI; a <= Math.PI * 2; a += 0.25) {
+                const ax = 270 + Math.cos(a) * 210;
+                const ay = 290 + Math.sin(a) * 210;
+                ctx.font = '24px sans-serif';
+                ctx.fillText('🌸', ax - 12, ay + 8);
+            }
+
+            // Long translucent bridal veil behind bride
+            ctx.fillStyle = 'rgba(255,255,255,0.38)';
+            ctx.beginPath();
+            ctx.moveTo(230, 125);
+            ctx.quadraticCurveTo(100, 320, 115, 495);
+            ctx.quadraticCurveTo(270, 525, 425, 495);
+            ctx.quadraticCurveTo(440, 320, 310, 125);
+            ctx.fill();
+
+            // Bride hair & face
+            ctx.fillStyle = '#451a03';
+            ctx.beginPath(); ctx.arc(270, 165, 46, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#fde6d8';
+            ctx.beginPath(); ctx.arc(270, 170, 36, 0, Math.PI * 2); ctx.fill();
+            // Eyes & smile
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath(); ctx.arc(257, 168, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(283, 168, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.arc(270, 178, 10, 0.2, Math.PI - 0.2); ctx.stroke();
+
+            // Bridal Gown
+            const cols = gownColors[state.gown];
+            const dg = ctx.createLinearGradient(140, 220, 400, 500);
+            dg.addColorStop(0, cols[0]); dg.addColorStop(0.6, cols[1]); dg.addColorStop(1, cols[2]);
+            ctx.fillStyle = dg;
+            ctx.beginPath();
+            ctx.moveTo(242, 215); ctx.lineTo(298, 215);
+            ctx.lineTo(292, 285);
+            ctx.bezierCurveTo(395, 325, 435, 440, 445, 500);
+            ctx.quadraticCurveTo(270, 525, 95, 500);
+            ctx.bezierCurveTo(105, 440, 145, 325, 248, 285);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+
+            // Lace scallops at bottom of dress
+            ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+            for (let lx = 110; lx <= 430; lx += 26) {
+                ctx.beginPath(); ctx.arc(lx, 495, 13, 0, Math.PI); ctx.stroke();
+            }
+
+            // Tiara / Headpiece
+            ctx.font = '34px sans-serif';
+            ctx.textAlign = 'center';
+            const headIcon = state.veil === 'crown' ? '👑' : state.veil === 'roses' ? '🌹' : state.veil === 'stars' ? '🌟' : '🤍';
+            ctx.fillText(headIcon, 270, 130);
+
+            // Bridal Bouquet held at waist
+            ctx.fillStyle = '#86efac';
+            ctx.beginPath(); ctx.arc(270, 310, 32, 0, Math.PI * 2); ctx.fill();
+            const bIcon = state.bouquet === 'roses' ? '🌹' : state.bouquet === 'sakura' ? '🌸' : state.bouquet === 'tulips' ? '🌷' : '🌺';
+            ctx.font = '26px sans-serif';
+            [[255, 305], [285, 305], [270, 292], [270, 320]].forEach(([bx, by]) => {
+                ctx.fillText(bIcon, bx, by);
+            });
+
+            // Falling flower petals
+            petals.forEach(p => {
+                p.y += p.vy;
+                if (p.y > 540) p.y = -10;
+                ctx.fillStyle = 'rgba(255,192,203,0.8)';
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2); ctx.fill();
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        function bindGroup(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                });
+            });
+        }
+        bindGroup('gownBtns', 'gown');
+        bindGroup('veilBtns', 'veil');
+        bindGroup('bouquetBtns', 'bouquet');
+        bindGroup('sceneBtns', 'scene');
+
+        document.getElementById('marryBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('weddingdress', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(draw);
+    </script>
+</body>
+</html>
