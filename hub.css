@@ -537,6 +537,11 @@ body, html {
 .card-galaxydodge { border-color: #38bdf8; }
 .card-potionsort { border-color: #a855f7; }
 .card-candymatch { border-color: #f43f5e; }
+.card-stainedglass { border-color: #fde047; }
+.card-fairycreator { border-color: #34d399; }
+.card-cyberblade { border-color: #fb7185; }
+.card-starlink { border-color: #818cf8; }
+.card-bubblepop { border-color: #f472b6; }
 
 .game-card-banner {
     font-size: 3.5rem;

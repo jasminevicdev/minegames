@@ -94,7 +94,12 @@ export class SaveHub {
                     weddingdress: { highScore: 0 },
                     galaxydodge: { highScore: 0 },
                     potionsort: { highScore: 0 },
-                    candymatch: { highScore: 0 }
+                    candymatch: { highScore: 0 },
+                    stainedglass: { highScore: 0 },
+                    fairycreator: { highScore: 0 },
+                    cyberblade: { highScore: 0 },
+                    starlink: { highScore: 0 },
+                    bubblepop: { highScore: 0 }
                 }
             };
         }

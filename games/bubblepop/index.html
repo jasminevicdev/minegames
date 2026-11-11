@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Bubble Shooter: Bolhas de Cristal — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b0764, #090418 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 960px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(236,72,153,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(236,72,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f472b6; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 14px; gap: 10px; }
+        .hud {
+            display: flex; gap: 16px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px;
+        }
+        canvas {
+            background: linear-gradient(180deg, #17082e, #090314);
+            border: 3px solid #f472b6; border-radius: 22px;
+            box-shadow: 0 0 38px rgba(236,72,153,0.35); max-width: 100%; height: auto;
+            cursor: crosshair; touch-action: none;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #a855f7); color: #fff; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🫧 Royal Bubble Shooter: Bolhas de Cristal (#50)</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="swapBtn">🌈 Bolha Coringa</button>
+            <button class="btn" id="resetBtn">🔄 Novo Jogo</button>
+        </div>
+        <canvas id="bubbleCanvas" width="480" height="540"></canvas>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('bubblepop', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('bubbleCanvas');
+        const ctx = canvas.getContext('2d');
+        const COLS = 10, ROWS = 11, R = 22;
+        const PALETTE = ['#ff2e93', '#38bdf8', '#fde047', '#a855f7', '#10b981'];
+
+        let grid = [];
+        let aimAngle = -Math.PI / 2;
+        let shot = null;
+        let nextColor = PALETTE[0];
+        let score = 0;
+
+        function randColor() {
+            return PALETTE[Math.floor(Math.random() * PALETTE.length)];
+        }
+
+        function initGame() {
+            score = 0;
+            updateScore(0);
+            grid = Array.from({ length: ROWS }, (_, r) =>
+                Array.from({ length: COLS }, () => (r < 5 ? randColor() : null))
+            );
+            nextColor = randColor();
+            shot = null;
+        }
+
+        function updateScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('bubblepop', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        function cellPos(r, c) {
+            const ox = (r % 2) * R;
+            return { x: 32 + c * (R * 2) + ox, y: 34 + r * (R * 1.75) };
+        }
+
+        function snapBubble(bx, by, col) {
+            let bestR = 0, bestC = 0, bestD = 9999;
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (grid[r][c]) continue;
+                    const p = cellPos(r, c);
+                    const d = Math.hypot(bx - p.x, by - p.y);
+                    if (d < bestD) { bestD = d; bestR = r; bestC = c; }
+                }
+            }
+            grid[bestR][bestC] = col === 'rainbow' ? randColor() : col;
+
+            // Flood fill matching neighbors
+            const target = grid[bestR][bestC];
+            const visited = new Set();
+            const stack = [[bestR, bestC]];
+            const cluster = [];
+
+            while (stack.length) {
+                const [cr, cc] = stack.pop();
+                const key = `${cr},${cc}`;
+                if (visited.has(key)) continue;
+                visited.add(key);
+                if (col === 'rainbow' || grid[cr][cc] === target) {
+                    cluster.push([cr, cc]);
+                    for (let nr = Math.max(0, cr - 1); nr <= Math.min(ROWS - 1, cr + 1); nr++) {
+                        for (let nc = Math.max(0, cc - 1); nc <= Math.min(COLS - 1, cc + 1); nc++) {
+                            if (!grid[nr][nc]) continue;
+                            const p1 = cellPos(cr, cc), p2 = cellPos(nr, nc);
+                            if (Math.hypot(p1.x - p2.x, p1.y - p2.y) < R * 2.3) {
+                                stack.push([nr, nc]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (cluster.length >= 3 || col === 'rainbow') {
+                cluster.forEach(([r, c]) => { grid[r][c] = null; });
+                updateScore(cluster.length * 35);
+            }
+        }
+
+        canvas.addEventListener('pointermove', e => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = (e.clientX - rect.left) * (480 / rect.width);
+            const my = (e.clientY - rect.top) * (540 / rect.height);
+            aimAngle = Math.max(-2.85, Math.min(-0.3, Math.atan2(my - 495, mx - 240)));
+        });
+
+        canvas.addEventListener('pointerdown', () => {
+            if (shot) return;
+            shot = {
+                x: 240, y: 495,
+                vx: Math.cos(aimAngle) * 11,
+                vy: Math.sin(aimAngle) * 11,
+                c: nextColor
+            };
+            nextColor = randColor();
+        });
+
+        document.getElementById('swapBtn').addEventListener('click', () => { nextColor = 'rainbow'; });
+        document.getElementById('resetBtn').addEventListener('click', initGame);
+
+        function drawBubble(x, y, c) {
+            ctx.save();
+            ctx.fillStyle = c === 'rainbow' ? '#ffffff' : c;
+            ctx.beginPath(); ctx.arc(x, y, R - 2, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,0.45)';
+            ctx.beginPath(); ctx.arc(x - 6, y - 6, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, 480, 540);
+
+            // Aim laser guide
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ctx.setLineDash([6, 6]);
+            ctx.beginPath();
+            ctx.moveTo(240, 495);
+            ctx.lineTo(240 + Math.cos(aimAngle) * 240, 495 + Math.sin(aimAngle) * 240);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Grid bubbles
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (!grid[r][c]) continue;
+                    const p = cellPos(r, c);
+                    drawBubble(p.x, p.y, grid[r][c]);
+                }
+            }
+
+            // Active shot
+            if (shot) {
+                shot.x += shot.vx;
+                shot.y += shot.vy;
+                if (shot.x < R || shot.x > 480 - R) shot.vx *= -1;
+                drawBubble(shot.x, shot.y, shot.c);
+
+                let hit = shot.y <= R + 15;
+                for (let r = 0; r < ROWS && !hit; r++) {
+                    for (let c = 0; c < COLS && !hit; c++) {
+                        if (!grid[r][c]) continue;
+                        const p = cellPos(r, c);
+                        if (Math.hypot(shot.x - p.x, shot.y - p.y) < R * 1.85) hit = true;
+                    }
+                }
+                if (hit) {
+                    snapBubble(shot.x, shot.y, shot.c);
+                    shot = null;
+                }
+            }
+
+            // Cannon base
+            drawBubble(240, 495, nextColor);
+
+            requestAnimationFrame(loop);
+        }
+
+        initGame();
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

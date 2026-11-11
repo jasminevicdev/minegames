@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criador de Fadas & Asas de Cristal — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #1e3a8a, #090418 75%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1180px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(167,243,208,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #a7f3d0; font-weight: 700;
+            background: rgba(16,185,129,0.2); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(52,211,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #6ee7b7; }
+        .score-pill {
+            background: linear-gradient(135deg, #10b981, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 320px 1fr; gap: 18px;
+            width: 100%; max-width: 1180px; padding: 14px; flex: 1; align-items: start;
+        }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(18, 25, 58, 0.92); border: 2px solid rgba(110,231,183,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a7f3d0; font-size: 0.93rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #10b981, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 13px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.95rem;
+            background: linear-gradient(135deg, #34d399, #fde047); color: #052e16;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(8, 12, 32, 0.88); border-radius: 24px;
+            border: 3px solid rgba(110,231,183,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 38px rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🧚‍♀️ Criador de Fadas & Asas de Cristal — Edição HD</h1>
+        <div class="score-pill">Fadas Criadas: <span id="scoreVal">0</span> 🧚‍♀️</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🦋 1. Asas Iridescentes de Fada</h3>
+            <div class="grid-2" id="wingBtns">
+                <button class="btn-opt active" data-v="emerald">💚 Cristal Esmeralda</button>
+                <button class="btn-opt" data-v="rose">💖 Borboleta Rosa</button>
+                <button class="btn-opt" data-v="solar">✨ Ouro Solar</button>
+                <button class="btn-opt" data-v="lunar">❄️ Gelo Lunar</button>
+            </div>
+
+            <h3>👗 2. Vestido de Pétalas Encantadas</h3>
+            <div class="grid-2" id="dressBtns">
+                <button class="btn-opt active" data-v="leaf">🍃 Folha da Floresta</button>
+                <button class="btn-opt" data-v="sakura">🌸 Pétala Sakura</button>
+                <button class="btn-opt" data-v="starlight">🌌 Estrela Violeta</button>
+                <button class="btn-opt" data-v="sunflower">🌻 Girassol Real</button>
+            </div>
+
+            <h3>🪄 3. Varinha de Condão & Magia</h3>
+            <div class="grid-2" id="wandBtns">
+                <button class="btn-opt active" data-v="star">⭐ Cetro Estelar</button>
+                <button class="btn-opt" data-v="heart">💖 Cristal do Amor</button>
+                <button class="btn-opt" data-v="moon">🌙 Lua Prateada</button>
+                <button class="btn-opt" data-v="flower">🌺 Flor de Lótus</button>
+            </div>
+
+            <h3>🐾 4. Guardião Mágico</h3>
+            <div class="grid-2" id="petBtns">
+                <button class="btn-opt active" data-v="🦄">🦄 Mini Unicórnio</button>
+                <button class="btn-opt" data-v="🦋">🦋 Borboleta Real</button>
+                <button class="btn-opt" data-v="🐉">🐉 Dragãozinho</button>
+                <button class="btn-opt" data-v="🐰">🐰 Coelhinho Lunar</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">✨ Despertar Magia da Fada (+1 🧚‍♀️)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="fairyCanvas" width="540" height="540"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('fairycreator', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('fairyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let state = { wing: 'emerald', dress: 'leaf', wand: 'star', pet: '🦄' };
+        let t = 0;
+        let dust = Array.from({ length: 40 }, () => ({
+            x: Math.random() * 540, y: Math.random() * 540, r: Math.random() * 3 + 1, vy: -Math.random() * 1.2 - 0.3
+        }));
+
+        const wingCols = {
+            emerald: ['rgba(52,211,153,0.65)', '#a7f3d0'],
+            rose: ['rgba(244,114,182,0.65)', '#fbcfe8'],
+            solar: ['rgba(250,204,21,0.65)', '#fef08a'],
+            lunar: ['rgba(56,189,248,0.65)', '#bae6fd']
+        };
+
+        const dressCols = {
+            leaf: ['#10b981', '#047857'],
+            sakura: ['#f472b6', '#db2777'],
+            starlight: ['#a855f7', '#6b21a8'],
+            sunflower: ['#fde047', '#ca8a04']
+        };
+
+        function render() {
+            t += 0.04;
+            const bg = ctx.createRadialGradient(270, 270, 30, 270, 270, 380);
+            bg.addColorStop(0, '#1e3a8a'); bg.addColorStop(1, '#090518');
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 540, 540);
+
+            // Pixie dust particles
+            dust.forEach(d => {
+                d.y += d.vy;
+                if (d.y < 0) d.y = 540;
+                ctx.fillStyle = '#fef08a';
+                ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
+            });
+
+            const hoverY = Math.sin(t) * 8;
+            ctx.save();
+            ctx.translate(0, hoverY);
+
+            // 1. Giant Iridescent Butterfly Wings (animated flutter)
+            const [wFill, wStroke] = wingCols[state.wing];
+            const flap = Math.sin(t * 2.5) * 12;
+            ctx.fillStyle = wFill;
+            ctx.strokeStyle = wStroke;
+            ctx.lineWidth = 3;
+
+            // Upper Wings
+            ctx.beginPath();
+            ctx.moveTo(270, 235);
+            ctx.bezierCurveTo(110 + flap, 90, 55 + flap, 220, 140 + flap, 305);
+            ctx.bezierCurveTo(190, 330, 240, 290, 270, 275);
+            ctx.moveTo(270, 235);
+            ctx.bezierCurveTo(430 - flap, 90, 485 - flap, 220, 400 - flap, 305);
+            ctx.bezierCurveTo(350, 330, 300, 290, 270, 275);
+            // Lower Wings
+            ctx.moveTo(270, 280);
+            ctx.bezierCurveTo(135 + flap, 310, 125 + flap, 445, 215, 435);
+            ctx.bezierCurveTo(250, 430, 265, 360, 270, 315);
+            ctx.moveTo(270, 280);
+            ctx.bezierCurveTo(405 - flap, 310, 415 - flap, 445, 325, 435);
+            ctx.bezierCurveTo(290, 430, 275, 360, 270, 315);
+            ctx.fill();
+            ctx.stroke();
+
+            // 2. Fairy Body & Head
+            ctx.fillStyle = '#fde6d8';
+            ctx.beginPath(); ctx.arc(270, 175, 34, 0, Math.PI * 2); ctx.fill();
+            // Eyes & Smile
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath(); ctx.arc(258, 173, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(282, 173, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(270, 182, 8, 0.2, Math.PI - 0.2); ctx.stroke();
+
+            // Flower crown
+            ctx.font = '24px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('🌸👑🌸', 270, 142);
+
+            // 3. Petal Dress
+            const [d1, d2] = dressCols[state.dress];
+            const dg = ctx.createLinearGradient(200, 215, 340, 415);
+            dg.addColorStop(0, d1); dg.addColorStop(1, d2);
+            ctx.fillStyle = dg;
+            ctx.beginPath();
+            ctx.moveTo(246, 212); ctx.lineTo(294, 212);
+            ctx.lineTo(350, 395);
+            ctx.quadraticCurveTo(270, 435, 190, 395);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 2.5; ctx.stroke();
+
+            // 4. Magic Wand
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(315, 265); ctx.lineTo(395, 185); ctx.stroke();
+            const wIcon = state.wand === 'star' ? '⭐' : state.wand === 'heart' ? '💖' : state.wand === 'moon' ? '🌙' : '🌺';
+            ctx.font = '34px sans-serif';
+            ctx.fillText(wIcon, 402, 182);
+
+            // 5. Companion Pet
+            ctx.font = '56px sans-serif';
+            ctx.fillText(state.pet, 145, 465);
+
+            ctx.restore();
+            requestAnimationFrame(render);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                });
+            });
+        }
+        bind('wingBtns', 'wing');
+        bind('dressBtns', 'dress');
+        bind('wandBtns', 'wand');
+        bind('petBtns', 'pet');
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('fairycreator', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

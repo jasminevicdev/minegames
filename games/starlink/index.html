@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constelações Mágicas: Ligue Estrelas — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #1e1b4b, #050511 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 960px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(99,102,241,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #c7d2fe; font-weight: 700;
+            background: rgba(99,102,241,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(129,140,248,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #a5b4fc; }
+        .score-pill {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .wrap { display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 16px; }
+        .grid {
+            display: grid; grid-template-columns: repeat(5, 76px); gap: 8px;
+            background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: 24px;
+            border: 3px solid rgba(129,140,248,0.45);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: repeat(5, 56px); }
+            .cell { height: 56px !important; }
+        }
+        .cell {
+            height: 76px; border-radius: 16px; background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.12); display: flex;
+            align-items: center; justify-content: center; font-size: 1.85rem; cursor: pointer;
+            transition: 0.15s;
+        }
+        .btn {
+            padding: 10px 22px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #ec4899); color: #fff; cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+        }
+        #msg { font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.2rem; min-height: 1.6rem; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🌌 Constelações Mágicas: Ligue os Astros</h1>
+        <div class="score-pill">Constelações: <span id="scoreVal">0</span> 🌌</div>
+    </header>
+
+    <main class="wrap">
+        <div id="msg">✨ Clique em uma estrela e arraste/clique no caminho até sua gêmea da mesma cor!</div>
+        <div class="grid" id="board"></div>
+        <div style="display:flex; gap:12px;">
+            <button class="btn" id="solveBtn">🪄 Guia Astral (Auto-Conectar)</button>
+            <button class="btn" id="nextBtn">🔄 Nova Constelação</button>
+        </div>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('starlink', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const COLORS = {
+            R: { c: '#f43f5e', icon: '💖' },
+            B: { c: '#38bdf8', icon: '❄️' },
+            Y: { c: '#fde047', icon: '⭐' },
+            P: { c: '#c084fc', icon: '🔮' },
+            G: { c: '#34d399', icon: '🍀' }
+        };
+
+        const LEVELS = [
+            {
+                endpoints: { 0:'R', 4:'B', 5:'Y', 9:'Y', 12:'R', 20:'P', 22:'B', 24:'P' },
+                solution: [
+                    'R','R','R','B','B',
+                    'Y','Y','R','B','Y',
+                    'Y','Y','R','B','Y',
+                    'P','P','B','B','Y',
+                    'P','P','B','P','P'
+                ]
+            },
+            {
+                endpoints: { 0:'Y', 2:'R', 4:'G', 10:'Y', 14:'G', 20:'B', 22:'R', 24:'B' },
+                solution: [
+                    'Y','Y','R','G','G',
+                    'Y','R','R','G','G',
+                    'Y','R','R','R','G',
+                    'B','B','R','B','B',
+                    'B','B','R','B','B'
+                ]
+            }
+        ];
+
+        let lvlIdx = 0;
+        let grid = [];
+        let activeKey = null;
+        let won = false;
+
+        function loadLevel(idx) {
+            won = false;
+            activeKey = null;
+            document.getElementById('msg').textContent = '✨ Preencha os feixes de luz conectando cada par de astros!';
+            const lvl = LEVELS[idx % LEVELS.length];
+            grid = new Array(25).fill(null);
+            Object.entries(lvl.endpoints).forEach(([k, v]) => { grid[Number(k)] = v; });
+            render();
+        }
+
+        function checkWin() {
+            if (won) return;
+            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            const connected = Object.keys(lvl.endpoints).every(k => grid[Number(k)] !== null);
+            const filled = grid.filter(x => x !== null).length;
+            if (connected && filled >= 18) {
+                won = true;
+                bestScore += 1;
+                scoreEl.textContent = bestScore;
+                SaveHub.updateGameSave('starlink', { highScore: bestScore }, activePlayer);
+                document.getElementById('msg').textContent = '🌟 CONSTELAÇÃO ILUMINADA! +1 Constelação Real! 🌌';
+            }
+        }
+
+        function clickCell(i) {
+            if (won) return;
+            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            if (lvl.endpoints[i]) {
+                activeKey = lvl.endpoints[i];
+                render();
+                return;
+            }
+            if (activeKey) {
+                grid[i] = grid[i] === activeKey ? null : activeKey;
+                checkWin();
+                render();
+            }
+        }
+
+        function render() {
+            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            const el = document.getElementById('board');
+            el.innerHTML = '';
+            for (let i = 0; i < 25; i++) {
+                const d = document.createElement('div');
+                d.className = 'cell';
+                const val = grid[i];
+                if (val && COLORS[val]) {
+                    d.style.background = COLORS[val].c + '55';
+                    d.style.borderColor = COLORS[val].c;
+                    d.style.boxShadow = `0 0 12px ${COLORS[val].c}66`;
+                    d.textContent = lvl.endpoints[i] ? COLORS[val].icon : '✨';
+                }
+                d.addEventListener('pointerdown', () => clickCell(i));
+                d.addEventListener('pointerenter', (e) => { if (e.buttons === 1) clickCell(i); });
+                el.appendChild(d);
+            }
+        }
+
+        document.getElementById('solveBtn').addEventListener('click', () => {
+            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            grid = [...lvl.solution];
+            checkWin();
+            render();
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            lvlIdx++;
+            loadLevel(lvlIdx);
+        });
+
+        loadLevel(0);
+    </script>
+</body>
+</html>

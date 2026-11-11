@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Samurai: Deflexão Neon — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at center, #1e1b4b, #030712);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 980px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,63,94,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fda4af; font-weight: 700;
+            background: rgba(244,63,94,0.2); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,63,94,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #fb7185; }
+        .score-pill {
+            background: linear-gradient(135deg, #f43f5e, #a855f7);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 14px; gap: 12px; }
+        .hud {
+            display: flex; gap: 18px; align-items: center; flex-wrap: wrap; justify-content: center;
+            background: rgba(255,255,255,0.06); padding: 10px 18px; border-radius: 14px;
+        }
+        canvas {
+            background: #050816; border: 3px solid #f43f5e; border-radius: 22px;
+            box-shadow: 0 0 38px rgba(244,63,94,0.35); max-width: 100%; height: auto;
+            cursor: crosshair; touch-action: none;
+        }
+        .btn {
+            padding: 9px 18px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #f43f5e, #eab308); color: #fff; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>⚡ Cyber Samurai: Deflexão Neon</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <span>Combo: <strong id="comboVal" style="color:#38bdf8;">x1</strong></span>
+            <span>Energia: <strong id="hpVal">❤️❤️❤️</strong></span>
+            <button class="btn" id="slashBtn">⚡ Corte Relâmpago [Espaço]</button>
+            <button class="btn" id="restartBtn">🔄 Reiniciar</button>
+        </div>
+        <canvas id="dojoCanvas" width="560" height="520"></canvas>
+        <p style="color:#cbd5e1; font-size:0.86rem;">Aponte com o Mouse ou Dedo para girar o Escudo-Katana de Plasma e rebater os orbes!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const save = SaveHub.getGameSave('cyberblade', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('dojoCanvas');
+        const ctx = canvas.getContext('2d');
+        const CX = 280, CY = 260;
+
+        let angle = 0;
+        let score = 0;
+        let combo = 1;
+        let hp = 3;
+        let orbs = [];
+        let tick = 0;
+
+        function reset() {
+            score = 0; combo = 1; hp = 3; orbs = [];
+            updateHud();
+        }
+
+        function updateHud() {
+            document.getElementById('scoreVal').textContent = score;
+            document.getElementById('comboVal').textContent = 'x' + combo;
+            document.getElementById('hpVal').textContent = '❤️'.repeat(Math.max(0, hp)) || '💥';
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('cyberblade', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        canvas.addEventListener('pointermove', e => {
+            const r = canvas.getBoundingClientRect();
+            const mx = (e.clientX - r.left) * (560 / r.width);
+            const my = (e.clientY - r.top) * (520 / r.height);
+            angle = Math.atan2(my - CY, mx - CX);
+        });
+
+        function thunderSlash() {
+            if (hp <= 0 || !orbs.length) return;
+            score += orbs.length * 25;
+            orbs = [];
+            updateHud();
+        }
+        document.getElementById('slashBtn').addEventListener('click', thunderSlash);
+        document.getElementById('restartBtn').addEventListener('click', reset);
+        window.addEventListener('keydown', e => { if (e.code === 'Space') thunderSlash(); });
+
+        function loop() {
+            tick++;
+            ctx.fillStyle = '#050816';
+            ctx.fillRect(0, 0, 560, 520);
+
+            // Cyber Dojo Grid
+            ctx.strokeStyle = 'rgba(244,63,94,0.14)';
+            ctx.lineWidth = 1;
+            for (let r = 60; r <= 240; r += 60) {
+                ctx.beginPath(); ctx.arc(CX, CY, r, 0, Math.PI * 2); ctx.stroke();
+            }
+
+            if (hp > 0 && tick % Math.max(22, 55 - Math.floor(score / 150)) === 0) {
+                const a = Math.random() * Math.PI * 2;
+                const sp = 2.6 + Math.min(2.5, score / 600);
+                orbs.push({
+                    x: CX + Math.cos(a) * 270,
+                    y: CY + Math.sin(a) * 270,
+                    vx: -Math.cos(a) * sp,
+                    vy: -Math.sin(a) * sp,
+                    deflected: false
+                });
+            }
+
+            // Draw Samurai Core & Plasma Katana Arc
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath(); ctx.arc(CX, CY, 24, 0, Math.PI * 2); ctx.fill();
+            ctx.font = '26px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('🥷', CX, CY);
+
+            ctx.strokeStyle = '#00f5d4';
+            ctx.lineWidth = 9;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(CX, CY, 56, angle - 0.85, angle + 0.85);
+            ctx.stroke();
+
+            // Update Orbs
+            for (let i = orbs.length - 1; i >= 0; i--) {
+                const o = orbs[i];
+                o.x += o.vx; o.y += o.vy;
+                const dist = Math.hypot(o.x - CX, o.y - CY);
+                const orbAng = Math.atan2(o.y - CY, o.x - CX);
+                const diff = Math.atan2(Math.sin(orbAng - angle), Math.cos(orbAng - angle));
+
+                if (!o.deflected && dist <= 62 && dist >= 44 && Math.abs(diff) <= 0.95) {
+                    o.deflected = true;
+                    o.vx *= -1.6; o.vy *= -1.6;
+                    score += 20 * combo;
+                    combo = Math.min(10, combo + 1);
+                    updateHud();
+                } else if (!o.deflected && dist < 24) {
+                    orbs.splice(i, 1);
+                    hp--;
+                    combo = 1;
+                    updateHud();
+                    continue;
+                } else if (dist > 320) {
+                    orbs.splice(i, 1);
+                    continue;
+                }
+
+                ctx.fillStyle = o.deflected ? '#00f5d4' : '#f43f5e';
+                ctx.beginPath(); ctx.arc(o.x, o.y, 10, 0, Math.PI * 2); ctx.fill();
+            }
+
+            if (hp <= 0) {
+                ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                ctx.fillRect(0, 0, 560, 520);
+                ctx.fillStyle = '#fb7185';
+                ctx.font = 'bold 28px Fredoka, sans-serif';
+                ctx.fillText('FIM DE TREINO! Clique em Reiniciar 🔄', CX, CY);
+            }
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

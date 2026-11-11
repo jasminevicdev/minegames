@@ -87,6 +87,11 @@ class GameHub {
         this.statGalaxydodgeScore = document.getElementById('stat-galaxydodge-score');
         this.statPotionsortScore = document.getElementById('stat-potionsort-score');
         this.statCandymatchScore = document.getElementById('stat-candymatch-score');
+        this.statStainedglassScore = document.getElementById('stat-stainedglass-score');
+        this.statFairycreatorScore = document.getElementById('stat-fairycreator-score');
+        this.statCyberbladeScore = document.getElementById('stat-cyberblade-score');
+        this.statStarlinkScore = document.getElementById('stat-starlink-score');
+        this.statBubblepopScore = document.getElementById('stat-bubblepop-score');
 
         this.selectedAvatar = '🎪';
 
@@ -211,6 +216,11 @@ class GameHub {
         const galaxydodgeSave = SaveHub.getGameSave('galaxydodge', player.name);
         const potionsortSave = SaveHub.getGameSave('potionsort', player.name);
         const candymatchSave = SaveHub.getGameSave('candymatch', player.name);
+        const stainedglassSave = SaveHub.getGameSave('stainedglass', player.name);
+        const fairycreatorSave = SaveHub.getGameSave('fairycreator', player.name);
+        const cyberbladeSave = SaveHub.getGameSave('cyberblade', player.name);
+        const starlinkSave = SaveHub.getGameSave('starlink', player.name);
+        const bubblepopSave = SaveHub.getGameSave('bubblepop', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -257,6 +267,11 @@ class GameHub {
         if (this.statGalaxydodgeScore) this.statGalaxydodgeScore.innerText = `${galaxydodgeSave.highScore || 0} PTS`;
         if (this.statPotionsortScore) this.statPotionsortScore.innerText = `${potionsortSave.highScore || 0} 🧪`;
         if (this.statCandymatchScore) this.statCandymatchScore.innerText = `${candymatchSave.highScore || 0} PTS`;
+        if (this.statStainedglassScore) this.statStainedglassScore.innerText = `${stainedglassSave.highScore || 0} 🪟`;
+        if (this.statFairycreatorScore) this.statFairycreatorScore.innerText = `${fairycreatorSave.highScore || 0} 🧚‍♀️`;
+        if (this.statCyberbladeScore) this.statCyberbladeScore.innerText = `${cyberbladeSave.highScore || 0} PTS`;
+        if (this.statStarlinkScore) this.statStarlinkScore.innerText = `${starlinkSave.highScore || 0} 🌌`;
+        if (this.statBubblepopScore) this.statBubblepopScore.innerText = `${bubblepopSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {
