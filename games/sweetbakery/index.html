@@ -3,275 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Confeitaria Fashion: Cupcakes & Doces 🧁🎀 — JasDEV Hub</title>
+    <title>Confeitaria Fashion: Cupcakes & Bolos Reais HD 🧁🎀 — JasDEV Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body {
-            background: radial-gradient(circle at top, #831843 0%, #310719 100%);
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
+            background: radial-gradient(circle at top, #831843 0%, #2a0515 100%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 10px;
         }
         .topbar {
-            width: 100%;
-            max-width: 920px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 8px;
+            width: 100%; max-width: 1120px; display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 10px; gap: 8px; flex-wrap: wrap;
         }
         .btn-back {
-            background: rgba(255, 255, 255, 0.12);
-            border: 2px solid #fbcfe8;
-            color: #fff;
-            padding: 7px 14px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.12); border: 2px solid #fbcfe8; color: #fff;
+            padding: 7px 14px; border-radius: 20px; text-decoration: none;
+            font-family: 'Fredoka', sans-serif; font-size: 0.85rem;
         }
         .stat-pill {
-            background: rgba(0, 0, 0, 0.55);
-            border: 2px solid #f472b6;
-            border-radius: 16px;
-            padding: 5px 12px;
-            font-size: 0.82rem;
-            font-weight: 700;
+            background: rgba(0, 0, 0, 0.55); border: 2px solid #f472b6; border-radius: 16px;
+            padding: 6px 14px; font-size: 0.85rem; font-weight: 700;
         }
         .stat-pill strong { color: #fde047; font-family: 'Fredoka', sans-serif; }
         .bakery-grid {
-            width: 100%;
-            max-width: 920px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            width: 100%; max-width: 1120px; display: grid; grid-template-columns: 340px 1fr; gap: 16px;
         }
-        @media (max-width: 720px) {
-            .bakery-grid { grid-template-columns: 1fr; }
+        @media (max-width: 840px) { .bakery-grid { grid-template-columns: 1fr; } }
+        .bakery-menu {
+            background: rgba(45, 8, 32, 0.94); border: 2px solid #f9a8d4;
+            border-radius: 24px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .opt-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .opt-btn {
+            width: 42px; height: 42px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.4);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+        }
+        .btn-pill {
+            padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08); color: #fff; font-weight: 700; cursor: pointer; font-size: 0.8rem;
+        }
+        .btn-pill.active, .btn-pill:hover { background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff; }
+        .btn-serve {
+            background: linear-gradient(135deg, #f472b6, #fde047); color: #310719;
+            border: none; border-radius: 16px; padding: 12px; font-family: 'Fredoka', sans-serif;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
         }
         .cake-stage {
-            background: linear-gradient(180deg, #701a75, #3b0764);
-            border: 3px solid #f472b6;
-            border-radius: 24px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: linear-gradient(180deg, #581c87, #310719); border: 3px solid #f472b6;
+            border-radius: 24px; padding: 14px; display: flex; flex-direction: column; align-items: center;
         }
-        canvas {
-            width: 100%;
-            max-width: 420px;
-            aspect-ratio: 1 / 1;
-            border-radius: 20px;
-        }
-        .bakery-menu {
-            background: rgba(45, 8, 32, 0.92);
-            border: 3px solid #f9a8d4;
-            border-radius: 24px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .label { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; margin-bottom: 6px; }
-        .opt-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .opt-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            border: 3px solid rgba(255, 255, 255, 0.35);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-        }
-        .btn-serve {
-            margin-top: auto;
-            background: linear-gradient(135deg, #f472b6, #fde047);
-            color: #310719;
-            border: none;
-            padding: 14px;
-            border-radius: 30px;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 900;
-            cursor: pointer;
-        }
+        canvas { border-radius: 20px; max-width: 100%; height: auto; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="topbar">
-        <a href="../../index.html" class="btn-back">⬅ VOLTAR AO HUB</a>
-        <div style="display:flex; gap:8px;">
-            <div class="stat-pill">CUPCAKES: <strong id="hud-score">0 🧁</strong></div>
-            <div class="stat-pill">RECORDE: <strong id="hud-best">0 🧁</strong></div>
-        </div>
-    </div>
+    <header class="topbar">
+        <a href="../../index.html" class="btn-back">⬅ Voltar ao Hub</a>
+        <div class="stat-pill">🧁 Confeitaria Fashion HD • Doces Servidos: <strong id="best-val">0</strong> 🧁</div>
+    </header>
 
-    <div class="bakery-grid">
-        <div class="cake-stage">
-            <canvas id="cake-canvas" width="440" height="440"></canvas>
-            <p id="cake-msg" style="margin-top:8px; font-family:'Fredoka',sans-serif; color:#fde047; text-align:center;">
-                Decore o Cupcake Fashion para servir na Confeitaria Rosa! 🎀
-            </p>
-        </div>
+    <main class="bakery-grid">
+        <aside class="bakery-menu">
+            <div class="label">1. Forminha Plissada Real</div>
+            <div class="opt-row" id="cup-opts"></div>
 
-        <div class="bakery-menu">
-            <div>
-                <div class="label">🧁 FORMINHA RENDADA:</div>
-                <div class="opt-row" id="row-cup"></div>
+            <div class="label">2. Massa & Recheio Gourmet</div>
+            <div class="opt-row" id="dough-opts"></div>
+
+            <div class="label">3. Chantilly & Cobertura Dupla</div>
+            <div class="opt-row" id="frost-opts"></div>
+
+            <div class="label">4. Calda Escorrendo (Drizzle)</div>
+            <div class="grid-2" id="drizzle-opts">
+                <button class="btn-pill active" data-d="#451a03">🍫 Ganache Cacau</button>
+                <button class="btn-pill" data-d="#ec4899">🍓 Calda Morango</button>
+                <button class="btn-pill" data-d="#fde047">🍯 Caramelo Ouro</button>
+                <button class="btn-pill" data-d="none">✨ Sem Calda</button>
             </div>
-            <div>
-                <div class="label">🍦 COBERTURA DE CHANTILLY:</div>
-                <div class="opt-row" id="row-frost"></div>
-            </div>
-            <div>
-                <div class="label">🍓 TOPPER & DECORAÇÃO FOFA:</div>
-                <div class="opt-row" id="row-topper"></div>
-            </div>
-            <button class="btn-serve" id="btn-serve">✨ SERVIR PEDIDO COM GLITTER! 🧁💖</button>
-        </div>
-    </div>
+
+            <div class="label">5. Topper Imperial</div>
+            <div class="opt-row" id="top-opts"></div>
+
+            <button class="btn-serve" id="btn-serve">🛎️ SERVIR NA VITRINE REAL (+1 🧁)</button>
+        </aside>
+
+        <section class="cake-stage">
+            <canvas id="cake" width="520" height="500"></canvas>
+            <p style="margin-top:8px; color:#fbcfe8; font-size:0.84rem;">✨ Clique sobre o chantilly para polvilhar confeitos, pérolas de açúcar e morangos!</p>
+        </section>
+    </main>
 
     <script type="module">
         import { SaveHub } from '../../shared/SaveHub.js';
-
-        const canvas = document.getElementById('cake-canvas');
+        const canvas = document.getElementById('cake');
         const ctx = canvas.getContext('2d');
-        const W = canvas.width;
-        const H = canvas.height;
+        const bestEl = document.getElementById('best-val');
 
-        const hudScore = document.getElementById('hud-score');
-        const hudBest = document.getElementById('hud-best');
-        const cakeMsg = document.getElementById('cake-msg');
+        const save = SaveHub.getGameSave('sweetbakery');
+        let best = save.highScore || 0;
+        bestEl.innerText = best;
 
-        const activePlayer = SaveHub.getActivePlayer();
-        const playerName = activePlayer ? activePlayer.name : null;
-        let save = SaveHub.getGameSave('sweetbakery', playerName);
-        let bestScore = save.highScore || 0;
-        hudBest.innerText = `${bestScore} 🧁`;
+        const cups = ['#f472b6', '#38bdf8', '#c084fc', '#fde047', '#34d399', '#fb7185'];
+        const doughs = ['#fde68a', '#78350f', '#fbcfe8', '#a7f3d0', '#ddd6fe'];
+        const frosts = ['#fff1f2', '#f472b6', '#60a5fa', '#c084fc', '#fde047', '#34d399'];
+        const tops = ['🍓', '🍒', '🦄', '👑', '🍫', '🌈', '🦋', '💖'];
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sfx(freq = 640) {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const o = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                o.type = 'triangle';
-                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                g.gain.setValueAtTime(0.09, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
-                o.connect(g);
-                g.connect(audioCtx.destination);
-                o.start();
-                o.stop(audioCtx.currentTime + 0.14);
-            } catch (e) {}
-        }
+        let state = { cup: cups[0], dough: doughs[0], frost: frosts[1], drizzle: '#451a03', top: '👑' };
+        let extraCandies = [];
 
-        const CUPS = ['#ec4899', '#a855f7', '#38bdf8', '#fde047', '#34d399'];
-        const FROSTS = ['#fbcfe8', '#e9d5ff', '#bae6fd', '#fef08a', '#fda4af', '#78350f'];
-        const TOPPERS = ['🍓', '🍒', '🦄', '👑', '🎀', '💖', '⭐'];
-
-        let cake = { cup: '#ec4899', frost: '#fbcfe8', topper: '🍓' };
-        let score = 0;
-
-        function buildMenu() {
-            const cEl = document.getElementById('row-cup');
-            CUPS.forEach(c => {
-                const b = document.createElement('div');
+        function makeRow(id, list, key, isEmoji = false) {
+            const box = document.getElementById(id);
+            list.forEach(item => {
+                const b = document.createElement('button');
                 b.className = 'opt-btn';
-                b.style.background = c;
-                b.addEventListener('click', () => { cake.cup = c; sfx(560); });
-                cEl.appendChild(b);
-            });
-
-            const fEl = document.getElementById('row-frost');
-            FROSTS.forEach(f => {
-                const b = document.createElement('div');
-                b.className = 'opt-btn';
-                b.style.background = f;
-                b.addEventListener('click', () => { cake.frost = f; sfx(660); });
-                fEl.appendChild(b);
-            });
-
-            const tEl = document.getElementById('row-topper');
-            TOPPERS.forEach(t => {
-                const b = document.createElement('div');
-                b.className = 'opt-btn';
-                b.style.background = 'rgba(255,255,255,0.12)';
-                b.innerText = t;
-                b.addEventListener('click', () => { cake.topper = t; sfx(760); });
-                tEl.appendChild(b);
+                if (isEmoji) {
+                    b.style.background = 'rgba(255,255,255,0.12)';
+                    b.innerText = item;
+                } else {
+                    b.style.background = item;
+                }
+                b.onclick = () => { state[key] = item; draw(); };
+                box.appendChild(b);
             });
         }
 
-        document.getElementById('btn-serve').addEventListener('click', () => {
-            score += 120;
-            sfx(880);
-            hudScore.innerText = `${score} 🧁`;
-            if (score > bestScore) {
-                bestScore = score;
-                hudBest.innerText = `${bestScore} 🧁`;
-                SaveHub.updateGameSave('sweetbakery', { highScore: bestScore }, playerName);
-            }
-            cakeMsg.innerText = `🧁 DELÍCIA FASHION SERVIDA! +120 PTS!`;
+        makeRow('cup-opts', cups, 'cup');
+        makeRow('dough-opts', doughs, 'dough');
+        makeRow('frost-opts', frosts, 'frost');
+        makeRow('top-opts', tops, 'top', true);
+
+        document.querySelectorAll('#drizzle-opts .btn-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#drizzle-opts .btn-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.drizzle = btn.dataset.d;
+                draw();
+            });
         });
 
+        canvas.addEventListener('pointerdown', e => {
+            const r = canvas.getBoundingClientRect();
+            const x = (e.clientX - rectLeft(r)) * (520 / r.width);
+            const y = (e.clientY - r.top) * (500 / r.height);
+            const icons = ['🍬', '🍓', '✨', '🤍', '🍪'];
+            extraCandies.push({ x, y, i: icons[Math.floor(Math.random() * icons.length)] });
+            draw();
+        });
+
+        function rectLeft(r) { return r.left; }
+
         function draw() {
-            ctx.fillStyle = '#4a044e';
-            ctx.fillRect(0, 0, W, H);
+            ctx.clearRect(0, 0, 520, 500);
 
-            const cx = W / 2;
+            // Royal Porcelain Cake Stand
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath(); ctx.ellipse(260, 425, 185, 26, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.stroke();
 
-            // Plate
-            ctx.fillStyle = '#fdf2f8';
+            // Cupcake Liner with Pleats
+            ctx.fillStyle = state.cup;
             ctx.beginPath();
-            ctx.ellipse(cx, 375, 145, 28, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Cupcake Liner
-            ctx.fillStyle = cake.cup;
-            ctx.beginPath();
-            ctx.moveTo(cx - 88, 255);
-            ctx.lineTo(cx + 88, 255);
-            ctx.lineTo(cx + 64, 365);
-            ctx.lineTo(cx - 64, 365);
-            ctx.closePath();
-            ctx.fill();
-
-            // Frosting swirls
-            ctx.fillStyle = cake.frost;
-            ctx.beginPath();
-            ctx.ellipse(cx, 245, 96, 38, 0, 0, Math.PI * 2);
-            ctx.ellipse(cx, 205, 76, 34, 0, 0, Math.PI * 2);
-            ctx.ellipse(cx, 168, 52, 28, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Rainbow Sprinkles
-            const spCols = ['#ff2a85', '#fde047', '#38bdf8', '#34d399'];
-            for (let i = 0; i < 12; i++) {
-                ctx.fillStyle = spCols[i % spCols.length];
-                ctx.fillRect(cx - 55 + (i * 10), 185 + (i % 3) * 24, 8, 4);
+            ctx.moveTo(155, 285); ctx.lineTo(365, 285);
+            ctx.lineTo(335, 420); ctx.lineTo(185, 420);
+            ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+            ctx.lineWidth = 3;
+            for (let x = 185; x <= 335; x += 25) {
+                ctx.beginPath(); ctx.moveTo(x, 288); ctx.lineTo(x, 418); ctx.stroke();
             }
 
-            // Topper
-            ctx.font = '56px serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(cake.topper, cx, 142);
+            // Sponge Cake Dome
+            ctx.fillStyle = state.dough;
+            ctx.beginPath(); ctx.arc(260, 285, 106, Math.PI, 0); ctx.fill();
 
-            requestAnimationFrame(draw);
+            // 3-Tier Swirl Whipped Frosting
+            ctx.fillStyle = state.frost;
+            ctx.beginPath(); ctx.ellipse(260, 255, 98, 36, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(260, 215, 76, 32, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(260, 178, 50, 26, 0, 0, Math.PI * 2); ctx.fill();
+
+            // Syrup Drizzle
+            if (state.drizzle !== 'none') {
+                ctx.strokeStyle = state.drizzle;
+                ctx.lineWidth = 7;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                for (let x = 185; x <= 335; x += 25) {
+                    ctx.moveTo(x, 200);
+                    ctx.quadraticCurveTo(x + 12, 275, x, 245);
+                }
+                ctx.stroke();
+            }
+
+            // Wafer Roll Straw on side
+            ctx.save();
+            ctx.translate(335, 175);
+            ctx.rotate(0.45);
+            ctx.fillStyle = '#fde68a';
+            ctx.fillRect(-8, -50, 16, 75);
+            ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3;
+            ctx.strokeRect(-8, -50, 16, 75);
+            ctx.restore();
+
+            // Rainbow Sprinkles
+            const spCols = ['#ef4444', '#3b82f6', '#fde047', '#10b981', '#ec4899', '#ffffff'];
+            for (let i = 0; i < 24; i++) {
+                ctx.fillStyle = spCols[i % spCols.length];
+                const sx = 190 + ((i * 43) % 140);
+                const sy = 165 + ((i * 29) % 98);
+                ctx.beginPath(); ctx.roundRect(sx, sy, 10, 5, 3); ctx.fill();
+            }
+
+            // Extra candies clicked by user
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'center';
+            extraCandies.forEach(c => ctx.fillText(c.i, c.x, c.y));
+
+            // Imperial Topper
+            ctx.font = '68px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(state.top, 260, 148);
         }
 
-        buildMenu();
+        document.getElementById('btn-serve').onclick = () => {
+            best += 1;
+            bestEl.innerText = best;
+            SaveHub.updateGameSave('sweetbakery', { highScore: best });
+            extraCandies = [];
+            draw();
+        };
+
         draw();
     </script>
 </body>

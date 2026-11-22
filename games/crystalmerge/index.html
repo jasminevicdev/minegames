@@ -5,87 +5,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jardim Real: Fusão de Cristais & Flores HD — JasDEV Game Hub</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #4c1d95, #140526);
+            background: radial-gradient(circle at top, #4c1d95, #120424 80%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1040px; padding: 12px 20px;
+            width: 100%; max-width: 1240px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(232,121,249,0.4);
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(232,121,249,0.4);
         }
         .back-btn {
             text-decoration: none; color: #f5d0fe; font-weight: 700;
             background: rgba(192,38,211,0.22); padding: 8px 16px; border-radius: 999px;
             border: 1px solid rgba(232,121,249,0.5);
         }
-        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f0abfc; }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f0abfc; }
         .score-pill {
             background: linear-gradient(135deg, #c084fc, #ec4899);
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
-        .board-wrap {
-            display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px;
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr 290px; gap: 16px;
+            width: 100%; max-width: 1240px; padding: 14px; flex: 1; align-items: start;
         }
-        .hud-bar {
-            display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center;
-            background: rgba(255,255,255,0.07); padding: 10px 18px; border-radius: 999px;
+        @media (max-width: 1040px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(28, 10, 52, 0.94); border: 2px solid rgba(232,121,249,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
         }
-        .discovery-bar {
-            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-            background: rgba(18, 5, 34, 0.8); padding: 8px 14px; border-radius: 16px;
-            border: 1px solid rgba(232,121,249,0.3); font-size: 0.82rem;
+        .panel h3 {
+            font-family: 'Fredoka', sans-serif; color: #f5d0fe; font-size: 0.92rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 5px;
         }
-        .disc-item {
-            padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.06); opacity: 0.4;
+        .shop-btn {
+            padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;
+            transition: 0.15s;
         }
-        .disc-item.unlocked {
-            opacity: 1; background: rgba(236,72,153,0.25); border: 1px solid #f472b6; font-weight: 700;
+        .shop-btn:hover { background: rgba(236,72,153,0.25); border-color: #f472b6; }
+        .center-stage {
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            background: rgba(16, 5, 32, 0.9); border-radius: 26px;
+            border: 3px solid rgba(232,121,249,0.45); padding: 16px;
+        }
+        .quest-banner {
+            width: 100%; background: linear-gradient(135deg, rgba(236,72,153,0.22), rgba(168,85,247,0.22));
+            border: 1px solid rgba(244,114,182,0.5); border-radius: 14px; padding: 10px 14px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;
         }
         .grid {
-            display: grid; grid-template-columns: repeat(4, 96px); gap: 10px;
-            background: rgba(25, 8, 45, 0.92); padding: 16px; border-radius: 24px;
-            border: 3px solid rgba(232,121,249,0.45); box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+            display: grid; grid-template-columns: repeat(4, 102px); gap: 10px;
+            background: rgba(25, 8, 45, 0.95); padding: 14px; border-radius: 22px;
+            border: 2px solid rgba(232,121,249,0.4);
+        }
+        @media (max-width: 500px) {
+            .grid { grid-template-columns: repeat(4, 72px); }
+            .cell { width: 72px !important; height: 72px !important; font-size: 1.7rem !important; }
         }
         .cell {
-            width: 96px; height: 96px; border-radius: 18px;
+            width: 102px; height: 102px; border-radius: 18px;
             background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.18);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 2.2rem; cursor: pointer; transition: transform 0.15s;
+            font-size: 2.3rem; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+            position: relative;
         }
-        .cell:hover { transform: scale(1.05); }
-        .cell.selected { border-color: #fde047; box-shadow: 0 0 15px #fde047; background: rgba(253,224,71,0.18); }
-        .lvl-tag { font-size: 0.7rem; color: #f9a8d4; font-weight: 700; margin-top: 2px; }
-        .btn {
-            padding: 9px 18px; border-radius: 999px; border: none; font-weight: 700;
-            background: linear-gradient(135deg, #34d399, #fde047); color: #052e16;
-            font-family: 'Fredoka', sans-serif; font-size: 0.92rem; cursor: pointer;
+        .cell:hover { transform: scale(1.05); border-color: #f472b6; }
+        .cell.selected { border-color: #fde047; box-shadow: 0 0 18px #fde047; background: rgba(253,224,71,0.2); }
+        .lvl-tag { font-size: 0.7rem; color: #fbcfe8; font-weight: 700; margin-top: 2px; }
+        .encyc-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .encyc-card {
+            padding: 7px 9px; border-radius: 10px; background: rgba(255,255,255,0.05);
+            font-size: 0.76rem; opacity: 0.38; border: 1px solid transparent;
         }
-        .btn-auto { background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; }
-        .btn-sun { background: linear-gradient(135deg, #fde047, #f97316); color: #1f0902; }
+        .encyc-card.unlocked {
+            opacity: 1; background: rgba(236,72,153,0.2); border-color: rgba(244,114,182,0.5); font-weight: 700;
+        }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🌺 Jardim Real: Fusão de Cristais & Flores — Edição HD</h1>
-        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+        <h1>🌺 Jardim Real: Fusão de Cristais & Flores — Edição HD (#60)</h1>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <div class="score-pill" style="background:linear-gradient(135deg,#06b6d4,#3b82f6);">💧 Orvalho: <span id="manaVal">50</span></div>
+            <div class="score-pill">🏆 Recorde: <span id="hiVal">0</span> PTS</div>
+        </div>
     </header>
 
-    <main class="board-wrap">
-        <div class="discovery-bar" id="discBar"></div>
+    <main class="studio">
+        <aside class="panel">
+            <h3>🏪 1. Estufa Real & Feitiços</h3>
+            <button class="shop-btn" id="spawnBtn">
+                <span>🌱 Brotar 3 Sementes</span>
+                <strong style="color:#4ade80;">GRÁTIS</strong>
+            </button>
+            <button class="shop-btn" id="buyRoseBtn">
+                <span>🌹 Invocar Rosa Real (Nv.3)</span>
+                <strong style="color:#38bdf8;">💧 25</strong>
+            </button>
+            <button class="shop-btn" id="buyLotusBtn">
+                <span>🌺 Invocar Lótus Cristal (Nv.4)</span>
+                <strong style="color:#38bdf8;">💧 45</strong>
+            </button>
+            <button class="shop-btn" id="autoBtn">
+                <span>🪄 Auto-Fundir Todos os Pares</span>
+                <strong style="color:#fde047;">MÁGICO</strong>
+            </button>
+            <button class="shop-btn" id="sunBtn">
+                <span>☀️ Chuva Solar (+1 Nível)</span>
+                <strong style="color:#38bdf8;">💧 30</strong>
+            </button>
+            <button class="shop-btn" id="harvestBtn">
+                <span>🧺 Colher Orvalho das Flores</span>
+                <strong style="color:#6ee7b7;">+💧 MANA</strong>
+            </button>
 
-        <div class="hud-bar">
-            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
-            <button class="btn" id="spawnBtn">🌱 Brotar Sementes</button>
-            <button class="btn btn-auto" id="autoBtn">🪄 Auto-Fundir Pares</button>
-            <button class="btn btn-sun" id="sunBtn">☀️ Chuva Solar (+1 Nível em 1 Flor)</button>
-        </div>
+            <h3>🎨 2. Tema da Estufa Imperial</h3>
+            <div class="encyc-list" id="themeBtns">
+                <button class="shop-btn" data-bg="rgba(25, 8, 45, 0.95)">🔮 Ametista</button>
+                <button class="shop-btn" data-bg="rgba(6, 42, 30, 0.95)">🌿 Esmeralda</button>
+                <button class="shop-btn" data-bg="rgba(56, 12, 38, 0.95)">🌸 Sakura</button>
+                <button class="shop-btn" data-bg="rgba(12, 28, 58, 0.95)">❄️ Glacial</button>
+            </div>
+        </aside>
 
-        <div class="grid" id="grid"></div>
+        <section class="center-stage">
+            <div class="quest-banner">
+                <span id="questText">🎯 <strong>Missão Real:</strong> Desbloqueie a Borboleta de Cristal (Nv.5)!</span>
+                <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            </div>
+
+            <div class="grid" id="grid"></div>
+            <p style="color:#f5d0fe; font-size:0.84rem;">💡 Clique em duas flores ou cristais do mesmo nível para fundi-los e ganhar Pontos + Gotas de Orvalho 💧!</p>
+        </section>
+
+        <aside class="panel">
+            <h3>📖 3. Enciclopédia Real (12 Níveis)</h3>
+            <div class="encyc-list" id="discBar"></div>
+        </aside>
     </main>
 
     <script type="module">
@@ -101,23 +163,44 @@
             { icon: '', name: '' },
             { icon: '🌱', name: 'Broto' },
             { icon: '🌷', name: 'Tulipa' },
-            { icon: '🌹', name: 'Rosa' },
+            { icon: '🌹', name: 'Rosa Real' },
             { icon: '🌺', name: 'Lótus' },
             { icon: '🦋', name: 'Borboleta' },
             { icon: '💎', name: 'Diamante' },
-            { icon: '👑', name: 'Coroa Real' },
+            { icon: '👑', name: 'Coroa Ouro' },
             { icon: '🦄', name: 'Unicórnio' },
-            { icon: '🏰', name: 'Castelo' }
+            { icon: '🧚‍♀️', name: 'Fada Rainha' },
+            { icon: '🐉', name: 'Dragão Luz' },
+            { icon: '🏰', name: 'Palácio' },
+            { icon: '🌌', name: 'Galáxia' }
         ];
 
         let board = [1, 1, 2, 0, 1, 2, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0];
         let unlocked = new Set([1, 2]);
+        let questTarget = 5;
         let sel = null;
         let score = 0;
+        let mana = 50;
 
-        function addScore(pts) {
+        function playTone(freq) {
+            try {
+                const ac = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ac.createOscillator();
+                const g = ac.createGain();
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                g.gain.setValueAtTime(0.08, ac.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+                osc.connect(g); g.connect(ac.destination);
+                osc.start(); osc.stop(ac.currentTime + 0.18);
+            } catch (e) {}
+        }
+
+        function addScore(pts, manaGain = 5) {
             score += pts;
+            mana += manaGain;
             document.getElementById('scoreVal').textContent = score;
+            document.getElementById('manaVal').textContent = mana;
             if (score > bestScore) {
                 bestScore = score;
                 hiEl.textContent = bestScore;
@@ -126,14 +209,24 @@
         }
 
         function render() {
-            board.forEach(v => { if (v > 0) unlocked.add(v); });
+            board.forEach(v => {
+                if (v > 0) unlocked.add(v);
+                if (v >= questTarget && questTarget < TIERS.length - 1) {
+                    questTarget++;
+                    addScore(250, 35);
+                }
+            });
+
+            const qt = TIERS[questTarget];
+            document.getElementById('questText').innerHTML = `🎯 <strong>Missão Real:</strong> Evolua até ${qt.icon} ${qt.name} (Nv.${questTarget})!`;
+            document.getElementById('manaVal').textContent = mana;
 
             const db = document.getElementById('discBar');
             db.innerHTML = '';
             for (let i = 1; i < TIERS.length; i++) {
-                const d = document.createElement('span');
-                d.className = 'disc-item' + (unlocked.has(i) ? ' unlocked' : '');
-                d.textContent = `${TIERS[i].icon} ${TIERS[i].name}`;
+                const d = document.createElement('div');
+                d.className = 'encyc-card' + (unlocked.has(i) ? ' unlocked' : '');
+                d.textContent = `Nv.${i} ${TIERS[i].icon} ${TIERS[i].name}`;
                 db.appendChild(d);
             }
 
@@ -160,7 +253,8 @@
                 if (board[idx] === board[sel] && board[idx] > 0) {
                     board[idx] = Math.min(TIERS.length - 1, board[idx] + 1);
                     board[sel] = 0;
-                    addScore(board[idx] * 35);
+                    playTone(320 + board[idx] * 55);
+                    addScore(board[idx] * 40, board[idx] * 3);
                 } else if (board[idx] === 0) {
                     board[idx] = board[sel];
                     board[sel] = 0;
@@ -173,32 +267,67 @@
         document.getElementById('spawnBtn').addEventListener('click', () => {
             const empties = board.map((v, i) => v === 0 ? i : -1).filter(i => i >= 0);
             empties.slice(0, 3).forEach(i => { board[i] = Math.random() > 0.35 ? 1 : 2; });
+            playTone(440);
             render();
         });
 
+        document.getElementById('buyRoseBtn').addEventListener('click', () => {
+            const empty = board.indexOf(0);
+            if (empty >= 0 && mana >= 25) {
+                mana -= 25; board[empty] = 3; playTone(520); render();
+            }
+        });
+
+        document.getElementById('buyLotusBtn').addEventListener('click', () => {
+            const empty = board.indexOf(0);
+            if (empty >= 0 && mana >= 45) {
+                mana -= 45; board[empty] = 4; playTone(600); render();
+            }
+        });
+
         document.getElementById('autoBtn').addEventListener('click', () => {
+            let merged = false;
             for (let i = 0; i < board.length; i++) {
                 if (board[i] === 0) continue;
                 for (let j = i + 1; j < board.length; j++) {
                     if (board[i] === board[j]) {
                         board[i] = Math.min(TIERS.length - 1, board[i] + 1);
                         board[j] = 0;
-                        addScore(board[i] * 35);
+                        addScore(board[i] * 40, 6);
+                        merged = true;
                         break;
                     }
                 }
             }
+            if (merged) playTone(660);
             render();
         });
 
         document.getElementById('sunBtn').addEventListener('click', () => {
             const occupied = board.map((v, i) => (v > 0 && v < TIERS.length - 1) ? i : -1).filter(i => i >= 0);
-            if (occupied.length > 0) {
+            if (occupied.length > 0 && mana >= 30) {
+                mana -= 30;
                 const pick = occupied[Math.floor(Math.random() * occupied.length)];
                 board[pick]++;
-                addScore(board[pick] * 20);
+                playTone(740);
+                addScore(board[pick] * 30, 0);
                 render();
             }
+        });
+
+        document.getElementById('harvestBtn').addEventListener('click', () => {
+            const total = board.reduce((s, v) => s + v, 0);
+            if (total > 0) {
+                addScore(total * 5, Math.max(10, total * 2));
+                playTone(580);
+                render();
+            }
+        });
+
+        document.querySelectorAll('#themeBtns .shop-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('grid').style.background = btn.dataset.bg;
+            });
         });
 
         render();

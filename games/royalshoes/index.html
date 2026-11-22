@@ -13,7 +13,7 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1160px; padding: 12px 20px;
+            width: 100%; max-width: 1200px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.4);
         }
@@ -28,27 +28,27 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
         .studio {
-            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
-            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 350px 1fr; gap: 18px;
+            width: 100%; max-width: 1200px; padding: 16px; flex: 1; align-items: start;
         }
         @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
             background: rgba(38, 8, 45, 0.94); border: 2px solid rgba(244,114,182,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 9px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.92rem; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
-            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 7px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.79rem;
+            font-size: 0.78rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
         }
         .btn-action {
-            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.91rem;
             background: linear-gradient(135deg, #f472b6, #fde047); color: #2b0618;
         }
         .stage {
@@ -56,7 +56,7 @@
             background: rgba(18, 4, 24, 0.88); border-radius: 24px;
             border: 3px solid rgba(244,114,182,0.4); padding: 16px;
         }
-        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -68,7 +68,7 @@
 
     <main class="studio">
         <aside class="panel">
-            <h3>👠 1. Material do Sapatinho Real</h3>
+            <h3>👠 1. Silhueta & Material do Sapatinho</h3>
             <div class="grid-2" id="shoeBtns">
                 <button class="btn-opt active" data-v="#38bdf8">❄️ Cristal Cinderela</button>
                 <button class="btn-opt" data-v="#ec4899">💖 Cetim Rosa</button>
@@ -81,16 +81,16 @@
             <h3>✨ 2. Tira de Tornozelo & Salto</h3>
             <div class="grid-2" id="strapBtns">
                 <button class="btn-opt active" data-v="pearls">⚪ Fio de Pérolas</button>
-                <button class="btn-opt" data-v="lace">🎀 Fita de Cetim</button>
+                <button class="btn-opt" data-v="lace">🎀 Laço Bailarina</button>
                 <button class="btn-opt" data-v="gold">⛓️ Corrente Ouro</button>
-                <button class="btn-opt" data-v="none">✨ Clássico Livre</button>
+                <button class="btn-opt" data-v="wings">🦋 Asas de Fada</button>
             </div>
 
-            <h3>👛 3. Formato & Cor da Bolsa</h3>
+            <h3>👛 3. Bolsa de Gala Combinando</h3>
             <div class="grid-2" id="bagBtns">
                 <button class="btn-opt active" data-v="#f472b6" data-s="clutch">👛 Clutch Rosa</button>
                 <button class="btn-opt" data-v="#fbbf24" data-s="heart">💖 Bolsa Coração</button>
-                <button class="btn-opt" data-v="#bae6fd" data-s="clutch">💎 Cristal Azul</button>
+                <button class="btn-opt" data-v="#bae6fd" data-s="shell">🐚 Concha Pérola</button>
                 <button class="btn-opt" data-v="#e9d5ff" data-s="heart">💜 Coração Lilás</button>
             </div>
 
@@ -104,11 +104,16 @@
                 <button class="btn-opt" data-v="🦢">🦢 Cisne Real</button>
             </div>
 
+            <div class="grid-2">
+                <button class="btn-action" id="randBtn" style="background:rgba(255,255,255,0.14); color:#fff;">🎲 Surpresa</button>
+                <button class="btn-action" id="photoBtn" style="background:linear-gradient(135deg,#38bdf8,#a855f7); color:#fff;">📸 Foto PNG</button>
+            </div>
             <button class="btn-action" id="saveBtn">🏆 Exibir na Vitrine Real (+1 👠)</button>
         </aside>
 
         <section class="stage">
-            <canvas id="shoeCanvas" width="560" height="500"></canvas>
+            <canvas id="shoeCanvas" width="580" height="510"></canvas>
+            <p style="margin-top:8px; color:#fbcfe8; font-size:0.84rem;">💎 Clique no sapatinho ou na bolsa para cravejar cristais Swarovski brilhantes!</p>
         </section>
     </main>
 
@@ -124,17 +129,30 @@
         const canvas = document.getElementById('shoeCanvas');
         const ctx = canvas.getContext('2d');
         let state = { shoe: '#38bdf8', strap: 'pearls', bag: '#f472b6', bagShape: 'clutch', gem: '💎' };
+        let crystals = [];
         let t = 0;
+
+        canvas.addEventListener('pointerdown', e => {
+            const r = canvas.getBoundingClientRect();
+            const x = (e.clientX - r.left) * (580 / r.width);
+            const y = (e.clientY - r.top) * (510 / r.height);
+            crystals.push({ x, y });
+        });
 
         function render() {
             t += 0.05;
-            const bg = ctx.createRadialGradient(280, 230, 30, 280, 250, 340);
+            const bg = ctx.createRadialGradient(290, 230, 30, 290, 250, 360);
             bg.addColorStop(0, '#4a044e'); bg.addColorStop(1, '#14031a');
-            ctx.fillStyle = bg; ctx.fillRect(0, 0, 560, 500);
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 580, 510);
 
-            // Velvet Royal Cushion Pedestal with Golden Tassels
+            // Glass Dome Arch in background
+            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(290, 260, 230, Math.PI, 0); ctx.stroke();
+
+            // Velvet Royal Cushion Pedestal
             ctx.fillStyle = '#831843';
-            ctx.beginPath(); ctx.ellipse(280, 425, 225, 42, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(290, 430, 235, 42, 0, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4.5; ctx.stroke();
 
             // 1. Royal Handbag on left
@@ -145,9 +163,14 @@
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
             if (state.bagShape === 'heart') {
                 ctx.beginPath();
-                ctx.moveTo(170, 360);
+                ctx.moveTo(170, 365);
                 ctx.bezierCurveTo(75, 290, 90, 200, 170, 245);
-                ctx.bezierCurveTo(250, 200, 265, 290, 170, 360);
+                ctx.bezierCurveTo(250, 200, 265, 290, 170, 365);
+                ctx.fill(); ctx.stroke();
+            } else if (state.bagShape === 'shell') {
+                ctx.beginPath();
+                ctx.arc(170, 290, 68, Math.PI, 0);
+                ctx.lineTo(215, 350); ctx.lineTo(125, 350); ctx.closePath();
                 ctx.fill(); ctx.stroke();
             } else {
                 ctx.beginPath();
@@ -160,38 +183,55 @@
             // 2. High-Heel Crystal Slipper on right
             ctx.fillStyle = state.shoe;
             ctx.beginPath();
-            ctx.moveTo(295, 245);
-            ctx.quadraticCurveTo(345, 360, 460, 375);
-            ctx.quadraticCurveTo(482, 395, 445, 408);
-            ctx.lineTo(365, 408);
-            ctx.quadraticCurveTo(335, 345, 315, 340);
-            ctx.lineTo(315, 412);
-            ctx.lineTo(298, 412);
+            ctx.moveTo(300, 245);
+            ctx.quadraticCurveTo(350, 360, 468, 375);
+            ctx.quadraticCurveTo(490, 395, 452, 410);
+            ctx.lineTo(370, 410);
+            ctx.quadraticCurveTo(340, 345, 320, 340);
+            ctx.lineTo(320, 414);
+            ctx.lineTo(302, 414);
             ctx.closePath();
             ctx.fill();
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
+
+            // Red Carpet Sole highlight
+            ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(322, 342); ctx.quadraticCurveTo(350, 405, 452, 410); ctx.stroke();
 
             // Ankle Strap Option
             if (state.strap === 'pearls') {
                 ctx.fillStyle = '#ffffff';
                 for (let i = 0; i < 6; i++) {
-                    ctx.beginPath(); ctx.arc(305 + i * 7, 265 + i * 2, 3.5, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(310 + i * 7, 265 + i * 2, 3.8, 0, Math.PI * 2); ctx.fill();
                 }
             } else if (state.strap === 'lace') {
-                ctx.strokeStyle = '#f472b6'; ctx.lineWidth = 6;
-                ctx.beginPath(); ctx.moveTo(300, 265); ctx.lineTo(345, 278); ctx.stroke();
+                ctx.strokeStyle = '#f472b6'; ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(305, 265); ctx.lineTo(345, 245);
+                ctx.moveTo(305, 245); ctx.lineTo(345, 265);
+                ctx.stroke();
             } else if (state.strap === 'gold') {
                 ctx.strokeStyle = '#fde047'; ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.moveTo(300, 265); ctx.lineTo(345, 278); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(305, 265); ctx.lineTo(350, 278); ctx.stroke();
+            } else if (state.strap === 'wings') {
+                ctx.font = '32px sans-serif';
+                ctx.fillText('🦋', 298, 255);
             }
 
             ctx.font = '36px sans-serif';
-            ctx.fillText(state.gem, 428, 372);
+            ctx.fillText(state.gem, 435, 372);
 
-            // Twinkling Glints
+            // Custom Swarovski Crystals placed by user
+            crystals.forEach(c => {
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#fde047'; ctx.shadowBlur = 10;
+                ctx.beginPath(); ctx.arc(c.x, c.y, 4, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
             ctx.font = '20px sans-serif';
-            ctx.fillText('✨', 320 + Math.sin(t) * 8, 235);
-            ctx.fillText('✨', 450, 340 + Math.cos(t) * 6);
+            ctx.fillText('✨', 325 + Math.sin(t) * 8, 235);
+            ctx.fillText('✨', 460, 340 + Math.cos(t) * 6);
 
             requestAnimationFrame(render);
         }
@@ -210,6 +250,21 @@
         bind('strapBtns', 'strap');
         bind('bagBtns', 'bag');
         bind('gemBtns', 'gem');
+
+        document.getElementById('randBtn').addEventListener('click', () => {
+            crystals = [];
+            ['shoeBtns', 'strapBtns', 'bagBtns', 'gemBtns'].forEach(id => {
+                const btns = document.querySelectorAll(`#${id} .btn-opt`);
+                btns[Math.floor(Math.random() * btns.length)].click();
+            });
+        });
+
+        document.getElementById('photoBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'sapatinho-cristal-real.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        });
 
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;

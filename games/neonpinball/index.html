@@ -13,7 +13,7 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 960px; padding: 12px 20px;
+            width: 100%; max-width: 1120px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(236,72,153,0.45);
         }
@@ -27,17 +27,35 @@
             background: linear-gradient(135deg, #ec4899, #eab308);
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
-        .arena { display: flex; flex-direction: column; align-items: center; padding: 12px; gap: 10px; }
+        .layout {
+            display: grid; grid-template-columns: 290px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 14px; align-items: start;
+        }
+        @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(22, 10, 42, 0.94); border: 2px solid rgba(236,72,153,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.92rem; }
+        .table-btn {
+            padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; cursor: pointer;
+            text-align: left; font-size: 0.82rem;
+        }
+        .table-btn.active {
+            background: linear-gradient(135deg, #ec4899, #6366f1); border-color: #fff;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .hud {
-            display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.06);
-            padding: 8px 16px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
+            display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
         }
         canvas {
             background: #07051a; border: 3px solid #ec4899; border-radius: 24px;
             box-shadow: 0 0 38px rgba(236,72,153,0.35); max-width: 100%; height: auto;
         }
         .btn {
-            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
+            padding: 9px 16px; border-radius: 999px; border: none; font-weight: 700;
             background: linear-gradient(135deg, #00f5d4, #6366f1); color: #04101c; cursor: pointer;
         }
         .btn-multi { background: linear-gradient(135deg, #fde047, #ec4899); color: #1f0410; }
@@ -50,15 +68,36 @@
         <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
     </header>
 
-    <main class="arena">
-        <div class="hud">
-            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
-            <span>Multiplicador: <strong id="multVal" style="color:#00f5d4;">1x</strong></span>
-            <button class="btn" id="kickBtn">⚡ Flippers [Espaço / Toque]</button>
-            <button class="btn btn-multi" id="multiBtn">🎱 +1 Esfera Multi-Ball</button>
-            <button class="btn" id="resetBtn">🔄 Reiniciar</button>
-        </div>
-        <canvas id="pinCanvas" width="440" height="540"></canvas>
+    <main class="layout">
+        <aside class="panel">
+            <h3>🕹️ 1. Mesa de Fliperama</h3>
+            <button class="table-btn active" data-bg="#07051a" data-b="#ec4899">🌆 <strong>Cyber Arcade</strong><br><small>Bumpers Neon & Plasma</small></button>
+            <button class="table-btn" data-bg="#1f0524" data-b="#fde047">👑 <strong>Palácio Real</strong><br><small>Ouro 24K & Rubis</small></button>
+            <button class="table-btn" data-bg="#041824" data-b="#00f5d4">🌌 <strong>Galáxia Starlight</strong><br><small>Gravidade Quântica</small></button>
+
+            <h3>⚡ 2. Poderes da Mesa</h3>
+            <button class="btn btn-multi" id="multiBtn">🎱 +1 Esfera Multi-Ball (Até 4!)</button>
+            <button class="btn" id="shieldBtn">🛡️ Ativar Escudo Laser Central</button>
+            <button class="btn" id="jackpotBtn" style="background:linear-gradient(135deg,#a855f7,#ec4899); color:#fff;">🎰 Turbo Impulso Magnético</button>
+            <button class="btn" id="resetBtn" style="background:rgba(255,255,255,0.14); color:#fff;">🔄 Reiniciar Partida</button>
+
+            <h3>🎯 3. Como Jogar</h3>
+            <p style="font-size:0.8rem; color:#cbd5e1; line-height:1.45;">
+                • Toque na tela ou pressione <strong>Espaço / Setas</strong> para acionar os Flippers.<br>
+                • Acenda as <strong>3 Estrelas do Topo</strong> para subir o Multiplicador até <strong>5x</strong>!<br>
+                • Passe pelo <strong>Portal Vórtice 🌀</strong> para ganhar +500 PTS de Jackpot!
+            </p>
+        </aside>
+
+        <section class="arena">
+            <div class="hud">
+                <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+                <span>Multiplicador: <strong id="multVal" style="color:#00f5d4;">1x</strong></span>
+                <span>Escudo Central: <strong id="saverVal" style="color:#4ade80;">ATIVO 🛡️</strong></span>
+                <button class="btn" id="kickBtn">⚡ FLIPPERS [Espaço]</button>
+            </div>
+            <canvas id="pinCanvas" width="460" height="540"></canvas>
+        </section>
     </main>
 
     <script type="module">
@@ -73,106 +112,208 @@
         const canvas = document.getElementById('pinCanvas');
         const ctx = canvas.getContext('2d');
 
+        let tableBg = '#07051a';
         const BUMPERS = [
             { x: 135, y: 155, r: 28, c: '#00f5d4', pts: 50, pulse: 0 },
-            { x: 305, y: 155, r: 28, c: '#00f5d4', pts: 50, pulse: 0 },
-            { x: 220, y: 235, r: 35, c: '#ec4899', pts: 120, pulse: 0 },
+            { x: 325, y: 155, r: 28, c: '#00f5d4', pts: 50, pulse: 0 },
+            { x: 230, y: 235, r: 36, c: '#ec4899', pts: 120, pulse: 0 },
             { x: 120, y: 315, r: 24, c: '#fde047', pts: 80, pulse: 0 },
-            { x: 320, y: 315, r: 24, c: '#fde047', pts: 80, pulse: 0 }
+            { x: 340, y: 315, r: 24, c: '#fde047', pts: 80, pulse: 0 }
         ];
 
         const STARS = [
-            { x: 155, y: 70, lit: false },
-            { x: 220, y: 55, lit: false },
-            { x: 285, y: 70, lit: false }
+            { x: 160, y: 65, lit: false },
+            { x: 230, y: 50, lit: false },
+            { x: 300, y: 65, lit: false }
         ];
 
-        let balls = [{ x: 220, y: 95, vx: 3.5, vy: 0, c: '#fde047' }];
+        let balls = [{ x: 230, y: 95, vx: 3.5, vy: 0, c: '#fde047', trail: [] }];
+        let sparks = [];
         let score = 0;
         let mult = 1;
+        let centerShield = true;
         let flipperFlash = 0;
+        let tick = 0;
+
+        function beep(freq) {
+            try {
+                const ac = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ac.createOscillator();
+                const g = ac.createGain();
+                osc.frequency.value = freq;
+                g.gain.setValueAtTime(0.05, ac.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.1);
+                osc.connect(g); g.connect(ac.destination);
+                osc.start(); osc.stop(ac.currentTime + 0.1);
+            } catch (e) {}
+        }
+
+        function spawnSparks(x, y, col) {
+            for (let i = 0; i < 8; i++) {
+                const a = Math.random() * Math.PI * 2;
+                sparks.push({ x, y, vx: Math.cos(a) * 4, vy: Math.sin(a) * 4, c: col, life: 1 });
+            }
+        }
 
         function resetGame() {
-            balls = [{ x: 220, y: 95, vx: (Math.random() - 0.5) * 6, vy: 1, c: '#fde047' }];
+            balls = [{ x: 230, y: 95, vx: (Math.random() - 0.5) * 6, vy: 1, c: '#fde047', trail: [] }];
             STARS.forEach(s => s.lit = false);
-            score = 0; mult = 1;
+            score = 0; mult = 1; centerShield = true;
             document.getElementById('scoreVal').textContent = 0;
             document.getElementById('multVal').textContent = '1x';
+            document.getElementById('saverVal').textContent = 'ATIVO 🛡️';
         }
 
         function kickFlippers() {
-            flipperFlash = 12;
+            flipperFlash = 14;
+            beep(340);
             balls.forEach(ball => {
-                if (ball.y > 370 && ball.y < 520) {
-                    ball.vy = -10.8;
-                    ball.vx += (Math.random() - 0.5) * 6;
+                if (ball.y > 365 && ball.y < 525) {
+                    ball.vy = -11.2;
+                    ball.vx += (Math.random() - 0.5) * 6.5;
                 }
             });
         }
 
         window.addEventListener('keydown', e => {
-            if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') kickFlippers();
+            if (e.code === 'Space' || e.key.startsWith('Arrow')) kickFlippers();
         });
         document.getElementById('kickBtn').addEventListener('click', kickFlippers);
         canvas.addEventListener('pointerdown', kickFlippers);
+
         document.getElementById('multiBtn').addEventListener('click', () => {
-            if (balls.length < 3) {
-                balls.push({ x: 220, y: 85, vx: (Math.random() - 0.5) * 7, vy: 2, c: '#00f5d4' });
+            if (balls.length < 4) {
+                const cols = ['#00f5d4', '#f472b6', '#c084fc', '#fde047'];
+                balls.push({ x: 230, y: 85, vx: (Math.random() - 0.5) * 7, vy: 2, c: cols[balls.length % 4], trail: [] });
+                beep(520);
             }
         });
+
+        document.getElementById('shieldBtn').addEventListener('click', () => {
+            centerShield = true;
+            document.getElementById('saverVal').textContent = 'ATIVO 🛡️';
+        });
+
+        document.getElementById('jackpotBtn').addEventListener('click', () => {
+            balls.forEach(b => { b.vy = -10; b.vx = (Math.random() - 0.5) * 9; });
+            beep(620);
+        });
+
         document.getElementById('resetBtn').addEventListener('click', resetGame);
 
+        document.querySelectorAll('.table-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.table-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                tableBg = btn.dataset.bg;
+                canvas.style.borderColor = btn.dataset.b;
+            });
+        });
+
+        function addPts(pts) {
+            score += pts * mult;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('neonpinball', { highScore: bestScore }, activePlayer);
+            }
+        }
+
         function loop() {
-            ctx.fillStyle = '#07051a';
-            ctx.fillRect(0, 0, 440, 540);
+            tick++;
+            ctx.fillStyle = tableBg;
+            ctx.fillRect(0, 0, 460, 540);
+
+            // Side Slingshot Walls
+            ctx.strokeStyle = 'rgba(0, 245, 212, 0.45)';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(35, 380); ctx.lineTo(90, 455);
+            ctx.moveTo(425, 380); ctx.lineTo(370, 455);
+            ctx.stroke();
+
+            // Vortex Jackpot Spinner on Left & Right
+            ctx.font = '28px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('🌀', 55, 235);
+            ctx.fillText('🌀', 405, 235);
 
             // Top Jackpot Stars
             STARS.forEach(s => {
-                ctx.font = '24px sans-serif'; ctx.textAlign = 'center';
+                ctx.font = '24px sans-serif';
                 ctx.fillText(s.lit ? '🌟' : '⭐', s.x, s.y);
             });
+
+            // Center Laser Ball-Saver Post
+            if (centerShield) {
+                ctx.fillStyle = '#10b981';
+                ctx.shadowColor = '#10b981'; ctx.shadowBlur = 12;
+                ctx.beginPath(); ctx.arc(230, 505, 14, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+            }
 
             // Bumpers
             BUMPERS.forEach(b => {
                 if (b.pulse > 0) b.pulse--;
-                const rad = b.r + (b.pulse > 0 ? 5 : 0);
+                const rad = b.r + (b.pulse > 0 ? 6 : 0);
                 ctx.fillStyle = b.c;
                 ctx.shadowColor = b.c;
-                ctx.shadowBlur = b.pulse > 0 ? 20 : 8;
+                ctx.shadowBlur = b.pulse > 0 ? 22 : 8;
                 ctx.beginPath(); ctx.arc(b.x, b.y, rad, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
                 ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
                 ctx.fillStyle = '#050312';
-                ctx.font = 'bold 14px Fredoka, sans-serif'; ctx.textAlign = 'center';
+                ctx.font = 'bold 14px Fredoka, sans-serif';
                 ctx.fillText('+' + b.pts, b.x, b.y + 5);
             });
 
             // Balls physics
             balls.forEach(ball => {
+                ball.trail.push({ x: ball.x, y: ball.y });
+                if (ball.trail.length > 7) ball.trail.shift();
+
                 ball.vy += 0.22;
                 ball.x += ball.vx;
                 ball.y += ball.vy;
 
-                if (ball.x < 22 || ball.x > 418) {
+                if (ball.x < 22 || ball.x > 438) {
                     ball.vx *= -0.92;
-                    ball.x = Math.max(22, Math.min(418, ball.x));
+                    ball.x = Math.max(22, Math.min(438, ball.x));
                 }
                 if (ball.y < 22) {
                     ball.vy *= -0.85;
                     ball.y = 22;
                 }
-                if (ball.y > 465 && ball.y < 505 && Math.abs(ball.x - 220) < 135 && flipperFlash > 0) {
-                    ball.vy = -10.8;
+
+                // Vortex Spinners
+                if (Math.hypot(ball.x - 55, ball.y - 235) < 24 || Math.hypot(ball.x - 405, ball.y - 235) < 24) {
+                    ball.vy = -9;
+                    addPts(250);
+                    spawnSparks(ball.x, ball.y, '#c084fc');
                 }
-                if (ball.y > 530) {
+
+                // Center Shield save
+                if (centerShield && Math.hypot(ball.x - 230, ball.y - 505) < 26) {
+                    ball.vy = -10.5;
+                    centerShield = false;
+                    document.getElementById('saverVal').textContent = 'USADO';
+                    spawnSparks(230, 505, '#10b981');
+                }
+
+                // Flipper hit
+                if (ball.y > 460 && ball.y < 508 && Math.abs(ball.x - 230) < 145 && flipperFlash > 0) {
+                    ball.vy = -11.2;
+                }
+                if (ball.y > 532) {
                     ball.y = 85; ball.vy = 0; ball.vx = (Math.random() - 0.5) * 6;
                 }
 
-                // Star Targets check
+                // Star Targets
                 STARS.forEach(s => {
                     if (Math.hypot(ball.x - s.x, ball.y - s.y) < 24 && !s.lit) {
                         s.lit = true;
-                        score += 200 * mult;
+                        addPts(200);
+                        beep(700);
                         if (STARS.every(st => st.lit)) {
                             mult = Math.min(5, mult + 1);
                             document.getElementById('multVal').textContent = mult + 'x';
@@ -181,7 +322,7 @@
                     }
                 });
 
-                // Bumper collision
+                // Bumpers collision
                 BUMPERS.forEach(b => {
                     const dx = ball.x - b.x, dy = ball.y - b.y;
                     const dist = Math.hypot(dx, dy);
@@ -189,15 +330,17 @@
                         const nx = dx / dist, ny = dy / dist;
                         ball.vx = nx * 7.8;
                         ball.vy = ny * 7.8;
-                        b.pulse = 8;
-                        score += b.pts * mult;
-                        document.getElementById('scoreVal').textContent = score;
-                        if (score > bestScore) {
-                            bestScore = score;
-                            hiEl.textContent = bestScore;
-                            SaveHub.updateGameSave('neonpinball', { highScore: bestScore }, activePlayer);
-                        }
+                        b.pulse = 9;
+                        addPts(b.pts);
+                        spawnSparks(b.x, b.y, b.c);
+                        beep(480);
                     }
+                });
+
+                // Draw glowing trail
+                ball.trail.forEach((pt, idx) => {
+                    ctx.fillStyle = ball.c + '44';
+                    ctx.beginPath(); ctx.arc(pt.x, pt.y, idx * 1.5, 0, Math.PI * 2); ctx.fill();
                 });
 
                 ctx.fillStyle = ball.c;
@@ -205,15 +348,24 @@
                 ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
             });
 
+            // Sparks
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                const s = sparks[i];
+                s.x += s.vx; s.y += s.vy; s.life -= 0.05;
+                if (s.life <= 0) { sparks.splice(i, 1); continue; }
+                ctx.fillStyle = s.c;
+                ctx.fillRect(s.x, s.y, 4, 4);
+            }
+
             // Flippers
             if (flipperFlash > 0) flipperFlash--;
-            const lift = flipperFlash > 0 ? -20 : 12;
+            const lift = flipperFlash > 0 ? -22 : 12;
             ctx.strokeStyle = '#00f5d4';
             ctx.lineWidth = 14;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(85, 480); ctx.lineTo(195, 480 + lift);
-            ctx.moveTo(355, 480); ctx.lineTo(245, 480 + lift);
+            ctx.moveTo(90, 480); ctx.lineTo(202, 480 + lift);
+            ctx.moveTo(370, 480); ctx.lineTo(258, 480 + lift);
             ctx.stroke();
 
             requestAnimationFrame(loop);

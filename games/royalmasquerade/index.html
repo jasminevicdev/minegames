@@ -13,7 +13,7 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1160px; padding: 12px 20px;
+            width: 100%; max-width: 1200px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(250,204,21,0.4);
         }
@@ -28,27 +28,27 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
         .studio {
-            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
-            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 340px 1fr; gap: 18px;
+            width: 100%; max-width: 1200px; padding: 16px; flex: 1; align-items: start;
         }
         @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
             background: rgba(42, 12, 68, 0.94); border: 2px solid rgba(250,204,21,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 9px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.91rem; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.9rem; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
-            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 7px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.79rem;
+            font-size: 0.78rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #ec4899, #eab308); border-color: #fff; color: #1f0410;
         }
         .btn-action {
             padding: 10px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.9rem;
             background: linear-gradient(135deg, #fde047, #ec4899); color: #240418;
         }
         .stage {
@@ -56,7 +56,7 @@
             background: rgba(18, 5, 32, 0.88); border-radius: 24px;
             border: 3px solid rgba(250,204,21,0.4); padding: 16px;
         }
-        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: crosshair; touch-action: none; }
     </style>
 </head>
 <body>
@@ -73,7 +73,7 @@
                 <button class="btn-opt active" data-v="butterfly">🦋 Asas Imperial</button>
                 <button class="btn-opt" data-v="cat">🐱 Gatinha Real</button>
                 <button class="btn-opt" data-v="swan">🦢 Cisne de Gala</button>
-                <button class="btn-opt" data-v="classic">🎭 Colombina Ouro</button>
+                <button class="btn-opt" data-v="phoenix">🔥 Fênix Dourada</button>
             </div>
 
             <h3>🎭 2. Veludo & Seda da Máscara</h3>
@@ -86,7 +86,7 @@
                 <button class="btn-opt" data-v="#0f172a">🖤 Noite Estrelada</button>
             </div>
 
-            <h3>✨ 3. Renda & Filigrana</h3>
+            <h3>✨ 3. Renda, Filigrana & Pincel</h3>
             <div class="grid-2" id="trimBtns">
                 <button class="btn-opt active" data-v="#fde047">✨ Ouro 24K</button>
                 <button class="btn-opt" data-v="#f8fafc">❄️ Prata Lunar</button>
@@ -102,13 +102,22 @@
                 <button class="btn-opt" data-v="🌹">🌹 Rosa Dourada</button>
             </div>
 
-            <button class="btn-action" id="clearGemsBtn" style="background:rgba(255,255,255,0.12); color:#fef08a;">🧹 Limpar Pedrarias Coladas</button>
+            <h3>🖌️ 5. Ferramenta ao Tocar na Máscara</h3>
+            <div class="grid-2" id="toolBtns">
+                <button class="btn-opt active" data-t="paint">🖌️ Pincel Filigrana</button>
+                <button class="btn-opt" data-t="gem">💎 Cravejar Strass</button>
+            </div>
+
+            <div class="grid-2">
+                <button class="btn-action" id="clearGemsBtn" style="background:rgba(255,255,255,0.12); color:#fef08a;">🧹 Limpar Traços</button>
+                <button class="btn-action" id="photoBtn" style="background:linear-gradient(135deg,#38bdf8,#a855f7); color:#fff;">📸 Foto PNG</button>
+            </div>
             <button class="btn-action" id="saveBtn">🏆 Brilhar no Baile de Gala (+1 🎭)</button>
         </aside>
 
         <section class="stage">
-            <canvas id="maskCanvas" width="560" height="500"></canvas>
-            <p style="margin-top:10px; color:#fef08a; font-size:0.85rem;">💎 Clique sobre a máscara para colar strass e diamantes espelhados automaticamente!</p>
+            <canvas id="maskCanvas" width="580" height="510"></canvas>
+            <p style="margin-top:8px; color:#fef08a; font-size:0.84rem;">✨ Desenhe arabescos de ouro espelhados ou craveje diamantes diretamente sobre a máscara!</p>
         </section>
     </main>
 
@@ -123,64 +132,86 @@
 
         const canvas = document.getElementById('maskCanvas');
         const ctx = canvas.getContext('2d');
-        let state = { shape: 'butterfly', color: '#ec4899', trim: '#fde047', crown: '👑' };
+        let state = { shape: 'butterfly', color: '#ec4899', trim: '#fde047', crown: '👑', tool: 'paint' };
         let gems = [];
+        let strokes = [];
+        let activeStroke = null;
 
         function render() {
-            const bg = ctx.createRadialGradient(280, 250, 30, 280, 250, 330);
+            const bg = ctx.createRadialGradient(290, 250, 30, 290, 250, 340);
             bg.addColorStop(0, '#3b0764'); bg.addColorStop(1, '#110321');
-            ctx.fillStyle = bg; ctx.fillRect(0, 0, 560, 500);
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 580, 510);
 
-            // Golden Holding Stick
+            // Ballroom Chandelier glow at top
+            ctx.fillStyle = 'rgba(253, 224, 71, 0.14)';
+            ctx.beginPath(); ctx.arc(290, 15, 95, 0, Math.PI); ctx.fill();
+
+            // Golden Holding Stick with Silk Ribbon
             ctx.strokeStyle = state.trim;
             ctx.lineWidth = 10;
-            ctx.beginPath(); ctx.moveTo(430, 260); ctx.lineTo(460, 475); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(445, 260); ctx.lineTo(475, 480); ctx.stroke();
+            ctx.font = '32px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('🎀', 453, 320);
 
             // Royal Plumes / Feathers behind mask
-            ['#f472b6', state.trim, '#c084fc', '#38bdf8'].forEach((c, i) => {
+            ['#f472b6', state.trim, '#c084fc', '#38bdf8', '#fde047'].forEach((c, i) => {
                 ctx.fillStyle = c;
                 ctx.beginPath();
-                ctx.ellipse(215 + i * 44, 140 - (i === 1 || i === 2 ? 22 : 0), 26, 78, (i - 1.5) * 0.28, 0, Math.PI * 2);
+                ctx.ellipse(202 + i * 44, 138 - (i === 2 ? 25 : i === 1 || i === 3 ? 12 : 0), 26, 82, (i - 2) * 0.24, 0, Math.PI * 2);
                 ctx.fill();
             });
 
-            // Mask Silhouette by shape
+            // Mask Silhouette
             ctx.fillStyle = state.color;
             ctx.strokeStyle = state.trim;
             ctx.lineWidth = 6;
             ctx.beginPath();
             if (state.shape === 'cat') {
-                ctx.moveTo(280, 210);
-                ctx.lineTo(185, 195); ctx.lineTo(125, 130); ctx.lineTo(110, 250);
-                ctx.quadraticCurveTo(140, 330, 260, 290);
-                ctx.lineTo(280, 310); ctx.lineTo(300, 290);
-                ctx.quadraticCurveTo(420, 330, 450, 250);
-                ctx.lineTo(435, 130); ctx.lineTo(375, 195);
+                ctx.moveTo(290, 210);
+                ctx.lineTo(195, 195); ctx.lineTo(130, 125); ctx.lineTo(115, 250);
+                ctx.quadraticCurveTo(145, 332, 270, 290);
+                ctx.lineTo(290, 312); ctx.lineTo(310, 290);
+                ctx.quadraticCurveTo(435, 332, 465, 250);
+                ctx.lineTo(450, 125); ctx.lineTo(385, 195);
             } else {
-                const lift = state.shape === 'swan' ? -25 : 0;
-                ctx.moveTo(280, 215);
-                ctx.bezierCurveTo(185, 135 + lift, 80, 165 + lift, 105, 265);
-                ctx.bezierCurveTo(115, 328, 215, 332, 262, 285);
-                ctx.lineTo(280, 308);
-                ctx.lineTo(298, 285);
-                ctx.bezierCurveTo(345, 332, 445, 328, 455, 265);
-                ctx.bezierCurveTo(480, 165 + lift, 375, 135 + lift, 280, 215);
+                const lift = state.shape === 'swan' ? -25 : state.shape === 'phoenix' ? -45 : 0;
+                ctx.moveTo(290, 215);
+                ctx.bezierCurveTo(190, 135 + lift, 80, 165 + lift, 108, 265);
+                ctx.bezierCurveTo(120, 330, 222, 334, 272, 285);
+                ctx.lineTo(290, 310);
+                ctx.lineTo(308, 285);
+                ctx.bezierCurveTo(358, 334, 460, 330, 472, 265);
+                ctx.bezierCurveTo(500, 165 + lift, 390, 135 + lift, 290, 215);
             }
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
 
+            // Symmetrical Filigree Strokes drawn by player
+            strokes.forEach(st => {
+                if (st.pts.length < 2) return;
+                ctx.strokeStyle = st.color;
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                st.pts.forEach((p, idx) => idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+                ctx.stroke();
+                ctx.beginPath();
+                st.pts.forEach((p, idx) => idx === 0 ? ctx.moveTo(580 - p.x, p.y) : ctx.lineTo(580 - p.x, p.y));
+                ctx.stroke();
+            });
+
             // Lace Filigree Dots around border
             ctx.fillStyle = state.trim;
             for (let i = -5; i <= 5; i++) {
-                ctx.beginPath(); ctx.arc(280 + i * 28, 198 + Math.abs(i) * 4, 3.5, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(290 + i * 28, 198 + Math.abs(i) * 4, 3.5, 0, Math.PI * 2); ctx.fill();
             }
 
             // Eye cutouts
             ctx.fillStyle = '#110321';
             ctx.beginPath();
-            ctx.ellipse(202, 250, 45, 22, -0.1, 0, Math.PI * 2);
-            ctx.ellipse(358, 250, 45, 22, 0.1, 0, Math.PI * 2);
+            ctx.ellipse(210, 250, 45, 22, -0.1, 0, Math.PI * 2);
+            ctx.ellipse(370, 250, 45, 22, 0.1, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = state.trim; ctx.lineWidth = 3; ctx.stroke();
 
@@ -189,30 +220,47 @@
                 ctx.fillStyle = '#ffffff';
                 ctx.shadowColor = '#fde047'; ctx.shadowBlur = 8;
                 ctx.beginPath(); ctx.arc(g.x, g.y, 5, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(560 - g.x, g.y, 5, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(580 - g.x, g.y, 5, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
             });
 
             // Center Jewel / Crown
-            ctx.font = '54px sans-serif';
+            ctx.font = '56px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(state.crown, 280, 215);
+            ctx.fillText(state.crown, 290, 215);
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (580 / rect.width),
+                y: (e.clientY - rect.top) * (510 / rect.height)
+            };
         }
 
         canvas.addEventListener('pointerdown', e => {
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) * (560 / rect.width);
-            const y = (e.clientY - rect.top) * (500 / rect.height);
-            gems.push({ x, y });
+            const p = getPos(e);
+            if (state.tool === 'gem') {
+                gems.push(p);
+                render();
+            } else {
+                activeStroke = { color: state.trim, pts: [p] };
+                strokes.push(activeStroke);
+            }
+        });
+        window.addEventListener('pointermove', e => {
+            if (!activeStroke) return;
+            activeStroke.pts.push(getPos(e));
             render();
         });
+        window.addEventListener('pointerup', () => { activeStroke = null; });
 
         function bind(id, key) {
             document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    state[key] = btn.dataset.v;
+                    state[key] = btn.dataset.v || btn.dataset.t;
                     render();
                 });
             });
@@ -221,8 +269,15 @@
         bind('colorBtns', 'color');
         bind('trimBtns', 'trim');
         bind('crownBtns', 'crown');
+        bind('toolBtns', 'tool');
 
-        document.getElementById('clearGemsBtn').addEventListener('click', () => { gems = []; render(); });
+        document.getElementById('clearGemsBtn').addEventListener('click', () => { gems = []; strokes = []; render(); });
+        document.getElementById('photoBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'mascara-baile-real.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        });
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;
             scoreEl.textContent = bestScore;
