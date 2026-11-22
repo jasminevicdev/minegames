@@ -99,7 +99,17 @@ export class SaveHub {
                     fairycreator: { highScore: 0 },
                     cyberblade: { highScore: 0 },
                     starlink: { highScore: 0 },
-                    bubblepop: { highScore: 0 }
+                    bubblepop: { highScore: 0 },
+                    mermaidstudio: { highScore: 0 },
+                    hoverboard: { highScore: 0 },
+                    embroidery: { highScore: 0 },
+                    latteart: { highScore: 0 },
+                    royalshoes: { highScore: 0 },
+                    crystalterrarium: { highScore: 0 },
+                    royalmasquerade: { highScore: 0 },
+                    iceprincess: { highScore: 0 },
+                    neonpinball: { highScore: 0 },
+                    crystalmerge: { highScore: 0 }
                 }
             };
         }

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapatinhos de Cristal & Bolsas Reais — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #4a044e, #140318 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(236,72,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f472b6; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(38, 8, 45, 0.92); border: 2px solid rgba(244,114,182,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.93rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            background: linear-gradient(135deg, #f472b6, #fde047); color: #2b0618;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(18, 4, 24, 0.88); border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>👠 Sapatinhos de Cristal & Bolsas Reais</h1>
+        <div class="score-pill">Designs: <span id="scoreVal">0</span> 👠</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>👠 1. Material do Sapatinho Real</h3>
+            <div class="grid-2" id="shoeBtns">
+                <button class="btn-opt active" data-v="#38bdf8">❄️ Cristal Cinderela</button>
+                <button class="btn-opt" data-v="#ec4899">💖 Cetim Rosa</button>
+                <button class="btn-opt" data-v="#fde047">✨ Ouro 24K</button>
+                <button class="btn-opt" data-v="#a855f7">🔮 Veludo Violeta</button>
+            </div>
+
+            <h3>👛 2. Bolsa de Gala Combinando</h3>
+            <div class="grid-2" id="bagBtns">
+                <button class="btn-opt active" data-v="#f472b6">👛 Clutch Rosa</button>
+                <button class="btn-opt" data-v="#fbbf24">👑 Bolsa Imperial</button>
+                <button class="btn-opt" data-v="#bae6fd">💎 Cristal Azul</button>
+                <button class="btn-opt" data-v="#e9d5ff">💜 Lilás Pérola</button>
+            </div>
+
+            <h3>🎀 3. Fivela & Joia</h3>
+            <div class="grid-2" id="gemBtns">
+                <button class="btn-opt active" data-v="💎">💎 Diamante</button>
+                <button class="btn-opt" data-v="🎀">🎀 Laço Real</button>
+                <button class="btn-opt" data-v="🦋">🦋 Borboleta</button>
+                <button class="btn-opt" data-v="👑">👑 Coroa Ouro</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">🏆 Exibir na Vitrine Real (+1 👠)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="shoeCanvas" width="540" height="500"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('royalshoes', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('shoeCanvas');
+        const ctx = canvas.getContext('2d');
+        let state = { shoe: '#38bdf8', bag: '#f472b6', gem: '💎' };
+
+        function render() {
+            ctx.fillStyle = '#1f0826';
+            ctx.fillRect(0, 0, 540, 500);
+
+            // Velvet Cushion Pedestal
+            ctx.fillStyle = '#831843';
+            ctx.beginPath(); ctx.ellipse(270, 420, 210, 40, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.stroke();
+
+            // 1. Royal Handbag on left
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 6;
+            ctx.beginPath(); ctx.arc(170, 230, 45, Math.PI, 0); ctx.stroke();
+            ctx.fillStyle = state.bag;
+            ctx.beginPath();
+            ctx.roundRect(105, 230, 130, 115, 22);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
+            ctx.font = '36px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(state.gem, 170, 295);
+
+            // 2. High-Heel Crystal Slipper on right
+            ctx.fillStyle = state.shoe;
+            ctx.beginPath();
+            ctx.moveTo(285, 250);
+            ctx.quadraticCurveTo(335, 360, 445, 375);
+            ctx.quadraticCurveTo(465, 395, 430, 405);
+            ctx.lineTo(355, 405);
+            ctx.quadraticCurveTo(325, 345, 305, 340);
+            ctx.lineTo(305, 410);
+            ctx.lineTo(290, 410);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
+
+            ctx.font = '34px sans-serif';
+            ctx.fillText(state.gem, 415, 372);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                    render();
+                });
+            });
+        }
+        bind('shoeBtns', 'shoe');
+        bind('bagBtns', 'bag');
+        bind('gemBtns', 'gem');
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('royalshoes', { highScore: bestScore }, activePlayer);
+        });
+
+        render();
+    </script>
+</body>
+</html>

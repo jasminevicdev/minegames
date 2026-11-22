@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sereia Real: Salão do Oceano — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #0e7490, #041326 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1140px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.07); border-bottom: 2px solid rgba(34,211,238,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #a5f3fc; font-weight: 700;
+            background: rgba(6,182,212,0.25); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(34,211,238,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #67e8f9; }
+        .score-pill {
+            background: linear-gradient(135deg, #06b6d4, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(8, 35, 62, 0.92); border: 2px solid rgba(34,211,238,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a5f3fc; font-size: 0.93rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #06b6d4, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            background: linear-gradient(135deg, #22d3ee, #fde047); color: #042f2e;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(4, 18, 36, 0.88); border-radius: 24px;
+            border: 3px solid rgba(34,211,238,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🧜‍♀️ Sereia Real: Salão do Oceano</h1>
+        <div class="score-pill">Sereias Criadas: <span id="scoreVal">0</span> 🧜‍♀️</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🧜‍♀️ 1. Cauda Escamada Iridescente</h3>
+            <div class="grid-2" id="tailBtns">
+                <button class="btn-opt active" data-v="#06b6d4">💎 Turquesa Real</button>
+                <button class="btn-opt" data-v="#ec4899">🌸 Coral Rosa</button>
+                <button class="btn-opt" data-v="#a855f7">🔮 Pérola Violeta</button>
+                <button class="btn-opt" data-v="#eab308">✨ Ouro Atlântida</button>
+            </div>
+
+            <h3>💇‍♀️ 2. Cabelo Ondulado</h3>
+            <div class="grid-2" id="hairBtns">
+                <button class="btn-opt active" data-v="#f43f5e">❤️ Ruivo Ariel</button>
+                <button class="btn-opt" data-v="#38bdf8">💙 Azul Oceano</button>
+                <button class="btn-opt" data-v="#fde047">💛 Loiro Solar</button>
+                <button class="btn-opt" data-v="#c084fc">💜 Lilás Mágico</button>
+            </div>
+
+            <h3>👑 3. Coroa & Joias Marinhas</h3>
+            <div class="grid-2" id="crownBtns">
+                <button class="btn-opt active" data-v="👑">👑 Tiara Atlântida</button>
+                <button class="btn-opt" data-v="🐚">🐚 Coroa Conchas</button>
+                <button class="btn-opt" data-v="⭐">⭐ Estrela-do-Mar</button>
+                <button class="btn-opt" data-v="💎">💎 Pérola Real</button>
+            </div>
+
+            <h3>🐬 4. Amigo do Oceano</h3>
+            <div class="grid-2" id="petBtns">
+                <button class="btn-opt active" data-v="🐬">🐬 Golfinho Real</button>
+                <button class="btn-opt" data-v="🐠">🐠 Peixinho Ouro</button>
+                <button class="btn-opt" data-v="🐢">🐢 Tartaruga</button>
+                <button class="btn-opt" data-v="🐙">🐙 Polvinho Fofo</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">🌊 Brilhar no Reino de Atlântida (+1 🧜‍♀️)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="mermaidCanvas" width="540" height="520"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('mermaidstudio', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('mermaidCanvas');
+        const ctx = canvas.getContext('2d');
+        let state = { tail: '#06b6d4', hair: '#f43f5e', crown: '👑', pet: '🐬' };
+        let t = 0;
+        let bubbles = Array.from({ length: 25 }, () => ({
+            x: Math.random() * 540, y: Math.random() * 520, r: Math.random() * 6 + 3, vy: -Math.random() * 1.4 - 0.5
+        }));
+
+        function render() {
+            t += 0.04;
+            const g = ctx.createLinearGradient(0, 0, 0, 520);
+            g.addColorStop(0, '#0284c7'); g.addColorStop(1, '#082f49');
+            ctx.fillStyle = g; ctx.fillRect(0, 0, 540, 520);
+
+            // Bubbles
+            ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+            bubbles.forEach(b => {
+                b.y += b.vy;
+                if (b.y < -10) b.y = 530;
+                ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
+            });
+
+            // Hair behind
+            ctx.fillStyle = state.hair;
+            ctx.beginPath();
+            ctx.arc(270, 155, 52, 0, Math.PI * 2);
+            ctx.arc(230, 210, 38, 0, Math.PI * 2);
+            ctx.arc(310, 210, 38, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mermaid Head & Torso
+            ctx.fillStyle = '#fde6d8';
+            ctx.beginPath(); ctx.arc(270, 160, 36, 0, Math.PI * 2); ctx.fill();
+            ctx.fillRect(252, 195, 36, 95);
+            // Seashell top
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath(); ctx.arc(258, 240, 15, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(282, 240, 15, 0, Math.PI * 2); ctx.fill();
+            // Eyes
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath(); ctx.arc(258, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(282, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+
+            // Mermaid Tail with scales
+            const wag = Math.sin(t) * 14;
+            ctx.fillStyle = state.tail;
+            ctx.beginPath();
+            ctx.moveTo(245, 285); ctx.lineTo(295, 285);
+            ctx.quadraticCurveTo(315, 380, 270 + wag, 450);
+            ctx.quadraticCurveTo(225, 380, 245, 285);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
+
+            // Tail Fin
+            ctx.beginPath();
+            ctx.moveTo(270 + wag, 450);
+            ctx.quadraticCurveTo(210 + wag, 465, 225 + wag, 500);
+            ctx.lineTo(270 + wag, 470);
+            ctx.lineTo(315 + wag, 500);
+            ctx.quadraticCurveTo(330 + wag, 465, 270 + wag, 450);
+            ctx.fill(); ctx.stroke();
+
+            // Crown & Pet
+            ctx.font = '34px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(state.crown, 270, 120);
+            ctx.font = '58px sans-serif';
+            ctx.fillText(state.pet, 145, 360 + Math.sin(t) * 10);
+
+            requestAnimationFrame(render);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                });
+            });
+        }
+        bind('tailBtns', 'tail');
+        bind('hairBtns', 'hair');
+        bind('crownBtns', 'crown');
+        bind('petBtns', 'pet');
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('mermaidstudio', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

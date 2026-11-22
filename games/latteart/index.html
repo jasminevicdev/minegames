@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barista Latte Art & Espuma Real — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #451a03, #170802 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(251,191,36,0.35);
+        }
+        .back-btn {
+            text-decoration: none; color: #fde68a; font-weight: 700;
+            background: rgba(217,119,6,0.25); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(251,191,36,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #fde68a; }
+        .score-pill {
+            background: linear-gradient(135deg, #d97706, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 300px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(45, 20, 8, 0.92); border: 2px solid rgba(251,191,36,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fde68a; font-size: 0.94rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.81rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #d97706, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.93rem;
+        }
+        .btn-magic { background: linear-gradient(135deg, #f472b6, #fbbf24); color: #290d02; }
+        .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(24, 10, 4, 0.88); border-radius: 24px;
+            border: 3px solid rgba(251,191,36,0.4); padding: 16px;
+        }
+        canvas {
+            border-radius: 20px; max-width: 100%; height: auto;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: crosshair; touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>☕ Barista Latte Art & Espuma Cremosa</h1>
+        <div class="score-pill">Cafés Servidos: <span id="scoreVal">0</span> ☕</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>☕ 1. Bebida Base da Xícara</h3>
+            <div class="grid-2" id="drinkBtns">
+                <button class="btn-opt active" data-c="#92400e">☕ Cappuccino</button>
+                <button class="btn-opt" data-c="#f472b6">🍓 Pink Latte</button>
+                <button class="btn-opt" data-c="#10b981">🍵 Matcha Real</button>
+                <button class="btn-opt" data-c="#a855f7">🔮 Taro Mágico</button>
+            </div>
+
+            <h3>🥛 2. Calda & Espuma do Pincel</h3>
+            <div class="grid-2" id="syrupBtns">
+                <button class="btn-opt active" data-s="#fffbeb">🥛 Espuma Branca</button>
+                <button class="btn-opt" data-s="#451a03">🍫 Calda Cacau</button>
+                <button class="btn-opt" data-s="#f59e0b">🍯 Caramelo Ouro</button>
+                <button class="btn-opt" data-s="#ec4899">🍓 Calda Morango</button>
+            </div>
+
+            <h3>📏 Espessura do Jato: <span id="szVal">16px</span></h3>
+            <input type="range" id="szRange" min="4" max="38" value="16">
+
+            <h3>🪄 3. Arte de Barista Instantânea</h3>
+            <div class="grid-2" id="stencilBtns">
+                <button class="btn-opt" data-art="heart">💖 Coração Latte</button>
+                <button class="btn-opt" data-art="kitty">🐱 Gatinho Espuma</button>
+                <button class="btn-opt" data-art="tulip">🌷 Tulipa Real</button>
+                <button class="btn-opt" data-art="star">⭐ Estrela Canela</button>
+            </div>
+
+            <button class="btn-action btn-save" id="saveBtn">🏆 Servir Café Real (+1 ☕)</button>
+            <button class="btn-action btn-clear" id="clearBtn">🥄 Mexer Xícara (Limpar)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="latteCanvas" width="520" height="520"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('latteart', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('latteCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let drinkColor = '#92400e';
+        let syrupColor = '#fffbeb';
+        let brushSize = 16;
+        let isDrawing = false;
+        let lastPos = null;
+
+        function resetCup() {
+            ctx.fillStyle = '#271206';
+            ctx.fillRect(0, 0, 520, 520);
+            // Porcelain saucer
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath(); ctx.arc(260, 260, 235, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.stroke();
+            // Cup handle
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 22;
+            ctx.beginPath(); ctx.arc(445, 260, 45, -Math.PI/2, Math.PI/2); ctx.stroke();
+            // Cup rim
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(260, 260, 195, 0, Math.PI * 2); ctx.fill();
+            // Crema coffee base
+            const g = ctx.createRadialGradient(260, 260, 40, 260, 260, 182);
+            g.addColorStop(0, drinkColor);
+            g.addColorStop(1, '#3b1505');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(260, 260, 182, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function getPos(e) {
+            const r = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - r.left) * (520 / r.width),
+                y: (e.clientY - r.top) * (520 / r.height)
+            };
+        }
+
+        function strokeFoam(p1, p2) {
+            if (Math.hypot(p2.x - 260, p2.y - 260) > 172) return;
+            ctx.save();
+            ctx.strokeStyle = syrupColor;
+            ctx.shadowColor = syrupColor;
+            ctx.shadowBlur = 6;
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        canvas.addEventListener('pointerdown', e => { isDrawing = true; lastPos = getPos(e); strokeFoam(lastPos, lastPos); });
+        window.addEventListener('pointermove', e => {
+            if (!isDrawing) return;
+            const p = getPos(e);
+            strokeFoam(lastPos, p);
+            lastPos = p;
+        });
+        window.addEventListener('pointerup', () => { isDrawing = false; });
+
+        document.querySelectorAll('#drinkBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#drinkBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                drinkColor = btn.dataset.c;
+                resetCup();
+            });
+        });
+
+        document.querySelectorAll('#syrupBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#syrupBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                syrupColor = btn.dataset.s;
+            });
+        });
+
+        document.getElementById('szRange').addEventListener('input', e => {
+            brushSize = Number(e.target.value);
+            document.getElementById('szVal').textContent = brushSize + 'px';
+        });
+
+        document.querySelectorAll('#stencilBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const art = btn.dataset.art;
+                resetCup();
+                ctx.save();
+                ctx.fillStyle = '#fffbeb';
+                ctx.strokeStyle = '#fffbeb';
+                ctx.lineWidth = 10;
+                ctx.lineCap = 'round';
+                if (art === 'heart') {
+                    ctx.beginPath();
+                    ctx.moveTo(260, 355);
+                    ctx.bezierCurveTo(130, 260, 145, 145, 260, 205);
+                    ctx.bezierCurveTo(375, 145, 390, 260, 260, 355);
+                    ctx.fill();
+                } else if (art === 'kitty') {
+                    ctx.beginPath(); ctx.arc(260, 275, 78, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(195, 225); ctx.lineTo(180, 150); ctx.lineTo(240, 198);
+                    ctx.moveTo(325, 225); ctx.lineTo(340, 150); ctx.lineTo(280, 198);
+                    ctx.fill();
+                    ctx.fillStyle = '#451a03';
+                    ctx.beginPath(); ctx.arc(232, 265, 9, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(288, 265, 9, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#f472b6';
+                    ctx.beginPath(); ctx.arc(260, 282, 7, 0, Math.PI * 2); ctx.fill();
+                } else if (art === 'tulip') {
+                    [210, 255, 300].forEach((y, i) => {
+                        const r = 65 - i * 14;
+                        ctx.beginPath();
+                        ctx.moveTo(260, y + r);
+                        ctx.bezierCurveTo(260 - r*1.4, y, 260 - r, y - r, 260, y - r*0.3);
+                        ctx.bezierCurveTo(260 + r, y - r, 260 + r*1.4, y, 260, y + r);
+                        ctx.fill();
+                    });
+                } else {
+                    for (let i = 0; i < 5; i++) {
+                        const a = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                        const x = 260 + Math.cos(a) * 110;
+                        const y = 260 + Math.sin(a) * 110;
+                        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    }
+                    ctx.closePath(); ctx.stroke();
+                }
+                ctx.restore();
+            });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', resetCup);
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('latteart', { highScore: bestScore }, activePlayer);
+        });
+
+        resetCup();
+    </script>
+</body>
+</html>

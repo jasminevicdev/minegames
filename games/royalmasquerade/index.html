@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê de Máscaras do Baile Real — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #581c87, #130424 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1140px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(250,204,21,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #fef08a; font-weight: 700;
+            background: rgba(234,179,8,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(250,204,21,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #fde047; }
+        .score-pill {
+            background: linear-gradient(135deg, #eab308, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(42, 12, 68, 0.92); border: 2px solid rgba(250,204,21,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.93rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #eab308); border-color: #fff; color: #1f0410;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            background: linear-gradient(135deg, #fde047, #ec4899); color: #240418;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(18, 5, 32, 0.88); border-radius: 24px;
+            border: 3px solid rgba(250,204,21,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🎭 Ateliê de Máscaras do Baile Real</h1>
+        <div class="score-pill">Máscaras: <span id="scoreVal">0</span> 🎭</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🎭 1. Veludo & Seda da Máscara</h3>
+            <div class="grid-2" id="colorBtns">
+                <button class="btn-opt active" data-v="#ec4899">💖 Rosa Imperial</button>
+                <button class="btn-opt" data-v="#7c3aed">🔮 Veludo Violeta</button>
+                <button class="btn-opt" data-v="#0284c7">💎 Safira Real</button>
+                <button class="btn-opt" data-v="#e11d48">🌹 Rubi Carmim</button>
+            </div>
+
+            <h3>✨ 2. Renda & Filigrana</h3>
+            <div class="grid-2" id="trimBtns">
+                <button class="btn-opt active" data-v="#fde047">✨ Ouro 24K</button>
+                <button class="btn-opt" data-v="#f8fafc">❄️ Prata Lunar</button>
+                <button class="btn-opt" data-v="#fbcfe8">🌸 Ouro Rosé</button>
+                <button class="btn-opt" data-v="#38bdf8">💠 Cristal Azul</button>
+            </div>
+
+            <h3>🪶 3. Plumas & Joia Central</h3>
+            <div class="grid-2" id="crownBtns">
+                <button class="btn-opt active" data-v="👑">👑 Coroa de Diamante</button>
+                <button class="btn-opt" data-v="🦋">🦋 Asas de Cristal</button>
+                <button class="btn-opt" data-v="💎">💎 Safira Imperial</button>
+                <button class="btn-opt" data-v="🌹">🌹 Rosa Dourada</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">🏆 Brilhar no Baile de Gala (+1 🎭)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="maskCanvas" width="540" height="500"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('royalmasquerade', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('maskCanvas');
+        const ctx = canvas.getContext('2d');
+        let state = { color: '#ec4899', trim: '#fde047', crown: '👑' };
+
+        function render() {
+            const bg = ctx.createRadialGradient(270, 250, 30, 270, 250, 320);
+            bg.addColorStop(0, '#3b0764'); bg.addColorStop(1, '#110321');
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 540, 500);
+
+            // Golden Holding Stick
+            ctx.strokeStyle = state.trim;
+            ctx.lineWidth = 10;
+            ctx.beginPath(); ctx.moveTo(415, 260); ctx.lineTo(445, 470); ctx.stroke();
+
+            // Royal Plumes / Feathers behind mask
+            ['#f472b6', state.trim, '#c084fc'].forEach((c, i) => {
+                ctx.fillStyle = c;
+                ctx.beginPath();
+                ctx.ellipse(220 + i * 50, 145 - (i === 1 ? 20 : 0), 28, 75, (i - 1) * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Venetian Butterfly Mask Wing Silhouette
+            ctx.fillStyle = state.color;
+            ctx.strokeStyle = state.trim;
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(270, 215);
+            ctx.bezierCurveTo(180, 145, 85, 175, 105, 265);
+            ctx.bezierCurveTo(115, 325, 210, 330, 255, 285);
+            ctx.lineTo(270, 305);
+            ctx.lineTo(285, 285);
+            ctx.bezierCurveTo(330, 330, 425, 325, 435, 265);
+            ctx.bezierCurveTo(455, 175, 360, 145, 270, 215);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Eye cutouts
+            ctx.fillStyle = '#110321';
+            ctx.beginPath();
+            ctx.ellipse(195, 250, 44, 22, -0.1, 0, Math.PI * 2);
+            ctx.ellipse(345, 250, 44, 22, 0.1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = state.trim; ctx.lineWidth = 3; ctx.stroke();
+
+            // Center Jewel / Crown
+            ctx.font = '54px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(state.crown, 270, 215);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                    render();
+                });
+            });
+        }
+        bind('colorBtns', 'color');
+        bind('trimBtns', 'trim');
+        bind('crownBtns', 'crown');
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('royalmasquerade', { highScore: bestScore }, activePlayer);
+        });
+
+        render();
+    </script>
+</body>
+</html>

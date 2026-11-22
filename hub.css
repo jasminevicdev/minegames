@@ -542,6 +542,16 @@ body, html {
 .card-cyberblade { border-color: #fb7185; }
 .card-starlink { border-color: #818cf8; }
 .card-bubblepop { border-color: #f472b6; }
+.card-mermaidstudio { border-color: #22d3ee; }
+.card-hoverboard { border-color: #00f5d4; }
+.card-embroidery { border-color: #f472b6; }
+.card-latteart { border-color: #fbbf24; }
+.card-royalshoes { border-color: #e879f9; }
+.card-crystalterrarium { border-color: #34d399; }
+.card-royalmasquerade { border-color: #fde047; }
+.card-iceprincess { border-color: #38bdf8; }
+.card-neonpinball { border-color: #ec4899; }
+.card-crystalmerge { border-color: #c084fc; }
 
 .game-card-banner {
     font-size: 3.5rem;

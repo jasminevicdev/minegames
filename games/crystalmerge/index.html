@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jardim Real: Fusão de Cristais & Flores — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #4c1d95, #140526);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 960px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(232,121,249,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #f5d0fe; font-weight: 700;
+            background: rgba(192,38,211,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(232,121,249,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f0abfc; }
+        .score-pill {
+            background: linear-gradient(135deg, #c084fc, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .board-wrap {
+            display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px;
+        }
+        .grid {
+            display: grid; grid-template-columns: repeat(4, 96px); gap: 10px;
+            background: rgba(25, 8, 45, 0.9); padding: 16px; border-radius: 24px;
+            border: 3px solid rgba(232,121,249,0.45);
+        }
+        .cell {
+            width: 96px; height: 96px; border-radius: 18px;
+            background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.18);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 2.3rem; cursor: pointer; transition: transform 0.15s;
+        }
+        .cell:hover { transform: scale(1.05); }
+        .cell.selected { border-color: #fde047; box-shadow: 0 0 15px #fde047; background: rgba(253,224,71,0.18); }
+        .lvl-tag { font-size: 0.72rem; color: #f9a8d4; font-weight: 700; }
+        .btn {
+            padding: 11px 22px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #34d399, #fde047); color: #052e16;
+            font-family: 'Fredoka', sans-serif; font-size: 1rem; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🌺 Jardim Real: Fusão de Flores & Cristais</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="board-wrap">
+        <p style="color:#f5d0fe; font-size:0.92rem;">Clique em 2 itens iguais para fundir e evoluir: 🌱 ➔ 🌷 ➔ 🌹 ➔ 🌺 ➔ 💎 ➔ 👑!</p>
+        <div style="display:flex; gap:14px; align-items:center;">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="spawnBtn">🌱 Brotar Novas Sementes</button>
+        </div>
+        <div class="grid" id="grid"></div>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('crystalmerge', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const TIERS = ['', '🌱', '🌷', '🌹', '🌺', '💎', '👑', '🦄'];
+        let board = [1, 1, 2, 0, 1, 2, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0];
+        let sel = null;
+        let score = 0;
+
+        function render() {
+            const g = document.getElementById('grid');
+            g.innerHTML = '';
+            board.forEach((v, idx) => {
+                const c = document.createElement('div');
+                c.className = 'cell' + (sel === idx ? ' selected' : '');
+                if (v > 0) {
+                    c.innerHTML = `<span>${TIERS[v] || '🌟'}</span><span class="lvl-tag">Nv.${v}</span>`;
+                }
+                c.addEventListener('click', () => clickCell(idx));
+                g.appendChild(c);
+            });
+        }
+
+        function clickCell(idx) {
+            if (sel === null) {
+                if (board[idx] > 0) sel = idx;
+            } else if (sel === idx) {
+                sel = null;
+            } else {
+                if (board[idx] === board[sel] && board[idx] > 0) {
+                    board[idx] = Math.min(TIERS.length - 1, board[idx] + 1);
+                    board[sel] = 0;
+                    score += board[idx] * 25;
+                    document.getElementById('scoreVal').textContent = score;
+                    if (score > bestScore) {
+                        bestScore = score;
+                        hiEl.textContent = bestScore;
+                        SaveHub.updateGameSave('crystalmerge', { highScore: bestScore }, activePlayer);
+                    }
+                } else if (board[idx] === 0) {
+                    board[idx] = board[sel];
+                    board[sel] = 0;
+                }
+                sel = null;
+            }
+            render();
+        }
+
+        document.getElementById('spawnBtn').addEventListener('click', () => {
+            const empties = board.map((v, i) => v === 0 ? i : -1).filter(i => i >= 0);
+            empties.slice(0, 3).forEach(i => { board[i] = Math.random() > 0.3 ? 1 : 2; });
+            render();
+        });
+
+        render();
+    </script>
+</body>
+</html>

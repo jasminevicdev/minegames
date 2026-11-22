@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terrário de Cristal & Jardim de Fadas — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #064e3b, #021410 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1140px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(52,211,153,0.4);
+        }
+        .back-btn {
+            text-decoration: none; color: #a7f3d0; font-weight: 700;
+            background: rgba(16,185,129,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(52,211,153,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #6ee7b7; }
+        .score-pill {
+            background: linear-gradient(135deg, #10b981, #a855f7);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(6, 40, 30, 0.92); border: 2px solid rgba(52,211,153,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a7f3d0; font-size: 0.93rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #10b981, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.93rem;
+        }
+        .btn-save { background: linear-gradient(135deg, #34d399, #fde047); color: #052e16; }
+        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(3, 20, 15, 0.88); border-radius: 24px;
+            border: 3px solid rgba(52,211,153,0.4); padding: 16px;
+        }
+        canvas {
+            border-radius: 18px; max-width: 100%; height: auto;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🔮 Terrário de Cristal & Jardim de Fadas</h1>
+        <div class="score-pill">Terrários: <span id="scoreVal">0</span> 🪴</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🏺 1. Cúpula de Vidro & Base</h3>
+            <div class="grid-2" id="sandBtns">
+                <button class="btn-opt active" data-c="#10b981">🌿 Musgo Esmeralda</button>
+                <button class="btn-opt" data-c="#f472b6">🌸 Areia Quartzo Rosa</button>
+                <button class="btn-opt" data-c="#a855f7">🔮 Ametista Real</button>
+                <button class="btn-opt" data-c="#38bdf8">❄️ Cristal Celeste</button>
+            </div>
+
+            <h3>🍄 2. Plantar no Terrário (Clique no Vidro)</h3>
+            <div class="grid-2" id="itemBtns">
+                <button class="btn-opt active" data-i="🌸">🌸 Flor Sakura</button>
+                <button class="btn-opt" data-i="🍄">🍄 Cogumelo Glow</button>
+                <button class="btn-opt" data-i="💎">💎 Cristal Bruto</button>
+                <button class="btn-opt" data-i="🪴">🪴 Suculenta Real</button>
+                <button class="btn-opt" data-i="🦋">🦋 Borboleta Luz</button>
+                <button class="btn-opt" data-i="🧚‍♀️">🧚‍♀️ Fadinha</button>
+                <button class="btn-opt" data-i="🏠">🏠 Casinha Fada</button>
+                <button class="btn-opt" data-i="🌙">🌙 Lua de Cristal</button>
+            </div>
+
+            <button class="btn-action btn-save" id="saveBtn">✨ Iluminar & Salvar Terrário (+1 🪴)</button>
+            <button class="btn-action btn-clear" id="clearBtn">🧹 Limpar Jardim</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="terrariumCanvas" width="540" height="520"></canvas>
+            <p style="margin-top:12px; color:#a7f3d0; font-size:0.86rem;">Toque dentro da redoma de cristal para posicionar cristais, flores e fadas!</p>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('crystalterrarium', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('terrariumCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let baseColor = '#10b981';
+        let selectedEmoji = '🌸';
+        let items = [
+            { x: 270, y: 345, e: '🏠' },
+            { x: 205, y: 365, e: '🍄' },
+            { x: 335, y: 360, e: '💎' },
+            { x: 250, y: 235, e: '🧚‍♀️' }
+        ];
+        let fireflies = Array.from({ length: 28 }, () => ({
+            x: 130 + Math.random() * 280,
+            y: 120 + Math.random() * 260,
+            a: Math.random() * Math.PI * 2,
+            r: Math.random() * 3 + 1.5
+        }));
+        let t = 0;
+
+        function render() {
+            t += 0.04;
+            ctx.fillStyle = '#041b15';
+            ctx.fillRect(0, 0, 540, 520);
+
+            // Golden Pedestal Base
+            ctx.fillStyle = '#b45309';
+            ctx.beginPath(); ctx.roundRect(140, 435, 260, 42, 14); ctx.fill();
+            ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3; ctx.stroke();
+
+            // Glass Globe Sphere
+            const g = ctx.createRadialGradient(270, 260, 30, 270, 260, 195);
+            g.addColorStop(0, 'rgba(52, 211, 153, 0.14)');
+            g.addColorStop(1, 'rgba(255, 255, 255, 0.22)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(270, 260, 195, 0, Math.PI * 2); ctx.fill();
+
+            // Soil & Crystal Sand Layer clipped inside globe
+            ctx.save();
+            ctx.beginPath(); ctx.arc(270, 260, 192, 0, Math.PI * 2); ctx.clip();
+
+            ctx.fillStyle = '#451a03';
+            ctx.fillRect(70, 395, 400, 70);
+            ctx.fillStyle = baseColor;
+            ctx.beginPath();
+            ctx.ellipse(270, 395, 185, 28, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Fireflies
+            fireflies.forEach(f => {
+                f.x += Math.cos(t + f.a) * 0.4;
+                f.y += Math.sin(t + f.a) * 0.4;
+                ctx.fillStyle = '#fef08a';
+                ctx.shadowColor = '#fde047';
+                ctx.shadowBlur = 10;
+                ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // Placed Items
+            ctx.font = '44px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            items.forEach(it => {
+                const hover = (it.e === '🧚‍♀️' || it.e === '🦋') ? Math.sin(t * 2) * 7 : 0;
+                ctx.fillText(it.e, it.x, it.y + hover);
+            });
+            ctx.restore();
+
+            // Glass Rim & Reflection
+            ctx.strokeStyle = 'rgba(167, 243, 208, 0.85)';
+            ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.arc(270, 260, 195, 0, Math.PI * 2); ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+            ctx.lineWidth = 6;
+            ctx.beginPath(); ctx.arc(270, 260, 175, Math.PI * 1.1, Math.PI * 1.38); ctx.stroke();
+
+            requestAnimationFrame(render);
+        }
+
+        canvas.addEventListener('pointerdown', e => {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (540 / rect.width);
+            const y = (e.clientY - rect.top) * (520 / rect.height);
+            if (Math.hypot(x - 270, y - 260) < 170) {
+                items.push({ x, y, e: selectedEmoji });
+            }
+        });
+
+        document.querySelectorAll('#sandBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#sandBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                baseColor = btn.dataset.c;
+            });
+        });
+
+        document.querySelectorAll('#itemBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#itemBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedEmoji = btn.dataset.i;
+            });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => { items = []; });
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('crystalterrarium', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

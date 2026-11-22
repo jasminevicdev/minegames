@@ -92,6 +92,16 @@ class GameHub {
         this.statCyberbladeScore = document.getElementById('stat-cyberblade-score');
         this.statStarlinkScore = document.getElementById('stat-starlink-score');
         this.statBubblepopScore = document.getElementById('stat-bubblepop-score');
+        this.statMermaidstudioScore = document.getElementById('stat-mermaidstudio-score');
+        this.statHoverboardScore = document.getElementById('stat-hoverboard-score');
+        this.statEmbroideryScore = document.getElementById('stat-embroidery-score');
+        this.statLatteartScore = document.getElementById('stat-latteart-score');
+        this.statRoyalshoesScore = document.getElementById('stat-royalshoes-score');
+        this.statCrystalterrariumScore = document.getElementById('stat-crystalterrarium-score');
+        this.statRoyalmasqueradeScore = document.getElementById('stat-royalmasquerade-score');
+        this.statIceprincessScore = document.getElementById('stat-iceprincess-score');
+        this.statNeonpinballScore = document.getElementById('stat-neonpinball-score');
+        this.statCrystalmergeScore = document.getElementById('stat-crystalmerge-score');
 
         this.selectedAvatar = '🎪';
 
@@ -221,6 +231,16 @@ class GameHub {
         const cyberbladeSave = SaveHub.getGameSave('cyberblade', player.name);
         const starlinkSave = SaveHub.getGameSave('starlink', player.name);
         const bubblepopSave = SaveHub.getGameSave('bubblepop', player.name);
+        const mermaidstudioSave = SaveHub.getGameSave('mermaidstudio', player.name);
+        const hoverboardSave = SaveHub.getGameSave('hoverboard', player.name);
+        const embroiderySave = SaveHub.getGameSave('embroidery', player.name);
+        const latteartSave = SaveHub.getGameSave('latteart', player.name);
+        const royalshoesSave = SaveHub.getGameSave('royalshoes', player.name);
+        const crystalterrariumSave = SaveHub.getGameSave('crystalterrarium', player.name);
+        const royalmasqueradeSave = SaveHub.getGameSave('royalmasquerade', player.name);
+        const iceprincessSave = SaveHub.getGameSave('iceprincess', player.name);
+        const neonpinballSave = SaveHub.getGameSave('neonpinball', player.name);
+        const crystalmergeSave = SaveHub.getGameSave('crystalmerge', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -272,6 +292,16 @@ class GameHub {
         if (this.statCyberbladeScore) this.statCyberbladeScore.innerText = `${cyberbladeSave.highScore || 0} PTS`;
         if (this.statStarlinkScore) this.statStarlinkScore.innerText = `${starlinkSave.highScore || 0} 🌌`;
         if (this.statBubblepopScore) this.statBubblepopScore.innerText = `${bubblepopSave.highScore || 0} PTS`;
+        if (this.statMermaidstudioScore) this.statMermaidstudioScore.innerText = `${mermaidstudioSave.highScore || 0} 🧜‍♀️`;
+        if (this.statHoverboardScore) this.statHoverboardScore.innerText = `${hoverboardSave.highScore || 0} PTS`;
+        if (this.statEmbroideryScore) this.statEmbroideryScore.innerText = `${embroiderySave.highScore || 0} 🧵`;
+        if (this.statLatteartScore) this.statLatteartScore.innerText = `${latteartSave.highScore || 0} ☕`;
+        if (this.statRoyalshoesScore) this.statRoyalshoesScore.innerText = `${royalshoesSave.highScore || 0} 👠`;
+        if (this.statCrystalterrariumScore) this.statCrystalterrariumScore.innerText = `${crystalterrariumSave.highScore || 0} 🪴`;
+        if (this.statRoyalmasqueradeScore) this.statRoyalmasqueradeScore.innerText = `${royalmasqueradeSave.highScore || 0} 🎭`;
+        if (this.statIceprincessScore) this.statIceprincessScore.innerText = `${iceprincessSave.highScore || 0} ❄️`;
+        if (this.statNeonpinballScore) this.statNeonpinballScore.innerText = `${neonpinballSave.highScore || 0} PTS`;
+        if (this.statCrystalmergeScore) this.statCrystalmergeScore.innerText = `${crystalmergeSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {

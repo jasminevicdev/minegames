@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palácio de Gelo & Coroas de Cristal — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #0284c7, #082f49 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1140px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.08); border-bottom: 2px solid rgba(186,230,253,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #e0f2fe; font-weight: 700;
+            background: rgba(14,165,233,0.25); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(186,230,253,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #bae6fd; }
+        .score-pill {
+            background: linear-gradient(135deg, #38bdf8, #a855f7);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(7, 42, 74, 0.92); border: 2px solid rgba(186,230,253,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #bae6fd; font-size: 0.93rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #38bdf8, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            background: linear-gradient(135deg, #bae6fd, #f472b6); color: #082f49;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(4, 24, 44, 0.88); border-radius: 24px;
+            border: 3px solid rgba(186,230,253,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>❄️ Rainha da Neve: Salão do Palácio de Gelo</h1>
+        <div class="score-pill">Rainhas: <span id="scoreVal">0</span> ❄️</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>👗 1. Manto & Vestido de Cristal</h3>
+            <div class="grid-2" id="gownBtns">
+                <button class="btn-opt active" data-v="#38bdf8">❄️ Azul Glacial</button>
+                <button class="btn-opt" data-v="#c084fc">🔮 Aurora Boreal</button>
+                <button class="btn-opt" data-v="#f472b6">🌸 Rosa Inverno</button>
+                <button class="btn-opt" data-v="#e2e8f0">💎 Diamante Branco</button>
+            </div>
+
+            <h3>💇‍♀️ 2. Trança Real</h3>
+            <div class="grid-2" id="hairBtns">
+                <button class="btn-opt active" data-v="#f8fafc">🤍 Platinado Neve</button>
+                <button class="btn-opt" data-v="#fde047">💛 Loiro Dourado</button>
+                <button class="btn-opt" data-v="#7dd3fc">💙 Cristal Celeste</button>
+                <button class="btn-opt" data-v="#f9a8d4">💗 Rosa Pastel</button>
+            </div>
+
+            <h3>👑 3. Coroa & Cetro Glacial</h3>
+            <div class="grid-2" id="wandBtns">
+                <button class="btn-opt active" data-v="❄️">❄️ Floco Imperial</button>
+                <button class="btn-opt" data-v="💎">💎 Cetro Diamante</button>
+                <button class="btn-opt" data-v="👑">👑 Tiara Boreal</button>
+                <button class="btn-opt" data-v="🌟">🌟 Estrela Polar</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">❄️ Lançar Magia de Neve (+1 ❄️)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="iceCanvas" width="540" height="520"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('iceprincess', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('iceCanvas');
+        const ctx = canvas.getContext('2d');
+        let state = { gown: '#38bdf8', hair: '#f8fafc', wand: '❄️' };
+        let flakes = Array.from({ length: 35 }, () => ({
+            x: Math.random() * 540, y: Math.random() * 520, r: Math.random() * 3.5 + 1.5, vy: Math.random() * 1.2 + 0.5
+        }));
+
+        function render() {
+            const g = ctx.createLinearGradient(0, 0, 0, 520);
+            g.addColorStop(0, '#0c4a6e'); g.addColorStop(1, '#082f49');
+            ctx.fillStyle = g; ctx.fillRect(0, 0, 540, 520);
+
+            // Falling snow
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            flakes.forEach(f => {
+                f.y += f.vy;
+                if (f.y > 530) f.y = -10;
+                ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+            });
+
+            // Sheer Ice Cape
+            ctx.fillStyle = 'rgba(186, 230, 253, 0.35)';
+            ctx.beginPath();
+            ctx.moveTo(235, 210); ctx.lineTo(135, 480); ctx.lineTo(405, 480); ctx.lineTo(305, 210);
+            ctx.closePath(); ctx.fill();
+
+            // Hair & Braid
+            ctx.fillStyle = state.hair;
+            ctx.beginPath();
+            ctx.arc(270, 155, 46, 0, Math.PI * 2);
+            ctx.arc(298, 205, 22, 0, Math.PI * 2);
+            ctx.arc(305, 240, 18, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Face
+            ctx.fillStyle = '#fde6d8';
+            ctx.beginPath(); ctx.arc(270, 160, 34, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath(); ctx.arc(258, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(282, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+
+            // Royal Ice Gown
+            ctx.fillStyle = state.gown;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(248, 198); ctx.lineTo(292, 198);
+            ctx.lineTo(365, 480); ctx.lineTo(175, 480);
+            ctx.closePath();
+            ctx.fill(); ctx.stroke();
+
+            // Crown & Wand
+            ctx.font = '36px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('👑', 270, 118);
+            ctx.font = '48px sans-serif';
+            ctx.fillText(state.wand, 195, 285);
+
+            requestAnimationFrame(render);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                });
+            });
+        }
+        bind('gownBtns', 'gown');
+        bind('hairBtns', 'hair');
+        bind('wandBtns', 'wand');
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('iceprincess', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>
