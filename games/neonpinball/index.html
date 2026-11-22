@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Pinball Flipper — JasDEV Game Hub</title>
+    <title>Neon Pinball Flipper HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -14,7 +14,7 @@
         }
         .topbar {
             width: 100%; max-width: 960px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(236,72,153,0.45);
         }
         .back-btn {
@@ -27,35 +27,38 @@
             background: linear-gradient(135deg, #ec4899, #eab308);
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
-        .arena { display: flex; flex-direction: column; align-items: center; padding: 14px; gap: 10px; }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 12px; gap: 10px; }
         .hud {
-            display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.06);
-            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
+            display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 16px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
         }
         canvas {
             background: #07051a; border: 3px solid #ec4899; border-radius: 24px;
             box-shadow: 0 0 38px rgba(236,72,153,0.35); max-width: 100%; height: auto;
         }
         .btn {
-            padding: 9px 18px; border-radius: 999px; border: none; font-weight: 700;
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
             background: linear-gradient(135deg, #00f5d4, #6366f1); color: #04101c; cursor: pointer;
         }
+        .btn-multi { background: linear-gradient(135deg, #fde047, #ec4899); color: #1f0410; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🔮 Neon Pinball Flipper</h1>
+        <h1>🔮 Neon Pinball Flipper — Edição HD</h1>
         <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
     </header>
 
     <main class="arena">
         <div class="hud">
             <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
-            <button class="btn" id="kickBtn">⚡ Impulso Flipper [Espaço / Toque]</button>
-            <button class="btn" id="resetBtn">🔄 Nova Esfera</button>
+            <span>Multiplicador: <strong id="multVal" style="color:#00f5d4;">1x</strong></span>
+            <button class="btn" id="kickBtn">⚡ Flippers [Espaço / Toque]</button>
+            <button class="btn btn-multi" id="multiBtn">🎱 +1 Esfera Multi-Ball</button>
+            <button class="btn" id="resetBtn">🔄 Reiniciar</button>
         </div>
-        <canvas id="pinCanvas" width="420" height="540"></canvas>
+        <canvas id="pinCanvas" width="440" height="540"></canvas>
     </main>
 
     <script type="module">
@@ -71,105 +74,147 @@
         const ctx = canvas.getContext('2d');
 
         const BUMPERS = [
-            { x: 135, y: 155, r: 30, c: '#00f5d4', pts: 50 },
-            { x: 285, y: 155, r: 30, c: '#00f5d4', pts: 50 },
-            { x: 210, y: 240, r: 36, c: '#ec4899', pts: 100 },
-            { x: 120, y: 315, r: 24, c: '#fde047', pts: 75 },
-            { x: 300, y: 315, r: 24, c: '#fde047', pts: 75 }
+            { x: 135, y: 155, r: 28, c: '#00f5d4', pts: 50, pulse: 0 },
+            { x: 305, y: 155, r: 28, c: '#00f5d4', pts: 50, pulse: 0 },
+            { x: 220, y: 235, r: 35, c: '#ec4899', pts: 120, pulse: 0 },
+            { x: 120, y: 315, r: 24, c: '#fde047', pts: 80, pulse: 0 },
+            { x: 320, y: 315, r: 24, c: '#fde047', pts: 80, pulse: 0 }
         ];
 
-        let ball = { x: 210, y: 90, vx: 3.5, vy: 0 };
+        const STARS = [
+            { x: 155, y: 70, lit: false },
+            { x: 220, y: 55, lit: false },
+            { x: 285, y: 70, lit: false }
+        ];
+
+        let balls = [{ x: 220, y: 95, vx: 3.5, vy: 0, c: '#fde047' }];
         let score = 0;
+        let mult = 1;
         let flipperFlash = 0;
 
-        function resetBall() {
-            ball = { x: 210, y: 80, vx: (Math.random() - 0.5) * 6, vy: 1 };
-            score = 0;
+        function resetGame() {
+            balls = [{ x: 220, y: 95, vx: (Math.random() - 0.5) * 6, vy: 1, c: '#fde047' }];
+            STARS.forEach(s => s.lit = false);
+            score = 0; mult = 1;
             document.getElementById('scoreVal').textContent = 0;
+            document.getElementById('multVal').textContent = '1x';
         }
 
         function kickFlippers() {
-            flipperFlash = 10;
-            if (ball.y > 380 && ball.y < 515) {
-                ball.vy = -10.5;
-                ball.vx += (Math.random() - 0.5) * 5;
-            }
+            flipperFlash = 12;
+            balls.forEach(ball => {
+                if (ball.y > 370 && ball.y < 520) {
+                    ball.vy = -10.8;
+                    ball.vx += (Math.random() - 0.5) * 6;
+                }
+            });
         }
 
         window.addEventListener('keydown', e => {
-            if (e.code === 'Space' || e.key === 'ArrowUp') kickFlippers();
+            if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') kickFlippers();
         });
         document.getElementById('kickBtn').addEventListener('click', kickFlippers);
         canvas.addEventListener('pointerdown', kickFlippers);
-        document.getElementById('resetBtn').addEventListener('click', resetBall);
+        document.getElementById('multiBtn').addEventListener('click', () => {
+            if (balls.length < 3) {
+                balls.push({ x: 220, y: 85, vx: (Math.random() - 0.5) * 7, vy: 2, c: '#00f5d4' });
+            }
+        });
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
 
         function loop() {
             ctx.fillStyle = '#07051a';
-            ctx.fillRect(0, 0, 420, 540);
+            ctx.fillRect(0, 0, 440, 540);
 
-            // Gravity & physics
-            ball.vy += 0.22;
-            ball.x += ball.vx;
-            ball.y += ball.vy;
-
-            if (ball.x < 22 || ball.x > 398) {
-                ball.vx *= -0.92;
-                ball.x = Math.max(22, Math.min(398, ball.x));
-            }
-            if (ball.y < 22) {
-                ball.vy *= -0.85;
-                ball.y = 22;
-            }
-
-            // Auto-assist or manual flipper bounce at bottom zone
-            if (ball.y > 470 && ball.y < 500 && Math.abs(ball.x - 210) < 125 && flipperFlash > 0) {
-                ball.vy = -10.5;
-            }
-            if (ball.y > 530) {
-                ball.y = 80;
-                ball.vy = 0;
-                ball.vx = (Math.random() - 0.5) * 6;
-            }
+            // Top Jackpot Stars
+            STARS.forEach(s => {
+                ctx.font = '24px sans-serif'; ctx.textAlign = 'center';
+                ctx.fillText(s.lit ? '🌟' : '⭐', s.x, s.y);
+            });
 
             // Bumpers
             BUMPERS.forEach(b => {
-                const dx = ball.x - b.x, dy = ball.y - b.y;
-                const dist = Math.hypot(dx, dy);
-                if (dist < b.r + 13) {
-                    const nx = dx / dist, ny = dy / dist;
-                    ball.vx = nx * 7.5;
-                    ball.vy = ny * 7.5;
-                    score += b.pts;
-                    document.getElementById('scoreVal').textContent = score;
-                    if (score > bestScore) {
-                        bestScore = score;
-                        hiEl.textContent = bestScore;
-                        SaveHub.updateGameSave('neonpinball', { highScore: bestScore }, activePlayer);
-                    }
-                }
+                if (b.pulse > 0) b.pulse--;
+                const rad = b.r + (b.pulse > 0 ? 5 : 0);
                 ctx.fillStyle = b.c;
-                ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowColor = b.c;
+                ctx.shadowBlur = b.pulse > 0 ? 20 : 8;
+                ctx.beginPath(); ctx.arc(b.x, b.y, rad, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
                 ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
                 ctx.fillStyle = '#050312';
                 ctx.font = 'bold 14px Fredoka, sans-serif'; ctx.textAlign = 'center';
                 ctx.fillText('+' + b.pts, b.x, b.y + 5);
             });
 
+            // Balls physics
+            balls.forEach(ball => {
+                ball.vy += 0.22;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+
+                if (ball.x < 22 || ball.x > 418) {
+                    ball.vx *= -0.92;
+                    ball.x = Math.max(22, Math.min(418, ball.x));
+                }
+                if (ball.y < 22) {
+                    ball.vy *= -0.85;
+                    ball.y = 22;
+                }
+                if (ball.y > 465 && ball.y < 505 && Math.abs(ball.x - 220) < 135 && flipperFlash > 0) {
+                    ball.vy = -10.8;
+                }
+                if (ball.y > 530) {
+                    ball.y = 85; ball.vy = 0; ball.vx = (Math.random() - 0.5) * 6;
+                }
+
+                // Star Targets check
+                STARS.forEach(s => {
+                    if (Math.hypot(ball.x - s.x, ball.y - s.y) < 24 && !s.lit) {
+                        s.lit = true;
+                        score += 200 * mult;
+                        if (STARS.every(st => st.lit)) {
+                            mult = Math.min(5, mult + 1);
+                            document.getElementById('multVal').textContent = mult + 'x';
+                            STARS.forEach(st => st.lit = false);
+                        }
+                    }
+                });
+
+                // Bumper collision
+                BUMPERS.forEach(b => {
+                    const dx = ball.x - b.x, dy = ball.y - b.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < b.r + 13) {
+                        const nx = dx / dist, ny = dy / dist;
+                        ball.vx = nx * 7.8;
+                        ball.vy = ny * 7.8;
+                        b.pulse = 8;
+                        score += b.pts * mult;
+                        document.getElementById('scoreVal').textContent = score;
+                        if (score > bestScore) {
+                            bestScore = score;
+                            hiEl.textContent = bestScore;
+                            SaveHub.updateGameSave('neonpinball', { highScore: bestScore }, activePlayer);
+                        }
+                    }
+                });
+
+                ctx.fillStyle = ball.c;
+                ctx.beginPath(); ctx.arc(ball.x, ball.y, 13, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+            });
+
             // Flippers
             if (flipperFlash > 0) flipperFlash--;
-            const lift = flipperFlash > 0 ? -18 : 12;
+            const lift = flipperFlash > 0 ? -20 : 12;
             ctx.strokeStyle = '#00f5d4';
             ctx.lineWidth = 14;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(85, 480); ctx.lineTo(185, 480 + lift);
-            ctx.moveTo(335, 480); ctx.lineTo(235, 480 + lift);
+            ctx.moveTo(85, 480); ctx.lineTo(195, 480 + lift);
+            ctx.moveTo(355, 480); ctx.lineTo(245, 480 + lift);
             ctx.stroke();
-
-            // Chrome Pinball
-            ctx.fillStyle = '#fde047';
-            ctx.beginPath(); ctx.arc(ball.x, ball.y, 13, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
 
             requestAnimationFrame(loop);
         }

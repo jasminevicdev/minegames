@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jardim Real: Fusão de Cristais & Flores — JasDEV Game Hub</title>
+    <title>Jardim Real: Fusão de Cristais & Flores HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,8 +13,8 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 960px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1040px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(232,121,249,0.4);
         }
         .back-btn {
@@ -28,42 +28,63 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .board-wrap {
-            display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px;
+        }
+        .hud-bar {
+            display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center;
+            background: rgba(255,255,255,0.07); padding: 10px 18px; border-radius: 999px;
+        }
+        .discovery-bar {
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+            background: rgba(18, 5, 34, 0.8); padding: 8px 14px; border-radius: 16px;
+            border: 1px solid rgba(232,121,249,0.3); font-size: 0.82rem;
+        }
+        .disc-item {
+            padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.06); opacity: 0.4;
+        }
+        .disc-item.unlocked {
+            opacity: 1; background: rgba(236,72,153,0.25); border: 1px solid #f472b6; font-weight: 700;
         }
         .grid {
             display: grid; grid-template-columns: repeat(4, 96px); gap: 10px;
-            background: rgba(25, 8, 45, 0.9); padding: 16px; border-radius: 24px;
-            border: 3px solid rgba(232,121,249,0.45);
+            background: rgba(25, 8, 45, 0.92); padding: 16px; border-radius: 24px;
+            border: 3px solid rgba(232,121,249,0.45); box-shadow: 0 12px 35px rgba(0,0,0,0.6);
         }
         .cell {
             width: 96px; height: 96px; border-radius: 18px;
             background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.18);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 2.3rem; cursor: pointer; transition: transform 0.15s;
+            font-size: 2.2rem; cursor: pointer; transition: transform 0.15s;
         }
         .cell:hover { transform: scale(1.05); }
         .cell.selected { border-color: #fde047; box-shadow: 0 0 15px #fde047; background: rgba(253,224,71,0.18); }
-        .lvl-tag { font-size: 0.72rem; color: #f9a8d4; font-weight: 700; }
+        .lvl-tag { font-size: 0.7rem; color: #f9a8d4; font-weight: 700; margin-top: 2px; }
         .btn {
-            padding: 11px 22px; border-radius: 999px; border: none; font-weight: 700;
+            padding: 9px 18px; border-radius: 999px; border: none; font-weight: 700;
             background: linear-gradient(135deg, #34d399, #fde047); color: #052e16;
-            font-family: 'Fredoka', sans-serif; font-size: 1rem; cursor: pointer;
+            font-family: 'Fredoka', sans-serif; font-size: 0.92rem; cursor: pointer;
         }
+        .btn-auto { background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; }
+        .btn-sun { background: linear-gradient(135deg, #fde047, #f97316); color: #1f0902; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🌺 Jardim Real: Fusão de Flores & Cristais</h1>
+        <h1>🌺 Jardim Real: Fusão de Cristais & Flores — Edição HD</h1>
         <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
     </header>
 
     <main class="board-wrap">
-        <p style="color:#f5d0fe; font-size:0.92rem;">Clique em 2 itens iguais para fundir e evoluir: 🌱 ➔ 🌷 ➔ 🌹 ➔ 🌺 ➔ 💎 ➔ 👑!</p>
-        <div style="display:flex; gap:14px; align-items:center;">
+        <div class="discovery-bar" id="discBar"></div>
+
+        <div class="hud-bar">
             <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
-            <button class="btn" id="spawnBtn">🌱 Brotar Novas Sementes</button>
+            <button class="btn" id="spawnBtn">🌱 Brotar Sementes</button>
+            <button class="btn btn-auto" id="autoBtn">🪄 Auto-Fundir Pares</button>
+            <button class="btn btn-sun" id="sunBtn">☀️ Chuva Solar (+1 Nível em 1 Flor)</button>
         </div>
+
         <div class="grid" id="grid"></div>
     </main>
 
@@ -76,19 +97,54 @@
         const hiEl = document.getElementById('hiVal');
         hiEl.textContent = bestScore;
 
-        const TIERS = ['', '🌱', '🌷', '🌹', '🌺', '💎', '👑', '🦄'];
+        const TIERS = [
+            { icon: '', name: '' },
+            { icon: '🌱', name: 'Broto' },
+            { icon: '🌷', name: 'Tulipa' },
+            { icon: '🌹', name: 'Rosa' },
+            { icon: '🌺', name: 'Lótus' },
+            { icon: '🦋', name: 'Borboleta' },
+            { icon: '💎', name: 'Diamante' },
+            { icon: '👑', name: 'Coroa Real' },
+            { icon: '🦄', name: 'Unicórnio' },
+            { icon: '🏰', name: 'Castelo' }
+        ];
+
         let board = [1, 1, 2, 0, 1, 2, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0];
+        let unlocked = new Set([1, 2]);
         let sel = null;
         let score = 0;
 
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('crystalmerge', { highScore: bestScore }, activePlayer);
+            }
+        }
+
         function render() {
+            board.forEach(v => { if (v > 0) unlocked.add(v); });
+
+            const db = document.getElementById('discBar');
+            db.innerHTML = '';
+            for (let i = 1; i < TIERS.length; i++) {
+                const d = document.createElement('span');
+                d.className = 'disc-item' + (unlocked.has(i) ? ' unlocked' : '');
+                d.textContent = `${TIERS[i].icon} ${TIERS[i].name}`;
+                db.appendChild(d);
+            }
+
             const g = document.getElementById('grid');
             g.innerHTML = '';
             board.forEach((v, idx) => {
                 const c = document.createElement('div');
                 c.className = 'cell' + (sel === idx ? ' selected' : '');
                 if (v > 0) {
-                    c.innerHTML = `<span>${TIERS[v] || '🌟'}</span><span class="lvl-tag">Nv.${v}</span>`;
+                    const t = TIERS[v] || TIERS[TIERS.length - 1];
+                    c.innerHTML = `<span>${t.icon}</span><span class="lvl-tag">Nv.${v} ${t.name}</span>`;
                 }
                 c.addEventListener('click', () => clickCell(idx));
                 g.appendChild(c);
@@ -104,13 +160,7 @@
                 if (board[idx] === board[sel] && board[idx] > 0) {
                     board[idx] = Math.min(TIERS.length - 1, board[idx] + 1);
                     board[sel] = 0;
-                    score += board[idx] * 25;
-                    document.getElementById('scoreVal').textContent = score;
-                    if (score > bestScore) {
-                        bestScore = score;
-                        hiEl.textContent = bestScore;
-                        SaveHub.updateGameSave('crystalmerge', { highScore: bestScore }, activePlayer);
-                    }
+                    addScore(board[idx] * 35);
                 } else if (board[idx] === 0) {
                     board[idx] = board[sel];
                     board[sel] = 0;
@@ -122,8 +172,33 @@
 
         document.getElementById('spawnBtn').addEventListener('click', () => {
             const empties = board.map((v, i) => v === 0 ? i : -1).filter(i => i >= 0);
-            empties.slice(0, 3).forEach(i => { board[i] = Math.random() > 0.3 ? 1 : 2; });
+            empties.slice(0, 3).forEach(i => { board[i] = Math.random() > 0.35 ? 1 : 2; });
             render();
+        });
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            for (let i = 0; i < board.length; i++) {
+                if (board[i] === 0) continue;
+                for (let j = i + 1; j < board.length; j++) {
+                    if (board[i] === board[j]) {
+                        board[i] = Math.min(TIERS.length - 1, board[i] + 1);
+                        board[j] = 0;
+                        addScore(board[i] * 35);
+                        break;
+                    }
+                }
+            }
+            render();
+        });
+
+        document.getElementById('sunBtn').addEventListener('click', () => {
+            const occupied = board.map((v, i) => (v > 0 && v < TIERS.length - 1) ? i : -1).filter(i => i >= 0);
+            if (occupied.length > 0) {
+                const pick = occupied[Math.floor(Math.random() * occupied.length)];
+                board[pick]++;
+                addScore(board[pick] * 20);
+                render();
+            }
         });
 
         render();

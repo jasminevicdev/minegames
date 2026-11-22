@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barista Latte Art & Espuma Real — JasDEV Game Hub</title>
+    <title>Barista Latte Art & Espuma Real HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,8 +13,8 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1120px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1160px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(251,191,36,0.35);
         }
         .back-btn {
@@ -28,30 +28,30 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .studio {
-            display: grid; grid-template-columns: 300px 1fr; gap: 18px;
-            width: 100%; max-width: 1120px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
+            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(45, 20, 8, 0.92); border: 2px solid rgba(251,191,36,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            background: rgba(45, 20, 8, 0.94); border: 2px solid rgba(251,191,36,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fde68a; font-size: 0.94rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fde68a; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
-            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.81rem;
+            font-size: 0.79rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #d97706, #ec4899); border-color: #fff;
         }
         .btn-action {
-            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.93rem;
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.9rem;
         }
-        .btn-magic { background: linear-gradient(135deg, #f472b6, #fbbf24); color: #290d02; }
         .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .btn-photo { background: linear-gradient(135deg, #f472b6, #fde047); color: #290d02; }
         .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
         .stage {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -67,7 +67,7 @@
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>☕ Barista Latte Art & Espuma Cremosa</h1>
+        <h1>☕ Barista Latte Art & Espuma Cremosa — Edição HD</h1>
         <div class="score-pill">Cafés Servidos: <span id="scoreVal">0</span> ☕</div>
     </header>
 
@@ -75,37 +75,46 @@
         <aside class="panel">
             <h3>☕ 1. Bebida Base da Xícara</h3>
             <div class="grid-2" id="drinkBtns">
-                <button class="btn-opt active" data-c="#92400e">☕ Cappuccino</button>
-                <button class="btn-opt" data-c="#f472b6">🍓 Pink Latte</button>
-                <button class="btn-opt" data-c="#10b981">🍵 Matcha Real</button>
-                <button class="btn-opt" data-c="#a855f7">🔮 Taro Mágico</button>
+                <button class="btn-opt active" data-c="#92400e">☕ Cappuccino Real</button>
+                <button class="btn-opt" data-c="#f472b6">🍓 Pink Velvet</button>
+                <button class="btn-opt" data-c="#10b981">🍵 Matcha Imperial</button>
+                <button class="btn-opt" data-c="#a855f7">🔮 Taro Lavanda</button>
+                <button class="btn-opt" data-c="#0284c7">🦋 Blue Matcha</button>
+                <button class="btn-opt" data-c="#b45309">🎃 Spice Caramelo</button>
             </div>
 
-            <h3>🥛 2. Calda & Espuma do Pincel</h3>
+            <h3>🥛 2. Ferramenta: Espuma ou Toppings</h3>
             <div class="grid-2" id="syrupBtns">
-                <button class="btn-opt active" data-s="#fffbeb">🥛 Espuma Branca</button>
-                <button class="btn-opt" data-s="#451a03">🍫 Calda Cacau</button>
-                <button class="btn-opt" data-s="#f59e0b">🍯 Caramelo Ouro</button>
+                <button class="btn-opt active" data-s="#fffbeb">🥛 Espuma Cremosa</button>
+                <button class="btn-opt" data-s="#451a03">🍫 Calda Chocolate</button>
+                <button class="btn-opt" data-s="#f59e0b">🍯 Fio Caramelo</button>
                 <button class="btn-opt" data-s="#ec4899">🍓 Calda Morango</button>
+                <button class="btn-opt" data-stamp="✨">✨ Flocos de Ouro</button>
+                <button class="btn-opt" data-stamp="🌸">🌸 Pétala Sakura</button>
+                <button class="btn-opt" data-stamp="🍡">🍡 Mini Marshmallow</button>
+                <button class="btn-opt" data-stamp="🍪">🍪 Biscoito Real</button>
             </div>
 
             <h3>📏 Espessura do Jato: <span id="szVal">16px</span></h3>
             <input type="range" id="szRange" min="4" max="38" value="16">
 
-            <h3>🪄 3. Arte de Barista Instantânea</h3>
+            <h3>🪄 3. Estêncil de Barista Instantâneo</h3>
             <div class="grid-2" id="stencilBtns">
-                <button class="btn-opt" data-art="heart">💖 Coração Latte</button>
-                <button class="btn-opt" data-art="kitty">🐱 Gatinho Espuma</button>
-                <button class="btn-opt" data-art="tulip">🌷 Tulipa Real</button>
-                <button class="btn-opt" data-art="star">⭐ Estrela Canela</button>
+                <button class="btn-opt" data-art="heart">💖 Coração Rosetta</button>
+                <button class="btn-opt" data-art="kitty">🐱 Gatinho Kawaii</button>
+                <button class="btn-opt" data-art="swan">🦢 Cisne Imperial</button>
+                <button class="btn-opt" data-art="bear">🐻 Ursinho Espuma</button>
             </div>
 
-            <button class="btn-action btn-save" id="saveBtn">🏆 Servir Café Real (+1 ☕)</button>
-            <button class="btn-action btn-clear" id="clearBtn">🥄 Mexer Xícara (Limpar)</button>
+            <button class="btn-action btn-save" id="saveBtn">🏆 Servir na Bandeja Real (+1 ☕)</button>
+            <div class="grid-2">
+                <button class="btn-action btn-photo" id="photoBtn">📸 Baixar Foto</button>
+                <button class="btn-action btn-clear" id="clearBtn">🥄 Nova Xícara</button>
+            </div>
         </aside>
 
         <section class="stage">
-            <canvas id="latteCanvas" width="520" height="520"></canvas>
+            <canvas id="latteCanvas" width="540" height="520"></canvas>
         </section>
     </main>
 
@@ -123,25 +132,35 @@
 
         let drinkColor = '#92400e';
         let syrupColor = '#fffbeb';
+        let activeStamp = null;
         let brushSize = 16;
         let isDrawing = false;
         let lastPos = null;
 
         function resetCup() {
             ctx.fillStyle = '#271206';
-            ctx.fillRect(0, 0, 520, 520);
-            // Porcelain saucer
+            ctx.fillRect(0, 0, 540, 520);
+
+            // Lace Doily & Saucer
             ctx.fillStyle = '#f8fafc';
-            ctx.beginPath(); ctx.arc(260, 260, 235, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(260, 260, 232, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.stroke();
+
+            // Golden Spoon & Macaron on side of saucer
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath(); ctx.arc(72, 390, 26, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fbcfe8'; ctx.lineWidth = 5; ctx.stroke();
+
             // Cup handle
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 22;
-            ctx.beginPath(); ctx.arc(445, 260, 45, -Math.PI/2, Math.PI/2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(445, 260, 45, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+
             // Cup rim
             ctx.fillStyle = '#ffffff';
             ctx.beginPath(); ctx.arc(260, 260, 195, 0, Math.PI * 2); ctx.fill();
-            // Crema coffee base
-            const g = ctx.createRadialGradient(260, 260, 40, 260, 260, 182);
+
+            // Rich Crema Coffee Base
+            const g = ctx.createRadialGradient(260, 260, 35, 260, 260, 182);
             g.addColorStop(0, drinkColor);
             g.addColorStop(1, '#3b1505');
             ctx.fillStyle = g;
@@ -151,13 +170,20 @@
         function getPos(e) {
             const r = canvas.getBoundingClientRect();
             return {
-                x: (e.clientX - r.left) * (520 / r.width),
+                x: (e.clientX - r.left) * (540 / r.width),
                 y: (e.clientY - r.top) * (520 / r.height)
             };
         }
 
         function strokeFoam(p1, p2) {
-            if (Math.hypot(p2.x - 260, p2.y - 260) > 172) return;
+            if (Math.hypot(p2.x - 260, p2.y - 260) > 170) return;
+            if (activeStamp) {
+                ctx.font = '26px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(activeStamp, p2.x, p2.y);
+                return;
+            }
             ctx.save();
             ctx.strokeStyle = syrupColor;
             ctx.shadowColor = syrupColor;
@@ -171,9 +197,13 @@
             ctx.restore();
         }
 
-        canvas.addEventListener('pointerdown', e => { isDrawing = true; lastPos = getPos(e); strokeFoam(lastPos, lastPos); });
+        canvas.addEventListener('pointerdown', e => {
+            isDrawing = true;
+            lastPos = getPos(e);
+            strokeFoam(lastPos, lastPos);
+        });
         window.addEventListener('pointermove', e => {
-            if (!isDrawing) return;
+            if (!isDrawing || activeStamp) return;
             const p = getPos(e);
             strokeFoam(lastPos, p);
             lastPos = p;
@@ -193,7 +223,12 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('#syrupBtns .btn-opt').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                syrupColor = btn.dataset.s;
+                if (btn.dataset.stamp) {
+                    activeStamp = btn.dataset.stamp;
+                } else {
+                    activeStamp = null;
+                    syrupColor = btn.dataset.s;
+                }
             });
         });
 
@@ -228,26 +263,32 @@
                     ctx.beginPath(); ctx.arc(288, 265, 9, 0, Math.PI * 2); ctx.fill();
                     ctx.fillStyle = '#f472b6';
                     ctx.beginPath(); ctx.arc(260, 282, 7, 0, Math.PI * 2); ctx.fill();
-                } else if (art === 'tulip') {
-                    [210, 255, 300].forEach((y, i) => {
-                        const r = 65 - i * 14;
-                        ctx.beginPath();
-                        ctx.moveTo(260, y + r);
-                        ctx.bezierCurveTo(260 - r*1.4, y, 260 - r, y - r, 260, y - r*0.3);
-                        ctx.bezierCurveTo(260 + r, y - r, 260 + r*1.4, y, 260, y + r);
-                        ctx.fill();
-                    });
-                } else {
-                    for (let i = 0; i < 5; i++) {
-                        const a = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-                        const x = 260 + Math.cos(a) * 110;
-                        const y = 260 + Math.sin(a) * 110;
-                        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                    }
-                    ctx.closePath(); ctx.stroke();
+                } else if (art === 'swan') {
+                    ctx.beginPath();
+                    ctx.arc(255, 295, 58, 0, Math.PI);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(235, 295);
+                    ctx.bezierCurveTo(190, 230, 270, 150, 240, 185);
+                    ctx.stroke();
+                } else if (art === 'bear') {
+                    ctx.beginPath(); ctx.arc(205, 195, 26, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(315, 195, 26, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(260, 265, 75, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#451a03';
+                    ctx.beginPath(); ctx.arc(234, 250, 8, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(286, 250, 8, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(260, 274, 11, 0, Math.PI * 2); ctx.fill();
                 }
                 ctx.restore();
             });
+        });
+
+        document.getElementById('photoBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'meu-latte-art.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
         });
 
         document.getElementById('clearBtn').addEventListener('click', resetCup);

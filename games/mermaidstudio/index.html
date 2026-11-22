@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sereia Real: Salão do Oceano — JasDEV Game Hub</title>
+    <title>Sereia Real: Salão do Oceano HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #0e7490, #041326 80%);
+            background: radial-gradient(circle at top, #0e7490, #031124 80%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1140px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.07); border-bottom: 2px solid rgba(34,211,238,0.4);
+            width: 100%; max-width: 1180px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.07); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(34,211,238,0.45);
         }
         .back-btn {
             text-decoration: none; color: #a5f3fc; font-weight: 700;
@@ -28,83 +29,121 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .studio {
-            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
-            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 350px 1fr; gap: 18px;
+            width: 100%; max-width: 1180px; padding: 14px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(8, 35, 62, 0.92); border: 2px solid rgba(34,211,238,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            background: rgba(6, 30, 56, 0.94); border: 2px solid rgba(34,211,238,0.38);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+            max-height: 86vh; overflow-y: auto;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a5f3fc; font-size: 0.93rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a5f3fc; font-size: 0.9rem; margin-top: 2px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
-            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 7px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.78rem; transition: 0.15s;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #06b6d4, #ec4899); border-color: #fff;
+            box-shadow: 0 0 10px rgba(34,211,238,0.5);
         }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
         .btn-action {
             padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
-            background: linear-gradient(135deg, #22d3ee, #fde047); color: #042f2e;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.9rem;
         }
+        .btn-save { background: linear-gradient(135deg, #22d3ee, #fde047); color: #042f2e; grid-column: 1 / -1; }
+        .btn-photo { background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; }
+        .btn-rand { background: rgba(255,255,255,0.12); color: #a5f3fc; border: 1px solid rgba(34,211,238,0.4); }
         .stage {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: rgba(4, 18, 36, 0.88); border-radius: 24px;
-            border: 3px solid rgba(34,211,238,0.4); padding: 16px;
+            border: 3px solid rgba(34,211,238,0.45); padding: 14px;
         }
-        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.65); cursor: pointer; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🧜‍♀️ Sereia Real: Salão do Oceano</h1>
+        <h1>🧜‍♀️ Sereia Real: Salão de Atlântida — Edição HD</h1>
         <div class="score-pill">Sereias Criadas: <span id="scoreVal">0</span> 🧜‍♀️</div>
     </header>
 
     <main class="studio">
         <aside class="panel">
-            <h3>🧜‍♀️ 1. Cauda Escamada Iridescente</h3>
-            <div class="grid-2" id="tailBtns">
-                <button class="btn-opt active" data-v="#06b6d4">💎 Turquesa Real</button>
-                <button class="btn-opt" data-v="#ec4899">🌸 Coral Rosa</button>
-                <button class="btn-opt" data-v="#a855f7">🔮 Pérola Violeta</button>
-                <button class="btn-opt" data-v="#eab308">✨ Ouro Atlântida</button>
+            <h3>🌊 1. Reino Subaquático</h3>
+            <div class="grid-2" id="bgBtns">
+                <button class="btn-opt active" data-v="atlantis">🏛️ Palácio Atlântida</button>
+                <button class="btn-opt" data-v="coral">🪸 Recife de Corais</button>
+                <button class="btn-opt" data-v="abyss">🔮 Abismo Bioluminescente</button>
+                <button class="btn-opt" data-v="sunset">🌅 Lagoa Dourada</button>
             </div>
 
-            <h3>💇‍♀️ 2. Cabelo Ondulado</h3>
+            <h3>🧜‍♀️ 2. Cauda Escamada Iridescente</h3>
+            <div class="grid-2" id="tailBtns">
+                <button class="btn-opt active" data-v="#06b6d4">💎 Turquesa Imperial</button>
+                <button class="btn-opt" data-v="#ec4899">🌸 Coral Rosé</button>
+                <button class="btn-opt" data-v="#a855f7">🔮 Pérola Ametista</button>
+                <button class="btn-opt" data-v="#eab308">✨ Ouro Solar 24K</button>
+                <button class="btn-opt" data-v="#10b981">🌿 Esmeralda Marinha</button>
+                <button class="btn-opt" data-v="rainbow">🌈 Escamas Arco-Íris</button>
+            </div>
+
+            <h3>🐚 3. Top de Conchas & Pérolas</h3>
+            <div class="grid-2" id="topBtns">
+                <button class="btn-opt active" data-v="#f472b6">🐚 Concha Rosa</button>
+                <button class="btn-opt" data-v="#fde047">✨ Ouro & Pérola</button>
+                <button class="btn-opt" data-v="#c084fc">🔮 Ametista Real</button>
+                <button class="btn-opt" data-v="#38bdf8">❄️ Cristal Marinho</button>
+            </div>
+
+            <h3>💇‍♀️ 4. Cabelo Flutuante</h3>
             <div class="grid-2" id="hairBtns">
-                <button class="btn-opt active" data-v="#f43f5e">❤️ Ruivo Ariel</button>
+                <button class="btn-opt active" data-v="#e11d48">❤️ Ruivo Ariel</button>
                 <button class="btn-opt" data-v="#38bdf8">💙 Azul Oceano</button>
                 <button class="btn-opt" data-v="#fde047">💛 Loiro Solar</button>
-                <button class="btn-opt" data-v="#c084fc">💜 Lilás Mágico</button>
+                <button class="btn-opt" data-v="#c084fc">💜 Lilás Místico</button>
+                <button class="btn-opt" data-v="#f472b6">💗 Rosa Sereia</button>
+                <button class="btn-opt" data-v="#2dd4bf">💚 Água-Marinha</button>
             </div>
 
-            <h3>👑 3. Coroa & Joias Marinhas</h3>
+            <h3>👑 5. Coroa, Tridente & Joias</h3>
             <div class="grid-2" id="crownBtns">
                 <button class="btn-opt active" data-v="👑">👑 Tiara Atlântida</button>
-                <button class="btn-opt" data-v="🐚">🐚 Coroa Conchas</button>
+                <button class="btn-opt" data-v="🐚">🐚 Diadema Conchas</button>
                 <button class="btn-opt" data-v="⭐">⭐ Estrela-do-Mar</button>
-                <button class="btn-opt" data-v="💎">💎 Pérola Real</button>
+                <button class="btn-opt" data-v="💎">💎 Coroa Safira</button>
             </div>
 
-            <h3>🐬 4. Amigo do Oceano</h3>
+            <h3>🔱 6. Cetro & Instrumento Real</h3>
+            <div class="grid-2" id="wandBtns">
+                <button class="btn-opt active" data-v="🔱">🔱 Tridente de Ouro</button>
+                <button class="btn-opt" data-v="🐚">🐚 Búzio Musical</button>
+                <button class="btn-opt" data-v="🪄">🪄 Varinha Pérola</button>
+                <button class="btn-opt" data-v="💎">💎 Orbe das Marés</button>
+            </div>
+
+            <h3>🐬 7. Guardião do Oceano</h3>
             <div class="grid-2" id="petBtns">
                 <button class="btn-opt active" data-v="🐬">🐬 Golfinho Real</button>
-                <button class="btn-opt" data-v="🐠">🐠 Peixinho Ouro</button>
-                <button class="btn-opt" data-v="🐢">🐢 Tartaruga</button>
-                <button class="btn-opt" data-v="🐙">🐙 Polvinho Fofo</button>
+                <button class="btn-opt" data-v="🐠">🐠 Peixinho Dourado</button>
+                <button class="btn-opt" data-v="🐢">🐢 Tartaruga Marinha</button>
+                <button class="btn-opt" data-v="🐙">🐙 Polvinho Kawaii</button>
             </div>
 
-            <button class="btn-action" id="saveBtn">🌊 Brilhar no Reino de Atlântida (+1 🧜‍♀️)</button>
+            <div class="btn-row">
+                <button class="btn-action btn-rand" id="randBtn">🎲 Look Surpresa</button>
+                <button class="btn-action btn-photo" id="photoBtn">📸 Baixar Foto</button>
+                <button class="btn-action btn-save" id="saveBtn">🌊 Desfilar em Atlântida (+1 🧜‍♀️)</button>
+            </div>
         </aside>
 
         <section class="stage">
-            <canvas id="mermaidCanvas" width="540" height="520"></canvas>
+            <canvas id="mermaidCanvas" width="600" height="540"></canvas>
+            <p style="margin-top:8px; color:#a5f3fc; font-size:0.84rem;">💡 Clique na água para criar redemoinhos de bolhas brilhantes e notas musicais!</p>
         </section>
     </main>
 
@@ -119,71 +158,210 @@
 
         const canvas = document.getElementById('mermaidCanvas');
         const ctx = canvas.getContext('2d');
-        let state = { tail: '#06b6d4', hair: '#f43f5e', crown: '👑', pet: '🐬' };
+
+        let state = {
+            bg: 'atlantis', tail: '#06b6d4', top: '#f472b6',
+            hair: '#e11d48', crown: '👑', wand: '🔱', pet: '🐬'
+        };
         let t = 0;
-        let bubbles = Array.from({ length: 25 }, () => ({
-            x: Math.random() * 540, y: Math.random() * 520, r: Math.random() * 6 + 3, vy: -Math.random() * 1.4 - 0.5
+        let bubbles = Array.from({ length: 32 }, () => ({
+            x: Math.random() * 600, y: Math.random() * 540,
+            r: Math.random() * 6 + 2.5, vy: -Math.random() * 1.4 - 0.5
         }));
+        let fxParticles = [];
+
+        const BG_THEMES = {
+            atlantis: ['#0284c7', '#082f49', '#38bdf8'],
+            coral: ['#0d9488', '#115e59', '#f472b6'],
+            abyss: ['#31104b', '#090418', '#c084fc'],
+            sunset: ['#d97706', '#4c1d95', '#fde047']
+        };
+
+        canvas.addEventListener('pointerdown', e => {
+            const r = canvas.getBoundingClientRect();
+            const x = (e.clientX - r.left) * (600 / r.width);
+            const y = (e.clientY - r.top) * (540 / r.height);
+            for (let i = 0; i < 12; i++) {
+                fxParticles.push({
+                    x, y, vx: (Math.random() - 0.5) * 4, vy: -Math.random() * 3 - 1,
+                    life: 1, icon: i % 3 === 0 ? '✨' : i % 3 === 1 ? '🫧' : '🎵'
+                });
+            }
+        });
 
         function render() {
             t += 0.04;
-            const g = ctx.createLinearGradient(0, 0, 0, 520);
-            g.addColorStop(0, '#0284c7'); g.addColorStop(1, '#082f49');
-            ctx.fillStyle = g; ctx.fillRect(0, 0, 540, 520);
+            const [cTop, cBot, rayCol] = BG_THEMES[state.bg];
+            const g = ctx.createLinearGradient(0, 0, 0, 540);
+            g.addColorStop(0, cTop); g.addColorStop(1, cBot);
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 600, 540);
+
+            // Sunbeams through ocean surface
+            ctx.save();
+            for (let i = 0; i < 4; i++) {
+                ctx.fillStyle = 'rgba(255,255,255,0.06)';
+                ctx.beginPath();
+                const ox = 90 + i * 140 + Math.sin(t * 0.5 + i) * 20;
+                ctx.moveTo(ox, 0); ctx.lineTo(ox + 55, 0);
+                ctx.lineTo(ox + 140, 540); ctx.lineTo(ox - 40, 540);
+                ctx.closePath(); ctx.fill();
+            }
+            ctx.restore();
+
+            // Atlantis Castle silhouette in background
+            ctx.fillStyle = 'rgba(255,255,255,0.08)';
+            ctx.fillRect(60, 290, 45, 210);
+            ctx.fillRect(490, 310, 45, 190);
+            ctx.beginPath();
+            ctx.moveTo(50, 290); ctx.lineTo(82, 220); ctx.lineTo(115, 290);
+            ctx.moveTo(480, 310); ctx.lineTo(512, 240); ctx.lineTo(545, 310);
+            ctx.fill();
+
+            // Seaweed & Corals at bottom
+            for (let i = 0; i < 9; i++) {
+                const sx = 35 + i * 68;
+                const sway = Math.sin(t + i) * 12;
+                ctx.strokeStyle = i % 2 === 0 ? '#10b981' : '#f472b6';
+                ctx.lineWidth = 8;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(sx, 540);
+                ctx.quadraticCurveTo(sx + sway, 480, sx - sway * 0.6, 430);
+                ctx.stroke();
+            }
 
             // Bubbles
-            ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+            ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+            ctx.lineWidth = 1.5;
             bubbles.forEach(b => {
                 b.y += b.vy;
-                if (b.y < -10) b.y = 530;
-                ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
+                if (b.y < -10) { b.y = 550; b.x = Math.random() * 600; }
+                ctx.beginPath(); ctx.arc(b.x + Math.sin(t + b.y * 0.05) * 4, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
             });
 
-            // Hair behind
+            const hover = Math.sin(t) * 6;
+            ctx.save();
+            ctx.translate(30, hover);
+
+            // Flowing Mermaid Hair (Back layer)
             ctx.fillStyle = state.hair;
             ctx.beginPath();
-            ctx.arc(270, 155, 52, 0, Math.PI * 2);
-            ctx.arc(230, 210, 38, 0, Math.PI * 2);
-            ctx.arc(310, 210, 38, 0, Math.PI * 2);
+            ctx.arc(270, 145, 52, 0, Math.PI * 2);
+            ctx.arc(222, 195 + Math.sin(t) * 5, 42, 0, Math.PI * 2);
+            ctx.arc(318, 195 - Math.sin(t) * 5, 42, 0, Math.PI * 2);
+            ctx.arc(210, 245, 34, 0, Math.PI * 2);
+            ctx.arc(330, 245, 34, 0, Math.PI * 2);
             ctx.fill();
 
-            // Mermaid Head & Torso
+            // Arms & Neck
             ctx.fillStyle = '#fde6d8';
-            ctx.beginPath(); ctx.arc(270, 160, 36, 0, Math.PI * 2); ctx.fill();
-            ctx.fillRect(252, 195, 36, 95);
-            // Seashell top
-            ctx.fillStyle = '#f472b6';
-            ctx.beginPath(); ctx.arc(258, 240, 15, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(282, 240, 15, 0, Math.PI * 2); ctx.fill();
-            // Eyes
+            ctx.strokeStyle = '#fde6d8';
+            ctx.lineWidth = 16;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(245, 210); ctx.quadraticCurveTo(195, 235, 185, 195);
+            ctx.moveTo(295, 210); ctx.quadraticCurveTo(345, 240, 355, 275);
+            ctx.stroke();
+
+            // Torso & Head
+            ctx.beginPath(); ctx.arc(270, 150, 36, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(246, 190); ctx.lineTo(294, 190);
+            ctx.lineTo(288, 285); ctx.lineTo(252, 285);
+            ctx.closePath(); ctx.fill();
+
+            // Pearl Necklace
+            ctx.fillStyle = '#ffffff';
+            for (let i = -3; i <= 3; i++) {
+                ctx.beginPath(); ctx.arc(270 + i * 6, 196 + Math.abs(i) * 1.5, 3, 0, Math.PI * 2); ctx.fill();
+            }
+
+            // Seashell Top
+            ctx.fillStyle = state.top;
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(256, 232, 16, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.arc(284, 232, 16, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath(); ctx.arc(270, 232, 5, 0, Math.PI * 2); ctx.fill();
+
+            // Expressive Eyes, Blush & Smile
             ctx.fillStyle = '#0f172a';
-            ctx.beginPath(); ctx.arc(258, 158, 4.5, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(282, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(257, 148, 4.8, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(283, 148, 4.8, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(255, 146, 1.8, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(281, 146, 1.8, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'rgba(244, 114, 182, 0.45)';
+            ctx.beginPath(); ctx.arc(248, 156, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(292, 156, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 2.2;
+            ctx.beginPath(); ctx.arc(270, 157, 7, 0.2, Math.PI - 0.2); ctx.stroke();
 
-            // Mermaid Tail with scales
-            const wag = Math.sin(t) * 14;
-            ctx.fillStyle = state.tail;
+            // Mermaid Tail with Scale Pattern
+            const wag = Math.sin(t * 1.4) * 16;
+            let tailStyle = state.tail;
+            if (state.tail === 'rainbow') {
+                const rg = ctx.createLinearGradient(240, 280, 300, 480);
+                rg.addColorStop(0, '#f472b6'); rg.addColorStop(0.5, '#38bdf8'); rg.addColorStop(1, '#fde047');
+                tailStyle = rg;
+            }
+
+            // Golden Waist Belt
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath(); ctx.ellipse(270, 285, 26, 7, 0, 0, Math.PI * 2); ctx.fill();
+
+            ctx.fillStyle = tailStyle;
             ctx.beginPath();
-            ctx.moveTo(245, 285); ctx.lineTo(295, 285);
-            ctx.quadraticCurveTo(315, 380, 270 + wag, 450);
-            ctx.quadraticCurveTo(225, 380, 245, 285);
+            ctx.moveTo(246, 286); ctx.lineTo(294, 286);
+            ctx.quadraticCurveTo(318, 375, 270 + wag, 445);
+            ctx.quadraticCurveTo(222, 375, 246, 286);
             ctx.fill();
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2.5; ctx.stroke();
 
-            // Tail Fin
+            // Shimmering Scales along tail
+            ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+            ctx.lineWidth = 1.5;
+            for (let row = 0; row < 6; row++) {
+                const sy = 305 + row * 22;
+                const rowShift = (wag * row) / 6;
+                for (let col = -1; col <= 1; col++) {
+                    ctx.beginPath();
+                    ctx.arc(270 + col * 12 + rowShift * 0.5, sy, 7, 0, Math.PI);
+                    ctx.stroke();
+                }
+            }
+
+            // Translucent Royal Tail Fin
+            ctx.fillStyle = tailStyle;
             ctx.beginPath();
-            ctx.moveTo(270 + wag, 450);
-            ctx.quadraticCurveTo(210 + wag, 465, 225 + wag, 500);
-            ctx.lineTo(270 + wag, 470);
-            ctx.lineTo(315 + wag, 500);
-            ctx.quadraticCurveTo(330 + wag, 465, 270 + wag, 450);
+            ctx.moveTo(270 + wag, 445);
+            ctx.quadraticCurveTo(200 + wag, 460, 218 + wag, 505);
+            ctx.lineTo(270 + wag, 472);
+            ctx.lineTo(322 + wag, 505);
+            ctx.quadraticCurveTo(340 + wag, 460, 270 + wag, 445);
             ctx.fill(); ctx.stroke();
 
-            // Crown & Pet
-            ctx.font = '34px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText(state.crown, 270, 120);
+            // Crown, Wand & Ocean Friend
+            ctx.font = '36px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(state.crown, 270, 112);
+            ctx.font = '44px sans-serif';
+            ctx.fillText(state.wand, 178, 190);
             ctx.font = '58px sans-serif';
-            ctx.fillText(state.pet, 145, 360 + Math.sin(t) * 10);
+            ctx.fillText(state.pet, 120, 355 + Math.sin(t * 1.5) * 10);
+            ctx.restore();
+
+            // Interactive FX Particles
+            for (let i = fxParticles.length - 1; i >= 0; i--) {
+                const p = fxParticles[i];
+                p.x += p.vx; p.y += p.vy; p.life -= 0.02;
+                if (p.life <= 0) { fxParticles.splice(i, 1); continue; }
+                ctx.save();
+                ctx.globalAlpha = p.life;
+                ctx.font = '22px sans-serif';
+                ctx.fillText(p.icon, p.x, p.y);
+                ctx.restore();
+            }
 
             requestAnimationFrame(render);
         }
@@ -197,15 +375,35 @@
                 });
             });
         }
-        bind('tailBtns', 'tail');
-        bind('hairBtns', 'hair');
-        bind('crownBtns', 'crown');
-        bind('petBtns', 'pet');
+        ['bgBtns:bg', 'tailBtns:tail', 'topBtns:top', 'hairBtns:hair', 'crownBtns:crown', 'wandBtns:wand', 'petBtns:pet'].forEach(pair => {
+            const [id, k] = pair.split(':');
+            bind(id, k);
+        });
+
+        document.getElementById('randBtn').addEventListener('click', () => {
+            ['bgBtns', 'tailBtns', 'topBtns', 'hairBtns', 'crownBtns', 'wandBtns', 'petBtns'].forEach(id => {
+                const btns = document.querySelectorAll(`#${id} .btn-opt`);
+                btns[Math.floor(Math.random() * btns.length)].click();
+            });
+        });
+
+        document.getElementById('photoBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'minha-sereia-real.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        });
 
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;
             scoreEl.textContent = bestScore;
             SaveHub.updateGameSave('mermaidstudio', { highScore: bestScore }, activePlayer);
+            for (let i = 0; i < 20; i++) {
+                fxParticles.push({
+                    x: 300 + (Math.random() - 0.5) * 220, y: 270 + (Math.random() - 0.5) * 200,
+                    vx: (Math.random() - 0.5) * 4, vy: -Math.random() * 3 - 1, life: 1, icon: '✨'
+                });
+            }
         });
 
         requestAnimationFrame(render);

@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Hoverboard Surfer — JasDEV Game Hub</title>
+    <title>Cyber Hoverboard Surfer HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: radial-gradient(circle at top, #1e1b4b, #030712);
+            background: radial-gradient(circle at top, #1e1b4b, #030712 80%);
             color: #fff; font-family: 'Outfit', sans-serif;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 960px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(0,245,212,0.45);
         }
         .back-btn {
@@ -27,17 +27,35 @@
             background: linear-gradient(135deg, #00f5d4, #6366f1);
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #04131c;
         }
-        .arena { display: flex; flex-direction: column; align-items: center; padding: 14px; gap: 12px; }
+        .layout {
+            display: grid; grid-template-columns: 280px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 14px; align-items: start;
+        }
+        @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(15, 23, 42, 0.92); border: 2px solid rgba(0,245,212,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #5eead4; font-size: 0.93rem; }
+        .board-btn {
+            padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; cursor: pointer;
+            text-align: left; font-size: 0.82rem;
+        }
+        .board-btn.active {
+            background: linear-gradient(135deg, #00f5d4, #6366f1); color: #04121c; border-color: #fff;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .hud {
-            display: flex; gap: 18px; align-items: center; background: rgba(255,255,255,0.06);
-            padding: 8px 18px; border-radius: 999px;
+            display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
         }
         canvas {
             background: #060919; border: 3px solid #00f5d4; border-radius: 22px;
             box-shadow: 0 0 38px rgba(0,245,212,0.3); max-width: 100%; height: auto;
         }
         .btn {
-            padding: 8px 18px; border-radius: 999px; border: none; font-weight: 700;
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
             background: linear-gradient(135deg, #00f5d4, #ec4899); color: #05101f; cursor: pointer;
         }
     </style>
@@ -45,18 +63,38 @@
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🛹 Cyber Hoverboard Surfer</h1>
+        <h1>🛹 Cyber Hoverboard Surfer — Edição HD</h1>
         <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
     </header>
 
-    <main class="arena">
-        <div class="hud">
-            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
-            <button class="btn" id="leftBtn">⬅️ Pista Esq</button>
-            <button class="btn" id="rightBtn">Pista Dir ➡️</button>
-            <button class="btn" id="restartBtn">🔄 Reiniciar</button>
-        </div>
-        <canvas id="surfCanvas" width="460" height="520"></canvas>
+    <main class="layout">
+        <aside class="panel">
+            <h3>🛹 1. Escolha seu Hoverboard</h3>
+            <button class="board-btn active" data-c="#00f5d4">⚡ <strong>Cyber Neon</strong><br><small>Rastro Turquesa Plasma</small></button>
+            <button class="board-btn" data-c="#ec4899">🌸 <strong>Valkyrie Pink</strong><br><small>Propulsor Magenta</small></button>
+            <button class="board-btn" data-c="#fde047">✨ <strong>Solar Gold 24K</strong><br><small>Asas de Luz Dourada</small></button>
+
+            <h3>🎮 2. Manobras & Power-Ups</h3>
+            <p style="font-size:0.82rem; color:#cbd5e1; line-height:1.45;">
+                ⬅️ ➡️ <strong>Setas / A-D:</strong> Trocar Pista<br>
+                ⬆️ <strong>Espaço / Salto:</strong> Pular Barreiras!<br>
+                🛡️ <strong>Escudo Plasma:</strong> Salva de 1 batida<br>
+                🧲 <strong>Ímã Quântico:</strong> Atrai todos os cristais!
+            </p>
+            <button class="btn" id="jumpBtn" style="padding:11px;">🚀 PULAR BARREIRA [Espaço]</button>
+            <button class="btn" id="restartBtn" style="padding:11px;">🔄 Nova Corrida</button>
+        </aside>
+
+        <section class="arena">
+            <div class="hud">
+                <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+                <span>Escudo: <strong id="shieldText" style="color:#38bdf8;">ATIVO 🛡️</strong></span>
+                <span>Ímã: <strong id="magText" style="color:#f472b6;">OFF</strong></span>
+                <button class="btn" id="leftBtn">⬅️ Esq</button>
+                <button class="btn" id="rightBtn">Dir ➡️</button>
+            </div>
+            <canvas id="surfCanvas" width="520" height="540"></canvas>
+        </section>
     </main>
 
     <script type="module">
@@ -70,80 +108,164 @@
 
         const canvas = document.getElementById('surfCanvas');
         const ctx = canvas.getContext('2d');
-        const LANES = [110, 230, 350];
+        const LANES = [140, 260, 380];
 
+        let boardColor = '#00f5d4';
         let lane = 1;
         let score = 0;
         let alive = true;
+        let shield = 1;
+        let magnetTimer = 0;
+        let jumpTimer = 0;
         let items = [];
         let tick = 0;
 
         function reset() {
-            lane = 1; score = 0; alive = true; items = [];
-            document.getElementById('scoreVal').textContent = 0;
+            lane = 1; score = 0; alive = true; shield = 1; magnetTimer = 0; jumpTimer = 0; items = [];
+            updateHud();
+        }
+
+        function jump() {
+            if (alive && jumpTimer === 0) jumpTimer = 34;
+        }
+
+        function updateHud() {
+            document.getElementById('scoreVal').textContent = score;
+            document.getElementById('shieldText').textContent = shield > 0 ? 'ATIVO 🛡️' : 'OFF';
+            document.getElementById('magText').textContent = magnetTimer > 0 ? 'ATIVO 🧲' : 'OFF';
         }
 
         window.addEventListener('keydown', e => {
             if (e.key === 'ArrowLeft' || e.key === 'a') lane = Math.max(0, lane - 1);
             if (e.key === 'ArrowRight' || e.key === 'd') lane = Math.min(2, lane + 1);
+            if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'w') jump();
         });
         document.getElementById('leftBtn').addEventListener('click', () => { lane = Math.max(0, lane - 1); });
         document.getElementById('rightBtn').addEventListener('click', () => { lane = Math.min(2, lane + 1); });
+        document.getElementById('jumpBtn').addEventListener('click', jump);
         document.getElementById('restartBtn').addEventListener('click', reset);
+
+        document.querySelectorAll('.board-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.board-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                boardColor = btn.dataset.c;
+            });
+        });
 
         function loop() {
             tick++;
-            ctx.fillStyle = '#060919';
-            ctx.fillRect(0, 0, 460, 520);
+            ctx.fillStyle = '#050816';
+            ctx.fillRect(0, 0, 520, 540);
 
-            // 3 Synthwave Lanes
+            // Synthwave Sun & Horizon
+            const sunG = ctx.createLinearGradient(0, 15, 0, 130);
+            sunG.addColorStop(0, '#fde047'); sunG.addColorStop(1, '#ec4899');
+            ctx.fillStyle = sunG;
+            ctx.beginPath(); ctx.arc(260, 85, 52, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#090d24';
+            ctx.fillRect(0, 110, 520, 30);
+
+            // Perspective 3D Synthwave Grid
+            ctx.strokeStyle = 'rgba(0, 245, 212, 0.25)';
+            ctx.lineWidth = 2;
             LANES.forEach(x => {
-                ctx.strokeStyle = 'rgba(0,245,212,0.28)';
-                ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 520); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(260 + (x - 260) * 0.35, 125); ctx.lineTo(x, 540); ctx.stroke();
             });
-
-            if (alive && tick % 32 === 0) {
-                const l = Math.floor(Math.random() * 3);
-                const isGem = Math.random() > 0.42;
-                items.push({ lane: l, y: -20, gem: isGem });
+            for (let y = (tick * 6) % 45 + 130; y < 540; y += 45) {
+                ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(480, y); ctx.stroke();
             }
+
+            if (magnetTimer > 0) magnetTimer--;
+            if (jumpTimer > 0) jumpTimer--;
+
+            if (alive && tick % 28 === 0) {
+                const l = Math.floor(Math.random() * 3);
+                const r = Math.random();
+                let type = 'gem';
+                if (r < 0.36) type = 'barrier';
+                else if (r < 0.42) type = 'shield';
+                else if (r < 0.48) type = 'magnet';
+                items.push({ lane: l, x: LANES[l], y: 125, type });
+            }
+
+            const playerX = LANES[lane];
+            const playerY = 455;
 
             for (let i = items.length - 1; i >= 0; i--) {
                 const it = items[i];
-                if (alive) it.y += 5.5;
-                const x = LANES[it.lane];
-                ctx.font = '34px sans-serif'; ctx.textAlign = 'center';
-                ctx.fillText(it.gem ? '💎' : '🚧', x, it.y);
-
-                if (alive && it.lane === lane && Math.abs(it.y - 445) < 32) {
-                    if (it.gem) {
-                        score += 50;
-                        document.getElementById('scoreVal').textContent = score;
-                        if (score > bestScore) {
-                            bestScore = score;
-                            hiEl.textContent = bestScore;
-                            SaveHub.updateGameSave('hoverboard', { highScore: bestScore }, activePlayer);
-                        }
-                        items.splice(i, 1);
+                if (alive) {
+                    it.y += 5.6 + Math.min(4, score / 800);
+                    if (magnetTimer > 0 && it.type === 'gem') {
+                        it.x += (playerX - it.x) * 0.14;
                     } else {
-                        alive = false;
+                        it.x = LANES[it.lane];
                     }
-                } else if (it.y > 540) {
+                }
+
+                ctx.font = '34px sans-serif'; ctx.textAlign = 'center';
+                const icon = it.type === 'gem' ? '💎' : it.type === 'shield' ? '🛡️' : it.type === 'magnet' ? '🧲' : '🚧';
+                ctx.fillText(icon, it.x, it.y);
+
+                const hitDist = Math.hypot(it.x - playerX, it.y - playerY);
+                if (alive && hitDist < 36) {
+                    if (it.type === 'gem') {
+                        score += 50;
+                        items.splice(i, 1);
+                    } else if (it.type === 'shield') {
+                        shield = 1;
+                        items.splice(i, 1);
+                    } else if (it.type === 'magnet') {
+                        magnetTimer = 260;
+                        items.splice(i, 1);
+                    } else if (it.type === 'barrier') {
+                        if (jumpTimer > 0) {
+                            // Saltou por cima da barreira!
+                            score += 25;
+                        } else if (shield > 0) {
+                            shield = 0;
+                            items.splice(i, 1);
+                        } else {
+                            alive = false;
+                        }
+                    }
+                    if (score > bestScore) {
+                        bestScore = score;
+                        hiEl.textContent = bestScore;
+                        SaveHub.updateGameSave('hoverboard', { highScore: bestScore }, activePlayer);
+                    }
+                    updateHud();
+                } else if (it.y > 560) {
                     items.splice(i, 1);
                 }
             }
 
-            // Player Hoverboard
-            ctx.font = '44px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText(alive ? '🛹' : '💥', LANES[lane], 450);
+            // Draw Custom Neon Hoverboard & Surfer
+            const jumpOffset = jumpTimer > 0 ? -Math.sin((jumpTimer / 34) * Math.PI) * 55 : 0;
+            ctx.save();
+            ctx.translate(playerX, playerY + jumpOffset);
+            if (shield > 0) {
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(0, -10, 38, 0, Math.PI * 2); ctx.stroke();
+            }
+            ctx.fillStyle = boardColor;
+            ctx.shadowColor = boardColor;
+            ctx.shadowBlur = 16;
+            ctx.beginPath(); ctx.roundRect(-24, 4, 48, 14, 8); ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.font = jumpTimer > 0 ? '44px sans-serif' : '40px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(alive ? (jumpTimer > 0 ? '🤸' : '🏄‍♀️') : '💥', 0, 0);
+            ctx.restore();
 
             if (!alive) {
-                ctx.fillStyle = 'rgba(0,0,0,0.72)';
-                ctx.fillRect(0, 0, 460, 520);
+                ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                ctx.fillRect(0, 0, 520, 540);
                 ctx.fillStyle = '#00f5d4';
                 ctx.font = 'bold 26px Fredoka, sans-serif';
-                ctx.fillText('FIM DE CORRIDA! Clique em Reiniciar', 230, 260);
+                ctx.textAlign = 'center';
+                ctx.fillText('FIM DE CORRIDA! Clique em Nova Corrida', 260, 270);
             }
 
             requestAnimationFrame(loop);

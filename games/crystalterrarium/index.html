@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terrário de Cristal & Jardim de Fadas — JasDEV Game Hub</title>
+    <title>Terrário de Cristal & Jardim de Fadas HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,7 +13,7 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1140px; padding: 12px 20px;
+            width: 100%; max-width: 1160px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(52,211,153,0.4);
         }
@@ -28,29 +28,30 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .studio {
-            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
-            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
+            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(6, 40, 30, 0.92); border: 2px solid rgba(52,211,153,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            background: rgba(6, 40, 30, 0.94); border: 2px solid rgba(52,211,153,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a7f3d0; font-size: 0.93rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #a7f3d0; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
             padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.79rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #10b981, #ec4899); border-color: #fff;
         }
         .btn-action {
-            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.93rem;
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.9rem;
         }
         .btn-save { background: linear-gradient(135deg, #34d399, #fde047); color: #052e16; }
+        .btn-water { background: linear-gradient(135deg, #38bdf8, #818cf8); color: #fff; }
         .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
         .stage {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -66,39 +67,51 @@
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🔮 Terrário de Cristal & Jardim de Fadas</h1>
+        <h1>🔮 Terrário de Cristal & Jardim de Fadas — Edição HD</h1>
         <div class="score-pill">Terrários: <span id="scoreVal">0</span> 🪴</div>
     </header>
 
     <main class="studio">
         <aside class="panel">
-            <h3>🏺 1. Cúpula de Vidro & Base</h3>
+            <h3>🏺 1. Formato da Redoma de Vidro</h3>
+            <div class="grid-2" id="domeBtns">
+                <button class="btn-opt active" data-d="globe">🔮 Esfera Imperial</button>
+                <button class="btn-opt" data-d="heart">💖 Cristal Coração</button>
+                <button class="btn-opt" data-d="diamond">💎 Prisma Geométrico</button>
+                <button class="btn-opt" id="nightBtn">🌙 Luz: Vaga-lumes</button>
+            </div>
+
+            <h3>⏳ 2. Camadas de Areia & Quartzo</h3>
             <div class="grid-2" id="sandBtns">
                 <button class="btn-opt active" data-c="#10b981">🌿 Musgo Esmeralda</button>
-                <button class="btn-opt" data-c="#f472b6">🌸 Areia Quartzo Rosa</button>
+                <button class="btn-opt" data-c="#f472b6">🌸 Quartzo Rosa</button>
                 <button class="btn-opt" data-c="#a855f7">🔮 Ametista Real</button>
                 <button class="btn-opt" data-c="#38bdf8">❄️ Cristal Celeste</button>
             </div>
 
-            <h3>🍄 2. Plantar no Terrário (Clique no Vidro)</h3>
+            <h3>🍄 3. Plantar no Jardim (Toque no Vidro)</h3>
             <div class="grid-2" id="itemBtns">
                 <button class="btn-opt active" data-i="🌸">🌸 Flor Sakura</button>
                 <button class="btn-opt" data-i="🍄">🍄 Cogumelo Glow</button>
-                <button class="btn-opt" data-i="💎">💎 Cristal Bruto</button>
+                <button class="btn-opt" data-i="💎">💎 Drusa Cristal</button>
                 <button class="btn-opt" data-i="🪴">🪴 Suculenta Real</button>
                 <button class="btn-opt" data-i="🦋">🦋 Borboleta Luz</button>
-                <button class="btn-opt" data-i="🧚‍♀️">🧚‍♀️ Fadinha</button>
+                <button class="btn-opt" data-i="🧚‍♀️">🧚‍♀️ Fada Guardiã</button>
                 <button class="btn-opt" data-i="🏠">🏠 Casinha Fada</button>
-                <button class="btn-opt" data-i="🌙">🌙 Lua de Cristal</button>
+                <button class="btn-opt" data-i="🦄">🦄 Mini Unicórnio</button>
             </div>
 
+            <button class="btn-action btn-water" id="waterBtn">🚿 Regar com Orvalho Mágico (Crescer!)</button>
             <button class="btn-action btn-save" id="saveBtn">✨ Iluminar & Salvar Terrário (+1 🪴)</button>
-            <button class="btn-action btn-clear" id="clearBtn">🧹 Limpar Jardim</button>
+            <div class="grid-2">
+                <button class="btn-action btn-clear" id="undoBtn">↩️ Desfazer</button>
+                <button class="btn-action btn-clear" id="clearBtn">🧹 Limpar</button>
+            </div>
         </aside>
 
         <section class="stage">
             <canvas id="terrariumCanvas" width="540" height="520"></canvas>
-            <p style="margin-top:12px; color:#a7f3d0; font-size:0.86rem;">Toque dentro da redoma de cristal para posicionar cristais, flores e fadas!</p>
+            <p style="margin-top:10px; color:#a7f3d0; font-size:0.85rem;">Toque dentro da redoma para plantar e clique em Regar para ver as plantas crescerem!</p>
         </section>
     </main>
 
@@ -114,25 +127,44 @@
         const canvas = document.getElementById('terrariumCanvas');
         const ctx = canvas.getContext('2d');
 
+        let domeShape = 'globe';
+        let nightGlow = false;
         let baseColor = '#10b981';
         let selectedEmoji = '🌸';
         let items = [
-            { x: 270, y: 345, e: '🏠' },
-            { x: 205, y: 365, e: '🍄' },
-            { x: 335, y: 360, e: '💎' },
-            { x: 250, y: 235, e: '🧚‍♀️' }
+            { x: 270, y: 340, e: '🏠', scale: 1 },
+            { x: 200, y: 365, e: '🍄', scale: 1 },
+            { x: 340, y: 360, e: '💎', scale: 1 },
+            { x: 250, y: 225, e: '🧚‍♀️', scale: 1 }
         ];
-        let fireflies = Array.from({ length: 28 }, () => ({
-            x: 130 + Math.random() * 280,
-            y: 120 + Math.random() * 260,
-            a: Math.random() * Math.PI * 2,
-            r: Math.random() * 3 + 1.5
+        let drops = [];
+        let fireflies = Array.from({ length: 30 }, () => ({
+            x: 130 + Math.random() * 280, y: 120 + Math.random() * 260,
+            a: Math.random() * Math.PI * 2, r: Math.random() * 3 + 1.5
         }));
         let t = 0;
 
+        function drawDomePath() {
+            ctx.beginPath();
+            if (domeShape === 'heart') {
+                ctx.moveTo(270, 440);
+                ctx.bezierCurveTo(60, 320, 75, 110, 270, 175);
+                ctx.bezierCurveTo(465, 110, 480, 320, 270, 440);
+            } else if (domeShape === 'diamond') {
+                ctx.moveTo(270, 65);
+                ctx.lineTo(455, 220);
+                ctx.lineTo(395, 440);
+                ctx.lineTo(145, 440);
+                ctx.lineTo(85, 220);
+                ctx.closePath();
+            } else {
+                ctx.arc(270, 255, 195, 0, Math.PI * 2);
+            }
+        }
+
         function render() {
             t += 0.04;
-            ctx.fillStyle = '#041b15';
+            ctx.fillStyle = nightGlow ? '#020617' : '#041b15';
             ctx.fillRect(0, 0, 540, 520);
 
             // Golden Pedestal Base
@@ -140,53 +172,62 @@
             ctx.beginPath(); ctx.roundRect(140, 435, 260, 42, 14); ctx.fill();
             ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3; ctx.stroke();
 
-            // Glass Globe Sphere
-            const g = ctx.createRadialGradient(270, 260, 30, 270, 260, 195);
-            g.addColorStop(0, 'rgba(52, 211, 153, 0.14)');
+            // Glass Fill
+            const g = ctx.createRadialGradient(270, 255, 30, 270, 255, 200);
+            g.addColorStop(0, nightGlow ? 'rgba(168, 85, 247, 0.22)' : 'rgba(52, 211, 153, 0.15)');
             g.addColorStop(1, 'rgba(255, 255, 255, 0.22)');
             ctx.fillStyle = g;
-            ctx.beginPath(); ctx.arc(270, 260, 195, 0, Math.PI * 2); ctx.fill();
-
-            // Soil & Crystal Sand Layer clipped inside globe
-            ctx.save();
-            ctx.beginPath(); ctx.arc(270, 260, 192, 0, Math.PI * 2); ctx.clip();
-
-            ctx.fillStyle = '#451a03';
-            ctx.fillRect(70, 395, 400, 70);
-            ctx.fillStyle = baseColor;
-            ctx.beginPath();
-            ctx.ellipse(270, 395, 185, 28, 0, 0, Math.PI * 2);
+            drawDomePath();
             ctx.fill();
+
+            // Inside Clipping
+            ctx.save();
+            drawDomePath();
+            ctx.clip();
+
+            // Multi-layered Sand & Soil
+            ctx.fillStyle = '#451a03';
+            ctx.fillRect(70, 405, 400, 60);
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(70, 392, 400, 15);
+            ctx.fillStyle = baseColor;
+            ctx.beginPath(); ctx.ellipse(270, 390, 190, 26, 0, 0, Math.PI * 2); ctx.fill();
 
             // Fireflies
             fireflies.forEach(f => {
-                f.x += Math.cos(t + f.a) * 0.4;
-                f.y += Math.sin(t + f.a) * 0.4;
+                f.x += Math.cos(t + f.a) * 0.45;
+                f.y += Math.sin(t + f.a) * 0.45;
                 ctx.fillStyle = '#fef08a';
                 ctx.shadowColor = '#fde047';
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = nightGlow ? 16 : 8;
                 ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
             });
 
             // Placed Items
-            ctx.font = '44px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             items.forEach(it => {
                 const hover = (it.e === '🧚‍♀️' || it.e === '🦋') ? Math.sin(t * 2) * 7 : 0;
+                ctx.font = `${Math.round(42 * (it.scale || 1))}px sans-serif`;
                 ctx.fillText(it.e, it.x, it.y + hover);
             });
+
+            // Magic Watering Dew Drops
+            for (let i = drops.length - 1; i >= 0; i--) {
+                const d = drops[i];
+                d.y += 4.5;
+                ctx.font = '18px sans-serif';
+                ctx.fillText('💧', d.x, d.y);
+                if (d.y > 395) drops.splice(i, 1);
+            }
             ctx.restore();
 
-            // Glass Rim & Reflection
-            ctx.strokeStyle = 'rgba(167, 243, 208, 0.85)';
+            // Glass Rim Outline
+            ctx.strokeStyle = nightGlow ? '#e879f9' : 'rgba(167, 243, 208, 0.9)';
             ctx.lineWidth = 5;
-            ctx.beginPath(); ctx.arc(270, 260, 195, 0, Math.PI * 2); ctx.stroke();
-
-            ctx.strokeStyle = 'rgba(255,255,255,0.45)';
-            ctx.lineWidth = 6;
-            ctx.beginPath(); ctx.arc(270, 260, 175, Math.PI * 1.1, Math.PI * 1.38); ctx.stroke();
+            drawDomePath();
+            ctx.stroke();
 
             requestAnimationFrame(render);
         }
@@ -195,9 +236,22 @@
             const rect = canvas.getBoundingClientRect();
             const x = (e.clientX - rect.left) * (540 / rect.width);
             const y = (e.clientY - rect.top) * (520 / rect.height);
-            if (Math.hypot(x - 270, y - 260) < 170) {
-                items.push({ x, y, e: selectedEmoji });
+            if (Math.hypot(x - 270, y - 255) < 175) {
+                items.push({ x, y, e: selectedEmoji, scale: 1 });
             }
+        });
+
+        document.querySelectorAll('#domeBtns .btn-opt[data-d]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#domeBtns .btn-opt[data-d]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                domeShape = btn.dataset.d;
+            });
+        });
+
+        document.getElementById('nightBtn').addEventListener('click', e => {
+            nightGlow = !nightGlow;
+            e.target.classList.toggle('active', nightGlow);
         });
 
         document.querySelectorAll('#sandBtns .btn-opt').forEach(btn => {
@@ -216,6 +270,14 @@
             });
         });
 
+        document.getElementById('waterBtn').addEventListener('click', () => {
+            for (let i = 0; i < 14; i++) {
+                drops.push({ x: 160 + Math.random() * 220, y: 110 + Math.random() * 60 });
+            }
+            items.forEach(it => { it.scale = Math.min(1.45, (it.scale || 1) + 0.12); });
+        });
+
+        document.getElementById('undoBtn').addEventListener('click', () => { items.pop(); });
         document.getElementById('clearBtn').addEventListener('click', () => { items = []; });
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;

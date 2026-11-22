@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ateliê de Máscaras do Baile Real — JasDEV Game Hub</title>
+    <title>Ateliê de Máscaras do Baile Real HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,7 +13,7 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1140px; padding: 12px 20px;
+            width: 100%; max-width: 1160px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(250,204,21,0.4);
         }
@@ -28,27 +28,27 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
         .studio {
-            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
-            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
+            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(42, 12, 68, 0.92); border: 2px solid rgba(250,204,21,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            background: rgba(42, 12, 68, 0.94); border: 2px solid rgba(250,204,21,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.93rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
             padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.79rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #ec4899, #eab308); border-color: #fff; color: #1f0410;
         }
         .btn-action {
-            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
             background: linear-gradient(135deg, #fde047, #ec4899); color: #240418;
         }
         .stage {
@@ -56,27 +56,37 @@
             background: rgba(18, 5, 32, 0.88); border-radius: 24px;
             border: 3px solid rgba(250,204,21,0.4); padding: 16px;
         }
-        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🎭 Ateliê de Máscaras do Baile Real</h1>
+        <h1>🎭 Ateliê de Máscaras do Baile Real — Edição HD</h1>
         <div class="score-pill">Máscaras: <span id="scoreVal">0</span> 🎭</div>
     </header>
 
     <main class="studio">
         <aside class="panel">
-            <h3>🎭 1. Veludo & Seda da Máscara</h3>
+            <h3>🦋 1. Silhueta Veneziana</h3>
+            <div class="grid-2" id="shapeBtns">
+                <button class="btn-opt active" data-v="butterfly">🦋 Asas Imperial</button>
+                <button class="btn-opt" data-v="cat">🐱 Gatinha Real</button>
+                <button class="btn-opt" data-v="swan">🦢 Cisne de Gala</button>
+                <button class="btn-opt" data-v="classic">🎭 Colombina Ouro</button>
+            </div>
+
+            <h3>🎭 2. Veludo & Seda da Máscara</h3>
             <div class="grid-2" id="colorBtns">
                 <button class="btn-opt active" data-v="#ec4899">💖 Rosa Imperial</button>
                 <button class="btn-opt" data-v="#7c3aed">🔮 Veludo Violeta</button>
                 <button class="btn-opt" data-v="#0284c7">💎 Safira Real</button>
                 <button class="btn-opt" data-v="#e11d48">🌹 Rubi Carmim</button>
+                <button class="btn-opt" data-v="#10b981">🌿 Esmeralda</button>
+                <button class="btn-opt" data-v="#0f172a">🖤 Noite Estrelada</button>
             </div>
 
-            <h3>✨ 2. Renda & Filigrana</h3>
+            <h3>✨ 3. Renda & Filigrana</h3>
             <div class="grid-2" id="trimBtns">
                 <button class="btn-opt active" data-v="#fde047">✨ Ouro 24K</button>
                 <button class="btn-opt" data-v="#f8fafc">❄️ Prata Lunar</button>
@@ -84,19 +94,21 @@
                 <button class="btn-opt" data-v="#38bdf8">💠 Cristal Azul</button>
             </div>
 
-            <h3>🪶 3. Plumas & Joia Central</h3>
+            <h3>🪶 4. Plumas & Joia Central</h3>
             <div class="grid-2" id="crownBtns">
-                <button class="btn-opt active" data-v="👑">👑 Coroa de Diamante</button>
-                <button class="btn-opt" data-v="🦋">🦋 Asas de Cristal</button>
+                <button class="btn-opt active" data-v="👑">👑 Coroa Diamante</button>
+                <button class="btn-opt" data-v="🦋">🦋 Borboleta Luz</button>
                 <button class="btn-opt" data-v="💎">💎 Safira Imperial</button>
                 <button class="btn-opt" data-v="🌹">🌹 Rosa Dourada</button>
             </div>
 
+            <button class="btn-action" id="clearGemsBtn" style="background:rgba(255,255,255,0.12); color:#fef08a;">🧹 Limpar Pedrarias Coladas</button>
             <button class="btn-action" id="saveBtn">🏆 Brilhar no Baile de Gala (+1 🎭)</button>
         </aside>
 
         <section class="stage">
-            <canvas id="maskCanvas" width="540" height="500"></canvas>
+            <canvas id="maskCanvas" width="560" height="500"></canvas>
+            <p style="margin-top:10px; color:#fef08a; font-size:0.85rem;">💎 Clique sobre a máscara para colar strass e diamantes espelhados automaticamente!</p>
         </section>
     </main>
 
@@ -111,55 +123,89 @@
 
         const canvas = document.getElementById('maskCanvas');
         const ctx = canvas.getContext('2d');
-        let state = { color: '#ec4899', trim: '#fde047', crown: '👑' };
+        let state = { shape: 'butterfly', color: '#ec4899', trim: '#fde047', crown: '👑' };
+        let gems = [];
 
         function render() {
-            const bg = ctx.createRadialGradient(270, 250, 30, 270, 250, 320);
+            const bg = ctx.createRadialGradient(280, 250, 30, 280, 250, 330);
             bg.addColorStop(0, '#3b0764'); bg.addColorStop(1, '#110321');
-            ctx.fillStyle = bg; ctx.fillRect(0, 0, 540, 500);
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 560, 500);
 
             // Golden Holding Stick
             ctx.strokeStyle = state.trim;
             ctx.lineWidth = 10;
-            ctx.beginPath(); ctx.moveTo(415, 260); ctx.lineTo(445, 470); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(430, 260); ctx.lineTo(460, 475); ctx.stroke();
 
             // Royal Plumes / Feathers behind mask
-            ['#f472b6', state.trim, '#c084fc'].forEach((c, i) => {
+            ['#f472b6', state.trim, '#c084fc', '#38bdf8'].forEach((c, i) => {
                 ctx.fillStyle = c;
                 ctx.beginPath();
-                ctx.ellipse(220 + i * 50, 145 - (i === 1 ? 20 : 0), 28, 75, (i - 1) * 0.35, 0, Math.PI * 2);
+                ctx.ellipse(215 + i * 44, 140 - (i === 1 || i === 2 ? 22 : 0), 26, 78, (i - 1.5) * 0.28, 0, Math.PI * 2);
                 ctx.fill();
             });
 
-            // Venetian Butterfly Mask Wing Silhouette
+            // Mask Silhouette by shape
             ctx.fillStyle = state.color;
             ctx.strokeStyle = state.trim;
             ctx.lineWidth = 6;
             ctx.beginPath();
-            ctx.moveTo(270, 215);
-            ctx.bezierCurveTo(180, 145, 85, 175, 105, 265);
-            ctx.bezierCurveTo(115, 325, 210, 330, 255, 285);
-            ctx.lineTo(270, 305);
-            ctx.lineTo(285, 285);
-            ctx.bezierCurveTo(330, 330, 425, 325, 435, 265);
-            ctx.bezierCurveTo(455, 175, 360, 145, 270, 215);
+            if (state.shape === 'cat') {
+                ctx.moveTo(280, 210);
+                ctx.lineTo(185, 195); ctx.lineTo(125, 130); ctx.lineTo(110, 250);
+                ctx.quadraticCurveTo(140, 330, 260, 290);
+                ctx.lineTo(280, 310); ctx.lineTo(300, 290);
+                ctx.quadraticCurveTo(420, 330, 450, 250);
+                ctx.lineTo(435, 130); ctx.lineTo(375, 195);
+            } else {
+                const lift = state.shape === 'swan' ? -25 : 0;
+                ctx.moveTo(280, 215);
+                ctx.bezierCurveTo(185, 135 + lift, 80, 165 + lift, 105, 265);
+                ctx.bezierCurveTo(115, 328, 215, 332, 262, 285);
+                ctx.lineTo(280, 308);
+                ctx.lineTo(298, 285);
+                ctx.bezierCurveTo(345, 332, 445, 328, 455, 265);
+                ctx.bezierCurveTo(480, 165 + lift, 375, 135 + lift, 280, 215);
+            }
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
 
+            // Lace Filigree Dots around border
+            ctx.fillStyle = state.trim;
+            for (let i = -5; i <= 5; i++) {
+                ctx.beginPath(); ctx.arc(280 + i * 28, 198 + Math.abs(i) * 4, 3.5, 0, Math.PI * 2); ctx.fill();
+            }
+
             // Eye cutouts
             ctx.fillStyle = '#110321';
             ctx.beginPath();
-            ctx.ellipse(195, 250, 44, 22, -0.1, 0, Math.PI * 2);
-            ctx.ellipse(345, 250, 44, 22, 0.1, 0, Math.PI * 2);
+            ctx.ellipse(202, 250, 45, 22, -0.1, 0, Math.PI * 2);
+            ctx.ellipse(358, 250, 45, 22, 0.1, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = state.trim; ctx.lineWidth = 3; ctx.stroke();
+
+            // Symmetrical Rhinestones placed by player
+            gems.forEach(g => {
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#fde047'; ctx.shadowBlur = 8;
+                ctx.beginPath(); ctx.arc(g.x, g.y, 5, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(560 - g.x, g.y, 5, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+            });
 
             // Center Jewel / Crown
             ctx.font = '54px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(state.crown, 270, 215);
+            ctx.fillText(state.crown, 280, 215);
         }
+
+        canvas.addEventListener('pointerdown', e => {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (560 / rect.width);
+            const y = (e.clientY - rect.top) * (500 / rect.height);
+            gems.push({ x, y });
+            render();
+        });
 
         function bind(id, key) {
             document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
@@ -171,10 +217,12 @@
                 });
             });
         }
+        bind('shapeBtns', 'shape');
         bind('colorBtns', 'color');
         bind('trimBtns', 'trim');
         bind('crownBtns', 'crown');
 
+        document.getElementById('clearGemsBtn').addEventListener('click', () => { gems = []; render(); });
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;
             scoreEl.textContent = bestScore;

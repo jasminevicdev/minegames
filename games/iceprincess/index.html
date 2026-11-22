@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palácio de Gelo & Coroas de Cristal — JasDEV Game Hub</title>
+    <title>Rainha da Neve: Salão do Palácio de Gelo HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,7 +13,7 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1140px; padding: 12px 20px;
+            width: 100%; max-width: 1160px; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.08); border-bottom: 2px solid rgba(186,230,253,0.45);
         }
@@ -28,27 +28,27 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
         .studio {
-            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
-            width: 100%; max-width: 1140px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
+            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(7, 42, 74, 0.92); border: 2px solid rgba(186,230,253,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            background: rgba(7, 42, 74, 0.94); border: 2px solid rgba(186,230,253,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #bae6fd; font-size: 0.93rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #bae6fd; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
             padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.79rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #38bdf8, #ec4899); border-color: #fff;
         }
         .btn-action {
             padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
             background: linear-gradient(135deg, #bae6fd, #f472b6); color: #082f49;
         }
         .stage {
@@ -56,47 +56,64 @@
             background: rgba(4, 24, 44, 0.88); border-radius: 24px;
             border: 3px solid rgba(186,230,253,0.4); padding: 16px;
         }
-        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>❄️ Rainha da Neve: Salão do Palácio de Gelo</h1>
+        <h1>❄️ Rainha da Neve: Salão do Palácio de Gelo — Edição HD</h1>
         <div class="score-pill">Rainhas: <span id="scoreVal">0</span> ❄️</div>
     </header>
 
     <main class="studio">
         <aside class="panel">
-            <h3>👗 1. Manto & Vestido de Cristal</h3>
+            <h3>👗 1. Vestido Imperial de Cristal</h3>
             <div class="grid-2" id="gownBtns">
                 <button class="btn-opt active" data-v="#38bdf8">❄️ Azul Glacial</button>
                 <button class="btn-opt" data-v="#c084fc">🔮 Aurora Boreal</button>
                 <button class="btn-opt" data-v="#f472b6">🌸 Rosa Inverno</button>
-                <button class="btn-opt" data-v="#e2e8f0">💎 Diamante Branco</button>
+                <button class="btn-opt" data-v="#e2e8f0">💎 Diamante Real</button>
             </div>
 
-            <h3>💇‍♀️ 2. Trança Real</h3>
+            <h3>🌬️ 2. Manto Translúcido</h3>
+            <div class="grid-2" id="capeBtns">
+                <button class="btn-opt active" data-v="rgba(186,230,253,0.4)">❄️ Véu de Geada</button>
+                <button class="btn-opt" data-v="rgba(232,121,249,0.4)">🌌 Véu Aurora</button>
+                <button class="btn-opt" data-v="rgba(253,224,71,0.35)">✨ Véu Estelar</button>
+                <button class="btn-opt" data-v="transparent">👗 Sem Manto</button>
+            </div>
+
+            <h3>💇‍♀️ 3. Penteado & Trança Real</h3>
             <div class="grid-2" id="hairBtns">
                 <button class="btn-opt active" data-v="#f8fafc">🤍 Platinado Neve</button>
-                <button class="btn-opt" data-v="#fde047">💛 Loiro Dourado</button>
+                <button class="btn-opt" data-v="#fde047">💛 Loiro Solar</button>
                 <button class="btn-opt" data-v="#7dd3fc">💙 Cristal Celeste</button>
                 <button class="btn-opt" data-v="#f9a8d4">💗 Rosa Pastel</button>
             </div>
 
-            <h3>👑 3. Coroa & Cetro Glacial</h3>
+            <h3>👑 4. Cetro & Magia Glacial</h3>
             <div class="grid-2" id="wandBtns">
                 <button class="btn-opt active" data-v="❄️">❄️ Floco Imperial</button>
                 <button class="btn-opt" data-v="💎">💎 Cetro Diamante</button>
-                <button class="btn-opt" data-v="👑">👑 Tiara Boreal</button>
+                <button class="btn-opt" data-v="🪄">🪄 Varinha Boreal</button>
                 <button class="btn-opt" data-v="🌟">🌟 Estrela Polar</button>
             </div>
 
-            <button class="btn-action" id="saveBtn">❄️ Lançar Magia de Neve (+1 ❄️)</button>
+            <h3>⛄ 5. Companheiro do Ártico</h3>
+            <div class="grid-2" id="petBtns">
+                <button class="btn-opt active" data-v="⛄">⛄ Boneco de Neve</button>
+                <button class="btn-opt" data-v="🦊">🦊 Raposa Ártica</button>
+                <button class="btn-opt" data-v="🐧">🐧 Pinguim Real</button>
+                <button class="btn-opt" data-v="🦌">🦌 Rena de Cristal</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">❄️ Lançar Feitiço de Neve (+1 ❄️)</button>
         </aside>
 
         <section class="stage">
-            <canvas id="iceCanvas" width="540" height="520"></canvas>
+            <canvas id="iceCanvas" width="560" height="520"></canvas>
+            <p style="margin-top:8px; color:#bae6fd; font-size:0.84rem;">❄️ Clique no cenário para conjurar cristais de gelo e redemoinhos de neve!</p>
         </section>
     </main>
 
@@ -111,60 +128,120 @@
 
         const canvas = document.getElementById('iceCanvas');
         const ctx = canvas.getContext('2d');
-        let state = { gown: '#38bdf8', hair: '#f8fafc', wand: '❄️' };
-        let flakes = Array.from({ length: 35 }, () => ({
-            x: Math.random() * 540, y: Math.random() * 520, r: Math.random() * 3.5 + 1.5, vy: Math.random() * 1.2 + 0.5
+        let state = { gown: '#38bdf8', cape: 'rgba(186,230,253,0.4)', hair: '#f8fafc', wand: '❄️', pet: '⛄' };
+        let t = 0;
+        let flakes = Array.from({ length: 42 }, () => ({
+            x: Math.random() * 560, y: Math.random() * 520, r: Math.random() * 3.5 + 1.5, vy: Math.random() * 1.3 + 0.5
         }));
+        let magicBursts = [];
+
+        canvas.addEventListener('pointerdown', e => {
+            const r = canvas.getBoundingClientRect();
+            const x = (e.clientX - r.left) * (560 / r.width);
+            const y = (e.clientY - r.top) * (520 / r.height);
+            for (let i = 0; i < 10; i++) {
+                magicBursts.push({
+                    x, y, vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4, life: 1
+                });
+            }
+        });
 
         function render() {
+            t += 0.03;
             const g = ctx.createLinearGradient(0, 0, 0, 520);
             g.addColorStop(0, '#0c4a6e'); g.addColorStop(1, '#082f49');
-            ctx.fillStyle = g; ctx.fillRect(0, 0, 540, 520);
+            ctx.fillStyle = g; ctx.fillRect(0, 0, 560, 520);
+
+            // Aurora Borealis Waves in Sky
+            ctx.save();
+            const aur = ctx.createLinearGradient(0, 40, 560, 140);
+            aur.addColorStop(0, 'rgba(52, 211, 153, 0.18)');
+            aur.addColorStop(0.5, 'rgba(192, 132, 252, 0.24)');
+            aur.addColorStop(1, 'rgba(56, 189, 248, 0.18)');
+            ctx.fillStyle = aur;
+            ctx.beginPath();
+            ctx.moveTo(0, 60);
+            for (let x = 0; x <= 560; x += 40) {
+                ctx.lineTo(x, 75 + Math.sin(t + x * 0.02) * 22);
+            }
+            ctx.lineTo(560, 170); ctx.lineTo(0, 170); ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // Ice Palace Spires in background
+            ctx.fillStyle = 'rgba(186, 230, 253, 0.12)';
+            ctx.beginPath();
+            ctx.moveTo(65, 480); ctx.lineTo(95, 190); ctx.lineTo(125, 480);
+            ctx.moveTo(435, 480); ctx.lineTo(465, 190); ctx.lineTo(495, 480);
+            ctx.fill();
 
             // Falling snow
-            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
             flakes.forEach(f => {
                 f.y += f.vy;
                 if (f.y > 530) f.y = -10;
-                ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(f.x + Math.sin(t + f.y * 0.03) * 3, f.y, f.r, 0, Math.PI * 2); ctx.fill();
             });
 
             // Sheer Ice Cape
-            ctx.fillStyle = 'rgba(186, 230, 253, 0.35)';
+            ctx.fillStyle = state.cape;
             ctx.beginPath();
-            ctx.moveTo(235, 210); ctx.lineTo(135, 480); ctx.lineTo(405, 480); ctx.lineTo(305, 210);
+            ctx.moveTo(245, 205); ctx.lineTo(125, 485); ctx.lineTo(435, 485); ctx.lineTo(315, 205);
             ctx.closePath(); ctx.fill();
 
-            // Hair & Braid
+            // Hair & Long Side Braid
             ctx.fillStyle = state.hair;
             ctx.beginPath();
-            ctx.arc(270, 155, 46, 0, Math.PI * 2);
-            ctx.arc(298, 205, 22, 0, Math.PI * 2);
-            ctx.arc(305, 240, 18, 0, Math.PI * 2);
+            ctx.arc(280, 155, 46, 0, Math.PI * 2);
+            ctx.arc(308, 200, 20, 0, Math.PI * 2);
+            ctx.arc(316, 230, 17, 0, Math.PI * 2);
+            ctx.arc(320, 258, 14, 0, Math.PI * 2);
             ctx.fill();
 
-            // Face
+            // Face, Eyes & Rosy Cheeks
             ctx.fillStyle = '#fde6d8';
-            ctx.beginPath(); ctx.arc(270, 160, 34, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(280, 160, 34, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#0284c7';
-            ctx.beginPath(); ctx.arc(258, 158, 4.5, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(282, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(268, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(292, 158, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(280, 167, 7, 0.2, Math.PI - 0.2); ctx.stroke();
 
             // Royal Ice Gown
             ctx.fillStyle = state.gown;
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.moveTo(248, 198); ctx.lineTo(292, 198);
-            ctx.lineTo(365, 480); ctx.lineTo(175, 480);
+            ctx.moveTo(256, 198); ctx.lineTo(304, 198);
+            ctx.lineTo(378, 485); ctx.lineTo(182, 485);
             ctx.closePath();
             ctx.fill(); ctx.stroke();
 
-            // Crown & Wand
-            ctx.font = '36px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText('👑', 270, 118);
-            ctx.font = '48px sans-serif';
-            ctx.fillText(state.wand, 195, 285);
+            // Crystal bodice details
+            ctx.font = '20px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('❄️', 280, 235);
+            ctx.fillText('✨', 260, 310);
+            ctx.fillText('✨', 300, 355);
+
+            // Crown, Wand & Arctic Friend
+            ctx.font = '36px sans-serif';
+            ctx.fillText('👑', 280, 118);
+            ctx.font = '46px sans-serif';
+            ctx.fillText(state.wand, 202, 275 + Math.sin(t * 2) * 6);
+            ctx.font = '60px sans-serif';
+            ctx.fillText(state.pet, 125, 445);
+
+            // Magic Ice Bursts
+            for (let i = magicBursts.length - 1; i >= 0; i--) {
+                const m = magicBursts[i];
+                m.x += m.vx; m.y += m.vy; m.life -= 0.025;
+                if (m.life <= 0) { magicBursts.splice(i, 1); continue; }
+                ctx.save();
+                ctx.globalAlpha = m.life;
+                ctx.font = '22px sans-serif';
+                ctx.fillText('❄️', m.x, m.y);
+                ctx.restore();
+            }
 
             requestAnimationFrame(render);
         }
@@ -179,8 +256,10 @@
             });
         }
         bind('gownBtns', 'gown');
+        bind('capeBtns', 'cape');
         bind('hairBtns', 'hair');
         bind('wandBtns', 'wand');
+        bind('petBtns', 'pet');
 
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;

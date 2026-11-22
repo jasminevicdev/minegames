@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sapatinhos de Cristal & Bolsas Reais — JasDEV Game Hub</title>
+    <title>Sapatinhos de Cristal & Bolsas Reais HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,8 +13,8 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 1120px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1160px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.4);
         }
         .back-btn {
@@ -28,27 +28,27 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
         }
         .studio {
-            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
-            width: 100%; max-width: 1120px; padding: 16px; flex: 1; align-items: start;
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
+            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
         }
-        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(38, 8, 45, 0.92); border: 2px solid rgba(244,114,182,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
+            background: rgba(38, 8, 45, 0.94); border: 2px solid rgba(244,114,182,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.93rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.92rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
             padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.79rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
         }
         .btn-action {
             padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.94rem;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
             background: linear-gradient(135deg, #f472b6, #fde047); color: #2b0618;
         }
         .stage {
@@ -62,7 +62,7 @@
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>👠 Sapatinhos de Cristal & Bolsas Reais</h1>
+        <h1>👠 Sapatinhos de Cristal & Bolsas Reais — Edição HD</h1>
         <div class="score-pill">Designs: <span id="scoreVal">0</span> 👠</div>
     </header>
 
@@ -73,30 +73,42 @@
                 <button class="btn-opt active" data-v="#38bdf8">❄️ Cristal Cinderela</button>
                 <button class="btn-opt" data-v="#ec4899">💖 Cetim Rosa</button>
                 <button class="btn-opt" data-v="#fde047">✨ Ouro 24K</button>
-                <button class="btn-opt" data-v="#a855f7">🔮 Veludo Violeta</button>
+                <button class="btn-opt" data-v="#a855f7">🔮 Veludo Ametista</button>
+                <button class="btn-opt" data-v="#e11d48">🌹 Rubi Imperial</button>
+                <button class="btn-opt" data-v="#34d399">🌿 Jade Esmeralda</button>
             </div>
 
-            <h3>👛 2. Bolsa de Gala Combinando</h3>
+            <h3>✨ 2. Tira de Tornozelo & Salto</h3>
+            <div class="grid-2" id="strapBtns">
+                <button class="btn-opt active" data-v="pearls">⚪ Fio de Pérolas</button>
+                <button class="btn-opt" data-v="lace">🎀 Fita de Cetim</button>
+                <button class="btn-opt" data-v="gold">⛓️ Corrente Ouro</button>
+                <button class="btn-opt" data-v="none">✨ Clássico Livre</button>
+            </div>
+
+            <h3>👛 3. Formato & Cor da Bolsa</h3>
             <div class="grid-2" id="bagBtns">
-                <button class="btn-opt active" data-v="#f472b6">👛 Clutch Rosa</button>
-                <button class="btn-opt" data-v="#fbbf24">👑 Bolsa Imperial</button>
-                <button class="btn-opt" data-v="#bae6fd">💎 Cristal Azul</button>
-                <button class="btn-opt" data-v="#e9d5ff">💜 Lilás Pérola</button>
+                <button class="btn-opt active" data-v="#f472b6" data-s="clutch">👛 Clutch Rosa</button>
+                <button class="btn-opt" data-v="#fbbf24" data-s="heart">💖 Bolsa Coração</button>
+                <button class="btn-opt" data-v="#bae6fd" data-s="clutch">💎 Cristal Azul</button>
+                <button class="btn-opt" data-v="#e9d5ff" data-s="heart">💜 Coração Lilás</button>
             </div>
 
-            <h3>🎀 3. Fivela & Joia</h3>
+            <h3>🎀 4. Fivela & Joia Cravejada</h3>
             <div class="grid-2" id="gemBtns">
-                <button class="btn-opt active" data-v="💎">💎 Diamante</button>
-                <button class="btn-opt" data-v="🎀">🎀 Laço Real</button>
-                <button class="btn-opt" data-v="🦋">🦋 Borboleta</button>
+                <button class="btn-opt active" data-v="💎">💎 Diamante Real</button>
+                <button class="btn-opt" data-v="🎀">🎀 Laço Imperial</button>
+                <button class="btn-opt" data-v="🦋">🦋 Borboleta Luz</button>
                 <button class="btn-opt" data-v="👑">👑 Coroa Ouro</button>
+                <button class="btn-opt" data-v="🌹">🌹 Rosa Cristal</button>
+                <button class="btn-opt" data-v="🦢">🦢 Cisne Real</button>
             </div>
 
             <button class="btn-action" id="saveBtn">🏆 Exibir na Vitrine Real (+1 👠)</button>
         </aside>
 
         <section class="stage">
-            <canvas id="shoeCanvas" width="540" height="500"></canvas>
+            <canvas id="shoeCanvas" width="560" height="500"></canvas>
         </section>
     </main>
 
@@ -111,44 +123,77 @@
 
         const canvas = document.getElementById('shoeCanvas');
         const ctx = canvas.getContext('2d');
-        let state = { shoe: '#38bdf8', bag: '#f472b6', gem: '💎' };
+        let state = { shoe: '#38bdf8', strap: 'pearls', bag: '#f472b6', bagShape: 'clutch', gem: '💎' };
+        let t = 0;
 
         function render() {
-            ctx.fillStyle = '#1f0826';
-            ctx.fillRect(0, 0, 540, 500);
+            t += 0.05;
+            const bg = ctx.createRadialGradient(280, 230, 30, 280, 250, 340);
+            bg.addColorStop(0, '#4a044e'); bg.addColorStop(1, '#14031a');
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 560, 500);
 
-            // Velvet Cushion Pedestal
+            // Velvet Royal Cushion Pedestal with Golden Tassels
             ctx.fillStyle = '#831843';
-            ctx.beginPath(); ctx.ellipse(270, 420, 210, 40, 0, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(280, 425, 225, 42, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4.5; ctx.stroke();
 
             // 1. Royal Handbag on left
-            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 6;
-            ctx.beginPath(); ctx.arc(170, 230, 45, Math.PI, 0); ctx.stroke();
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.arc(170, 225, 44, Math.PI, 0); ctx.stroke();
+
             ctx.fillStyle = state.bag;
-            ctx.beginPath();
-            ctx.roundRect(105, 230, 130, 115, 22);
-            ctx.fill();
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
-            ctx.font = '36px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText(state.gem, 170, 295);
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
+            if (state.bagShape === 'heart') {
+                ctx.beginPath();
+                ctx.moveTo(170, 360);
+                ctx.bezierCurveTo(75, 290, 90, 200, 170, 245);
+                ctx.bezierCurveTo(250, 200, 265, 290, 170, 360);
+                ctx.fill(); ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.roundRect(102, 225, 136, 120, 24);
+                ctx.fill(); ctx.stroke();
+            }
+            ctx.font = '38px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(state.gem, 170, 298);
 
             // 2. High-Heel Crystal Slipper on right
             ctx.fillStyle = state.shoe;
             ctx.beginPath();
-            ctx.moveTo(285, 250);
-            ctx.quadraticCurveTo(335, 360, 445, 375);
-            ctx.quadraticCurveTo(465, 395, 430, 405);
-            ctx.lineTo(355, 405);
-            ctx.quadraticCurveTo(325, 345, 305, 340);
-            ctx.lineTo(305, 410);
-            ctx.lineTo(290, 410);
+            ctx.moveTo(295, 245);
+            ctx.quadraticCurveTo(345, 360, 460, 375);
+            ctx.quadraticCurveTo(482, 395, 445, 408);
+            ctx.lineTo(365, 408);
+            ctx.quadraticCurveTo(335, 345, 315, 340);
+            ctx.lineTo(315, 412);
+            ctx.lineTo(298, 412);
             ctx.closePath();
             ctx.fill();
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
 
-            ctx.font = '34px sans-serif';
-            ctx.fillText(state.gem, 415, 372);
+            // Ankle Strap Option
+            if (state.strap === 'pearls') {
+                ctx.fillStyle = '#ffffff';
+                for (let i = 0; i < 6; i++) {
+                    ctx.beginPath(); ctx.arc(305 + i * 7, 265 + i * 2, 3.5, 0, Math.PI * 2); ctx.fill();
+                }
+            } else if (state.strap === 'lace') {
+                ctx.strokeStyle = '#f472b6'; ctx.lineWidth = 6;
+                ctx.beginPath(); ctx.moveTo(300, 265); ctx.lineTo(345, 278); ctx.stroke();
+            } else if (state.strap === 'gold') {
+                ctx.strokeStyle = '#fde047'; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(300, 265); ctx.lineTo(345, 278); ctx.stroke();
+            }
+
+            ctx.font = '36px sans-serif';
+            ctx.fillText(state.gem, 428, 372);
+
+            // Twinkling Glints
+            ctx.font = '20px sans-serif';
+            ctx.fillText('✨', 320 + Math.sin(t) * 8, 235);
+            ctx.fillText('✨', 450, 340 + Math.cos(t) * 6);
+
+            requestAnimationFrame(render);
         }
 
         function bind(id, key) {
@@ -157,11 +202,12 @@
                     document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     state[key] = btn.dataset.v;
-                    render();
+                    if (btn.dataset.s) state.bagShape = btn.dataset.s;
                 });
             });
         }
         bind('shoeBtns', 'shoe');
+        bind('strapBtns', 'strap');
         bind('bagBtns', 'bag');
         bind('gemBtns', 'gem');
 
@@ -171,7 +217,7 @@
             SaveHub.updateGameSave('royalshoes', { highScore: bestScore }, activePlayer);
         });
 
-        render();
+        requestAnimationFrame(render);
     </script>
 </body>
 </html>
