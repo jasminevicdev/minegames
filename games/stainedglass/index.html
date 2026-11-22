@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitral de Cristal & Luz Real — JasDEV Game Hub</title>
+    <title>Vitral de Cristal & Luz Real HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -29,20 +29,20 @@
             padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1c0512;
         }
         .studio {
-            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
             width: 100%; max-width: 1180px; padding: 14px; flex: 1; align-items: start;
         }
         @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
         .panel {
-            background: rgba(28, 12, 54, 0.92); border: 2px solid rgba(250,204,21,0.35);
-            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 12px;
+            background: rgba(28, 12, 54, 0.94); border: 2px solid rgba(250,204,21,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 11px;
         }
-        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.94rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fef08a; font-size: 0.92rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-opt {
-            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
-            font-size: 0.81rem;
+            font-size: 0.8rem;
         }
         .btn-opt.active, .btn-opt:hover {
             background: linear-gradient(135deg, #eab308, #ec4899); border-color: #fff; color: #1a0412;
@@ -53,28 +53,25 @@
         }
         .sw.active { transform: scale(1.15); border-color: #fff; box-shadow: 0 0 10px #fff; }
         .btn-action {
-            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
-            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.93rem;
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.91rem;
         }
         .btn-magic { background: linear-gradient(135deg, #f472b6, #fde047, #38bdf8); color: #1e0521; }
         .btn-save { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .btn-clear { background: rgba(239,68,68,0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
         .stage {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(12, 5, 24, 0.9); border-radius: 26px;
+            background: rgba(12, 5, 24, 0.92); border-radius: 26px;
             border: 3px solid rgba(250,204,21,0.45); padding: 16px;
         }
         svg {
             width: 540px; height: 540px; max-width: 100%; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.22), #090414);
-            box-shadow: 0 0 50px rgba(250,204,21,0.35), inset 0 0 40px rgba(255,255,255,0.25);
-            cursor: pointer;
+            background: radial-gradient(circle, rgba(255,255,255,0.28), #090414);
+            box-shadow: 0 0 55px rgba(250,204,21,0.45), inset 0 0 40px rgba(255,255,255,0.25);
+            cursor: pointer; transition: box-shadow 0.3s;
         }
-        svg path, svg circle, svg polygon {
-            transition: fill 0.15s, filter 0.15s;
-        }
-        svg path:hover, svg circle:hover, svg polygon:hover {
-            filter: brightness(1.25);
-        }
+        svg path, svg circle { transition: fill 0.12s, filter 0.12s; }
+        svg path:hover, svg circle:hover { filter: brightness(1.3); }
     </style>
 </head>
 <body>
@@ -94,28 +91,38 @@
                 <button class="btn-opt" data-w="star">🌟 Estrela Real</button>
             </div>
 
-            <h3>✨ 2. Moldura Metálica do Vitral</h3>
+            <h3>✨ 2. Moldura Metálica & Pincel</h3>
             <div class="grid-2" id="leadBtns">
                 <button class="btn-opt active" data-l="#1e1b4b">🖤 Chumbo Gótico</button>
                 <button class="btn-opt" data-l="#fbbf24">👑 Ouro Imperial</button>
+                <button class="btn-opt" data-l="#f8fafc">❄️ Prata Lunar</button>
+                <button class="btn-opt" data-l="#f472b6">🌸 Ouro Rosé</button>
             </div>
 
-            <h3>🎨 3. Cores de Vidro Translúcido</h3>
+            <h3>🪞 3. Modo de Pintura & Luz Solar</h3>
+            <div class="grid-2">
+                <button class="btn-opt active" id="symBtn">🎡 Anel Simétrico: ON</button>
+                <button class="btn-opt" id="sunModeBtn">☀️ Luz: Sol Dourado</button>
+            </div>
+
+            <h3>🎨 4. Vidros Translúcidos (18 Tons)</h3>
             <div class="palette" id="palette"></div>
 
-            <button class="btn-action btn-magic" id="magicBtn">🌈 Iluminar Vitral Mágico</button>
+            <button class="btn-action btn-magic" id="magicBtn">🌈 Iluminar Harmonia Real</button>
             <button class="btn-action btn-save" id="saveBtn">🏆 Consagrar Vitral (+1 🪟)</button>
+            <button class="btn-action btn-clear" id="clearBtn">🧹 Limpar Vidros</button>
         </aside>
 
         <section class="stage">
             <svg id="glassSvg" viewBox="-260 -260 520 520"></svg>
-            <p style="margin-top:10px; color:#fef08a; font-size:0.88rem;">Toque nos fragmentos de cristal para tingir o vitral sob a luz do sol!</p>
+            <p style="margin-top:10px; color:#fef08a; font-size:0.86rem;">💡 Toque ou arraste sobre os cristais! Com "Anel Simétrico: ON", você pinta a mandala inteira em simetria!</p>
         </section>
     </main>
 
     <script type="module">
         import { SaveHub } from '../../shared/SaveHub.js';
-        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
         const save = SaveHub.getGameSave('stainedglass', activePlayer);
         let bestScore = save?.highScore || 0;
         const scoreEl = document.getElementById('scoreVal');
@@ -130,6 +137,8 @@
         let currentColor = GLASS_COLORS[0];
         let leadColor = '#1e1b4b';
         let currentWindow = 'rose';
+        let ringSymmetry = true;
+        let sunTheme = 0;
         const svg = document.getElementById('glassSvg');
 
         const pal = document.getElementById('palette');
@@ -145,40 +154,50 @@
             pal.appendChild(d);
         });
 
+        function paintShard(el) {
+            if (!ringSymmetry) {
+                el.setAttribute('fill', currentColor);
+                return;
+            }
+            const ring = el.dataset.ring;
+            const parity = Number(el.dataset.idx) % 2;
+            svg.querySelectorAll(`[data-ring="${ring}"]`).forEach(s => {
+                if (Number(s.dataset.idx) % 2 === parity) {
+                    s.setAttribute('fill', currentColor);
+                }
+            });
+        }
+
         function buildWindow() {
             svg.innerHTML = '';
             const shards = [];
             const petals = currentWindow === 'rose' ? 12 : currentWindow === 'sun' ? 16 : currentWindow === 'lotus' ? 10 : 8;
 
-            // Outer ring segments
             for (let i = 0; i < petals; i++) {
                 const a1 = (i * 2 * Math.PI) / petals;
                 const a2 = ((i + 1) * 2 * Math.PI) / petals;
-                const r1 = 175, r2 = 245;
+                const r1 = 180, r2 = 246;
                 const d = `M ${Math.cos(a1)*r1} ${Math.sin(a1)*r1} L ${Math.cos(a1)*r2} ${Math.sin(a1)*r2} A ${r2} ${r2} 0 0 1 ${Math.cos(a2)*r2} ${Math.sin(a2)*r2} L ${Math.cos(a2)*r1} ${Math.sin(a2)*r1} A ${r1} ${r1} 0 0 0 ${Math.cos(a1)*r1} ${Math.sin(a1)*r1} Z`;
                 shards.push({ tag: 'path', d, ring: 3, idx: i });
             }
 
-            // Middle Gothic petals
             for (let i = 0; i < petals; i++) {
                 const a1 = (i * 2 * Math.PI) / petals;
                 const am = ((i + 0.5) * 2 * Math.PI) / petals;
                 const a2 = ((i + 1) * 2 * Math.PI) / petals;
-                const r1 = 95, r2 = 175;
-                const d = `M ${Math.cos(a1)*r1} ${Math.sin(a1)*r1} Q ${Math.cos(am)*(r2+25)} ${Math.sin(am)*(r2+25)} ${Math.cos(a2)*r1} ${Math.sin(a2)*r1} Z`;
+                const r1 = 100, r2 = 180;
+                const d = `M ${Math.cos(a1)*r1} ${Math.sin(a1)*r1} Q ${Math.cos(am)*(r2+26)} ${Math.sin(am)*(r2+26)} ${Math.cos(a2)*r1} ${Math.sin(a2)*r1} Z`;
                 shards.push({ tag: 'path', d, ring: 2, idx: i });
             }
 
-            // Inner diamond star petals
             for (let i = 0; i < petals; i++) {
                 const a1 = (i * 2 * Math.PI) / petals;
                 const am = ((i + 0.5) * 2 * Math.PI) / petals;
                 const a2 = ((i + 1) * 2 * Math.PI) / petals;
-                const d = `M 0 0 L ${Math.cos(a1)*55} ${Math.sin(a1)*55} L ${Math.cos(am)*105} ${Math.sin(am)*105} L ${Math.cos(a2)*55} ${Math.sin(a2)*55} Z`;
+                const d = `M 0 0 L ${Math.cos(a1)*56} ${Math.sin(a1)*56} L ${Math.cos(am)*108} ${Math.sin(am)*108} L ${Math.cos(a2)*56} ${Math.sin(a2)*56} Z`;
                 shards.push({ tag: 'path', d, ring: 1, idx: i });
             }
 
-            // Center medallion
             shards.push({ tag: 'circle', r: 36, ring: 0, idx: 0 });
 
             shards.forEach(s => {
@@ -190,12 +209,28 @@
                 el.setAttribute('stroke-width', '5');
                 el.dataset.ring = s.ring;
                 el.dataset.idx = s.idx;
-                el.addEventListener('click', () => {
-                    el.setAttribute('fill', currentColor);
-                });
+                el.addEventListener('pointerdown', () => paintShard(el));
+                el.addEventListener('pointerenter', e => { if (e.buttons === 1) paintShard(el); });
                 svg.appendChild(el);
             });
         }
+
+        document.getElementById('symBtn').addEventListener('click', e => {
+            ringSymmetry = !ringSymmetry;
+            e.target.classList.toggle('active', ringSymmetry);
+            e.target.textContent = ringSymmetry ? '🎡 Anel Simétrico: ON' : '🖌️ Peça Única: ON';
+        });
+
+        document.getElementById('sunModeBtn').addEventListener('click', e => {
+            sunTheme = (sunTheme + 1) % 3;
+            const glows = [
+                ['☀️ Luz: Sol Dourado', '0 0 55px rgba(250,204,21,0.55), inset 0 0 40px rgba(255,255,255,0.3)'],
+                ['🌙 Luz: Luar Cristal', '0 0 60px rgba(56,189,248,0.6), inset 0 0 45px rgba(186,230,253,0.35)'],
+                ['🌸 Luz: Aurora Real', '0 0 60px rgba(236,72,153,0.65), inset 0 0 45px rgba(244,114,182,0.35)']
+            ];
+            e.target.textContent = glows[sunTheme][0];
+            svg.style.boxShadow = glows[sunTheme][1];
+        });
 
         document.querySelectorAll('#winBtns .btn-opt').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -229,6 +264,7 @@
             });
         });
 
+        document.getElementById('clearBtn').addEventListener('click', buildWindow);
         document.getElementById('saveBtn').addEventListener('click', () => {
             bestScore += 1;
             scoreEl.textContent = bestScore;

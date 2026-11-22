@@ -133,7 +133,8 @@ export class SaveHub {
 
     static getGameSave(gameId, playerName = null) {
         const data = SaveHub.getHubData();
-        const targetPlayer = playerName || data.activePlayer;
+        const resolvedName = (playerName && typeof playerName === 'object') ? playerName.name : playerName;
+        const targetPlayer = resolvedName || data.activePlayer;
         if (targetPlayer && data.players[targetPlayer]) {
             return data.players[targetPlayer].games[gameId] || {};
         }
@@ -142,7 +143,8 @@ export class SaveHub {
 
     static updateGameSave(gameId, gameData, playerName = null) {
         const data = SaveHub.getHubData();
-        const targetPlayer = playerName || data.activePlayer;
+        const resolvedName = (playerName && typeof playerName === 'object') ? playerName.name : playerName;
+        const targetPlayer = resolvedName || data.activePlayer;
         if (targetPlayer && data.players[targetPlayer]) {
             data.players[targetPlayer].games[gameId] = {
                 ...(data.players[targetPlayer].games[gameId] || {}),

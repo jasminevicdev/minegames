@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Constelações Mágicas: Ligue Estrelas — JasDEV Game Hub</title>
+    <title>Constelações Mágicas: Ligue Estrelas HD — JasDEV Game Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -13,8 +13,8 @@
             min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .topbar {
-            width: 100%; max-width: 960px; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 980px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
             background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(99,102,241,0.45);
         }
         .back-btn {
@@ -27,10 +27,16 @@
             background: linear-gradient(135deg, #6366f1, #ec4899);
             padding: 7px 16px; border-radius: 999px; font-weight: 700;
         }
-        .wrap { display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 16px; }
+        .wrap { display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 12px; }
+        .lvl-pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .lvl-btn {
+            padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08); color: #fff; font-weight: 700; cursor: pointer;
+        }
+        .lvl-btn.active { background: linear-gradient(135deg, #38bdf8, #a855f7); border-color: #fff; }
         .grid {
             display: grid; grid-template-columns: repeat(5, 76px); gap: 8px;
-            background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: 24px;
+            background: rgba(15, 23, 42, 0.88); padding: 16px; border-radius: 24px;
             border: 3px solid rgba(129,140,248,0.45);
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
@@ -45,32 +51,41 @@
             transition: 0.15s;
         }
         .btn {
-            padding: 10px 22px; border-radius: 999px; border: none; font-weight: 700;
+            padding: 10px 20px; border-radius: 999px; border: none; font-weight: 700;
             background: linear-gradient(135deg, #6366f1, #ec4899); color: #fff; cursor: pointer;
             font-family: 'Fredoka', sans-serif;
         }
-        #msg { font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.2rem; min-height: 1.6rem; }
+        #msg { font-family: 'Fredoka', sans-serif; color: #fde047; font-size: 1.15rem; min-height: 1.6rem; text-align: center; }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
-        <h1>🌌 Constelações Mágicas: Ligue os Astros</h1>
+        <h1>🌌 Constelações Mágicas: Ligue os Astros — Edição HD</h1>
         <div class="score-pill">Constelações: <span id="scoreVal">0</span> 🌌</div>
     </header>
 
     <main class="wrap">
+        <div class="lvl-pills" id="lvlPills">
+            <button class="lvl-btn active" data-i="0">🦄 1. Pégaso</button>
+            <button class="lvl-btn" data-i="1">🦢 2. Cisne Real</button>
+            <button class="lvl-btn" data-i="2">👑 3. Coroa Boreal</button>
+            <button class="lvl-btn" data-i="3">🐉 4. Dragão Lunar</button>
+            <button class="lvl-btn" data-i="4">🦋 5. Fada Lyra</button>
+        </div>
         <div id="msg">✨ Clique em uma estrela e arraste/clique no caminho até sua gêmea da mesma cor!</div>
         <div class="grid" id="board"></div>
-        <div style="display:flex; gap:12px;">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
             <button class="btn" id="solveBtn">🪄 Guia Astral (Auto-Conectar)</button>
-            <button class="btn" id="nextBtn">🔄 Nova Constelação</button>
+            <button class="btn" id="clearBtn" style="background:rgba(255,255,255,0.14);">🧹 Limpar</button>
+            <button class="btn" id="nextBtn">🔄 Próxima Constelação</button>
         </div>
     </main>
 
     <script type="module">
         import { SaveHub } from '../../shared/SaveHub.js';
-        const activePlayer = SaveHub.getActivePlayer() || 'Convidado';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
         const save = SaveHub.getGameSave('starlink', activePlayer);
         let bestScore = save?.highScore || 0;
         const scoreEl = document.getElementById('scoreVal');
@@ -86,24 +101,29 @@
 
         const LEVELS = [
             {
+                name: 'Constelação de Pégaso 🦄',
                 endpoints: { 0:'R', 4:'B', 5:'Y', 9:'Y', 12:'R', 20:'P', 22:'B', 24:'P' },
-                solution: [
-                    'R','R','R','B','B',
-                    'Y','Y','R','B','Y',
-                    'Y','Y','R','B','Y',
-                    'P','P','B','B','Y',
-                    'P','P','B','P','P'
-                ]
+                solution: ['R','R','R','B','B','Y','Y','R','B','Y','Y','Y','R','B','Y','P','P','B','B','Y','P','P','B','P','P']
             },
             {
+                name: 'Constelação do Cisne Real 🦢',
                 endpoints: { 0:'Y', 2:'R', 4:'G', 10:'Y', 14:'G', 20:'B', 22:'R', 24:'B' },
-                solution: [
-                    'Y','Y','R','G','G',
-                    'Y','R','R','G','G',
-                    'Y','R','R','R','G',
-                    'B','B','R','B','B',
-                    'B','B','R','B','B'
-                ]
+                solution: ['Y','Y','R','G','G','Y','R','R','G','G','Y','R','R','R','G','B','B','R','B','B','B','B','R','B','B']
+            },
+            {
+                name: 'Constelação da Coroa Boreal 👑',
+                endpoints: { 0:'P', 4:'P', 6:'Y', 8:'Y', 10:'B', 14:'B', 20:'R', 24:'R' },
+                solution: ['P','P','P','P','P','B','Y','Y','Y','B','B','B','B','B','B','R','R','R','R','R','R','R','R','R','R']
+            },
+            {
+                name: 'Constelação do Dragão Lunar 🐉',
+                endpoints: { 0:'G', 20:'G', 1:'R', 21:'R', 2:'Y', 22:'Y', 3:'B', 23:'B', 4:'P', 24:'P' },
+                solution: ['G','R','Y','B','P','G','R','Y','B','P','G','R','Y','B','P','G','R','Y','B','P','G','R','Y','B','P']
+            },
+            {
+                name: 'Constelação da Fada Lyra 🦋',
+                endpoints: { 0:'R', 14:'R', 4:'B', 10:'B', 20:'Y', 24:'Y', 16:'P', 18:'P' },
+                solution: ['R','R','R','B','B','B','B','R','R','B','B','B','B','R','R','Y','P','P','P','Y','Y','Y','Y','Y','Y']
             }
         ];
 
@@ -113,10 +133,12 @@
         let won = false;
 
         function loadLevel(idx) {
+            lvlIdx = idx % LEVELS.length;
             won = false;
             activeKey = null;
-            document.getElementById('msg').textContent = '✨ Preencha os feixes de luz conectando cada par de astros!';
-            const lvl = LEVELS[idx % LEVELS.length];
+            document.querySelectorAll('.lvl-btn').forEach((b, i) => b.classList.toggle('active', i === lvlIdx));
+            const lvl = LEVELS[lvlIdx];
+            document.getElementById('msg').textContent = `✨ ${lvl.name}: Conecte os pares de astros!`;
             grid = new Array(25).fill(null);
             Object.entries(lvl.endpoints).forEach(([k, v]) => { grid[Number(k)] = v; });
             render();
@@ -124,7 +146,7 @@
 
         function checkWin() {
             if (won) return;
-            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            const lvl = LEVELS[lvlIdx];
             const connected = Object.keys(lvl.endpoints).every(k => grid[Number(k)] !== null);
             const filled = grid.filter(x => x !== null).length;
             if (connected && filled >= 18) {
@@ -132,13 +154,13 @@
                 bestScore += 1;
                 scoreEl.textContent = bestScore;
                 SaveHub.updateGameSave('starlink', { highScore: bestScore }, activePlayer);
-                document.getElementById('msg').textContent = '🌟 CONSTELAÇÃO ILUMINADA! +1 Constelação Real! 🌌';
+                document.getElementById('msg').textContent = `🌟 ${lvl.name} ILUMINADA! +1 Constelação Real! 🌌`;
             }
         }
 
         function clickCell(i) {
             if (won) return;
-            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            const lvl = LEVELS[lvlIdx];
             if (lvl.endpoints[i]) {
                 activeKey = lvl.endpoints[i];
                 render();
@@ -152,7 +174,7 @@
         }
 
         function render() {
-            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            const lvl = LEVELS[lvlIdx];
             const el = document.getElementById('board');
             el.innerHTML = '';
             for (let i = 0; i < 25; i++) {
@@ -166,22 +188,24 @@
                     d.textContent = lvl.endpoints[i] ? COLORS[val].icon : '✨';
                 }
                 d.addEventListener('pointerdown', () => clickCell(i));
-                d.addEventListener('pointerenter', (e) => { if (e.buttons === 1) clickCell(i); });
+                d.addEventListener('pointerenter', e => { if (e.buttons === 1) clickCell(i); });
                 el.appendChild(d);
             }
         }
 
+        document.querySelectorAll('.lvl-btn').forEach(btn => {
+            btn.addEventListener('click', () => loadLevel(Number(btn.dataset.i)));
+        });
+
         document.getElementById('solveBtn').addEventListener('click', () => {
-            const lvl = LEVELS[lvlIdx % LEVELS.length];
+            const lvl = LEVELS[lvlIdx];
             grid = [...lvl.solution];
             checkWin();
             render();
         });
 
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            lvlIdx++;
-            loadLevel(lvlIdx);
-        });
+        document.getElementById('clearBtn').addEventListener('click', () => loadLevel(lvlIdx));
+        document.getElementById('nextBtn').addEventListener('click', () => loadLevel(lvlIdx + 1));
 
         loadLevel(0);
     </script>
