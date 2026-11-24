@@ -114,12 +114,13 @@ export class SaveHub {
                     candleatelier: { highScore: 0 },
                     airhockey: { highScore: 0 },
                     jewelblock: { highScore: 0 },
-                    flowercrown: { highScore: 0 },
-                    soapatelier: { highScore: 0 },
-                    royalfan: { highScore: 0 },
                     iceskater: { highScore: 0 },
                     stararchery: { highScore: 0 },
-                    royalsolitaire: { highScore: 0 }
+                    royalsolitaire: { highScore: 0 },
+                    neonbowling: { highScore: 0 },
+                    clawmachine: { highScore: 0 },
+                    royaldiner: { highScore: 0 },
+                    popstarstage: { highScore: 0 }
                 }
             };
         }

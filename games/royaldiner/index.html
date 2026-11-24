@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bistrô Real & Sushi Kawaii Rush HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #831843, #170412 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1060px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,114,182,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f9a8d4; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .wrap { display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 16px; width: 100%; max-width: 960px; }
+        .guests-row {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%;
+        }
+        @media (max-width: 640px) { .guests-row { grid-template-columns: 1fr; } }
+        .guest-card {
+            background: rgba(45, 10, 36, 0.92); border: 3px solid #f472b6;
+            border-radius: 22px; padding: 16px; display: flex; flex-direction: column;
+            align-items: center; gap: 8px; box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+        }
+        .order-bubble {
+            background: #fff1f2; color: #831843; padding: 8px 18px; border-radius: 999px;
+            font-weight: 700; font-size: 1.4rem; border: 2px solid #fde047;
+        }
+        .kitchen {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%;
+            background: rgba(25, 5, 22, 0.9); padding: 18px; border-radius: 24px;
+            border: 2px solid rgba(250,204,21,0.4);
+        }
+        .food-btn {
+            padding: 14px; border-radius: 16px; border: 2px solid rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.08); color: #fff; font-weight: 700;
+            font-size: 1.1rem; cursor: pointer; transition: 0.15s;
+        }
+        .food-btn:hover { background: linear-gradient(135deg, #ec4899, #fde047); color: #1f0410; transform: scale(1.04); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🍣 Bistrô Real & Sushi Kawaii Rush — Edição HD</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="wrap">
+        <div style="font-size:1.1rem;">Pontos do Bistrô: <strong id="scoreVal" style="color:#fde047;">0</strong> PTS • Combo: <strong id="comboVal" style="color:#34d399;">x1</strong></div>
+        <div class="guests-row" id="guestsRow"></div>
+        <h3 style="font-family:'Fredoka',sans-serif; color:#fde047;">🍽️ Balcão Real: Clique no Prato Pedido pelo Cliente!</h3>
+        <div class="kitchen" id="kitchen"></div>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('royaldiner', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const MENU = [
+            { icon: '🍣', name: 'Sushi Real' },
+            { icon: '🍜', name: 'Lámen Imperial' },
+            { icon: '🍰', name: 'Torta Morango' },
+            { icon: '🧋', name: 'Boba Tea' },
+            { icon: '🥞', name: 'Panqueca Mel' },
+            { icon: '🍨', name: 'Parfait Sakura' }
+        ];
+        const AVATARS = ['👸', '🧚‍♀️', '🧜‍♀️', '🦄', '🐱', '🐰'];
+
+        let guests = [];
+        let score = 0;
+        let combo = 1;
+
+        function randGuest() {
+            const dish = MENU[Math.floor(Math.random() * MENU.length)];
+            const av = AVATARS[Math.floor(Math.random() * AVATARS.length)];
+            return { avatar: av, want: dish.icon, name: dish.name };
+        }
+
+        function init() {
+            guests = [randGuest(), randGuest(), randGuest()];
+            render();
+        }
+
+        function serveDish(icon) {
+            const idx = guests.findIndex(g => g.want === icon);
+            if (idx >= 0) {
+                score += 50 * combo;
+                combo = Math.min(8, combo + 1);
+                guests[idx] = randGuest();
+                document.getElementById('scoreVal').textContent = score;
+                document.getElementById('comboVal').textContent = 'x' + combo;
+                if (score > bestScore) {
+                    bestScore = score;
+                    hiEl.textContent = bestScore;
+                    SaveHub.updateGameSave('royaldiner', { highScore: bestScore }, activePlayer);
+                }
+                render();
+            } else {
+                combo = 1;
+                document.getElementById('comboVal').textContent = 'x1';
+            }
+        }
+
+        function render() {
+            const row = document.getElementById('guestsRow');
+            row.innerHTML = '';
+            guests.forEach(g => {
+                const c = document.createElement('div');
+                c.className = 'guest-card';
+                c.innerHTML = `
+                    <div class="order-bubble">Quero: ${g.want}</div>
+                    <div style="font-size:3.6rem;">${g.avatar}</div>
+                    <small style="color:#fbcfe8;">${g.name}</small>
+                `;
+                row.appendChild(c);
+            });
+
+            const kit = document.getElementById('kitchen');
+            if (!kit.children.length) {
+                MENU.forEach(m => {
+                    const b = document.createElement('button');
+                    b.className = 'food-btn';
+                    b.innerHTML = `<span style="font-size:1.8rem;">${m.icon}</span><br>${m.name}`;
+                    b.addEventListener('click', () => serveDish(m.icon));
+                    kit.appendChild(b);
+                });
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

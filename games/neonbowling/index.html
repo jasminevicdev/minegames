@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Bowling Strike: Boliche Real HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #1e1b4b, #030712);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1020px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(56,189,248,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #bae6fd; font-weight: 700;
+            background: rgba(56,189,248,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(56,189,248,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #38bdf8; }
+        .score-pill {
+            background: linear-gradient(135deg, #38bdf8, #a855f7);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 12px; gap: 10px; }
+        .hud {
+            display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
+        }
+        canvas {
+            background: #060919; border: 3px solid #38bdf8; border-radius: 24px;
+            box-shadow: 0 0 38px rgba(56,189,248,0.35); max-width: 100%; height: auto;
+            cursor: pointer; touch-action: none;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #fde047, #ec4899); color: #1f0410; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🎳 Neon Bowling Strike: Boliche Real — Edição HD</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <span>Strikes: <strong id="strikeVal" style="color:#00f5d4;">0 🔥</strong></span>
+            <button class="btn" id="fireBallBtn">☄️ Bola Supernova: OFF</button>
+            <button class="btn" id="resetPinsBtn">🎳 Rearmar Pinos</button>
+        </div>
+        <canvas id="bowlCanvas" width="440" height="540"></canvas>
+        <p style="color:#bae6fd; font-size:0.84rem;">💡 Mova para escolher a posição na pista e clique/toque para lançar a bola e fazer STRIKE!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('neonbowling', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('bowlCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let pins = [];
+        let ball = { x: 220, y: 480, vx: 0, vy: 0, rolling: false, supernova: false };
+        let aimX = 220;
+        let curve = 0;
+        let score = 0;
+        let strikes = 0;
+        let bannerText = '';
+        let bannerTimer = 0;
+
+        function setupPins() {
+            pins = [];
+            const rows = [
+                [{ x: 220, y: 150 }],
+                [{ x: 198, y: 122 }, { x: 242, y: 122 }],
+                [{ x: 176, y: 94 }, { x: 220, y: 94 }, { x: 264, y: 94 }],
+                [{ x: 154, y: 66 }, { x: 198, y: 66 }, { x: 242, y: 66 }, { x: 286, y: 66 }]
+            ];
+            rows.forEach(r => r.forEach(p => pins.push({ x: p.x, y: p.y, vx: 0, vy: 0, down: false })));
+            ball.rolling = false;
+            ball.x = aimX;
+            ball.y = 480;
+            ball.vx = 0; ball.vy = 0;
+        }
+        setupPins();
+
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('neonbowling', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        canvas.addEventListener('pointermove', e => {
+            const r = canvas.getBoundingClientRect();
+            const mx = (e.clientX - r.left) * (440 / r.width);
+            if (!ball.rolling) {
+                aimX = Math.max(115, Math.min(325, mx));
+                ball.x = aimX;
+            } else {
+                curve = (mx - 220) * 0.0018;
+            }
+        });
+
+        canvas.addEventListener('pointerdown', e => {
+            if (ball.rolling) return;
+            const r = canvas.getBoundingClientRect();
+            const mx = (e.clientX - r.left) * (440 / r.width);
+            ball.rolling = true;
+            ball.vy = -10.5;
+            ball.vx = (mx - ball.x) * 0.06;
+        });
+
+        document.getElementById('fireBallBtn').addEventListener('click', e => {
+            ball.supernova = !ball.supernova;
+            e.target.textContent = ball.supernova ? '☄️ Bola Supernova: ON' : '☄️ Bola Supernova: OFF';
+        });
+
+        document.getElementById('resetPinsBtn').addEventListener('click', setupPins);
+
+        function loop() {
+            ctx.fillStyle = '#050816';
+            ctx.fillRect(0, 0, 440, 540);
+
+            // Neon Bowling Lane & Gutters
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(95, 20, 250, 500);
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(95, 20, 250, 500);
+
+            // Lane arrows
+            ctx.fillStyle = 'rgba(56,189,248,0.28)';
+            [165, 220, 275].forEach(ax => {
+                ctx.beginPath();
+                ctx.moveTo(ax, 300); ctx.lineTo(ax - 8, 325); ctx.lineTo(ax + 8, 325);
+                ctx.closePath(); ctx.fill();
+            });
+
+            if (ball.rolling) {
+                ball.vx += curve;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+
+                const hitRadius = ball.supernova ? 55 : 28;
+                pins.forEach(p => {
+                    if (!p.down && Math.hypot(ball.x - p.x, ball.y - p.y) < hitRadius) {
+                        p.down = true;
+                        p.vx = (p.x - ball.x) * 0.35 + (Math.random() - 0.5) * 4;
+                        p.vy = -6 - Math.random() * 3;
+                        addScore(25);
+                    }
+                });
+
+                // Pin-to-pin chain collision
+                pins.forEach(p1 => {
+                    if (!p1.down) return;
+                    p1.x += p1.vx; p1.y += p1.vy;
+                    p1.vx *= 0.92; p1.vy *= 0.92;
+                    pins.forEach(p2 => {
+                        if (!p2.down && Math.hypot(p1.x - p2.x, p1.y - p2.y) < 26) {
+                            p2.down = true;
+                            p2.vx = p1.vx * 0.9 + (Math.random() - 0.5) * 3;
+                            p2.vy = -5;
+                            addScore(25);
+                        }
+                    });
+                });
+
+                if (ball.y < 15 || ball.x < 85 || ball.x > 355) {
+                    const downCount = pins.filter(p => p.down).length;
+                    if (downCount === 10) {
+                        strikes++;
+                        document.getElementById('strikeVal').textContent = strikes + ' 🔥';
+                        addScore(150);
+                        bannerText = '⚡ STRIKE REAL! +150 PTS! ⚡';
+                        bannerTimer = 55;
+                    }
+                    setTimeout(setupPins, 450);
+                    ball.rolling = false;
+                    ball.y = -100;
+                }
+            }
+
+            // Draw Pins
+            ctx.font = '28px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            pins.forEach(p => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                if (p.down) ctx.rotate(0.8);
+                ctx.fillText(p.down ? '💥' : '🎳', 0, 0);
+                ctx.restore();
+            });
+
+            // Draw Bowling Ball
+            if (ball.y > 0) {
+                const col = ball.supernova ? '#f97316' : '#ec4899';
+                ctx.fillStyle = col;
+                ctx.shadowColor = col; ctx.shadowBlur = 18;
+                ctx.beginPath(); ctx.arc(ball.x, ball.y, 19, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+            }
+
+            if (bannerTimer > 0) {
+                bannerTimer--;
+                ctx.fillStyle = '#fde047';
+                ctx.font = 'bold 24px Fredoka, sans-serif';
+                ctx.fillText(bannerText, 220, 270);
+            }
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

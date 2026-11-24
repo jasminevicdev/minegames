@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popstar Idol: Concerto & Palco Real HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #701a75, #0f0318 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1160px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,114,182,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f472b6; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .studio {
+            display: grid; grid-template-columns: 330px 1fr; gap: 18px;
+            width: 100%; max-width: 1160px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(42, 10, 52, 0.94); border: 2px solid rgba(244,114,182,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.79rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
+        }
+        .btn-action {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
+            background: linear-gradient(135deg, #fde047, #ec4899); color: #240418;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(18, 4, 26, 0.9); border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🎤 Popstar Idol: Concerto & Palco Real — Edição HD</h1>
+        <div class="score-pill">Shows Realizados: <span id="scoreVal">0</span> 🌟</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>👗 1. Look de Show K-Pop / Popstar</h3>
+            <div class="grid-2" id="outfitBtns">
+                <button class="btn-opt active" data-v="#ec4899">💖 Pink Glitter</button>
+                <button class="btn-opt" data-v="#a855f7">🔮 Cyber Violeta</button>
+                <button class="btn-opt" data-v="#38bdf8">💎 Estrela Azul</button>
+                <button class="btn-opt" data-v="#fde047">👑 Ouro VIP</button>
+            </div>
+
+            <h3>💇‍♀️ 2. Penteado Idol</h3>
+            <div class="grid-2" id="hairBtns">
+                <button class="btn-opt active" data-v="#f472b6">💗 Maria-Chiquinha Pink</button>
+                <button class="btn-opt" data-v="#38bdf8">💙 Azul Neon</button>
+                <button class="btn-opt" data-v="#fde047">💛 Loiro Pop</button>
+                <button class="btn-opt" data-v="#c084fc">💜 Lilás Estelar</button>
+            </div>
+
+            <h3>🎤 3. Microfone & Instrumento</h3>
+            <div class="grid-2" id="micBtns">
+                <button class="btn-opt active" data-v="🎤">🎤 Microfone Cristal</button>
+                <button class="btn-opt" data-v="🎸">🎸 Guitarra Rosa</button>
+                <button class="btn-opt" data-v="🎹">🎹 Keytar Neon</button>
+                <button class="btn-opt" data-v="🪄">🪄 Lightstick Fã</button>
+            </div>
+
+            <h3>🎆 4. Efeitos de Palco</h3>
+            <div class="grid-2" id="fxBtns">
+                <button class="btn-opt active" data-v="✨">✨ Chuva de Glitter</button>
+                <button class="btn-opt" data-v="💖">💖 Corações Laser</button>
+                <button class="btn-opt" data-v="🎵">🎵 Notas Musicais</button>
+                <button class="btn-opt" data-v="🌟">🌟 Fogos Estelares</button>
+            </div>
+
+            <button class="btn-action" id="saveBtn">🎤 Iniciar Grande Show (+1 🌟)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="idolCanvas" width="560" height="510"></canvas>
+            <p style="margin-top:8px; color:#fbcfe8; font-size:0.84rem;">🎶 Clique no palco para soltar fogos de artifício e notas musicais para a plateia!</p>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('popstarstage', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('idolCanvas');
+        const ctx = canvas.getContext('2d');
+        let state = { outfit: '#ec4899', hair: '#f472b6', mic: '🎤', fx: '✨' };
+        let t = 0;
+
+        function render() {
+            t += 0.05;
+            ctx.fillStyle = '#12031f';
+            ctx.fillRect(0, 0, 560, 510);
+
+            // Stage Spotlights
+            ['rgba(236,72,153,0.18)', 'rgba(56,189,248,0.18)'].forEach((col, i) => {
+                ctx.fillStyle = col;
+                ctx.beginPath();
+                ctx.moveTo(140 + i * 280, 0);
+                ctx.lineTo(40 + i * 220 + Math.sin(t + i) * 35, 510);
+                ctx.lineTo(240 + i * 220 + Math.sin(t + i) * 35, 510);
+                ctx.closePath(); ctx.fill();
+            });
+
+            // Glowing Concert Stage Floor
+            ctx.fillStyle = '#3b0764';
+            ctx.beginPath(); ctx.ellipse(280, 445, 220, 45, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#00f5d4'; ctx.lineWidth = 4; ctx.stroke();
+
+            const bounce = Math.abs(Math.sin(t * 2)) * 10;
+            ctx.save();
+            ctx.translate(0, -bounce);
+
+            // Twin Pigtails Hair
+            ctx.fillStyle = state.hair;
+            ctx.beginPath();
+            ctx.arc(280, 160, 44, 0, Math.PI * 2);
+            ctx.arc(215, 185, 32, 0, Math.PI * 2);
+            ctx.arc(345, 185, 32, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Face
+            ctx.fillStyle = '#fde6d8';
+            ctx.beginPath(); ctx.arc(280, 165, 34, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath(); ctx.arc(268, 162, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(292, 162, 4.5, 0, Math.PI * 2); ctx.fill();
+
+            // Popstar Dress
+            ctx.fillStyle = state.outfit;
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(255, 200); ctx.lineTo(305, 200);
+            ctx.lineTo(345, 345); ctx.lineTo(215, 345);
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+
+            // Boots
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(248, 345, 20, 85);
+            ctx.fillRect(292, 345, 20, 85);
+
+            // Mic & Crown
+            ctx.font = '32px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('🎧', 280, 130);
+            ctx.font = '46px sans-serif';
+            ctx.fillText(state.mic, 210, 260);
+            ctx.restore();
+
+            // Floating Stage FX
+            ctx.font = '26px sans-serif';
+            for (let i = 0; i < 6; i++) {
+                const fxX = 80 + i * 80;
+                const fxY = (200 + i * 65 - (t * 35)) % 450;
+                ctx.fillText(state.fx, fxX, fxY < 40 ? fxY + 420 : fxY);
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                });
+            });
+        }
+        bind('outfitBtns', 'outfit');
+        bind('hairBtns', 'hair');
+        bind('micBtns', 'mic');
+        bind('fxBtns', 'fx');
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('popstarstage', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

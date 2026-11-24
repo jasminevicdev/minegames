@@ -106,12 +106,13 @@ class GameHub {
         this.statCandleatelierScore = document.getElementById('stat-candleatelier-score');
         this.statAirhockeyScore = document.getElementById('stat-airhockey-score');
         this.statJewelblockScore = document.getElementById('stat-jewelblock-score');
-        this.statFlowercrownScore = document.getElementById('stat-flowercrown-score');
-        this.statSoapatelierScore = document.getElementById('stat-soapatelier-score');
-        this.statRoyalfanScore = document.getElementById('stat-royalfan-score');
         this.statIceskaterScore = document.getElementById('stat-iceskater-score');
         this.statStararcheryScore = document.getElementById('stat-stararchery-score');
         this.statRoyalsolitaireScore = document.getElementById('stat-royalsolitaire-score');
+        this.statNeonbowlingScore = document.getElementById('stat-neonbowling-score');
+        this.statClawmachineScore = document.getElementById('stat-clawmachine-score');
+        this.statRoyaldinerScore = document.getElementById('stat-royaldiner-score');
+        this.statPopstarstageScore = document.getElementById('stat-popstarstage-score');
 
         this.selectedAvatar = '🎪';
 
@@ -255,12 +256,13 @@ class GameHub {
         const candleatelierSave = SaveHub.getGameSave('candleatelier', player.name);
         const airhockeySave = SaveHub.getGameSave('airhockey', player.name);
         const jewelblockSave = SaveHub.getGameSave('jewelblock', player.name);
-        const flowercrownSave = SaveHub.getGameSave('flowercrown', player.name);
-        const soapatelierSave = SaveHub.getGameSave('soapatelier', player.name);
-        const royalfanSave = SaveHub.getGameSave('royalfan', player.name);
         const iceskaterSave = SaveHub.getGameSave('iceskater', player.name);
         const stararcherySave = SaveHub.getGameSave('stararchery', player.name);
         const royalsolitaireSave = SaveHub.getGameSave('royalsolitaire', player.name);
+        const neonbowlingSave = SaveHub.getGameSave('neonbowling', player.name);
+        const clawmachineSave = SaveHub.getGameSave('clawmachine', player.name);
+        const royaldinerSave = SaveHub.getGameSave('royaldiner', player.name);
+        const popstarstageSave = SaveHub.getGameSave('popstarstage', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -326,12 +328,13 @@ class GameHub {
         if (this.statCandleatelierScore) this.statCandleatelierScore.innerText = `${candleatelierSave.highScore || 0} 🕯️`;
         if (this.statAirhockeyScore) this.statAirhockeyScore.innerText = `${airhockeySave.highScore || 0} PTS`;
         if (this.statJewelblockScore) this.statJewelblockScore.innerText = `${jewelblockSave.highScore || 0} PTS`;
-        if (this.statFlowercrownScore) this.statFlowercrownScore.innerText = `${flowercrownSave.highScore || 0} 🌸`;
-        if (this.statSoapatelierScore) this.statSoapatelierScore.innerText = `${soapatelierSave.highScore || 0} 🧼`;
-        if (this.statRoyalfanScore) this.statRoyalfanScore.innerText = `${royalfanSave.highScore || 0} 🪭`;
         if (this.statIceskaterScore) this.statIceskaterScore.innerText = `${iceskaterSave.highScore || 0} PTS`;
         if (this.statStararcheryScore) this.statStararcheryScore.innerText = `${stararcherySave.highScore || 0} PTS`;
         if (this.statRoyalsolitaireScore) this.statRoyalsolitaireScore.innerText = `${royalsolitaireSave.highScore || 0} PTS`;
+        if (this.statNeonbowlingScore) this.statNeonbowlingScore.innerText = `${neonbowlingSave.highScore || 0} PTS`;
+        if (this.statClawmachineScore) this.statClawmachineScore.innerText = `${clawmachineSave.highScore || 0} 🧸`;
+        if (this.statRoyaldinerScore) this.statRoyaldinerScore.innerText = `${royaldinerSave.highScore || 0} PTS`;
+        if (this.statPopstarstageScore) this.statPopstarstageScore.innerText = `${popstarstageSave.highScore || 0} 🌟`;
     }
 
     renderPlayersList() {

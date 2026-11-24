@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garra de Pelúcias Kawaii: Claw Machine HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #701a75, #14031b 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1080px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,114,182,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f9a8d4; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 12px; gap: 10px; }
+        .hud {
+            display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
+        }
+        canvas {
+            background: linear-gradient(180deg, #2e1065, #170529);
+            border: 4px solid #f472b6; border-radius: 24px;
+            box-shadow: 0 0 40px rgba(244,114,182,0.4); max-width: 100%; height: auto;
+        }
+        .btn {
+            padding: 9px 18px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #a855f7); color: #fff; cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+        }
+        .btn-drop { background: linear-gradient(135deg, #34d399, #fde047); color: #052e16; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🧸 Garra de Pelúcias Kawaii: Claw Machine — Edição HD</h1>
+        <div class="score-pill">Pelúcias Capturadas: <span id="hiVal">0</span> 🧸</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <button class="btn" id="leftBtn">⬅️ Esquerda</button>
+            <button class="btn btn-drop" id="dropBtn">🪝 DESCER GARRA [Espaço]</button>
+            <button class="btn" id="rightBtn">Direita ➡️</button>
+            <button class="btn" id="refillBtn" style="background:linear-gradient(135deg,#ec4899,#f97316);">🎁 Encher Máquina</button>
+        </div>
+        <canvas id="clawCanvas" width="520" height="500"></canvas>
+        <p style="color:#fbcfe8; font-size:0.84rem;">💡 Posicione a garra metálica sobre os bichinhos de pelúcia e ovos surpresa e aperte DESCER GARRA!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('clawmachine', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('clawCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const PLUSH_ICONS = ['🧸', '🦄', '🐰', '🐱', '🐼', '🦊', '👑', '💎'];
+        let toys = [];
+        let claw = { x: 260, y: 70, state: 'idle', prize: null };
+
+        function fillMachine() {
+            toys = [];
+            for (let i = 0; i < 16; i++) {
+                toys.push({
+                    x: 85 + (i % 8) * 50 + (Math.random() - 0.5) * 12,
+                    y: 395 + Math.floor(i / 8) * 42,
+                    icon: PLUSH_ICONS[i % PLUSH_ICONS.length]
+                });
+            }
+        }
+        fillMachine();
+
+        function dropClaw() {
+            if (claw.state === 'idle') claw.state = 'down';
+        }
+
+        window.addEventListener('keydown', e => {
+            if (claw.state === 'idle') {
+                if (e.key === 'ArrowLeft' || e.key === 'a') claw.x = Math.max(75, claw.x - 24);
+                if (e.key === 'ArrowRight' || e.key === 'd') claw.x = Math.min(445, claw.x + 24);
+                if (e.code === 'Space' || e.key === 'ArrowDown') dropClaw();
+            }
+        });
+        document.getElementById('leftBtn').addEventListener('click', () => { if (claw.state === 'idle') claw.x = Math.max(75, claw.x - 28); });
+        document.getElementById('rightBtn').addEventListener('click', () => { if (claw.state === 'idle') claw.x = Math.min(445, claw.x + 28); });
+        document.getElementById('dropBtn').addEventListener('click', dropClaw);
+        document.getElementById('refillBtn').addEventListener('click', fillMachine);
+
+        canvas.addEventListener('pointerdown', e => {
+            if (claw.state !== 'idle') return;
+            const r = canvas.getBoundingClientRect();
+            claw.x = Math.max(75, Math.min(445, (e.clientX - r.left) * (520 / r.width)));
+            dropClaw();
+        });
+
+        function loop() {
+            ctx.clearRect(0, 0, 520, 500);
+
+            // Top Rail
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(40, 35, 440, 12);
+
+            // Claw State Machine
+            if (claw.state === 'down') {
+                claw.y += 6.5;
+                for (let i = toys.length - 1; i >= 0; i--) {
+                    const t = toys[i];
+                    if (Math.hypot(claw.x - t.x, claw.y - t.y) < 34) {
+                        claw.prize = t;
+                        toys.splice(i, 1);
+                        claw.state = 'up';
+                        break;
+                    }
+                }
+                if (claw.y >= 440) claw.state = 'up';
+            } else if (claw.state === 'up') {
+                claw.y -= 6.5;
+                if (claw.prize) {
+                    claw.prize.x = claw.x;
+                    claw.prize.y = claw.y + 26;
+                }
+                if (claw.y <= 70) {
+                    claw.y = 70;
+                    if (claw.prize) {
+                        bestScore += 1;
+                        hiEl.textContent = bestScore;
+                        SaveHub.updateGameSave('clawmachine', { highScore: bestScore }, activePlayer);
+                        claw.prize = null;
+                        if (toys.length < 4) fillMachine();
+                    }
+                    claw.state = 'idle';
+                }
+            }
+
+            // Claw Cable & Prongs
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(claw.x, 45); ctx.lineTo(claw.x, claw.y); ctx.stroke();
+
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(claw.x - 22, claw.y + 22); ctx.lineTo(claw.x, claw.y); ctx.lineTo(claw.x + 22, claw.y + 22);
+            ctx.stroke();
+
+            // Draw Toys
+            ctx.font = '44px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            toys.forEach(t => ctx.fillText(t.icon, t.x, t.y));
+            if (claw.prize) ctx.fillText(claw.prize.icon, claw.prize.x, claw.prize.y);
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

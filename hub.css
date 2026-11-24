@@ -556,12 +556,13 @@ body, html {
 .card-candleatelier { border-color: #fbbf24; }
 .card-airhockey { border-color: #00f5d4; }
 .card-jewelblock { border-color: #fde047; }
-.card-flowercrown { border-color: #f472b6; }
-.card-soapatelier { border-color: #2dd4bf; }
-.card-royalfan { border-color: #e879f9; }
 .card-iceskater { border-color: #38bdf8; }
 .card-stararchery { border-color: #fbbf24; }
 .card-royalsolitaire { border-color: #c084fc; }
+.card-neonbowling { border-color: #38bdf8; }
+.card-clawmachine { border-color: #f472b6; }
+.card-royaldiner { border-color: #fb7185; }
+.card-popstarstage { border-color: #e879f9; }
 
 .game-card-banner {
     font-size: 3.5rem;
