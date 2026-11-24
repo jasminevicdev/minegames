@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Air Hockey: Duelo de Luz HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #1e1b4b, #030712);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1020px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(0,245,212,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #99f6e4; font-weight: 700;
+            background: rgba(20,184,166,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(45,212,191,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #2dd4bf; }
+        .score-pill {
+            background: linear-gradient(135deg, #00f5d4, #6366f1);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #04131c;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 12px; gap: 10px; }
+        .hud {
+            display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
+        }
+        canvas {
+            background: #060919; border: 3px solid #00f5d4; border-radius: 24px;
+            box-shadow: 0 0 38px rgba(0,245,212,0.35); max-width: 100%; height: auto;
+            cursor: pointer; touch-action: none;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #ec4899, #fde047); color: #1f0410; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🏒 Cyber Air Hockey: Arena de Plasma — Edição HD</h1>
+        <div class="score-pill">Recorde de Gols: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <span>Você: <strong id="pScore" style="color:#00f5d4;">0</strong></span>
+            <span>Robô Cyber: <strong id="aiScore" style="color:#f43f5e;">0</strong></span>
+            <span>Pontos: <strong id="ptsVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="turboBtn">⚡ Turbo Disco</button>
+            <button class="btn" id="resetBtn">🔄 Nova Partida</button>
+        </div>
+        <canvas id="hockeyCanvas" width="440" height="540"></canvas>
+        <p style="color:#99f6e4; font-size:0.84rem;">💡 Mova o mouse ou dedo na metade inferior da mesa para rebater o disco de plasma no gol inimigo!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('airhockey', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('hockeyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let player = { x: 220, y: 460, r: 28 };
+        let ai = { x: 220, y: 80, r: 28 };
+        let puck = { x: 220, y: 270, vx: 4, vy: -5, r: 16 };
+        let pGoals = 0, aiGoals = 0, pts = 0;
+
+        function resetPuck(dir = -1) {
+            puck = { x: 220, y: 270, vx: (Math.random() - 0.5) * 7, vy: dir * 5.5, r: 16 };
+        }
+
+        canvas.addEventListener('pointermove', e => {
+            const r = canvas.getBoundingClientRect();
+            const mx = (e.clientX - r.left) * (440 / r.width);
+            const my = (e.clientY - r.top) * (540 / r.height);
+            player.x = Math.max(35, Math.min(405, mx));
+            player.y = Math.max(285, Math.min(505, my));
+        });
+
+        document.getElementById('turboBtn').addEventListener('click', () => {
+            puck.vx *= 1.45; puck.vy *= 1.45;
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            pGoals = 0; aiGoals = 0; pts = 0;
+            document.getElementById('pScore').textContent = 0;
+            document.getElementById('aiScore').textContent = 0;
+            document.getElementById('ptsVal').textContent = 0;
+            resetPuck(-1);
+        });
+
+        function hitMallet(m) {
+            const dx = puck.x - m.x, dy = puck.y - m.y;
+            const d = Math.hypot(dx, dy);
+            if (d < puck.r + m.r) {
+                const nx = dx / d, ny = dy / d;
+                puck.vx = nx * 8.5;
+                puck.vy = ny * 8.5;
+                puck.x = m.x + nx * (puck.r + m.r + 2);
+                puck.y = m.y + ny * (puck.r + m.r + 2);
+            }
+        }
+
+        function loop() {
+            ctx.fillStyle = '#060919';
+            ctx.fillRect(0, 0, 440, 540);
+
+            // Neon Table Markings & Goals
+            ctx.strokeStyle = 'rgba(0,245,212,0.28)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, 270); ctx.lineTo(440, 270);
+            ctx.stroke();
+            ctx.beginPath(); ctx.arc(220, 270, 55, 0, Math.PI * 2); ctx.stroke();
+
+            // Goal Zones
+            ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 8;
+            ctx.beginPath(); ctx.moveTo(135, 4); ctx.lineTo(305, 4); ctx.stroke();
+            ctx.strokeStyle = '#00f5d4';
+            ctx.beginPath(); ctx.moveTo(135, 536); ctx.lineTo(305, 536); ctx.stroke();
+
+            // AI tracking
+            ai.x += (puck.x - ai.x) * 0.085;
+            ai.x = Math.max(40, Math.min(400, ai.x));
+
+            // Puck movement
+            puck.x += puck.vx;
+            puck.y += puck.vy;
+
+            if (puck.x < puck.r || puck.x > 440 - puck.r) {
+                puck.vx *= -1;
+                puck.x = Math.max(puck.r, Math.min(440 - puck.r, puck.x));
+            }
+
+            // Check Top Goal (Player scores!)
+            if (puck.y < puck.r) {
+                if (puck.x > 135 && puck.x < 305) {
+                    pGoals++;
+                    pts += 150;
+                    document.getElementById('pScore').textContent = pGoals;
+                    document.getElementById('ptsVal').textContent = pts;
+                    if (pts > bestScore) {
+                        bestScore = pts;
+                        hiEl.textContent = bestScore;
+                        SaveHub.updateGameSave('airhockey', { highScore: bestScore }, activePlayer);
+                    }
+                    resetPuck(1);
+                } else {
+                    puck.vy *= -1; puck.y = puck.r;
+                }
+            }
+
+            // Check Bottom Goal (AI scores)
+            if (puck.y > 540 - puck.r) {
+                if (puck.x > 135 && puck.x < 305) {
+                    aiGoals++;
+                    document.getElementById('aiScore').textContent = aiGoals;
+                    resetPuck(-1);
+                } else {
+                    puck.vy *= -1; puck.y = 540 - puck.r;
+                }
+            }
+
+            hitMallet(player);
+            hitMallet(ai);
+
+            // Draw Mallets
+            ctx.fillStyle = '#f43f5e';
+            ctx.beginPath(); ctx.arc(ai.x, ai.y, ai.r, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.stroke();
+
+            ctx.fillStyle = '#00f5d4';
+            ctx.beginPath(); ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2); ctx.fill();
+            ctx.stroke();
+
+            // Draw Plasma Puck
+            ctx.fillStyle = '#fde047';
+            ctx.shadowColor = '#fde047'; ctx.shadowBlur = 16;
+            ctx.beginPath(); ctx.arc(puck.x, puck.y, puck.r, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0;
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

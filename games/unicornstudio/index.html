@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estúdio de Unicórnio & Pégaso Real HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #581c87, #120424 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1200px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.07); backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(244,114,182,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,114,182,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #f9a8d4; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .studio {
+            display: grid; grid-template-columns: 350px 1fr; gap: 18px;
+            width: 100%; max-width: 1200px; padding: 14px; flex: 1; align-items: start;
+        }
+        @media (max-width: 900px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(34, 10, 58, 0.94); border: 2px solid rgba(244,114,182,0.38);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 9px;
+            max-height: 86vh; overflow-y: auto;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #fbcfe8; font-size: 0.9rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .btn-opt {
+            padding: 7px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.78rem; transition: 0.15s;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7); border-color: #fff;
+            box-shadow: 0 0 10px rgba(244,114,182,0.5);
+        }
+        .btn-action {
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.91rem;
+        }
+        .btn-save { background: linear-gradient(135deg, #34d399, #fde047); color: #052e16; }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(16, 5, 30, 0.88); border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.45); padding: 14px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.65); cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🦄 Estúdio de Unicórnio & Pégaso Real — Edição HD</h1>
+        <div class="score-pill">Unicórnios: <span id="scoreVal">0</span> 🦄</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>🌈 1. Reino Celestial</h3>
+            <div class="grid-2" id="bgBtns">
+                <button class="btn-opt active" data-v="clouds">☁️ Palácio nas Nuvens</button>
+                <button class="btn-opt" data-v="starlight">🌌 Aurora Estelar</button>
+                <button class="btn-opt" data-v="sakura">🌸 Jardim Sakura</button>
+                <button class="btn-opt" data-v="crystal">💎 Vale de Cristal</button>
+            </div>
+
+            <h3>🦄 2. Pelagem Mágica</h3>
+            <div class="grid-2" id="coatBtns">
+                <button class="btn-opt active" data-v="#ffffff">🤍 Branco Pérola</button>
+                <button class="btn-opt" data-v="#fbcfe8">🌸 Rosa Algodão-Doce</button>
+                <button class="btn-opt" data-v="#e9d5ff">💜 Lavanda Real</button>
+                <button class="btn-opt" data-v="#bae6fd">❄️ Celeste Cristal</button>
+                <button class="btn-opt" data-v="#fef08a">✨ Ouro Solar</button>
+                <button class="btn-opt" data-v="#1e1b4b">🌌 Noite Galáctica</button>
+            </div>
+
+            <h3>✨ 3. Crina & Cauda Ondulada</h3>
+            <div class="grid-2" id="maneBtns">
+                <button class="btn-opt active" data-v="rainbow">🌈 Arco-Íris Real</button>
+                <button class="btn-opt" data-v="#ec4899">💖 Rosa Imperial</button>
+                <button class="btn-opt" data-v="#38bdf8">💎 Turquesa</button>
+                <button class="btn-opt" data-v="#fde047">👑 Ouro 24K</button>
+                <button class="btn-opt" data-v="#a855f7">🔮 Ametista</button>
+                <button class="btn-opt" data-v="#34d399">🌿 Esmeralda</button>
+            </div>
+
+            <h3>🪽 4. Asas de Pégaso & Chifre</h3>
+            <div class="grid-2" id="wingBtns">
+                <button class="btn-opt active" data-v="#ffffff">🪽 Plumas Celestes</button>
+                <button class="btn-opt" data-v="#fde047">✨ Asas de Ouro</button>
+                <button class="btn-opt" data-v="#f472b6">🌸 Asas de Cristal Rosa</button>
+                <button class="btn-opt" data-v="#38bdf8">❄️ Asas Glaciais</button>
+            </div>
+
+            <h3>👑 5. Sela Real, Coroa & Mascote</h3>
+            <div class="grid-2" id="saddleBtns">
+                <button class="btn-opt active" data-v="#ec4899">👑 Sela Rubi & Ouro</button>
+                <button class="btn-opt" data-v="#7c3aed">🔮 Sela Ametista</button>
+                <button class="btn-opt" data-v="#0284c7">💎 Sela Safira</button>
+                <button class="btn-opt" data-v="#10b981">🌿 Sela Floresta</button>
+            </div>
+            <div class="grid-2" id="petBtns">
+                <button class="btn-opt active" data-v="🧚‍♀️">🧚‍♀️ Fadinha Guia</button>
+                <button class="btn-opt" data-v="🦋">🦋 Borboleta Real</button>
+                <button class="btn-opt" data-v="🐱">🐱 Gatinha Alada</button>
+                <button class="btn-opt" data-v="🐦">🐦 Pássaro Azul</button>
+            </div>
+
+            <div class="grid-2">
+                <button class="btn-action" id="randBtn" style="background:rgba(255,255,255,0.14); color:#fff;">🎲 Surpresa</button>
+                <button class="btn-action" id="photoBtn" style="background:linear-gradient(135deg,#ec4899,#a855f7); color:#fff;">📸 Foto PNG</button>
+            </div>
+            <button class="btn-action btn-save" id="saveBtn">🌈 Voar pelo Arco-Íris (+1 🦄)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="unicornCanvas" width="600" height="530"></canvas>
+            <p style="margin-top:8px; color:#fbcfe8; font-size:0.84rem;">✨ Clique no céu para lançar estrelas cadentes e corações de cristal do chifre mágico!</p>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('unicornstudio', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('unicornCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let state = {
+            bg: 'clouds', coat: '#ffffff', mane: 'rainbow',
+            wing: '#ffffff', saddle: '#ec4899', pet: '🧚‍♀️'
+        };
+        let t = 0;
+        let sparks = [];
+
+        const BGS = {
+            clouds: ['#7e22ce', '#3b0764'],
+            starlight: ['#1e1b4b', '#090418'],
+            sakura: ['#9d174d', '#310719'],
+            crystal: ['#0369a1', '#082f49']
+        };
+
+        canvas.addEventListener('pointerdown', e => {
+            const r = canvas.getBoundingClientRect();
+            const x = (e.clientX - r.left) * (600 / r.width);
+            const y = (e.clientY - r.top) * (530 / r.height);
+            for (let i = 0; i < 12; i++) {
+                sparks.push({
+                    x, y, vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5,
+                    life: 1, icon: i % 2 === 0 ? '🌟' : '💖'
+                });
+            }
+        });
+
+        function getManeFill(x1, y1, x2, y2) {
+            if (state.mane !== 'rainbow') return state.mane;
+            const g = ctx.createLinearGradient(x1, y1, x2, y2);
+            g.addColorStop(0, '#ff2e93');
+            g.addColorStop(0.25, '#fde047');
+            g.addColorStop(0.5, '#34d399');
+            g.addColorStop(0.75, '#38bdf8');
+            g.addColorStop(1, '#a855f7');
+            return g;
+        }
+
+        function render() {
+            t += 0.04;
+            const [b1, b2] = BGS[state.bg];
+            const bg = ctx.createLinearGradient(0, 0, 0, 530);
+            bg.addColorStop(0, b1); bg.addColorStop(1, b2);
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, 600, 530);
+
+            // Rainbow Arch across sky
+            const rCols = ['rgba(244,63,94,0.35)', 'rgba(250,204,21,0.35)', 'rgba(52,211,153,0.35)', 'rgba(56,189,248,0.35)', 'rgba(168,85,247,0.35)'];
+            rCols.forEach((rc, i) => {
+                ctx.strokeStyle = rc;
+                ctx.lineWidth = 12;
+                ctx.beginPath(); ctx.arc(300, 490, 340 - i * 12, Math.PI, 0); ctx.stroke();
+            });
+
+            // Fluffy Clouds
+            ctx.fillStyle = 'rgba(255,255,255,0.16)';
+            [110, 300, 490].forEach(cx => {
+                ctx.beginPath();
+                ctx.arc(cx, 470, 55, 0, Math.PI * 2);
+                ctx.arc(cx - 40, 480, 40, 0, Math.PI * 2);
+                ctx.arc(cx + 40, 480, 40, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            const hover = Math.sin(t) * 7;
+            ctx.save();
+            ctx.translate(0, hover);
+
+            // Flowing Tail
+            ctx.fillStyle = getManeFill(120, 250, 190, 380);
+            ctx.beginPath();
+            ctx.moveTo(205, 275);
+            ctx.bezierCurveTo(105, 240, 85, 360, 145 + Math.sin(t * 2) * 10, 400);
+            ctx.bezierCurveTo(185, 380, 195, 330, 215, 305);
+            ctx.fill();
+
+            // Back Wing
+            const flap = Math.sin(t * 2.2) * 15;
+            ctx.fillStyle = state.wing;
+            ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(280, 260);
+            ctx.bezierCurveTo(210, 130 + flap, 135, 165 + flap, 195, 255);
+            ctx.closePath();
+            ctx.fill(); ctx.stroke();
+
+            // Unicorn Legs with Golden Hooves
+            const legPositions = [225, 255, 335, 368];
+            legPositions.forEach((lx, i) => {
+                ctx.fillStyle = state.coat;
+                ctx.beginPath(); ctx.roundRect(lx, 325, 22, 115, 10); ctx.fill();
+                ctx.fillStyle = '#fde047';
+                ctx.fillRect(lx, 422, 22, 18);
+            });
+
+            // Body, Neck & Head
+            ctx.fillStyle = state.coat;
+            ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.roundRect(205, 245, 190, 98, 46); ctx.fill(); ctx.stroke();
+
+            // Neck
+            ctx.beginPath();
+            ctx.moveTo(345, 270); ctx.lineTo(395, 165); ctx.lineTo(435, 195); ctx.lineTo(385, 295);
+            ctx.closePath(); ctx.fill();
+
+            // Flowing Mane along neck
+            ctx.fillStyle = getManeFill(330, 140, 410, 260);
+            for (let i = 0; i < 4; i++) {
+                ctx.beginPath();
+                ctx.arc(365 - i * 12, 180 + i * 24, 24, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Head & Snout
+            ctx.fillStyle = state.coat;
+            ctx.beginPath(); ctx.arc(410, 168, 36, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(445, 178, 28, 20, 0.2, 0, Math.PI * 2); ctx.fill();
+
+            // Ear
+            ctx.beginPath();
+            ctx.moveTo(392, 138); ctx.lineTo(402, 108); ctx.lineTo(416, 138);
+            ctx.closePath(); ctx.fill();
+
+            // Spiraled Golden Alicorn Horn
+            ctx.fillStyle = '#fde047';
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(418, 138); ctx.lineTo(475, 72); ctx.lineTo(435, 152);
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+
+            // Expressive Eye & Blush
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath(); ctx.arc(422, 164, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(420, 162, 2.2, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'rgba(244, 114, 182, 0.5)';
+            ctx.beginPath(); ctx.arc(432, 178, 7, 0, Math.PI * 2); ctx.fill();
+
+            // Royal Saddle & Gem Blanket
+            ctx.fillStyle = state.saddle;
+            ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(255, 242, 85, 58, 18);
+            ctx.fill(); ctx.stroke();
+            ctx.font = '24px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('💎', 298, 278);
+
+            // Front Pegasus Wing
+            ctx.fillStyle = state.wing;
+            ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(295, 275);
+            ctx.bezierCurveTo(220, 120 + flap, 120, 170 + flap, 215, 275);
+            ctx.closePath();
+            ctx.fill(); ctx.stroke();
+
+            // Crown & Companion Pet
+            ctx.font = '30px sans-serif';
+            ctx.fillText('👑', 406, 128);
+            ctx.font = '50px sans-serif';
+            ctx.fillText(state.pet, 495, 275 + Math.sin(t * 2) * 10);
+            ctx.restore();
+
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                const s = sparks[i];
+                s.x += s.vx; s.y += s.vy; s.life -= 0.025;
+                if (s.life <= 0) { sparks.splice(i, 1); continue; }
+                ctx.save();
+                ctx.globalAlpha = s.life;
+                ctx.font = '22px sans-serif';
+                ctx.fillText(s.icon, s.x, s.y);
+                ctx.restore();
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        function bind(id, key) {
+            document.querySelectorAll(`#${id} .btn-opt`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll(`#${id} .btn-opt`).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[key] = btn.dataset.v;
+                });
+            });
+        }
+        ['bgBtns:bg', 'coatBtns:coat', 'maneBtns:mane', 'wingBtns:wing', 'saddleBtns:saddle', 'petBtns:pet'].forEach(p => {
+            const [id, k] = p.split(':');
+            bind(id, k);
+        });
+
+        document.getElementById('randBtn').addEventListener('click', () => {
+            ['bgBtns', 'coatBtns', 'maneBtns', 'wingBtns', 'saddleBtns', 'petBtns'].forEach(id => {
+                const btns = document.querySelectorAll(`#${id} .btn-opt`);
+                btns[Math.floor(Math.random() * btns.length)].click();
+            });
+        });
+
+        document.getElementById('photoBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'meu-unicornio-real.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('unicornstudio', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

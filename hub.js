@@ -102,6 +102,10 @@ class GameHub {
         this.statIceprincessScore = document.getElementById('stat-iceprincess-score');
         this.statNeonpinballScore = document.getElementById('stat-neonpinball-score');
         this.statCrystalmergeScore = document.getElementById('stat-crystalmerge-score');
+        this.statUnicornstudioScore = document.getElementById('stat-unicornstudio-score');
+        this.statCandleatelierScore = document.getElementById('stat-candleatelier-score');
+        this.statAirhockeyScore = document.getElementById('stat-airhockey-score');
+        this.statJewelblockScore = document.getElementById('stat-jewelblock-score');
 
         this.selectedAvatar = '🎪';
 
@@ -241,6 +245,10 @@ class GameHub {
         const iceprincessSave = SaveHub.getGameSave('iceprincess', player.name);
         const neonpinballSave = SaveHub.getGameSave('neonpinball', player.name);
         const crystalmergeSave = SaveHub.getGameSave('crystalmerge', player.name);
+        const unicornstudioSave = SaveHub.getGameSave('unicornstudio', player.name);
+        const candleatelierSave = SaveHub.getGameSave('candleatelier', player.name);
+        const airhockeySave = SaveHub.getGameSave('airhockey', player.name);
+        const jewelblockSave = SaveHub.getGameSave('jewelblock', player.name);
 
         if (this.statCircusLevel) this.statCircusLevel.innerText = `FASE ${circusSave.level || 1}`;
         if (this.statSnakeScore) this.statSnakeScore.innerText = `${snakeSave.highScore || 0} PTS`;
@@ -302,6 +310,10 @@ class GameHub {
         if (this.statIceprincessScore) this.statIceprincessScore.innerText = `${iceprincessSave.highScore || 0} ❄️`;
         if (this.statNeonpinballScore) this.statNeonpinballScore.innerText = `${neonpinballSave.highScore || 0} PTS`;
         if (this.statCrystalmergeScore) this.statCrystalmergeScore.innerText = `${crystalmergeSave.highScore || 0} PTS`;
+        if (this.statUnicornstudioScore) this.statUnicornstudioScore.innerText = `${unicornstudioSave.highScore || 0} 🦄`;
+        if (this.statCandleatelierScore) this.statCandleatelierScore.innerText = `${candleatelierSave.highScore || 0} 🕯️`;
+        if (this.statAirhockeyScore) this.statAirhockeyScore.innerText = `${airhockeySave.highScore || 0} PTS`;
+        if (this.statJewelblockScore) this.statJewelblockScore.innerText = `${jewelblockSave.highScore || 0} PTS`;
     }
 
     renderPlayersList() {

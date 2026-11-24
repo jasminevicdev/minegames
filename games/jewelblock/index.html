@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mosaico Real: Quebra-Cabeça de Joias HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b0764, #090418 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1020px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(250,204,21,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fef08a; font-weight: 700;
+            background: rgba(234,179,8,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(250,204,21,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #fde047; }
+        .score-pill {
+            background: linear-gradient(135deg, #eab308, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .wrap { display: flex; flex-direction: column; align-items: center; padding: 14px; gap: 14px; }
+        .hud {
+            display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center;
+            background: rgba(255,255,255,0.07); padding: 9px 18px; border-radius: 999px;
+        }
+        .grid {
+            display: grid; grid-template-columns: repeat(8, 52px); gap: 6px;
+            background: rgba(22, 8, 42, 0.94); padding: 14px; border-radius: 22px;
+            border: 3px solid rgba(250,204,21,0.45); box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+        }
+        @media (max-width: 500px) {
+            .grid { grid-template-columns: repeat(8, 36px); }
+            .cell { width: 36px !important; height: 36px !important; font-size: 1.1rem !important; }
+        }
+        .cell {
+            width: 52px; height: 52px; border-radius: 12px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.55rem; cursor: pointer; transition: 0.12s;
+        }
+        .cell:hover { border-color: #fde047; transform: scale(1.06); }
+        .tray {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+        }
+        .piece-card {
+            padding: 10px 16px; border-radius: 16px; background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.2); cursor: pointer; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .piece-card.active {
+            border-color: #fde047; background: rgba(236,72,153,0.28); box-shadow: 0 0 14px #fde047;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #ec4899, #fde047); color: #1f0410; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>💎 Mosaico Real: Quebra-Cabeça de Joias — Edição HD (#64)</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="wrap">
+        <div class="hud">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="bombBtn">💣 Limpar Centro 4x4</button>
+            <button class="btn" id="resetBtn">🔄 Novo Tabuleiro</button>
+        </div>
+
+        <div class="tray" id="tray"></div>
+        <div class="grid" id="grid"></div>
+        <p style="color:#fef08a; font-size:0.84rem;">💡 Escolha uma Peça de Joia acima e clique no tabuleiro 8x8! Complete linhas ou colunas inteiras para explodir cristais!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('jewelblock', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const SHAPES = [
+            { name: 'Trío Horizontal', icon: '💎💎💎', cells: [[0,0],[0,1],[0,2]], gem: '💎', col: '#38bdf8' },
+            { name: 'Bloco Real 2x2', icon: '👑👑', cells: [[0,0],[0,1],[1,0],[1,1]], gem: '👑', col: '#fde047' },
+            { name: 'Coluna Rubi 3x1', icon: '💖', cells: [[0,0],[1,0],[2,0]], gem: '💖', col: '#ec4899' },
+            { name: 'Canto Ametista', icon: '🔮🔮', cells: [[0,0],[1,0],[1,1]], gem: '🔮', col: '#c084fc' }
+        ];
+
+        let board = Array.from({ length: 64 }, () => null);
+        let activeShapeIdx = 0;
+        let score = 0;
+
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('jewelblock', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        function renderTray() {
+            const tr = document.getElementById('tray');
+            tr.innerHTML = '';
+            SHAPES.forEach((s, idx) => {
+                const d = document.createElement('div');
+                d.className = 'piece-card' + (idx === activeShapeIdx ? ' active' : '');
+                d.innerHTML = `<span style="font-size:1.3rem;">${s.icon}</span><small>${s.name}</small>`;
+                d.addEventListener('click', () => { activeShapeIdx = idx; renderTray(); });
+                tr.appendChild(d);
+            });
+        }
+
+        function checkLines() {
+            let rowsToClear = [];
+            let colsToClear = [];
+            for (let r = 0; r < 8; r++) {
+                let fullR = true, fullC = true;
+                for (let c = 0; c < 8; c++) {
+                    if (!board[r * 8 + c]) fullR = false;
+                    if (!board[c * 8 + r]) fullC = false;
+                }
+                if (fullR) rowsToClear.push(r);
+                if (fullC) colsToClear.push(r);
+            }
+            rowsToClear.forEach(r => {
+                for (let c = 0; c < 8; c++) board[r * 8 + c] = null;
+            });
+            colsToClear.forEach(c => {
+                for (let r = 0; r < 8; r++) board[r * 8 + c] = null;
+            });
+            const total = rowsToClear.length + colsToClear.length;
+            if (total > 0) addScore(total * 180);
+        }
+
+        function placeAt(r, c) {
+            const sh = SHAPES[activeShapeIdx];
+            for (const [dr, dc] of sh.cells) {
+                const nr = r + dr, nc = c + dc;
+                if (nr >= 8 || nc >= 8 || board[nr * 8 + nc]) return;
+            }
+            for (const [dr, dc] of sh.cells) {
+                const nr = r + dr, nc = c + dc;
+                board[nr * 8 + nc] = { gem: sh.gem, col: sh.col };
+            }
+            addScore(sh.cells.length * 15);
+            checkLines();
+            activeShapeIdx = (activeShapeIdx + 1) % SHAPES.length;
+            renderTray();
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const g = document.getElementById('grid');
+            g.innerHTML = '';
+            board.forEach((cell, idx) => {
+                const d = document.createElement('div');
+                d.className = 'cell';
+                if (cell) {
+                    d.textContent = cell.gem;
+                    d.style.background = cell.col + '44';
+                    d.style.borderColor = cell.col;
+                }
+                d.addEventListener('click', () => placeAt(Math.floor(idx / 8), idx % 8));
+                g.appendChild(d);
+            });
+        }
+
+        document.getElementById('bombBtn').addEventListener('click', () => {
+            for (let r = 2; r < 6; r++) {
+                for (let c = 2; c < 6; c++) board[r * 8 + c] = null;
+            }
+            addScore(80);
+            renderGrid();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            board.fill(null);
+            score = 0;
+            document.getElementById('scoreVal').textContent = 0;
+            renderGrid();
+        });
+
+        renderTray();
+        renderGrid();
+    </script>
+</body>
+</html>

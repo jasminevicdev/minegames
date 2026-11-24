@@ -109,7 +109,11 @@ export class SaveHub {
                     royalmasquerade: { highScore: 0 },
                     iceprincess: { highScore: 0 },
                     neonpinball: { highScore: 0 },
-                    crystalmerge: { highScore: 0 }
+                    crystalmerge: { highScore: 0 },
+                    unicornstudio: { highScore: 0 },
+                    candleatelier: { highScore: 0 },
+                    airhockey: { highScore: 0 },
+                    jewelblock: { highScore: 0 }
                 }
             };
         }
