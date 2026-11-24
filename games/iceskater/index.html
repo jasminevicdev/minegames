@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glamour Skater: Patinação no Gelo Real HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #0284c7, #082f49 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1120px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.08); border-bottom: 2px solid rgba(186,230,253,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #e0f2fe; font-weight: 700;
+            background: rgba(14,165,233,0.25); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(186,230,253,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #bae6fd; }
+        .score-pill {
+            background: linear-gradient(135deg, #38bdf8, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+            width: 100%; max-width: 1120px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 860px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(7, 42, 74, 0.94); border: 2px solid rgba(186,230,253,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #bae6fd; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.79rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #38bdf8, #ec4899); border-color: #fff;
+        }
+        .btn-spin {
+            padding: 11px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.92rem;
+            background: linear-gradient(135deg, #fde047, #ec4899); color: #240418;
+        }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(4, 24, 44, 0.88); border-radius: 24px;
+            border: 3px solid rgba(186,230,253,0.4); padding: 14px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; touch-action: none; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>⛸️ Glamour Skater: Patinação no Gelo Real — Edição HD</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>👗 1. Figurino de Patinação</h3>
+            <div class="grid-2" id="dressBtns">
+                <button class="btn-opt active" data-c="#ec4899">🌸 Rosa Cristal</button>
+                <button class="btn-opt" data-c="#38bdf8">❄️ Azul Glacial</button>
+                <button class="btn-opt" data-c="#a855f7">🔮 Cisne Violeta</button>
+                <button class="btn-opt" data-c="#fde047">✨ Ouro Olímpico</button>
+            </div>
+
+            <h3>⛸️ 2. Cor do Rastro no Gelo</h3>
+            <div class="grid-2" id="trailBtns">
+                <button class="btn-opt active" data-t="#ffffff">❄️ Trilha de Gelo</button>
+                <button class="btn-opt" data-t="#f472b6">💖 Fita de Luz Rosa</button>
+                <button class="btn-opt" data-t="#fde047">🌟 Fita Estelar</button>
+                <button class="btn-opt" data-t="#00f5d4">💎 Aurora Turquesa</button>
+            </div>
+
+            <button class="btn-spin" id="spinBtn">🌀 Pirueta Tripla Real (+100 PTS!) [Espaço]</button>
+            <p style="font-size:0.82rem; color:#bae6fd; line-height:1.45;">
+                • Deslize o mouse ou dedo pelo rinque para patinar, desenhar coreografias no gelo e colher Rosas 🌹 e Medalhas 🏅 dos fãs!
+            </p>
+        </aside>
+
+        <section class="stage">
+            <div style="margin-bottom:8px; font-weight:700;">Nota dos Jurados: <strong id="scoreVal" style="color:#fde047;">0</strong> PTS</div>
+            <canvas id="rinkCanvas" width="560" height="500"></canvas>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('iceskater', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('rinkCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let dressColor = '#ec4899';
+        let trailColor = '#ffffff';
+        let skater = { x: 280, y: 250, tx: 280, ty: 250, spin: 0 };
+        let trail = [];
+        let prizes = [];
+        let score = 0;
+        let tick = 0;
+
+        function spawnPrize() {
+            const icons = ['🌹', '💎', '🏅', '⭐'];
+            prizes.push({
+                x: 60 + Math.random() * 440,
+                y: 60 + Math.random() * 380,
+                icon: icons[Math.floor(Math.random() * icons.length)]
+            });
+        }
+        for (let i = 0; i < 6; i++) spawnPrize();
+
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('iceskater', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        function doSpin() {
+            skater.spin = 28;
+            addScore(100);
+        }
+
+        canvas.addEventListener('pointermove', e => {
+            const r = canvas.getBoundingClientRect();
+            skater.tx = (e.clientX - r.left) * (560 / r.width);
+            skater.ty = (e.clientY - r.top) * (500 / r.height);
+        });
+        document.getElementById('spinBtn').addEventListener('click', doSpin);
+        window.addEventListener('keydown', e => { if (e.code === 'Space') doSpin(); });
+
+        document.querySelectorAll('#dressBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#dressBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                dressColor = btn.dataset.c;
+            });
+        });
+
+        document.querySelectorAll('#trailBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#trailBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                trailColor = btn.dataset.t;
+            });
+        });
+
+        function loop() {
+            tick++;
+            const g = ctx.createRadialGradient(280, 250, 30, 280, 250, 340);
+            g.addColorStop(0, '#e0f2fe'); g.addColorStop(1, '#7dd3fc');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 560, 500);
+
+            // Rink Center Emblem
+            ctx.strokeStyle = 'rgba(2, 132, 199, 0.25)';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.arc(280, 250, 85, 0, Math.PI * 2); ctx.stroke();
+
+            // Smooth Ice Movement
+            skater.x += (skater.tx - skater.x) * 0.12;
+            skater.y += (skater.ty - skater.y) * 0.12;
+            trail.push({ x: skater.x, y: skater.y });
+            if (trail.length > 75) trail.shift();
+
+            // Draw Ice Ribbon Trail
+            if (trail.length > 2) {
+                ctx.strokeStyle = trailColor;
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                trail.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+                ctx.stroke();
+            }
+
+            // Prizes on Rink
+            ctx.font = '32px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            for (let i = prizes.length - 1; i >= 0; i--) {
+                const p = prizes[i];
+                ctx.fillText(p.icon, p.x, p.y);
+                if (Math.hypot(skater.x - p.x, skater.y - p.y) < 36) {
+                    prizes.splice(i, 1);
+                    addScore(60);
+                    spawnPrize();
+                }
+            }
+
+            // Draw Skater
+            ctx.save();
+            ctx.translate(skater.x, skater.y);
+            if (skater.spin > 0) {
+                ctx.rotate(skater.spin * 0.45);
+                skater.spin--;
+            }
+            ctx.fillStyle = dressColor;
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(0, 0, 26, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.font = '30px sans-serif';
+            ctx.fillText('⛸️', 0, 2);
+            ctx.restore();
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arco & Flecha Real: Tiro Estelar HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #3b0764, #090418);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1020px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(250,204,21,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fef08a; font-weight: 700;
+            background: rgba(234,179,8,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(250,204,21,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #fde047; }
+        .score-pill {
+            background: linear-gradient(135deg, #eab308, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .arena { display: flex; flex-direction: column; align-items: center; padding: 12px; gap: 10px; }
+        .hud {
+            display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 8px 18px; border-radius: 999px; flex-wrap: wrap; justify-content: center;
+        }
+        canvas {
+            background: linear-gradient(180deg, #17082e, #080312);
+            border: 3px solid #fde047; border-radius: 24px;
+            box-shadow: 0 0 38px rgba(250,204,21,0.35); max-width: 100%; height: auto;
+            cursor: crosshair; touch-action: none;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #ec4899, #fde047); color: #1f0410; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🏹 Arco & Flecha Real: Tiro Estelar — Edição HD</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="arena">
+        <div class="hud">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="tripleBtn">🏹 Modo Flecha Tripla: OFF</button>
+            <button class="btn" id="resetBtn">🔄 Reiniciar</button>
+        </div>
+        <canvas id="bowCanvas" width="560" height="520"></canvas>
+        <p style="color:#fef08a; font-size:0.84rem;">💡 Mire e clique/toque para disparar flechas de luz dourada nos balões de cristal e alvos reais!</p>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('stararchery', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const canvas = document.getElementById('bowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let aimAngle = -Math.PI / 2;
+        let tripleMode = false;
+        let arrows = [];
+        let targets = [];
+        let score = 0;
+        let tick = 0;
+
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('stararchery', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        canvas.addEventListener('pointermove', e => {
+            const r = canvas.getBoundingClientRect();
+            const mx = (e.clientX - r.left) * (560 / r.width);
+            const my = (e.clientY - r.top) * (520 / r.height);
+            aimAngle = Math.max(-2.8, Math.min(-0.35, Math.atan2(my - 475, mx - 280)));
+        });
+
+        canvas.addEventListener('pointerdown', () => {
+            const angles = tripleMode ? [aimAngle - 0.16, aimAngle, aimAngle + 0.16] : [aimAngle];
+            angles.forEach(a => {
+                arrows.push({ x: 280, y: 475, vx: Math.cos(a) * 12, vy: Math.sin(a) * 12 });
+            });
+        });
+
+        document.getElementById('tripleBtn').addEventListener('click', e => {
+            tripleMode = !tripleMode;
+            e.target.textContent = tripleMode ? '🏹 Modo Flecha Tripla: ON' : '🏹 Modo Flecha Tripla: OFF';
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            score = 0; targets = []; arrows = [];
+            document.getElementById('scoreVal').textContent = 0;
+        });
+
+        function loop() {
+            tick++;
+            ctx.clearRect(0, 0, 560, 520);
+
+            if (tick % 38 === 0) {
+                const icons = [
+                    { i: '🎯', pts: 60 },
+                    { i: '🎈', pts: 40 },
+                    { i: '💎', pts: 100 },
+                    { i: '👑', pts: 150 }
+                ];
+                const pick = icons[Math.floor(Math.random() * icons.length)];
+                targets.push({
+                    x: Math.random() > 0.5 ? -20 : 580,
+                    y: 65 + Math.random() * 250,
+                    vx: (Math.random() * 2.2 + 1.8) * (Math.random() > 0.5 ? 1 : -1),
+                    icon: pick.i, pts: pick.pts
+                });
+                const last = targets[targets.length - 1];
+                if (last.x < 0 && last.vx < 0) last.vx *= -1;
+                if (last.x > 560 && last.vx > 0) last.vx *= -1;
+            }
+
+            // Targets
+            ctx.font = '38px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            for (let i = targets.length - 1; i >= 0; i--) {
+                const t = targets[i];
+                t.x += t.vx;
+                ctx.fillText(t.icon, t.x, t.y);
+                if (t.x < -50 || t.x > 610) targets.splice(i, 1);
+            }
+
+            // Arrows
+            for (let i = arrows.length - 1; i >= 0; i--) {
+                const ar = arrows[i];
+                ar.x += ar.vx; ar.y += ar.vy;
+                ctx.fillStyle = '#fde047';
+                ctx.shadowColor = '#fde047'; ctx.shadowBlur = 12;
+                ctx.beginPath(); ctx.arc(ar.x, ar.y, 7, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+
+                for (let j = targets.length - 1; j >= 0; j--) {
+                    const t = targets[j];
+                    if (Math.hypot(ar.x - t.x, ar.y - t.y) < 30) {
+                        addScore(t.pts);
+                        targets.splice(j, 1);
+                        arrows.splice(i, 1);
+                        break;
+                    }
+                }
+                if (ar && (ar.y < -20 || ar.x < -20 || ar.x > 580)) arrows.splice(i, 1);
+            }
+
+            // Golden Bow at bottom
+            ctx.save();
+            ctx.translate(280, 475);
+            ctx.rotate(aimAngle + Math.PI / 2);
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.arc(0, 10, 38, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+            ctx.font = '30px sans-serif';
+            ctx.fillText('🏹', 0, -5);
+            ctx.restore();
+
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>

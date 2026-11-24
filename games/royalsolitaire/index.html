@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitário das Joias & Trono Real HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #4c1d95, #120424 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1020px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.06); border-bottom: 2px solid rgba(244,114,182,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #fbcfe8; font-weight: 700;
+            background: rgba(236,72,153,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(244,114,182,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: #f9a8d4; }
+        .score-pill {
+            background: linear-gradient(135deg, #ec4899, #eab308);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700; color: #1f0410;
+        }
+        .wrap { display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 14px; }
+        .grid {
+            display: grid; grid-template-columns: repeat(4, 110px); gap: 12px;
+            background: rgba(25, 8, 45, 0.94); padding: 18px; border-radius: 24px;
+            border: 3px solid rgba(244,114,182,0.45); box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+        }
+        @media (max-width: 520px) {
+            .grid { grid-template-columns: repeat(4, 72px); }
+            .card { width: 72px !important; height: 96px !important; }
+        }
+        .card {
+            width: 110px; height: 135px; border-radius: 16px;
+            background: linear-gradient(145deg, #fff1f2, #fce7f3);
+            color: #831843; border: 3px solid #fde047;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+        }
+        .card:hover { transform: translateY(-4px); }
+        .card.selected { border-color: #ec4899; box-shadow: 0 0 20px #ec4899; transform: scale(1.06); }
+        .card-num { font-family: 'Fredoka', sans-serif; font-size: 1.6rem; font-weight: 700; }
+        .card-icon { font-size: 2.3rem; }
+        .btn {
+            padding: 10px 20px; border-radius: 999px; border: none; font-weight: 700;
+            background: linear-gradient(135deg, #34d399, #fde047); color: #052e16; cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🃏 Solitário das Joias & Trono Real — Edição HD (#70)</h1>
+        <div class="score-pill">Recorde: <span id="hiVal">0</span> PTS</div>
+    </header>
+
+    <main class="wrap">
+        <p style="color:#fbcfe8; font-size:0.9rem; text-align:center;">✨ Combine pares de cartas que somam <strong>10</strong> (ex: 7+3, 6+4, 5+5) ou pares de Coroas Reais <strong>10+10</strong>!</p>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <span>Pontos: <strong id="scoreVal" style="color:#fde047;">0</strong></span>
+            <button class="btn" id="dealBtn">🃏 Distribuir Novas Cartas</button>
+            <button class="btn" id="autoBtn" style="background:linear-gradient(135deg,#ec4899,#a855f7); color:#fff;">🪄 Par Automático</button>
+        </div>
+        <div class="grid" id="grid"></div>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('royalsolitaire', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const hiEl = document.getElementById('hiVal');
+        hiEl.textContent = bestScore;
+
+        const SUITS = ['👑', '💎', '🌹', '🦋', '🦄'];
+        let cards = [];
+        let sel = null;
+        let score = 0;
+
+        function randCard() {
+            const v = Math.floor(Math.random() * 10) + 1;
+            return { v, icon: SUITS[v % SUITS.length] };
+        }
+
+        function deal() {
+            cards = Array.from({ length: 12 }, () => randCard());
+            sel = null;
+            render();
+        }
+
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreVal').textContent = score;
+            if (score > bestScore) {
+                bestScore = score;
+                hiEl.textContent = bestScore;
+                SaveHub.updateGameSave('royalsolitaire', { highScore: bestScore }, activePlayer);
+            }
+        }
+
+        function canPair(a, b) {
+            if (!a || !b) return false;
+            return (a.v + b.v === 10) || (a.v === 10 && b.v === 10) || (a.v === b.v);
+        }
+
+        function clickCard(idx) {
+            if (!cards[idx]) return;
+            if (sel === null) {
+                sel = idx;
+            } else if (sel === idx) {
+                sel = null;
+            } else {
+                if (canPair(cards[sel], cards[idx])) {
+                    addScore(80);
+                    cards[sel] = randCard();
+                    cards[idx] = randCard();
+                }
+                sel = null;
+            }
+            render();
+        }
+
+        function render() {
+            const g = document.getElementById('grid');
+            g.innerHTML = '';
+            cards.forEach((c, idx) => {
+                const d = document.createElement('div');
+                d.className = 'card' + (sel === idx ? ' selected' : '');
+                d.innerHTML = `<span class="card-num">${c.v}</span><span class="card-icon">${c.icon}</span>`;
+                d.addEventListener('click', () => clickCard(idx));
+                g.appendChild(d);
+            });
+        }
+
+        document.getElementById('dealBtn').addEventListener('click', deal);
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            for (let i = 0; i < cards.length; i++) {
+                for (let j = i + 1; j < cards.length; j++) {
+                    if (canPair(cards[i], cards[j])) {
+                        addScore(80);
+                        cards[i] = randCard();
+                        cards[j] = randCard();
+                        render();
+                        return;
+                    }
+                }
+            }
+            deal();
+        });
+
+        deal();
+    </script>
+</body>
+</html>

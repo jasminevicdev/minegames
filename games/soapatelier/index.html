@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê de Sabonetes de Cristal & Bath Bombs HD — JasDEV Game Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: radial-gradient(circle at top, #0d9488, #041f1e 80%);
+            color: #fff; font-family: 'Outfit', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+        }
+        .topbar {
+            width: 100%; max-width: 1180px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: rgba(255,255,255,0.07); border-bottom: 2px solid rgba(94,234,212,0.45);
+        }
+        .back-btn {
+            text-decoration: none; color: #99f6e4; font-weight: 700;
+            background: rgba(20,184,166,0.22); padding: 8px 16px; border-radius: 999px;
+            border: 1px solid rgba(94,234,212,0.5);
+        }
+        h1 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; color: #5eead4; }
+        .score-pill {
+            background: linear-gradient(135deg, #14b8a6, #ec4899);
+            padding: 7px 16px; border-radius: 999px; font-weight: 700;
+        }
+        .studio {
+            display: grid; grid-template-columns: 340px 1fr; gap: 18px;
+            width: 100%; max-width: 1180px; padding: 16px; flex: 1; align-items: start;
+        }
+        @media (max-width: 880px) { .studio { grid-template-columns: 1fr; } }
+        .panel {
+            background: rgba(8, 42, 42, 0.94); border: 2px solid rgba(94,234,212,0.35);
+            border-radius: 22px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .panel h3 { font-family: 'Fredoka', sans-serif; color: #99f6e4; font-size: 0.91rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .btn-opt {
+            padding: 8px 9px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.07); color: #fff; font-weight: 700; cursor: pointer;
+            font-size: 0.79rem;
+        }
+        .btn-opt.active, .btn-opt:hover {
+            background: linear-gradient(135deg, #14b8a6, #ec4899); border-color: #fff;
+        }
+        .btn-action {
+            padding: 10px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; font-family: 'Fredoka', sans-serif; font-size: 0.91rem;
+        }
+        .btn-save { background: linear-gradient(135deg, #f472b6, #fde047); color: #240414; }
+        .stage {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(4, 22, 24, 0.9); border-radius: 24px;
+            border: 3px solid rgba(94,234,212,0.4); padding: 16px;
+        }
+        canvas { border-radius: 18px; max-width: 100%; height: auto; box-shadow: 0 12px 35px rgba(0,0,0,0.6); cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="../../index.html" class="back-btn">⬅ Voltar ao Hub</a>
+        <h1>🧼 Ateliê de Sabonetes de Cristal & Bath Bombs — Edição HD</h1>
+        <div class="score-pill">Sabonetes: <span id="scoreVal">0</span> 🧼</div>
+    </header>
+
+    <main class="studio">
+        <aside class="panel">
+            <h3>💖 1. Molde de Silicone Real</h3>
+            <div class="grid-2" id="moldBtns">
+                <button class="btn-opt active" data-m="heart">💖 Coração Cristal</button>
+                <button class="btn-opt" data-m="shell">🐚 Concha Perolada</button>
+                <button class="btn-opt" data-m="gem">💎 Gema Lapidada</button>
+                <button class="btn-opt" data-m="star">⭐ Estrela Spa</button>
+            </div>
+
+            <h3>🎨 2. Essência & Glicerina Translúcida</h3>
+            <div class="grid-2" id="soapBtns">
+                <button class="btn-opt active" data-c="#f472b6">🌹 Rosas & Quartzo</button>
+                <button class="btn-opt" data-c="#38bdf8">🌊 Brisa Oceânica</button>
+                <button class="btn-opt" data-c="#c084fc">💜 Lavanda Real</button>
+                <button class="btn-opt" data-c="#34d399">🌿 Hortelã & Aloe</button>
+                <button class="btn-opt" data-c="#fde047">🍯 Mel & Camomila</button>
+                <button class="btn-opt" data-c="#fb7185">🍓 Morango Champagne</button>
+            </div>
+
+            <h3>🌸 3. Incrustar Pétalas & Ouro 24K (Toque)</h3>
+            <div class="grid-2" id="inlayBtns">
+                <button class="btn-opt active" data-i="🌸">🌸 Pétala Sakura</button>
+                <button class="btn-opt" data-i="✨">✨ Folha de Ouro</button>
+                <button class="btn-opt" data-i="💎">💎 Sal de Cristal</button>
+                <button class="btn-opt" data-i="🦋">🦋 Mini Borboleta</button>
+            </div>
+
+            <button class="btn-action" id="fizzBtn" style="background:linear-gradient(135deg,#38bdf8,#a855f7); color:#fff;">🫧 Testar Espuma Efervescente!</button>
+            <div class="grid-2">
+                <button class="btn-action" id="clearBtn" style="background:rgba(239,68,68,0.22); color:#fca5a5;">🧹 Limpar</button>
+                <button class="btn-action" id="photoBtn" style="background:rgba(255,255,255,0.14); color:#fff;">📸 Foto PNG</button>
+            </div>
+            <button class="btn-action btn-save" id="saveBtn">🏆 Embalar Kit de Spa Real (+1 🧼)</button>
+        </aside>
+
+        <section class="stage">
+            <canvas id="soapCanvas" width="540" height="500"></canvas>
+            <p style="margin-top:8px; color:#99f6e4; font-size:0.84rem;">💡 Clique no sabonete de glicerina para incrustar flores e folhas de ouro 24K!</p>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SaveHub } from '../../shared/SaveHub.js';
+        const playerObj = SaveHub.getActivePlayer();
+        const activePlayer = (playerObj && playerObj.name) ? playerObj.name : null;
+        const save = SaveHub.getGameSave('soapatelier', activePlayer);
+        let bestScore = save?.highScore || 0;
+        const scoreEl = document.getElementById('scoreVal');
+        scoreEl.textContent = bestScore;
+
+        const canvas = document.getElementById('soapCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let mold = 'heart';
+        let soapColor = '#f472b6';
+        let activeInlay = '🌸';
+        let inlays = [{ x: 240, y: 240, i: '🌸' }, { x: 295, y: 270, i: '✨' }];
+        let bubbles = [];
+
+        function traceMold() {
+            ctx.beginPath();
+            if (mold === 'heart') {
+                ctx.moveTo(270, 395);
+                ctx.bezierCurveTo(95, 285, 115, 115, 270, 185);
+                ctx.bezierCurveTo(425, 115, 445, 285, 270, 395);
+            } else if (mold === 'gem') {
+                ctx.moveTo(270, 110); ctx.lineTo(410, 210); ctx.lineTo(360, 390);
+                ctx.lineTo(180, 390); ctx.lineTo(130, 210); ctx.closePath();
+            } else if (mold === 'star') {
+                for (let i = 0; i < 10; i++) {
+                    const r = i % 2 === 0 ? 155 : 75;
+                    const a = (i * Math.PI) / 5 - Math.PI / 2;
+                    const x = 270 + Math.cos(a) * r, y = 255 + Math.sin(a) * r;
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+            } else {
+                ctx.arc(270, 260, 145, Math.PI, 0);
+                ctx.lineTo(365, 385); ctx.lineTo(175, 385); ctx.closePath();
+            }
+        }
+
+        function render() {
+            ctx.fillStyle = '#062628';
+            ctx.fillRect(0, 0, 540, 500);
+
+            // Marble Spa Tray
+            ctx.fillStyle = '#e2e8f0';
+            ctx.beginPath(); ctx.ellipse(270, 265, 215, 185, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.stroke();
+
+            // Translucent Glycerin Soap Bar
+            ctx.save();
+            ctx.fillStyle = soapColor;
+            ctx.shadowColor = soapColor;
+            ctx.shadowBlur = 25;
+            traceMold();
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.clip();
+
+            // Marble Swirl inside soap
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ctx.lineWidth = 18;
+            ctx.beginPath();
+            ctx.arc(270, 255, 85, 0, Math.PI * 1.5);
+            ctx.stroke();
+
+            ctx.font = '34px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            inlays.forEach(inlay => ctx.fillText(inlay.i, inlay.x, inlay.y));
+            ctx.restore();
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            traceMold();
+            ctx.stroke();
+
+            // Fizzing Foam Bubbles
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                b.x += b.vx; b.y += b.vy; b.life -= 0.025;
+                if (b.life <= 0) { bubbles.splice(i, 1); continue; }
+                ctx.strokeStyle = `rgba(255,255,255,${b.life})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        canvas.addEventListener('pointerdown', e => {
+            const r = canvas.getBoundingClientRect();
+            const x = (e.clientX - r.left) * (540 / r.width);
+            const y = (e.clientY - r.top) * (500 / r.height);
+            inlays.push({ x, y, i: activeInlay });
+        });
+
+        document.querySelectorAll('#moldBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#moldBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                mold = btn.dataset.m;
+            });
+        });
+
+        document.querySelectorAll('#soapBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#soapBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                soapColor = btn.dataset.c;
+            });
+        });
+
+        document.querySelectorAll('#inlayBtns .btn-opt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#inlayBtns .btn-opt').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeInlay = btn.dataset.i;
+            });
+        });
+
+        document.getElementById('fizzBtn').addEventListener('click', () => {
+            for (let i = 0; i < 35; i++) {
+                const a = Math.random() * Math.PI * 2;
+                bubbles.push({
+                    x: 270 + (Math.random() - 0.5) * 140,
+                    y: 255 + (Math.random() - 0.5) * 140,
+                    vx: Math.cos(a) * 2.5, vy: Math.sin(a) * 2.5 - 1,
+                    r: Math.random() * 12 + 5, life: 1
+                });
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => { inlays = []; });
+        document.getElementById('photoBtn').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'sabonete-cristal-real.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        });
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            bestScore += 1;
+            scoreEl.textContent = bestScore;
+            SaveHub.updateGameSave('soapatelier', { highScore: bestScore }, activePlayer);
+        });
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>
